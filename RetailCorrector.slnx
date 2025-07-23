@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="RetailCorrector.Generators/RetailCorrector.Generators.csproj" Id="b55a7cd6-9efc-40c1-8e9f-a7530ba104e9" />
+  <Project Path="RetailCorrector\RetailCorrector.csproj" />
+</Solution>
