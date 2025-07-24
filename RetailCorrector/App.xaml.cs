@@ -1,6 +1,4 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 
 namespace RetailCorrector;
 
@@ -9,5 +7,9 @@ namespace RetailCorrector;
 /// </summary>
 public partial class App : Application
 {
+    public App()
+    {
+        Workspace.New();
+    }
 }
 
