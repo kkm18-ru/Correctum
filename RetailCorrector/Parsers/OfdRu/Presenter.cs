@@ -8,6 +8,7 @@ namespace RetailCorrector.Parsers.OfdRu
 {
     internal partial class OfdRuPresenter : IParserPresenter<OfdRuPresenter, OfdRuView>
     {
+        public static string DisplayName { get; } = "OFD.ru (Петер-Сервис)";
         public static OfdRuView ShowView() => new();
 
         private string Url(DateTime date)
