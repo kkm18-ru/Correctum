@@ -8,6 +8,8 @@ namespace RetailCorrector.Parsers.OfdRu
 {
     internal partial class OfdRuPresenter : IParserPresenter<OfdRuPresenter, OfdRuView>
     {
+        public static OfdRuView ShowView() => new();
+
         private string Url(DateTime date)
         {
             var dayText = date.ToString("yyyy'-'MM'-'dd");
