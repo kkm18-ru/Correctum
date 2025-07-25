@@ -3,13 +3,16 @@ using System.Windows.Controls;
 
 namespace RetailCorrector.Parsers
 {
-    internal interface IParserPresenter<TP, TV>
+    internal interface IParserPresenter<TP, TV> : IParserPresenter
         where TP : class, IParserPresenter<TP, TV>
         where TV : Control, IParserView<TV, TP>, new()
     {
         public abstract static string DisplayName { get; }
         public static TV ShowView() => new();
+    }
 
+    internal interface IParserPresenter
+    {
         IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken);
     }
 }
