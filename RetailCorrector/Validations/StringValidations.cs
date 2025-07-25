@@ -38,5 +38,14 @@
             }
             return null;
         }
+
+        public static ValidationResult ValidKKTRegId(this string text)
+        {
+            if (text.Length != 16)
+                return "Введённое значение имеет размер отличный от 16 символов";
+            if (!ulong.TryParse(text, out var result))
+                return "Введённое значение не является числовым кодом";
+            return null;
+        }
     }
 }
