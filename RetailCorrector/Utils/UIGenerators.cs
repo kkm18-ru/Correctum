@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace System.Windows
 {
@@ -29,12 +30,18 @@ namespace System.Windows
                 dtPicker.SetBinding(Controls.DatePicker.DisplayDateEndProperty, new Binding(maxPropName) { Mode = BindingMode.OneWay });
             return dtPicker;
         }
-
+        
         public static TextBox TextBox(string propertyName)
         {
             var tb = new TextBox();
             tb.SetBinding(Controls.TextBox.TextProperty, new Binding(propertyName));
             return tb;
         }
+
+        public static Button Button(string text, ICommand onClick) => new()
+        {
+            Content = text,
+            Command = onClick
+        };
     }
 }
