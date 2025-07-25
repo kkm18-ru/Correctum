@@ -19,7 +19,7 @@ namespace RetailCorrector.Parsers.OfdRu
         {
             using var http = new HttpClient();
             var baseUrl = $"";
-            CountDays = (int)(EndDate - BeginDate).TotalDays;
+            CountDays = (int)(EndDate - BeginDate).TotalDays + 1;
             for (var day = BeginDate; day <= EndDate; day = day.AddDays(1))
             {
                 cancellationToken.ThrowIfCancellationRequested();

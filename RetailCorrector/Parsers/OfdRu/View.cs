@@ -22,7 +22,7 @@ namespace RetailCorrector.Parsers.OfdRu
             #endregion
 
             #region Строки
-            content.AddRow(GridUnitType.Auto);
+            content.AddRow(GridUnitType.Pixel, 15);
             content.AddRow(GridUnitType.Pixel, 5);
             content.AddRow(GridUnitType.Auto);
             content.AddRow(GridUnitType.Pixel, 5);
