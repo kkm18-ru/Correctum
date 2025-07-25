@@ -1,11 +1,11 @@
 ﻿using RetailCorrector.Data;
 using System.Windows.Controls;
 
-namespace RetailCorrector.Sources
+namespace RetailCorrector.Parsers
 {
-    internal interface ISourcePresenter<TP, TV>
-        where TP : class, ISourcePresenter<TP, TV>
-        where TV : Control, ISourceView<TV, TP>, new()
+    internal interface IParserPresenter<TP, TV>
+        where TP : class, IParserPresenter<TP, TV>
+        where TV : Control, IParserView<TV, TP>, new()
     {
         public static TV ShowView() => new();
 

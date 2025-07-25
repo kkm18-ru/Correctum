@@ -2,7 +2,7 @@
 using RetailCorrector.Enums;
 using System.Text.Json.Nodes;
 
-namespace RetailCorrector.Sources.OfdRu
+namespace RetailCorrector.Parsers.OfdRu
 {
     internal partial class OfdRuPresenter
     {

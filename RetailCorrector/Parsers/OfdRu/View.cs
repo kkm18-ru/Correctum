@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace RetailCorrector.Sources.OfdRu
+namespace RetailCorrector.Parsers.OfdRu
 {
-    internal class OfdRuView : UserControl, ISourceView<OfdRuView, OfdRuPresenter>
+    internal class OfdRuView : UserControl, IParserView<OfdRuView, OfdRuPresenter>
     {
         public OfdRuPresenter Presenter { get; } = new OfdRuPresenter();
 

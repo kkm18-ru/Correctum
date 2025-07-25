@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
-namespace RetailCorrector.Sources.OfdRu
+namespace RetailCorrector.Parsers.OfdRu
 {
     internal partial class OfdRuPresenter : INotifyPropertyChanged
     {

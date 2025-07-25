@@ -4,9 +4,9 @@ using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
 using System.Windows;
 
-namespace RetailCorrector.Sources.OfdRu
+namespace RetailCorrector.Parsers.OfdRu
 {
-    internal partial class OfdRuPresenter : ISourcePresenter<OfdRuPresenter, OfdRuView>
+    internal partial class OfdRuPresenter : IParserPresenter<OfdRuPresenter, OfdRuView>
     {
         private string Url(DateTime date)
         {
