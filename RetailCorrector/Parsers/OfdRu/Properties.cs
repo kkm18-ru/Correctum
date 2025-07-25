@@ -116,7 +116,7 @@ namespace RetailCorrector.Parsers.OfdRu
         private string _vatin = "";
         private string _deviceId = "";
         private string _token = "";
-        private int _days = 0;
+        private int _days = 1;
         private int _day = 0;
 
         public event PropertyChangedEventHandler? PropertyChanged;

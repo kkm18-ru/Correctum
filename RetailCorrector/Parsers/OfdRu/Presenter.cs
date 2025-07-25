@@ -8,6 +8,9 @@ namespace RetailCorrector.Parsers.OfdRu
 {
     internal partial class OfdRuPresenter : IParserPresenter<OfdRuPresenter, OfdRuView>
     {
+        public static string DisplayName { get; } = "OFD.ru (Петер-Сервис)";
+        public static OfdRuView ShowView() => new();
+
         private string Url(DateTime date)
         {
             var dayText = date.ToString("yyyy'-'MM'-'dd");
@@ -19,7 +22,7 @@ namespace RetailCorrector.Parsers.OfdRu
         {
             using var http = new HttpClient();
             var baseUrl = $"";
-            CountDays = (int)(EndDate - BeginDate).TotalDays;
+            CountDays = (int)(EndDate - BeginDate).TotalDays + 1;
             for (var day = BeginDate; day <= EndDate; day = day.AddDays(1))
             {
                 cancellationToken.ThrowIfCancellationRequested();

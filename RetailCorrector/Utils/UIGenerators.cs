@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace System.Windows
 {
@@ -30,30 +30,18 @@ namespace System.Windows
                 dtPicker.SetBinding(Controls.DatePicker.DisplayDateEndProperty, new Binding(maxPropName) { Mode = BindingMode.OneWay });
             return dtPicker;
         }
-
-        public static ProgressBar ProgressBar(
-            int min, int max, string propertyName,
-            [CallerArgumentExpression(nameof(min))] string minPropName = "",
-            [CallerArgumentExpression(nameof(max))] string maxPropName = "")
-        {
-            var pBar = new ProgressBar();
-            pBar.SetBinding(RangeBase.ValueProperty, new Binding(propertyName));
-            if (string.IsNullOrWhiteSpace(minPropName))
-                pBar.Minimum = min;
-            else
-                pBar.SetBinding(RangeBase.MinimumProperty, new Binding(minPropName) { Mode = BindingMode.OneWay });
-            if (string.IsNullOrWhiteSpace(maxPropName))
-                pBar.Maximum = max;
-            else
-                pBar.SetBinding(RangeBase.MaximumProperty, new Binding(maxPropName) { Mode = BindingMode.OneWay });
-            return pBar;
-        }
-
+        
         public static TextBox TextBox(string propertyName)
         {
             var tb = new TextBox();
             tb.SetBinding(Controls.TextBox.TextProperty, new Binding(propertyName));
             return tb;
         }
+
+        public static Button Button(string text, ICommand onClick) => new()
+        {
+            Content = text,
+            Command = onClick
+        };
     }
 }

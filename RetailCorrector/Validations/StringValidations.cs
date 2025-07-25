@@ -10,7 +10,7 @@
                 return "Введённое значение не является числовым кодом";
             var digits = new byte[text.Length];
             for (var i = 0; i < digits.Length; i++)
-                digits[i] = (byte)((result >> (digits.Length - i - 1)) % 10);
+                digits[i] = (byte)((result / (ulong)Math.Pow(10, (digits.Length - i - 1))) % 10);
             byte[] multiple = [3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8];
             switch (text.Length)
             {
