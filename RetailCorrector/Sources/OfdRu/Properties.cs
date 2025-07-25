@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using RetailCorrector.Validations;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace RetailCorrector.Sources.OfdRu
 {
@@ -33,7 +35,18 @@ namespace RetailCorrector.Sources.OfdRu
             get => _vatin;
             set
             {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    MessageBox.Show("Ввод ИНН организации обязателен", 
+                        "Введенный ИНН некорректен", 0, MessageBoxImage.Error);
+                    return;
+                }
                 if (_vatin == value) return;
+                if (value.ValidINN() is ValidationResult valid && !valid)
+                {
+                    MessageBox.Show(valid, "Введенный ИНН некорректен", 0, MessageBoxImage.Error);
+                    return;
+                }
                 _vatin = value;
                 OnPropertyChanged();
             }
@@ -43,7 +56,18 @@ namespace RetailCorrector.Sources.OfdRu
             get => _deviceId;
             set
             {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    MessageBox.Show("Ввод регистрационного номера ККТ обязателен",
+                        "Введенный регистрационный номер ККТ некорректен", 0, MessageBoxImage.Error);
+                    return;
+                }
                 if (_deviceId == value) return;
+                if (value.ValidKKTRegId() is ValidationResult valid && !valid)
+                {
+                    MessageBox.Show(valid, "Введенный регистрационный номер ККТ некорректен", 0, MessageBoxImage.Error);
+                    return;
+                }
                 _deviceId = value;
                 OnPropertyChanged();
             }
@@ -53,6 +77,12 @@ namespace RetailCorrector.Sources.OfdRu
             get => _token;
             set
             {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    MessageBox.Show("Ввод аутентификационного токена обязателен",
+                        "Введенный аутентификационный токен некорректен", 0, MessageBoxImage.Error);
+                    return;
+                }
                 if (_token == value) return;
                 _token = value;
                 OnPropertyChanged();
