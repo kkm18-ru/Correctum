@@ -5,6 +5,9 @@ namespace RetailCorrector.Sources.OfdRu
 {
     internal partial class OfdRuPresenter : INotifyPropertyChanged
     {
+        private static byte COUNT_TRIES => Configurations.OfdRu.CountTries;
+        private static int REQUEST_DELAY => Configurations.OfdRu.RequestDelay;
+
         public DateTime BeginDate
         {
             get => _begin;
