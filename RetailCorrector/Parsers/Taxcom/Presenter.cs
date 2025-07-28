@@ -16,6 +16,7 @@ namespace RetailCorrector.Parsers.Taxcom
             };
             await Init(http);
             await Auth(http);
+            var cash = (await GetDevices(http))[DeviceId];
         }
     }
 }

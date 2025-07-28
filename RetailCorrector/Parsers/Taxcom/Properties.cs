@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using RetailCorrector.Validations;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
@@ -38,9 +39,31 @@ namespace RetailCorrector.Parsers.Taxcom
                 OnPropertyChanged();
             }
         }
+        public string DeviceId
+        {
+            get => _devId;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    MessageBox.Show("Ввод регистрационного номера ККТ обязателен",
+                        "Введенный регистрационный номер ККТ некорректен", 0, MessageBoxImage.Error);
+                    return;
+                }
+                if (_devId == value) return;
+                if (value.ValidKKTRegId() is ValidationResult valid && !valid)
+                {
+                    MessageBox.Show(valid, "Введенный регистрационный номер ККТ некорректен", 0, MessageBoxImage.Error);
+                    return;
+                }
+                _devId = value;
+                OnPropertyChanged();
+            }
+        }
 
         private string _login = "";
         private string _passwd = "";
+        private string _devId = "";
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = "") =>

@@ -31,5 +31,24 @@ namespace RetailCorrector.Parsers.Taxcom
             cookies = cookies.Select(cookie => cookie.Split("; ")[0]);
             http.DefaultRequestHeaders.Add("Cookie", cookies);
         }
+
+        private async Task<Dictionary<string, int>> GetDevices(HttpClient http)
+        {
+            var dict = new Dictionary<string, int>();
+            var resp = await http.GetStringAsync("/api/cashdesk/kkt");
+            var json = JsonNode.Parse(resp)!["data"]?["collection"]?.AsArray();
+            foreach(var kass in json)
+            {
+                if (kass is null) continue;
+                var info = kass["cashdeskInfo"];
+                if (info is null) continue;
+                if (info["status"]!.GetValue<string>() != "0")
+                    continue;
+                var regId = info["registrationNumber"]!.GetValue<string>();
+                var id = info["cashdeskId"]!.GetValue<int>();
+                dict.Add(regId, id);
+            }
+            return dict;
+        }
     }
 }
