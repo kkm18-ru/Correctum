@@ -60,10 +60,32 @@ namespace RetailCorrector.Parsers.Taxcom
                 OnPropertyChanged();
             }
         }
+        public DateTime BeginDate
+        {
+            get => _begin;
+            set
+            {
+                if (_begin == value) return;
+                _begin = value;
+                OnPropertyChanged();
+            }
+        }
+        public DateTime EndDate
+        {
+            get => _end;
+            set
+            {
+                if (_end == value) return;
+                _end = value;
+                OnPropertyChanged();
+            }
+        }
 
         private string _login = "";
         private string _passwd = "";
         private string _devId = "";
+        private DateTime _begin = DateTime.Today;
+        private DateTime _end = DateTime.Today;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = "") =>

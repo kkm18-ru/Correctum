@@ -50,5 +50,18 @@ namespace RetailCorrector.Parsers.Taxcom
             }
             return dict;
         }
+
+        private async Task<(bool, JsonArray)> GetReceipts(HttpClient http, int devId, int pageId = 1)
+        {
+            var builder = new StringBuilder($"/api/cashdesk/documents/{devId}");
+            builder.Append($"?paging[count]=100");
+            builder.Append($"&paging[page]={pageId}");
+            builder.Append($"&filters[toDate]={BeginDate:yyyy'-'MM'-'dd}");
+            builder.Append($"&filters[fromDate]={EndDate:yyyy'-'MM'-'dd}");
+            builder.Append($"&filters[documentTypeID]=3");
+            var resp = await http.GetStringAsync(builder.ToString());
+            var json = JsonNode.Parse(resp)["data"];
+            return (json["paging"]["pages"].GetValue<int>() > pageId, json["collection"].AsArray());
+        }
     }
 }
