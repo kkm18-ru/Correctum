@@ -24,9 +24,7 @@ namespace RetailCorrector.Parsers.Taxcom
                 JsonArray arr;
                 (hasNextPage, arr) = await GetReceipts(http, cash, i);
                 foreach (var doc in ParseReceipts(arr))
-                {
-
-                }
+                    yield return await GetReceipt(http, doc);
             }
         }
     }

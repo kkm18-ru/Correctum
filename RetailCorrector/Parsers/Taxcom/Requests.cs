@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using RetailCorrector.Data;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -62,6 +63,23 @@ namespace RetailCorrector.Parsers.Taxcom
             var resp = await http.GetStringAsync(builder.ToString());
             var json = JsonNode.Parse(resp)["data"];
             return (json["paging"]["pages"].GetValue<int>() > pageId, json["collection"].AsArray());
+        }
+
+        private async Task<Guid> GetReceiptId(HttpClient http, (string, int) docInfo)
+        {
+            var uri = $"/api/cashdesk/documents/print?kktId={DeviceId}&fp={docInfo.Item1}&documentNumber={docInfo.Item2}";
+            var resp = await http.GetStringAsync(uri);
+            var json = JsonNode.Parse(resp);
+            return new Guid(json["data"]["receiptId"].GetValue<string>());
+        }
+
+        private async Task<Receipt> GetReceipt(HttpClient http, (string, int) docInfo)
+        {
+            var id = await GetReceiptId(http, docInfo);
+            var uri = $"/api/cashdesk/documents/getTaggedReceipt?receiptGuid={id:D}";
+            var resp = await http.GetStringAsync(uri);
+            var json = JsonNode.Parse(resp)["data"]["Document"]["Value"].AsArray();
+            return ParseReceipt(json);
         }
     }
 }
