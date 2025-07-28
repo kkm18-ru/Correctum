@@ -83,7 +83,7 @@ namespace RetailCorrector.Parsers.Taxcom
                         pos.Price = ulong.Parse(posTag["Value"].GetValue<string>().Replace(".", ""));
                         break;
                     case "1023":
-                        pos.Quantity = ulong.Parse(posTag["Value"].GetValue<string>().Replace(".", "")[..^3]);
+                        pos.Quantity = (ulong)(double.Parse(posTag["Value"].GetValue<string>()) * 1000);
                         break;
                     case "1043":
                         pos.Cost = ulong.Parse(posTag["Value"].GetValue<string>().Replace(".", ""));
