@@ -15,6 +15,7 @@ namespace RetailCorrector.Parsers.Taxcom
                 BaseAddress = new Uri("https://lk-ofd.taxcom.ru") 
             };
             await Init(http);
+            await Auth(http);
         }
     }
 }
