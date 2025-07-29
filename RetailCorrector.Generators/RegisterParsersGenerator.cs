@@ -31,13 +31,15 @@ namespace RetailCorrector.Generators
                                        public readonly static KeyValuePair<string, Func<Control>>[] Parsers = [
                                """);
             var hash = new HashSet<string>();
-            foreach(var symb in symbols)
+            var usings = new List<string>();
+            foreach (var symb in symbols)
             {
                 if (symb is not ITypeSymbol type) continue;
                 if (type.Interfaces.All(i => !i.ToDisplayString().StartsWith("RetailCorrector.Parsers.IParserPresenter"))) continue;
                 if (!hash.Contains(type.ToDisplayString()))
                 {
-                    builder.AppendLine($"            new({type.ToDisplayString()}.DisplayName, {type.ToDisplayString()}.ShowView),");
+                    usings.Add($"using {type.ContainingNamespace.ToDisplayString()};");
+                    builder.AppendLine($"            new({type.Name}.DisplayName, {type.Name}.ShowView),");
                     hash.Add(type.ToDisplayString());
                 }
             }
@@ -47,7 +49,7 @@ namespace RetailCorrector.Generators
                                }
                                """);
 
-            ctx.AddSource("Parsers.g.cs", builder.ToString());
+            ctx.AddSource("Parsers.g.cs", string.Join("\n", usings) + "\n" + builder.ToString());
         }
     }
 }
