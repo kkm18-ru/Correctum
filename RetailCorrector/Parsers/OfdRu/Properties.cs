@@ -94,7 +94,6 @@ namespace RetailCorrector.Parsers.OfdRu
             get => _days;
             set
             {
-                if (_days != 0) return;
                 if (value <= 0) return;
                 _days = value;
                 OnPropertyChanged();
