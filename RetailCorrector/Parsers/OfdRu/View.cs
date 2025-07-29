@@ -46,8 +46,8 @@ namespace RetailCorrector.Parsers.OfdRu
             #endregion
 
             #region Ввод
-            content.AddChild(UIGenerators.DatePicker(new DateTime(2020, 1, 1), Presenter.EndDate, nameof(Presenter.BeginDate)), 2, 2);
-            content.AddChild(UIGenerators.DatePicker(Presenter.BeginDate, DateTime.Today, nameof(Presenter.EndDate)), 2, 4);
+            content.AddChild(UIGenerators.DatePicker(nameof(Presenter.BeginDate),new DateTime(2020, 1, 1), nameof(Presenter.EndDate)), 2, 2);
+            content.AddChild(UIGenerators.DatePicker(nameof(Presenter.EndDate), nameof(Presenter.BeginDate), DateTime.Today), 2, 4);
             content.AddChild(UIGenerators.TextBox(nameof(Presenter.Token)), 2, 6);
             content.AddChild(UIGenerators.TextBox(nameof(Presenter.Vatin)), 2, 8);
             content.AddChild(UIGenerators.TextBox(nameof(Presenter.DeviceId)), 2, 10);
