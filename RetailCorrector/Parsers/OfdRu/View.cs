@@ -1,8 +1,6 @@
 ﻿using RetailCorrector.Extensions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 
 namespace RetailCorrector.Parsers.OfdRu
 {
@@ -35,7 +33,7 @@ namespace RetailCorrector.Parsers.OfdRu
             content.AddRow(GridUnitType.Auto);
             #endregion
 
-            content.AddChild(ProgressBar(), dx: 3);
+            content.AddChild(UIGenerators.ProgressBar(nameof(Presenter.CurrentDayNumber), nameof(Presenter.CountDays)), dx: 3);
 
             #region Текст
             content.AddChild(UIGenerators.Text("Начало сканирования: "), y: 2);
@@ -54,14 +52,6 @@ namespace RetailCorrector.Parsers.OfdRu
             #endregion
 
             Content = content;
-        }
-
-        private ProgressBar ProgressBar()
-        {
-            var pBar = new ProgressBar();
-            pBar.SetBinding(RangeBase.ValueProperty, nameof(Presenter.CurrentDayNumber));
-            pBar.SetBinding(RangeBase.MaximumProperty, new Binding(nameof(Presenter.CountDays)) { Mode = BindingMode.OneWay });
-            return pBar;
         }
     }
 }
