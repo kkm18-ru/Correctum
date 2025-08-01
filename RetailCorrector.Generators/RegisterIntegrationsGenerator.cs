@@ -114,11 +114,8 @@ namespace RetailCorrector.Generators
                 """
                 namespace RetailCorrector;
 
-                internal class RegisterIntegrationAttribute : Attribute
-                {
-                    private RegisterIntegrationAttribute() { }
-                    public RegisterIntegrationAttribute(string displayName) { }
-                }
+                [AttributeUsage(AttributeTargets.Class)]
+                internal class RegisterIntegrationAttribute(string displayName) : Attribute;
                 """);
     }
 }
