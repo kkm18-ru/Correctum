@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace RetailCorrector.Parsers.OfdRu
 {
-    internal class OfdRuView : UserControl, IParserView<OfdRuView, OfdRuPresenter>
+    internal class OfdRuView : ParserView<OfdRuView, OfdRuPresenter>
     {
         public OfdRuPresenter Presenter { get; } = new OfdRuPresenter();
 

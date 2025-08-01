@@ -6,11 +6,9 @@ using System.Windows;
 
 namespace RetailCorrector.Parsers.OfdRu
 {
-    internal partial class OfdRuPresenter : IParserPresenter<OfdRuPresenter, OfdRuView>
+    [RegisterIntegration("OFD.ru (Петер-Сервис)")]
+    internal partial class OfdRuPresenter : ParserPresenter<OfdRuPresenter, OfdRuView>
     {
-        public static string DisplayName { get; } = "OFD.ru (Петер-Сервис)";
-        public static OfdRuView ShowView() => new();
-
         private string Url(DateTime date)
         {
             var dayText = date.ToString("yyyy'-'MM'-'dd");
@@ -18,7 +16,7 @@ namespace RetailCorrector.Parsers.OfdRu
                 $"AuthToken={Token}&dateFrom={dayText}T00:00:00&dateTo={dayText}T23:59:59";
         }
 
-        public async IAsyncEnumerable<Receipt> Parse([EnumeratorCancellation] CancellationToken cancellationToken)
+        public override async IAsyncEnumerable<Receipt> Parse([EnumeratorCancellation] CancellationToken cancellationToken)
         {
             using var http = new HttpClient();
             var baseUrl = $"";
