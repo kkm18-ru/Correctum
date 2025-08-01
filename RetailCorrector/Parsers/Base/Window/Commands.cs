@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Utils;
+﻿using RetailCorrector.Data;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Parsers
 {
@@ -8,8 +9,8 @@ namespace RetailCorrector.Parsers
         {
             Instance!.CancellationSource = new();
             dynamic child = Instance.Child!;
-            var parser = (IParserPresenter)child.Presenter;
-            await foreach(var receipt in parser.Parse(Instance.CancellationSource.Token))
+            var action = (Func<CancellationToken, IAsyncEnumerable<Receipt>>)child.Presenter.Parse;
+            await foreach(var receipt in action(Instance.CancellationSource.Token))
                 Workspace.Instance.Receipts.Add(receipt);
             Instance.CancellationSource = null;
             ParserWindow.Instance!.Close();

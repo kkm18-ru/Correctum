@@ -4,12 +4,10 @@ using System.Text.Json.Nodes;
 
 namespace RetailCorrector.Parsers.Taxcom
 {
-    internal partial class TaxcomPresenter : IParserPresenter<TaxcomPresenter, TaxcomView>
+    [RegisterIntegration("Taxcom")]
+    internal partial class TaxcomPresenter : ParserPresenter<TaxcomPresenter, TaxcomView>
     {
-        public static string DisplayName { get; } = "Taxcom";
-        public static TaxcomView ShowView() => new();
-
-        public async IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken)
+        public override async IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken)
         {
             using var http = new HttpClient() 
             { 

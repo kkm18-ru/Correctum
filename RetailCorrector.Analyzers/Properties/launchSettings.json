@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RetailCorrector.Analyzers": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\RetailCorrector\\RetailCorrector.csproj"
+    }
+  }
+}
