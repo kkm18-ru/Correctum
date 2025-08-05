@@ -23,11 +23,14 @@ namespace RetailCorrector.Generators
         {
             var builder = new StringBuilder();
             var loadMethod = new StringBuilder();
+            var usings = new StringBuilder();
+            usings.AppendLine(
+                """
+                using Tomlyn.Model;
+                using System.IO;
+                using Tomlyn;
+                """);
             builder.AppendLine("""
-                               using Tomlyn.Model;
-                               using System.IO;
-                               using Tomlyn;
-
                                namespace RetailCorrector;
 
                                internal static class Configurations
@@ -45,13 +48,16 @@ namespace RetailCorrector.Generators
                 if (typeSymbol.Interfaces.All(i => i.ToDisplayString() ==
                     "RetailCorrector.IConfigurationSection")) continue;
                 var fullname = symb.ToDisplayString();
+                var lastIndex = fullname.LastIndexOf('.');
+                usings.AppendLine($"using {fullname.Substring(0,lastIndex)};");
                 var propName = typeSymbol.Name.Replace("Configuration", "");
                 loadMethod.AppendLine(
-                    $"        {propName} = {typeSymbol.ToDisplayString()}.Create(GetTable({typeSymbol.ToDisplayString()}.FileName));");
+                    $"        {propName} = {typeSymbol.Name}.Create(GetTable({typeSymbol.Name}.FileName));");
                 builder.AppendLine($"    public static {typeSymbol.Name} {propName} {{ get; }}");
                 AutoInterface(context, typeSymbol);
             }
             loadMethod.AppendLine("    }");
+            usings.AppendLine();
             builder.AppendLine($$"""
 
                                    private const string DIRECTORY_NAME = "Configurations";
@@ -64,7 +70,7 @@ namespace RetailCorrector.Generators
                                    }
                                }
                                """);
-            context.AddSource("Configurations.g.cs", builder.ToString());
+            context.AddSource("Configurations.g.cs", usings.ToString() + builder.ToString());
         }
 
         private void AutoInterface(SourceProductionContext context, ITypeSymbol symbol)
@@ -102,7 +108,7 @@ namespace RetailCorrector.Generators
                 """);
             context.AddSource($"{symbol.Name}.g.cs", builder.ToString());
         }
-
+        
         private void CreateInterface(IncrementalGeneratorPostInitializationContext ctx) =>
             ctx.AddSource("IConfigurationSection.g.cs",
                 """
@@ -118,7 +124,7 @@ namespace RetailCorrector.Generators
                     //TomlTable Save(table);
                 }
                 """);
-
+        
         private void CreateAttributes(IncrementalGeneratorPostInitializationContext ctx) =>
             ctx.AddSource("Attributes.g.cs",
                 """
@@ -127,6 +133,6 @@ namespace RetailCorrector.Generators
                 [AttributeUsage(AttributeTargets.Property)]
                 internal class RenameConfPropertyAttribute(string newName) : Attribute;
                 """);
-
+        
     }
 }
