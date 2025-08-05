@@ -2,6 +2,6 @@
 {
     internal static class DiagnosticIds
     {
-        public const string MissingDisplayNameIntegration = "RC100";
+        public const string MissingDisplayNameIntegration = "RC0001";
     }
 }

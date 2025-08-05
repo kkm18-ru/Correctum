@@ -38,7 +38,7 @@ namespace RetailCorrector.Analyzers.Integrations
 
             var semanticModel = context.SemanticModel;
             var classSymbol = semanticModel.GetDeclaredSymbol(classDecl);
-            if (classSymbol == null)
+            if (classSymbol == null || classSymbol.IsAbstract || classSymbol.IsStatic)
                 return;
 
             var baseType = classSymbol.BaseType;

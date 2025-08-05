@@ -29,7 +29,7 @@ namespace RetailCorrector.Generators
             var hash = new HashSet<string>();
             foreach (var symb in array)
             {
-                if (symb is not ITypeSymbol type) continue;
+                if (symb is not ITypeSymbol type || type.IsAbstract || type.IsStatic) continue;
                 if (!CheckBaseType(type, "Fiscal") && !CheckBaseType(type, "Parser"))
                     continue;
                 if (hash.Add(type.ToDisplayString()))
