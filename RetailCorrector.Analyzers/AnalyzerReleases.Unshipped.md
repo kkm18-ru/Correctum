@@ -5,4 +5,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-RC100 | Интеграция | Warning | MissingDisplayNameIntegration
+RC0001 | Интеграция | Warning | MissingDisplayNameIntegration
