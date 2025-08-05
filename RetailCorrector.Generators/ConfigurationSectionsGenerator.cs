@@ -52,7 +52,7 @@ namespace RetailCorrector.Generators
                 usings.AppendLine($"using {fullname.Substring(0,lastIndex)};");
                 var propName = typeSymbol.Name.Replace("Configuration", "");
                 loadMethod.AppendLine(
-                    $"        {propName} = {typeSymbol.Name}.Create(GetTable({typeSymbol.Name}.FileName));");
+                    $"        {propName} = {typeSymbol.Name}.Load(GetTable({typeSymbol.Name}.FileName));");
                 builder.AppendLine($"    public static {typeSymbol.Name} {propName} {{ get; }}");
                 AutoInterface(context, typeSymbol);
             }
