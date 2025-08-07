@@ -2,6 +2,9 @@
   <Configurations>
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/Cake-файлы/">
+    <File Path="publish.cake" />
+  </Folder>
   <Project Path="RetailCorrector.Analyzers/RetailCorrector.Analyzers.csproj" Id="58187c1a-a157-4403-ae4b-1b8b99071507" />
   <Project Path="RetailCorrector.Generators/RetailCorrector.Generators.csproj" />
   <Project Path="RetailCorrector/RetailCorrector.csproj">
