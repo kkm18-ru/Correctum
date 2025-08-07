@@ -1,33 +1,50 @@
-﻿///////////////////////////////////////////////////////////////////////////////
+﻿#addin nuget:?package=Cake.VersionReader&version=5.1.0
+
+///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 ///////////////////////////////////////////////////////////////////////////////
 
-var target = Argument("target", "Default");
+var target = Argument("target", "Publish");
 var configuration = Argument("configuration", "Release");
+var path = Argument("path", "TEMP/publish");
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
 ///////////////////////////////////////////////////////////////////////////////
 
-Setup(ctx =>
-{
-	// Executed BEFORE the first task.
-	Information("Running tasks...");
-});
-
 Teardown(ctx =>
 {
-	// Executed AFTER the last task.
-	Information("Finished running tasks.");
+	DeleteDirectory("TEMP", new DeleteDirectorySettings
+	{
+		Force = true, 
+		Recursive = true
+	});
 });
 
 ///////////////////////////////////////////////////////////////////////////////
 // TASKS
 ///////////////////////////////////////////////////////////////////////////////
 
-Task("Default")
+Task("Publish")
 .Does(() => {
-	Information("Hello Cake!");
+	DotNetPublish("RetailCorrector", new DotNetPublishSettings
+	{
+		Configuration = configuration,
+		OutputDirectory = path,
+		SelfContained = true,
+		Runtime = "win-x86"
+	});
+	string version = GetVersionNumber($"{path}/RetailCorrector.exe");
+	InnoSetup("RetailCorrector.iss", new InnoSetupSettings 
+	{
+		Defines = new Dictionary<string, string>
+		{
+			{ "AppVersion", version }
+		}
+	});
+	MoveFileToDirectory($"TEMP/RetailCorrector-{version}.exe", "\\\\192.168.2.89\\share_egais\\Distr\\RetailCorrector");
 });
+
+Task
 
 RunTarget(target);
