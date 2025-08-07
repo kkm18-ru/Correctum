@@ -8,6 +8,7 @@
 		<UseWPF>true</UseWPF>
 		<PlatformTarget>x86</PlatformTarget>
 		<Platforms>x86</Platforms>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
