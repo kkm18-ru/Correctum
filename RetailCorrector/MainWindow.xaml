@@ -17,7 +17,7 @@
                 <xcad:LayoutDocumentPaneGroup>
                     <xcad:LayoutDocumentPane>
                         <xcad:LayoutDocument ContentId="receipts" Title="Чеки" CanClose="False">
-                            <c:ReceiptGrid/>
+                            <c:ReceiptPanel/>
                         </xcad:LayoutDocument>
                         <xcad:LayoutDocument ContentId="positions" Title="Позиции" CanClose="False">
                             <c:PositionGrid/>

@@ -17,7 +17,7 @@ namespace RetailCorrector.Controls
             AddColumn("Кредит", "PostPay", 158);
             AddColumn("Иная оплата", "OtherPay", 158);
             AddColumn("Итог", "Total", 158);
-
+            /*
             Items.Add(new
             {
                 Date = "2025-12-30 10:50",
@@ -32,7 +32,7 @@ namespace RetailCorrector.Controls
                 Иная оплата: 1 000 000 000.00 руб.
                 """,
                 Total = "1 000 000 000.00 руб.",
-            });
+            });*/
         }
     }
 }
