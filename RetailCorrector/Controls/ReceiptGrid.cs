@@ -1,9 +1,13 @@
-﻿namespace RetailCorrector.Controls
+﻿using System.Windows.Controls;
+
+namespace RetailCorrector.Controls
 {
     class ReceiptGrid : BaseDataGrid
     {
         public ReceiptGrid() : base()
         {
+            VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+
             AddColumn("Дата", "Date", 121);
             AddColumn("ФПД", "Sign", 93);
             AddColumn("Операция", "Type", 114);
