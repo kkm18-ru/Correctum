@@ -83,7 +83,7 @@ namespace RetailCorrector.Data
             MeasureUnit.dm2     => " кв. дм",
             MeasureUnit.m2      => " кв. м",
             MeasureUnit.mL      => " мл",
-            MeasureUnit.L       => " д",
+            MeasureUnit.L       => " л",
             MeasureUnit.m3      => " куб. м",
             MeasureUnit.kW_h    => " кВт * ч",
             MeasureUnit.GCal    => " Гкал",
