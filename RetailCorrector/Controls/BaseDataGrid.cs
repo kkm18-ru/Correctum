@@ -12,7 +12,8 @@ namespace RetailCorrector.Controls
             IsReadOnly = true;
             CanUserDeleteRows = CanUserReorderColumns =
                 CanUserResizeColumns = CanUserResizeRows =
-                CanUserSortColumns = CanUserAddRows = false;
+                CanUserSortColumns = CanUserAddRows = 
+                AutoGenerateColumns = false;            
             HeadersVisibility = DataGridHeadersVisibility.Column;
             FontFamily = (FontFamily)Application.Current.Resources["jbmono"];
         }
