@@ -161,6 +161,15 @@ namespace RetailCorrector.Controls
             };
             cb.SetBinding(ComboBox.SelectedValueProperty, nameof(MaxCountReceipts));
             toolPanel.Children.Add(cb);
+
+            var btnParser = new Button
+            {
+                Content = "  Парсер  ",
+                Height = 22,
+                Margin = new(5, 5, 5, 5),
+                Command = new RelayCommand(_ => Parser.Show())
+            };
+            toolPanel.Children.Add(btnParser);
         }
 
         private void Refresh(object? _ = null)
