@@ -186,7 +186,7 @@ namespace RetailCorrector.Controls
                 var item = (DisplayReceipt)e.AddedCells[i * columnCount].Item;
                 var row = grid.Items.IndexOf(item);
                 foreach (var p in @ref[row + _maxCount * (_index - 1)].Items)
-                    PositionGrid.Instance.Items.Add(new DisplayPostion(p, item));
+                    PositionGrid.Instance.Collection.Add(new DisplayPostion(p, item));
             }
 
             var removedCount = e.RemovedCells.Count / columnCount;
@@ -194,17 +194,15 @@ namespace RetailCorrector.Controls
             {
                 var item = (DisplayReceipt)e.RemovedCells[i * columnCount].Item;
                 var row = grid.Items.IndexOf(item);
-                var ps = PositionGrid.Instance.Items.Cast<DisplayPostion>().Where(p => p.Receipt == item.ToString()).ToArray();
-                for (var j = 0; j < ps.Length; j++) PositionGrid.Instance.Items.Remove(ps[j]);
+                var ps = PositionGrid.Instance.Collection.Where(p => p.Receipt == item.ToString()).ToArray();
+                for (var j = 0; j < ps.Length; j++)
+                    PositionGrid.Instance.Collection.Remove(ps[j]);
             }
-
-            PositionGrid.Instance.Items.Refresh();
         }
 
         private void Refresh(object? _ = null)
         {
-            PositionGrid.Instance.Items.Clear();
-            PositionGrid.Instance.Items.Refresh();
+            PositionGrid.Instance.Collection.Clear();
             grid.Items.Clear();
             if (CachedCountPages == 0) return;
             var page = Workspace.Instance.Receipts.Chunk(MaxCountReceipts).ToArray()[_index - 1];
