@@ -1,137 +1,182 @@
-﻿using RetailCorrector.Enums;
-using System.Collections.Specialized;
+﻿using RetailCorrector.Data;
+using RetailCorrector.Utils;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Media;
+using Xceed.Wpf.Toolkit;
 
 namespace RetailCorrector.Controls
 {
     internal class ReceiptPanel : DockPanel, INotifyPropertyChanged
     {
-        private readonly ScrollBar scroll;
-        private readonly ReceiptGrid grid;
+        private int _maxCount = 200;
+        public int MaxCountReceipts
+        {
+            get => _maxCount;
+            set
+            {
+                if (value == _maxCount) return;
+                _maxCount = value;
+                OnPropertyChanged();
+                UpdateReceiptList();
+            }
+        }
 
-        private int _index;
-        public int BeginIndex
+        public int _index = 1;
+        public int IndexPage
         {
             get => _index;
             set
             {
-                if (_index == value) return;
-                var diff = value - _index;
-                for (var i = Math.Abs(diff); i > 0; i--)
-                {
-                    if (_currMaxCount <= grid.Items.Count)
-                    {
-                        var index = diff > 0 ? 0 : _currMaxCount - diff;
-                        grid.Items.RemoveAt(index);
-                    }
-                    var item = Workspace.Instance.Receipts[value - i];
-                    var display = new
-                    {
-                        Date = $"{item.Created:yyyy'-'MM'-'dd' 'HH':'mm}",
-                        Sign = $"{item.DocSign}",
-                        Type = item.Type switch
-                        {
-                            Operation.Income => "Приход",
-                            Operation.Outcome => "Расход",
-                            Operation.RefundIncome => "Возврат прихода",
-                            Operation.RefundOutcome => "Возврат расхода"
-                        },
-                        Cash = $"{(item.Payment.Cash * 0.01):C2}",
-                        eCash = $"{(item.Payment.ECash * 0.01):C2}",
-                        PrePay = $"{(item.Payment.Pre * 0.01):C2}",
-                        PostPay = $"{(item.Payment.Post * 0.01):C2}",
-                        OtherPay = $"{(item.Payment.Provision * 0.01):C2}",
-                        Total = $"{(item.Payment.TotalSum * 0.01):C2}",
-                    };
-                    if (diff > 0) grid.Items.Add(display);
-                    else grid.Items.Insert(0, display);
-                }
+                if (value == _index || value < 1 || value > CachedCountPages) return;
                 _index = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsEnabledPrevButtons));
+                OnPropertyChanged(nameof(IsEnabledNextButtons));
+                Refresh();
             }
         }
 
-        public int MaxIndex
+        private int _cacheCountPages = 0;
+        public int CachedCountPages
         {
-            get
+            get => _cacheCountPages;
+            set
             {
-                var count = Workspace.Instance.Receipts.Count;
-                var res = count - _currMaxCount;
-                if (res >= 0) return res;
-                return 0;
+                if (_cacheCountPages == value) return;
+                _cacheCountPages = value;
+                OnPropertyChanged();
+                if (IndexPage > value) IndexPage = value;
+                else OnPropertyChanged(nameof(IsEnabledNextButtons));
             }
         }
 
-        private int _currMaxCount = 0;
+        public bool IsEnabledPrevButtons => IndexPage > 1;
+        public bool IsEnabledNextButtons => IndexPage < CachedCountPages;
 
-        public ReceiptPanel()
-        {
-            DataContext = this;
+        private ReceiptGrid grid;
 
-            scroll = new ScrollBar
-            {
-                ViewportSize = 1,
-                SmallChange = 1
-            };
-            grid = new ReceiptGrid();
-
-            scroll.SetBinding(ScrollBar.MaximumProperty, new Binding(nameof(MaxIndex)) { Mode = BindingMode.OneWay});
-            scroll.SetBinding(ScrollBar.ValueProperty, new Binding(nameof(BeginIndex)));
-
-            grid.SizeChanged += Receipts_SizeChanged;
-            Workspace.Instance.Receipts.CollectionChanged += Receipts_CollectionChanged;
-
-            DockPanel.SetDock(scroll, Dock.Right);
-            Children.Add(scroll);
-            Children.Add(grid);
-        }
-
-        private void Receipts_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged(nameof(MaxIndex));
-            if(e.Action == NotifyCollectionChangedAction.Add)
-            {
-                if (grid.Items.Count < _currMaxCount)
-                {
-                    for(var i = 0; i < Workspace.Instance.Receipts.Count; i++)
-                    {
-                        var item = Workspace.Instance.Receipts[i];
-                        var display = new
-                        {
-                            Date = $"{item.Created:yyyy'-'MM'-'dd' 'HH':'mm}",
-                            Sign = $"{item.DocSign}",
-                            Type = item.Type switch
-                            {
-                                Operation.Income => "Приход",
-                                Operation.Outcome => "Расход",
-                                Operation.RefundIncome => "Возврат прихода",
-                                Operation.RefundOutcome => "Возврат расхода"
-                            },
-                            Cash = $"{(item.Payment.Cash * 0.01):C2}",
-                            eCash = $"{(item.Payment.ECash * 0.01):C2}",
-                            PrePay = $"{(item.Payment.Pre * 0.01):C2}",
-                            PostPay = $"{(item.Payment.Post * 0.01):C2}",
-                            OtherPay = $"{(item.Payment.Provision * 0.01):C2}",
-                            Total = $"{(item.Payment.TotalSum * 0.01):C2}",
-                        };
-                        grid.Items.Add(display);
-                    }
-                }
-            }
-        }
+        private static ReceiptPanel instance;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string property = "") =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new(property));
 
-        private void Receipts_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        public ReceiptPanel()
         {
-            _currMaxCount = (int)Math.Floor((e.NewSize.Height - (1278 > e.NewSize.Width ? 43 : 26)) / 19);
-            OnPropertyChanged(nameof(MaxIndex));
+            DataContext = instance = this;
+
+            var toolPanel = new WrapPanel();
+            DockPanel.SetDock(toolPanel, Dock.Top);
+            Children.Add(toolPanel);
+
+            grid = new ReceiptGrid();
+            Children.Add(grid);
+
+            var btnRefresh = new Button
+            {
+                Content = "🗘",
+                RenderTransform = new RotateTransform(90, 11, 11),
+                Height = 22,
+                Width = 22,
+                Margin = new(5),
+                Command = new RelayCommand(instance.Refresh)
+            };
+            toolPanel.Children.Add(btnRefresh);
+
+            var btnToBeginning = new Button
+            {
+                Content = "<<",
+                Height = 22,
+                Width = 22,
+                Margin = new(5),
+                Command = new RelayCommand(_ => instance.IndexPage = 1)
+            };
+            btnToBeginning.SetBinding(Button.IsEnabledProperty, new Binding(nameof(IsEnabledPrevButtons)) { Mode = BindingMode.OneWay });
+            toolPanel.Children.Add(btnToBeginning);
+
+            var btnToPrev = new Button
+            {
+                Content = "<",
+                Height = 22,
+                Width = 22,
+                Margin = new(0,5,5,5),
+                Command = new RelayCommand(_ => instance.IndexPage--)
+            };
+            btnToPrev.SetBinding(Button.IsEnabledProperty, new Binding(nameof(IsEnabledPrevButtons)) { Mode = BindingMode.OneWay });
+            toolPanel.Children.Add(btnToPrev);
+
+            var ib = new IntegerUpDown
+            {
+                Height = 22,
+                Width = 55,
+                Margin = new(0, 5, 5, 5),
+                ShowButtonSpinner = false
+            };
+            ib.SetBinding(IntegerUpDown.ValueProperty, nameof(IndexPage));
+            toolPanel.Children.Add(ib);
+
+            var btnToNext = new Button
+            {
+                Content = ">",
+                Height = 22,
+                Width = 22,
+                Margin = new(0, 5, 5, 5),
+                Command = new RelayCommand(_ => instance.IndexPage++)
+            };
+            btnToNext.SetBinding(Button.IsEnabledProperty, new Binding(nameof(IsEnabledNextButtons)) { Mode = BindingMode.OneWay });
+            toolPanel.Children.Add(btnToNext);
+
+            var btnToEnd = new Button
+            {
+                Content = ">>",
+                Height = 22,
+                Width = 22,
+                Margin = new(0, 5, 5, 5),
+                Command = new RelayCommand(_ => instance.IndexPage = CachedCountPages)
+            };
+            btnToEnd.SetBinding(Button.IsEnabledProperty, new Binding(nameof(IsEnabledNextButtons)) { Mode = BindingMode.OneWay });
+            toolPanel.Children.Add(btnToEnd);
+
+            var cb = new ComboBox
+            {
+                Height = 22,
+                Width = 88,
+                Margin = new(5),
+                ItemsSource = (KeyValuePair<int, string>[])
+                [
+                    new(50, "50 чеков"),
+                    new(100, "100 чеков"),
+                    new(200, "200 чеков"),
+                    new(500, "500 чеков"),
+                    new(1000, "1000 чеков"),
+                    new(2500, "2500 чеков"),
+                    new(5000, "5000 чеков"),
+                    new(10000, "10000 чеков"),
+                ],
+                DisplayMemberPath = "Value",
+                SelectedValuePath = "Key"
+            };
+            cb.SetBinding(ComboBox.SelectedValueProperty, nameof(MaxCountReceipts));
+            toolPanel.Children.Add(cb);
+        }
+
+        private void Refresh(object? _ = null)
+        {
+            grid.Items.Clear();
+            if (CachedCountPages == 0) return;
+            var page = Workspace.Instance.Receipts.Chunk(MaxCountReceipts).ToArray()[_index - 1];
+            foreach (var item in page)
+                grid.Items.Add(new DisplayReceipt(item));
+            grid.Items.Refresh();
+        }
+
+        public static void UpdateReceiptList()
+        {
+            instance.CachedCountPages = Workspace.Instance.Receipts.Chunk(instance.MaxCountReceipts).Count();
+            instance.Refresh();
         }
     }
 }
