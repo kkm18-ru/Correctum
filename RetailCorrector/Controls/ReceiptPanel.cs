@@ -203,6 +203,8 @@ namespace RetailCorrector.Controls
 
         private void Refresh(object? _ = null)
         {
+            PositionGrid.Instance.Items.Clear();
+            PositionGrid.Instance.Items.Refresh();
             grid.Items.Clear();
             if (CachedCountPages == 0) return;
             var page = Workspace.Instance.Receipts.Chunk(MaxCountReceipts).ToArray()[_index - 1];
