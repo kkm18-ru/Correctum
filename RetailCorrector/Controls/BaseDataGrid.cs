@@ -10,10 +10,10 @@ namespace RetailCorrector.Controls
         protected BaseDataGrid()
         {
             IsReadOnly = true;
-            /*CanUserDeleteRows = CanUserReorderColumns =
+            CanUserDeleteRows = CanUserReorderColumns =
                 CanUserResizeColumns = CanUserResizeRows =
                 CanUserSortColumns = CanUserAddRows = false;
-            */HeadersVisibility = DataGridHeadersVisibility.Column;
+            HeadersVisibility = DataGridHeadersVisibility.Column;
             FontFamily = (FontFamily)Application.Current.Resources["jbmono"];
         }
 
