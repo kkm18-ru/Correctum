@@ -1,8 +1,5 @@
-﻿using System.Diagnostics;
-
-namespace RetailCorrector.Data
+﻿namespace RetailCorrector.Data
 {
-    [DebuggerDisplay("{Date} // {Sign}")]
     internal readonly struct DisplayReceipt(Receipt origin)
     {
         public string Date { get; } = $"{origin.Created:yyyy'-'MM'-'dd' 'HH':'mm}";
@@ -21,5 +18,7 @@ namespace RetailCorrector.Data
         public string PostPay { get; } = $"{(origin.Payment.Post * 0.01):C2}";
         public string OtherPay { get; } = $"{(origin.Payment.Provision * 0.01):C2}";
         public string Total { get; } = $"{(origin.Payment.TotalSum * 0.01):C2}";
+
+        public override string ToString() => $"{Sign} {Date}";
     }
 }

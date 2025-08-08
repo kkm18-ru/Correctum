@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using RetailCorrector.Parsers;
 using RetailCorrector.Utils;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -74,6 +75,8 @@ namespace RetailCorrector.Controls
 
             grid = new ReceiptGrid();
             Children.Add(grid);
+
+            grid.SelectedCellsChanged += Grid_SelectedCellsChanged;
 
             var btnRefresh = new Button
             {
@@ -170,6 +173,32 @@ namespace RetailCorrector.Controls
                 Command = new RelayCommand(_ => Parser.Show())
             };
             toolPanel.Children.Add(btnParser);
+        }
+
+        private void Grid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            var @ref = Workspace.Instance.Receipts;
+            var columnCount = ((DataGrid)sender).Columns.Count;
+
+            var addedCount = e.AddedCells.Count / columnCount;
+            for(var i = 0; i < addedCount; i++)
+            {
+                var item = (DisplayReceipt)e.AddedCells[i * columnCount].Item;
+                var row = grid.Items.IndexOf(item);
+                foreach (var p in @ref[row + _maxCount * (_index - 1)].Items)
+                    PositionGrid.Instance.Items.Add(new DisplayPostion(p, item));
+            }
+
+            var removedCount = e.RemovedCells.Count / columnCount;
+            for (var i = 0; i < removedCount; i++)
+            {
+                var item = (DisplayReceipt)e.RemovedCells[i * columnCount].Item;
+                var row = grid.Items.IndexOf(item);
+                var ps = PositionGrid.Instance.Items.Cast<DisplayPostion>().Where(p => p.Receipt == item.ToString()).ToArray();
+                for (var j = 0; j < ps.Length; j++) PositionGrid.Instance.Items.Remove(ps[j]);
+            }
+
+            PositionGrid.Instance.Items.Refresh();
         }
 
         private void Refresh(object? _ = null)

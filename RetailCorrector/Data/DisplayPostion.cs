@@ -4,8 +4,9 @@ using System.Diagnostics;
 namespace RetailCorrector.Data
 {
     [DebuggerDisplay("{Price}  {Name}")]
-    internal readonly struct DisplayPostion(Position origin)
+    internal readonly struct DisplayPostion(Position origin, DisplayReceipt receipt)
     {
+        public string Receipt { get; } = receipt.ToString();
         public string Name { get; } = origin.Name;
         public string Type { get; } = origin.Type switch
         {
