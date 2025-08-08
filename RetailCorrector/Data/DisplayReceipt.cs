@@ -19,6 +19,6 @@
         public string OtherPay { get; } = $"{(origin.Payment.Provision * 0.01):C2}";
         public string Total { get; } = $"{(origin.Payment.TotalSum * 0.01):C2}";
 
-        public override string ToString() => $"{Sign} {Date}";
+        public override string ToString() => $"Дата: {Date}; ФПД: {Sign}";
     }
 }
