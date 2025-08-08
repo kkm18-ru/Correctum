@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Utils;
+﻿using RetailCorrector.Controls;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Parsers
 {
@@ -12,6 +13,7 @@ namespace RetailCorrector.Parsers
                 Workspace.Instance.Receipts.Add(receipt);
             Instance.CancellationSource = null;
             ParserWindow.Instance!.Close();
+            ReceiptPanel.UpdateReceiptList();
         });
 
         public RelayCommand CancelCommand = new(_ =>
