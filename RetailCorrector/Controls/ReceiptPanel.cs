@@ -175,7 +175,7 @@ namespace RetailCorrector.Controls
             };
             toolPanel.Children.Add(btnParser);
 
-            var btnActions = new ActionMenu
+            var btnActions = new ActionMenuButton
             {
                 Height = 22,
                 Margin = new(0, 5, 5, 5),
