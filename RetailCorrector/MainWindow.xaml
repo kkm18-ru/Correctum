@@ -4,11 +4,6 @@
         xmlns:c="clr-namespace:RetailCorrector.Controls"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         Title="MainWindow" Height="500" Width="1000">
-    <Window.Resources>
-        <Style TargetType="c:ActionMenu">
-            
-        </Style>
-    </Window.Resources>
     <xcad:DockingManager AllowMixedOrientation="True">
         <xcad:DockingManager.DocumentHeaderTemplate>
             <DataTemplate>
