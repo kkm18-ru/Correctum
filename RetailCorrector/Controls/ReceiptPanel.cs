@@ -4,6 +4,7 @@ using RetailCorrector.Utils;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
 using System.Windows.Media;
 using Xceed.Wpf.Toolkit;
@@ -169,10 +170,17 @@ namespace RetailCorrector.Controls
             {
                 Content = "  Парсер  ",
                 Height = 22,
-                Margin = new(5, 5, 5, 5),
+                Margin = new(5),
                 Command = new RelayCommand(_ => Parser.Show())
             };
             toolPanel.Children.Add(btnParser);
+
+            var btnActions = new ActionMenu
+            {
+                Height = 22,
+                Margin = new(0, 5, 5, 5),
+            };
+            toolPanel.Children.Add(btnActions);
         }
 
         private void Grid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
