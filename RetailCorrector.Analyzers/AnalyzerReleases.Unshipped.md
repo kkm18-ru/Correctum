@@ -6,3 +6,4 @@
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 RC0001 | Интеграция | Warning | MissingDisplayNameIntegration
+RC0002 | Действие | Warning | MissingDisplayNameAction
