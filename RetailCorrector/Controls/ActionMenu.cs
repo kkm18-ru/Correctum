@@ -2,7 +2,7 @@
 
 namespace RetailCorrector.Controls
 {
-    internal class ActionMenuButton : Button
+    internal partial class ActionMenuButton : Button
     {
         public ActionMenuButton()
         {
@@ -13,14 +13,6 @@ namespace RetailCorrector.Controls
         {
             new ActionMenu().IsOpen = true;
             base.OnClick();
-        }
-    }
-
-    file class ActionMenu : ContextMenu
-    {
-        public ActionMenu()
-        {
-
         }
     }
 }
