@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -52,10 +53,12 @@ namespace RetailCorrector.Generators
                             {
                 """);
             debug.AppendLine("#if DEBUG");
+            var hash = new HashSet<string>();
             foreach (var symb in arr)
             {
                 if (symb is not ITypeSymbol type) continue;
                 if (!type.BaseType?.ToDisplayString().StartsWith("RetailCorrector.Actions.ActionPresenter") ?? true) continue;
+                if (!hash.Add(type.ToDisplayString())) continue;
                 var attr = type.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == "RetailCorrector.RegisterActionAttribute");
                 if(attr is null)
                     debug.AppendLine(string.Format(TEMPLATE, type.Name.Replace("Presenter", ""), type.ToDisplayString()));
