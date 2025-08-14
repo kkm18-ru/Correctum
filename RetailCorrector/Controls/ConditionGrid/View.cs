@@ -61,12 +61,7 @@ namespace RetailCorrector.Controls
                 StrokeThickness = 1,
                 Data = Geometry.Parse("m0 0l15 0l0 5l-15 0l0-5")
             };
-            var btn = new Button
-            {
-                Background = Brushes.White,
-                BorderBrush = Brushes.White,
-                Content = path
-            };
+            var btn = new Button { Content = path };
             btn.Click += (_, _) =>
             {
                 Conditions.RemoveAt(ConditionIndex);
@@ -77,6 +72,39 @@ namespace RetailCorrector.Controls
             btn.SetBinding(Button.IsEnabledProperty, new Binding(nameof(IsEnabledRemove)) { Mode = BindingMode.OneWay });
             path.SetBinding(Path.FillProperty, new Binding(nameof(ForegroundRemove)) { Mode = BindingMode.OneWay });
             this.AddChild(btn, 1);
+
+            #region Сгенерировано ChatGPT5
+            btn.Template = new(typeof(Button))
+            {
+                VisualTree = new(typeof(Border))
+                {
+                    Name = "border"
+                }
+            };
+            btn.Template.VisualTree.SetValue(Border.BorderBrushProperty, Brushes.White);
+
+            var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+            contentPresenterFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            contentPresenterFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+
+            btn.Template.VisualTree.AppendChild(contentPresenterFactory);
+
+            var trigger = new Trigger
+            {
+                Property = UIElement.IsEnabledProperty,
+                Value = false
+            };
+            trigger.Setters.Add(new Setter(Border.BackgroundProperty, Brushes.White, "border"));
+            btn.Template.Triggers.Add(trigger);
+
+            trigger = new Trigger
+            {
+                Property = UIElement.IsEnabledProperty,
+                Value = true
+            };
+            trigger.Setters.Add(new Setter(Border.BackgroundProperty, Brushes.White, "border"));
+            btn.Template.Triggers.Add(trigger);
+            #endregion
         }
 
         private void AddDataGrid()
