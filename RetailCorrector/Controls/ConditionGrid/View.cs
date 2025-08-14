@@ -74,36 +74,40 @@ namespace RetailCorrector.Controls
             this.AddChild(btn, 1);
 
             #region Сгенерировано ChatGPT5
-            btn.Template = new(typeof(Button))
-            {
-                VisualTree = new(typeof(Border))
-                {
-                    Name = "border"
-                }
-            };
-            btn.Template.VisualTree.SetValue(Border.BorderBrushProperty, Brushes.White);
+            // Создаём шаблон кнопки
+            var template = new ControlTemplate(typeof(Button));
 
+            // Корневой элемент шаблона — Border
+            var borderFactory = new FrameworkElementFactory(typeof(Border)) { Name = "border" };
+            borderFactory.SetValue(Border.BorderBrushProperty, Brushes.White);
+
+            // Внутри Border — ContentPresenter (для текста/контента кнопки)
             var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
             contentPresenterFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
             contentPresenterFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
 
-            btn.Template.VisualTree.AppendChild(contentPresenterFactory);
+            borderFactory.AppendChild(contentPresenterFactory);
+            template.VisualTree = borderFactory;
 
+            // Триггер для состояния IsEnabled = false
             var trigger = new Trigger
             {
                 Property = UIElement.IsEnabledProperty,
                 Value = false
             };
             trigger.Setters.Add(new Setter(Border.BackgroundProperty, Brushes.White, "border"));
-            btn.Template.Triggers.Add(trigger);
+            template.Triggers.Add(trigger);
 
+            // Триггер для активного состояния
             trigger = new Trigger
             {
                 Property = UIElement.IsEnabledProperty,
                 Value = true
             };
             trigger.Setters.Add(new Setter(Border.BackgroundProperty, Brushes.White, "border"));
-            btn.Template.Triggers.Add(trigger);
+            template.Triggers.Add(trigger);
+
+            btn.Template = template;
             #endregion
         }
 
