@@ -93,7 +93,9 @@ namespace RetailCorrector.Controls
                 CanUserResizeRows = false,
                 AutoGenerateColumns = false,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Hidden,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden,
+                SelectionMode = DataGridSelectionMode.Single,
+                SelectionUnit = DataGridSelectionUnit.FullRow
             };
             data.SetBinding(DataGrid.SelectedIndexProperty, nameof(ConditionIndex));
             data.Columns.Add(new DataGridTextColumn { Binding = new Binding("Number") });
