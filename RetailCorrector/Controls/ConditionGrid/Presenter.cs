@@ -31,7 +31,7 @@ namespace RetailCorrector.Controls
         private void OnPropertyChanged([CallerMemberName] string property = "") =>
             PropertyChanged?.Invoke(this, new(property));
 
-        public int Do(Action<Receipt> action, bool invert)
+        public int Do(Action<Receipt> action)
         {
             if (Conditions.Any(c => c.OperationId == -1 || c.Value == ""))
             {
@@ -41,14 +41,14 @@ namespace RetailCorrector.Controls
             var count = 0;
             foreach (var item in Workspace.Instance.Receipts)
             {
-                if (Check(item) ^ invert) continue;
+                if (!Check(item)) continue;
                 action.Invoke(item);
                 count++;
             }
             return count;
         }
         
-        public int DoByIndex(Action<int> action, bool invert)
+        public int DoByIndex(Action<int> action)
         {
             if (Conditions.Any(c => c.OperationId == -1 || c.Value == ""))
             {
@@ -57,10 +57,10 @@ namespace RetailCorrector.Controls
             }
             var count = 0;
             var @ref = Workspace.Instance.Receipts;
-            for (var i = @ref.Count - 1; i <= 0; i--)
+            for (var i = @ref.Count - 1; i >= 0; i--)
             {
                 var item = @ref[i];
-                if (Check(item) ^ invert) continue;
+                if (!Check(item)) continue;
                 action.Invoke(i);
                 count++;
             }
