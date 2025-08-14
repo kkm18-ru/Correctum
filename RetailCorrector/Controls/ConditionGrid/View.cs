@@ -112,6 +112,7 @@ namespace RetailCorrector.Controls
                 SelectedValuePath = "Key",
                 DisplayMemberPath = "Value",
             });
+            data.Columns.Add(new DataGridComboBoxColumn { SelectedValueBinding = new Binding("PartId") });
             data.Columns.Add(new DataGridComboBoxColumn { SelectedValueBinding = new Binding("OperationId") });
             data.Columns.Add(new DataGridTemplateColumn { Width = new(1, DataGridLengthUnitType.Star) });
             this.AddChild(data, y: 2, dx: 3);
