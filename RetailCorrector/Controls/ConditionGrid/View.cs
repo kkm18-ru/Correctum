@@ -18,7 +18,6 @@ namespace RetailCorrector.Controls
 
             AddPlusButton();
             AddMinusButton();
-            AddOrderText();
             AddDataGrid();
         }
 
@@ -33,7 +32,6 @@ namespace RetailCorrector.Controls
         {
             this.AddRow(GridUnitType.Pixel, 22);
             this.AddRow(GridUnitType.Pixel, 5);
-            this.AddRow(GridUnitType.Pixel, 22);
             this.AddRow(GridUnitType.Star);
         }
 
@@ -81,13 +79,6 @@ namespace RetailCorrector.Controls
             this.AddChild(btn, 1);
         }
 
-        private void AddOrderText()
-        {
-            var tb = new TextBox();
-            tb.SetBinding(TextBox.TextProperty, nameof(OrderConditions));
-            this.AddChild(tb, y: 2, dx: 3);
-        }
-
         private void AddDataGrid()
         {
             var data = new DataGrid
@@ -114,7 +105,7 @@ namespace RetailCorrector.Controls
             });
             data.Columns.Add(new DataGridComboBoxColumn { SelectedValueBinding = new Binding("OperationId") });
             data.Columns.Add(new DataGridTemplateColumn { Width = new(1, DataGridLengthUnitType.Star) });
-            this.AddChild(data, y: 3, dx: 3);
+            this.AddChild(data, y: 2, dx: 3);
         }
     }
 }

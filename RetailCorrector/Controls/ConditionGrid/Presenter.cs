@@ -26,18 +26,6 @@ namespace RetailCorrector.Controls
         public bool IsEnabledRemove => ConditionIndex != -1;
         public Brush ForegroundRemove => IsEnabledRemove ? Brushes.Red : Brushes.LightGray;
 
-        public string OrderConditions
-        {
-            get => _order;
-            set
-            {
-                if (_order == value) return;
-                _order = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _order = "";
-
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string property = "") =>
             PropertyChanged?.Invoke(this, new(property));
