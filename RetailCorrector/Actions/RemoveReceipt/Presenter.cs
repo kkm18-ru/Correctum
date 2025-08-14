@@ -17,16 +17,7 @@ namespace RetailCorrector.Actions.RemoveReceipt
 
         public override void Start()
         {
-            var count = 0;
-            var @ref = Workspace.Instance.Receipts;
-            for(var i = @ref.Count-1; i <= 0; i--)
-            {
-                var receipt = @ref[i];
-                var check = Condition.Check(receipt);
-                if (_isBlacklist ^ check) continue;
-                @ref.RemoveAt(i);
-                count++;
-            }
+            var count = Condition.DoByIndex(i => Workspace.Instance.Receipts.RemoveAt(i), _isBlacklist);
             MessageBox.Show($"{LocaleHelper.ConjugateWord(count, "Был удален", "Было удалено")} {count} {LocaleHelper.ConjugateWord(count, "чек", "чека", "чеков")}");
         }
     }

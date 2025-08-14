@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Media;
 
 namespace RetailCorrector.Controls
@@ -30,8 +31,81 @@ namespace RetailCorrector.Controls
         private void OnPropertyChanged([CallerMemberName] string property = "") =>
             PropertyChanged?.Invoke(this, new(property));
 
-        public bool Check(Receipt item)
+        public int Do(Action<Receipt> action, bool invert)
         {
+            if (Conditions.Any(c => c.OperationId == -1 || c.Value == ""))
+            {
+                MessageBox.Show("Найдено некорректное условие!");
+                return -1;
+            }
+            var count = 0;
+            foreach (var item in Workspace.Instance.Receipts)
+            {
+                if (Check(item) ^ invert) continue;
+                action.Invoke(item);
+                count++;
+            }
+            return count;
+        }
+        
+        public int DoByIndex(Action<int> action, bool invert)
+        {
+            if (Conditions.Any(c => c.OperationId == -1 || c.Value == ""))
+            {
+                MessageBox.Show("Найдено некорректное условие!");
+                return -1;
+            }
+            var count = 0;
+            var @ref = Workspace.Instance.Receipts;
+            for (var i = @ref.Count - 1; i <= 0; i--)
+            {
+                var item = @ref[i];
+                if (Check(item) ^ invert) continue;
+                action.Invoke(i);
+                count++;
+            }
+            return count;
+        }
+
+        private bool Check(Receipt item)
+        {
+            foreach (var cond in Conditions)
+            {
+                var o = cond.Operations[cond.OperationId];
+                if (cond.IsPosition)
+                {
+                    foreach(var pos in item.Items)
+                    {
+                        object src = cond.PartId switch
+                        {
+                            0 => pos.Name,
+                            1 => ((int?)pos.MeasureUnit) ?? -1,
+                            2 => pos.Type,
+                            3 => pos.PayMethod,
+                            4 => pos.TaxRate,
+                            5 => pos.Price,
+                            6 => pos.Quantity,
+                            7 => pos.Cost,
+                        };
+                        if (!o.Action.Invoke(src, cond.Value))
+                            return false;
+                    }
+                }
+                else
+                {
+                    object src = cond.PartId switch
+                    {
+                        0 => item.Payment.Cash,
+                        1 => item.Payment.ECash,
+                        2 => item.Payment.Pre,
+                        3 => item.Payment.Post,
+                        4 => item.Payment.Provision,
+                        5 => item.Payment.TotalSum,
+                    };
+                    if(!o.Action.Invoke(src, cond.Value))
+                        return false;
+                }
+            }
             return true;
         }
     }
