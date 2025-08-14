@@ -81,12 +81,6 @@ namespace RetailCorrector.Controls
 
         private void AddDataGrid()
         {
-            Dictionary<bool, string> TYPES = new() 
-            { 
-                { false, "Чек" }, 
-                { true, "Позиция" } 
-            };
-
             var data = new DataGrid
             {
                 HeadersVisibility = DataGridHeadersVisibility.None,
@@ -104,18 +98,55 @@ namespace RetailCorrector.Controls
                 SelectionUnit = DataGridSelectionUnit.FullRow
             };
             data.SetBinding(DataGrid.SelectedIndexProperty, nameof(ConditionIndex));
-            data.Columns.Add(new DataGridTextColumn { Binding = new Binding("Number") });
-            data.Columns.Add(new DataGridComboBoxColumn
-            {
-                SelectedValueBinding = new Binding("IsPosition"),
-                ItemsSource = TYPES,
-                SelectedValuePath = "Key",
-                DisplayMemberPath = "Value",
-            });
-            data.Columns.Add(new DataGridComboBoxColumn { SelectedValueBinding = new Binding("PartId") });
-            data.Columns.Add(new DataGridComboBoxColumn { SelectedValueBinding = new Binding("OperationId") });
-            data.Columns.Add(new DataGridTemplateColumn { Width = new(1, DataGridLengthUnitType.Star) });
             this.AddChild(data, y: 2, dx: 3);
+
+            var column = new DataGridTemplateColumn { CellEditingTemplate = new(), CellTemplate = new(), IsReadOnly = true };
+            column.CellTemplate.VisualTree = new(typeof(TextBlock));
+            column.CellTemplate.VisualTree.SetBinding(TextBlock.TextProperty, new Binding("Number") { Mode = BindingMode.OneWay });
+            column.CellTemplate.VisualTree.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+            data.Columns.Add(column);
+
+            column = new DataGridTemplateColumn { CellEditingTemplate = new(), CellTemplate = new(), Width = new(80) };
+            column.CellTemplate.VisualTree = new(typeof(TextBlock));
+            column.CellTemplate.VisualTree.SetBinding(TextBlock.TextProperty, new Binding("TypeName") { Mode = BindingMode.OneWay });
+            column.CellTemplate.VisualTree.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            column.CellEditingTemplate.VisualTree = new(typeof(ComboBox));
+            column.CellEditingTemplate.VisualTree.SetBinding(ComboBox.SelectedValueProperty, new Binding("IsPosition") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            column.CellEditingTemplate.VisualTree.SetValue(ComboBox.ItemsSourceProperty, Condition.Types);
+            column.CellEditingTemplate.VisualTree.SetValue(ComboBox.DisplayMemberPathProperty, "Value");
+            column.CellEditingTemplate.VisualTree.SetValue(ComboBox.SelectedValuePathProperty, "Key");
+            data.Columns.Add(column);
+
+            column = new DataGridTemplateColumn { CellEditingTemplate = new(), CellTemplate = new(), Width = new(115) };
+            column.CellTemplate.VisualTree = new(typeof(TextBlock));
+            column.CellTemplate.VisualTree.SetBinding(TextBlock.TextProperty, new Binding("PartText") { Mode = BindingMode.OneWay });
+            column.CellTemplate.VisualTree.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            column.CellEditingTemplate.VisualTree = new(typeof(ComboBox));
+            column.CellEditingTemplate.VisualTree.SetBinding(ComboBox.ItemsSourceProperty, new Binding("Parts") { Mode = BindingMode.OneWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            column.CellEditingTemplate.VisualTree.SetBinding(ComboBox.SelectedValueProperty, new Binding("PartId") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            column.CellEditingTemplate.VisualTree.SetValue(ComboBox.DisplayMemberPathProperty, "Name");
+            column.CellEditingTemplate.VisualTree.SetValue(ComboBox.SelectedValuePathProperty, "Id");
+            data.Columns.Add(column);
+
+            column = new DataGridTemplateColumn { CellEditingTemplate = new(), CellTemplate = new(), Width = new(101) };
+            column.CellTemplate.VisualTree = new(typeof(TextBlock));
+            column.CellTemplate.VisualTree.SetBinding(TextBlock.TextProperty, new Binding("OperationText") { Mode = BindingMode.OneWay });
+            column.CellTemplate.VisualTree.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            column.CellEditingTemplate.VisualTree = new(typeof(ComboBox));
+            column.CellEditingTemplate.VisualTree.SetBinding(ComboBox.ItemsSourceProperty, new Binding("Operations") { Mode = BindingMode.OneWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            column.CellEditingTemplate.VisualTree.SetBinding(ComboBox.SelectedValueProperty, new Binding("OperationId") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            column.CellEditingTemplate.VisualTree.SetValue(ComboBox.DisplayMemberPathProperty, "Name");
+            column.CellEditingTemplate.VisualTree.SetValue(ComboBox.SelectedValuePathProperty, "Id");
+            column.CellEditingTemplate.VisualTree.SetValue(ComboBox.FontFamilyProperty, new FontFamily("FiraCode"));
+            data.Columns.Add(column);
+
+            column = new DataGridTemplateColumn { CellEditingTemplate = new(), CellTemplate = new(), Width = new(1, DataGridLengthUnitType.Star) };
+            column.CellTemplate.VisualTree = new(typeof(TextBlock));
+            column.CellTemplate.VisualTree.SetBinding(TextBlock.TextProperty, new Binding("Value"));
+            column.CellTemplate.VisualTree.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            column.CellEditingTemplate.VisualTree = new(typeof(TextBox));
+            column.CellEditingTemplate.VisualTree.SetBinding(TextBox.TextProperty, new Binding("Value") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged});
+            data.Columns.Add(column);
         }
     }
 }
