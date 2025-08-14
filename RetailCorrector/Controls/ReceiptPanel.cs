@@ -213,6 +213,7 @@ namespace RetailCorrector.Controls
             PositionGrid.Instance.Collection.Clear();
             grid.Items.Clear();
             if (CachedCountPages == 0) return;
+            if (Workspace.Instance.Receipts.Count == 0) return;
             var page = Workspace.Instance.Receipts.Chunk(MaxCountReceipts).ToArray()[_index - 1];
             foreach (var item in page)
                 grid.Items.Add(new DisplayReceipt(item));
