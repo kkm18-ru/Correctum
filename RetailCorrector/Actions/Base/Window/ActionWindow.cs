@@ -20,6 +20,7 @@ namespace RetailCorrector.Actions
             btn.Click += (_, _) =>
             {
                 ((IActionPresenter)view.DataContext).Start();
+                Close();
             };
             stack.Children.Add(btn);
             Content = stack;
