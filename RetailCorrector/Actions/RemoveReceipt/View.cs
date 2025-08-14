@@ -8,13 +8,13 @@ namespace RetailCorrector.Actions.RemoveReceipt
     {
         public RemoveReceiptView()
         {
-            (Height, Width) = (255, 230);
+            (Height, Width) = (255, 400);
             var grid = new Grid();
             Content = grid;
 
-            grid.AddColumn(GridUnitType.Pixel, 109);
+            grid.AddColumn(GridUnitType.Star);
             grid.AddColumn(GridUnitType.Pixel, 5);
-            grid.AddColumn(GridUnitType.Pixel, 115);
+            grid.AddColumn(GridUnitType.Star);
 
             grid.AddRow(GridUnitType.Pixel, 22);
             grid.AddRow(GridUnitType.Pixel, 5);
