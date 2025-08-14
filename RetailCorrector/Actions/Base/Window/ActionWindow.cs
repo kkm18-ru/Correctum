@@ -1,5 +1,4 @@
-﻿using RetailCorrector.Utils;
-using RetailCorrector.WindowTypes;
+﻿using RetailCorrector.WindowTypes;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,13 +9,18 @@ namespace RetailCorrector.Actions
         public ActionWindow(UserControl view)
         {
             SizeToContent = SizeToContent.WidthAndHeight;
-            var stack = new StackPanel { Margin = new(5) };
+            var stack = new StackPanel { Margin = new(5, 5, 5, 10) };
             stack.Children.Add(view);
             var btn = new Button
             {
                 Content = "  Выполнить  ",
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Command = new RelayCommand(_ => ((IActionPresenter)view.DataContext).Start())
+                Margin = new(0,5,0,-5)
+            };
+            btn.Click += (_, _) =>
+            {
+                ((IActionPresenter)view.DataContext).Start();
+                Close();
             };
             stack.Children.Add(btn);
             Content = stack;
