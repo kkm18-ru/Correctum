@@ -5,7 +5,7 @@ namespace RetailCorrector.Controls
 {
     internal partial class ConditionGrid
     {
-        public class Condition(int num, int src, int opcode, string val) : INotifyPropertyChanged
+        public class Condition(int num, bool pos, int opcode, string val) : INotifyPropertyChanged
         {
             private int _number = num;
             public int Number
@@ -19,14 +19,14 @@ namespace RetailCorrector.Controls
                 }
             }
 
-            private int _sourceId = src;
-            public int SourceId
+            private bool _position = pos;
+            public bool IsPosition
             {
-                get => _sourceId;
+                get => _position;
                 set
                 {
-                    if (_sourceId == value) return;
-                    _sourceId = value;
+                    if (_position == value) return;
+                    _position = value;
                     OnPropertyChanged();
                 }
             }

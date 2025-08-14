@@ -49,7 +49,7 @@ namespace RetailCorrector.Controls
                     Data = Geometry.Parse("m0 5l5 0l0-5l5 0l0 5l5 0l0 5l-5 0l0 5l-5 0l0-5l-5 0l0-5")
                 }
             };
-            btn.Click += (_, _) => Conditions.Add(new(Conditions.Count + 1, 0, 0, ""));
+            btn.Click += (_, _) => Conditions.Add(new(Conditions.Count + 1, false, 0, ""));
             this.AddChild(btn);
         }
 
@@ -81,6 +81,12 @@ namespace RetailCorrector.Controls
 
         private void AddDataGrid()
         {
+            Dictionary<bool, string> TYPES = new() 
+            { 
+                { false, "Чек" }, 
+                { true, "Позиция" } 
+            };
+
             var data = new DataGrid
             {
                 HeadersVisibility = DataGridHeadersVisibility.None,
@@ -99,11 +105,12 @@ namespace RetailCorrector.Controls
             };
             data.SetBinding(DataGrid.SelectedIndexProperty, nameof(ConditionIndex));
             data.Columns.Add(new DataGridTextColumn { Binding = new Binding("Number") });
-            string[] types = ["Чек", "Позиция"];
             data.Columns.Add(new DataGridComboBoxColumn
             {
-                SelectedValueBinding = new Binding("SourceId"),
-                ItemsSource = types
+                SelectedValueBinding = new Binding("IsPosition"),
+                ItemsSource = TYPES,
+                SelectedValuePath = "Key",
+                DisplayMemberPath = "Value",
             });
             data.Columns.Add(new DataGridComboBoxColumn { SelectedValueBinding = new Binding("OperationId") });
             data.Columns.Add(new DataGridTemplateColumn { Width = new(1, DataGridLengthUnitType.Star) });
