@@ -72,6 +72,14 @@ namespace RetailCorrector.Controls
             foreach (var cond in Conditions)
             {
                 var o = cond.Operations[cond.OperationId];
+                var p = cond.Parts[cond.PartId];
+
+                object val = p.Type switch
+                {
+                    Condition.PartType.Text => cond.Value,
+                    Condition.PartType.Integer => int.Parse(cond.Value),
+                    Condition.PartType.Double => double.Parse(cond.Value),
+                };
                 if (cond.IsPosition)
                 {
                     foreach(var pos in item.Items)
@@ -83,11 +91,11 @@ namespace RetailCorrector.Controls
                             2 => pos.Type,
                             3 => pos.PayMethod,
                             4 => pos.TaxRate,
-                            5 => pos.Price,
-                            6 => pos.Quantity,
-                            7 => pos.Cost,
+                            5 => pos.Price * 0.01,
+                            6 => pos.Quantity * 0.001,
+                            7 => pos.Cost * 0.01,
                         };
-                        if (!o.Action.Invoke(src, cond.Value))
+                        if (!o.Action.Invoke(src, val))
                             return false;
                     }
                 }
@@ -95,14 +103,14 @@ namespace RetailCorrector.Controls
                 {
                     object src = cond.PartId switch
                     {
-                        0 => item.Payment.Cash,
-                        1 => item.Payment.ECash,
-                        2 => item.Payment.Pre,
-                        3 => item.Payment.Post,
-                        4 => item.Payment.Provision,
-                        5 => item.Payment.TotalSum,
+                        0 => item.Payment.Cash * 0.01,
+                        1 => item.Payment.ECash * 0.01,
+                        2 => item.Payment.Pre * 0.01,
+                        3 => item.Payment.Post * 0.01,
+                        4 => item.Payment.Provision * 0.01,
+                        5 => item.Payment.TotalSum * 0.01,
                     };
-                    if(!o.Action.Invoke(src, cond.Value))
+                    if(!o.Action.Invoke(src, val))
                         return false;
                 }
             }
