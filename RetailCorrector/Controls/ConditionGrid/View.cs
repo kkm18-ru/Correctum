@@ -49,7 +49,7 @@ namespace RetailCorrector.Controls
                     Data = Geometry.Parse("m0 5l5 0l0-5l5 0l0 5l5 0l0 5l-5 0l0 5l-5 0l0-5l-5 0l0-5")
                 }
             };
-            btn.Click += (_, _) => Conditions.Add(new(Conditions.Count + 1, false, 0, ""));
+            btn.Click += (_, _) => Conditions.Add(new(Conditions.Count + 1));
             this.AddChild(btn);
         }
 
