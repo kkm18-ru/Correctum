@@ -12,6 +12,7 @@ namespace RetailCorrector.Actions.RemoveReceipt
         public override void Start()
         {
             var count = Condition.DoByIndex(Workspace.Instance.Receipts.RemoveAt);
+            ReceiptPanel.UpdateReceiptList();
             MessageBox.Show($"{LocaleHelper.ConjugateWord(count, "Был удален", "Было удалено")} {count} {LocaleHelper.ConjugateWord(count, "чек", "чека", "чеков")}");
         }
     }
