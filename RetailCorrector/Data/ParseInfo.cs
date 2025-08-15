@@ -7,14 +7,15 @@
         public DateTime Parsed { get; } = DateTime.Now;
         public (string, object)[] Arguments { get; } = args;
 
-        public override string ToString() => $"{Parsed:yyyy'-'MM'-'dd' 'HH':'mm':'ss} {Name} ({ArgumentsToString()})";
+        public override string ToString() => $"Выгрузка {Name} от {Parsed:yyyy'-'MM'-'dd' 'HH':'mm':'ss} {ArgumentsToString()}";
 
         private string ArgumentsToString()
         {
+            if (Arguments is null || Arguments.Length == 0) return "";
             var items = new string[Arguments.Length];
             for(var i = 0; i < items.Length; i++)
                 items[i] = $"{Arguments[i].Item1}: {Arguments[i].Item2}";
-            return string.Join(", ", items);
+            return $"({string.Join(", ", items)})";
         }
     }
 }
