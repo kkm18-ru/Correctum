@@ -56,7 +56,7 @@ namespace RetailCorrector.Generators
             var hash = new HashSet<string>();
             foreach (var symb in arr)
             {
-                if (symb is not ITypeSymbol type) continue;
+                if (symb is not ITypeSymbol type || type.IsStatic || type.IsAbstract) continue;
                 if (!type.BaseType?.ToDisplayString().StartsWith("RetailCorrector.Actions.ActionPresenter") ?? true) continue;
                 if (!hash.Add(type.ToDisplayString())) continue;
                 var attr = type.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == "RetailCorrector.RegisterActionAttribute");
