@@ -63,7 +63,7 @@ namespace RetailCorrector.Generators
             foreach (var (@class, _) in array.Where(i => i.DisplayName is null))
             {
                 var displayName = @class.Split('.');
-                builder.AppendLine($"            new(\"{displayName[displayName.Length - 1]} (WIP)\", {@class}.ShowView),");
+                builder.AppendLine($"            new(\"[DEBUG] {displayName[displayName.Length - 1].Replace("Presenter", "")}\", {@class}.ShowView),");
             }
             builder.AppendLine("#endif");
             foreach (var (@class, display) in array.Where(i => i.DisplayName is not null))
