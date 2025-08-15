@@ -40,6 +40,9 @@ namespace RetailCorrector.Controls
 
             GroupStyle.Add(new GroupStyle
             {
+                Panel = new ItemsPanelTemplate(
+                    new FrameworkElementFactory(typeof(VirtualizingStackPanel))
+                ),
                 HeaderTemplate = new DataTemplate
                 {
                     VisualTree = textBlockFactory

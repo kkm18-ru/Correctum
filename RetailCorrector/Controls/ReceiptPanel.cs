@@ -213,10 +213,10 @@ namespace RetailCorrector.Controls
             grid.Collection.Clear();
             if (CachedCountPages == 0) return;
             if (Workspace.Instance.Receipts.Count == 0) return;
-            var page = Workspace.Instance.Receipts.Chunk(MaxCountReceipts).ToArray()[_index - 1];
+            var page = Workspace.Instance.Receipts.Skip(MaxCountReceipts * (_index - 1)).Take(MaxCountReceipts);
             foreach (var item in page)
                 grid.Collection.Add(new DisplayReceipt(item));
-            grid.Items.Refresh();
+            ((ListCollectionView)CollectionViewSource.GetDefaultView(grid.Collection)).Refresh();
         }
 
         public static void UpdateReceiptList()

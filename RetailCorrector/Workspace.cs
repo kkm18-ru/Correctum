@@ -13,6 +13,7 @@ namespace RetailCorrector
 
         private Workspace()
         {
+            ParserHistory = [];
             Receipts = [];
         }
 
