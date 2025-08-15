@@ -30,22 +30,41 @@ namespace RetailCorrector.Parsers.OfdRu
             content.AddRow(GridUnitType.Auto);
             #endregion
 
-            content.AddChild(UIGenerators.ProgressBar(nameof(Presenter.CurrentDayNumber), nameof(Presenter.CountDays)), dx: 3);
+            var progressBar = new ProgressBar();
+            progressBar.SetBinding(ProgressBar.ValueProperty, nameof(Presenter.CurrentDayNumber));
+            progressBar.SetBinding(ProgressBar.MaximumProperty, nameof(Presenter.CountDays));
+            content.AddChild(progressBar, dx: 3);
 
             #region Текст
-            content.AddChild(UIGenerators.Text("Начало сканирования: "), y: 2);
-            content.AddChild(UIGenerators.Text("Конец сканирования: "), y: 4);
-            content.AddChild(UIGenerators.Text("Аутентификационный токен: "), y: 6);
-            content.AddChild(UIGenerators.Text("ИНН организации: "), y: 8);
-            content.AddChild(UIGenerators.Text("Регистрационный номер: "), y: 10);
+            content.AddChild(new TextBlock { Text = "Начало сканирования: " }, y: 2);
+            content.AddChild(new TextBlock { Text = "Конец сканирования: " }, y: 4);
+            content.AddChild(new TextBlock { Text = "Аутентификационный токен: " }, y: 6);
+            content.AddChild(new TextBlock { Text = "ИНН организации: " }, y: 8);
+            content.AddChild(new TextBlock { Text = "Регистрационный номер: " }, y: 10);
             #endregion
 
             #region Ввод
-            content.AddChild(UIGenerators.DatePicker(nameof(Presenter.BeginDate),new DateTime(2020, 1, 1), nameof(Presenter.EndDate)), 2, 2);
-            content.AddChild(UIGenerators.DatePicker(nameof(Presenter.EndDate), nameof(Presenter.BeginDate), DateTime.Today), 2, 4);
-            content.AddChild(UIGenerators.TextBox(nameof(Presenter.Token)), 2, 6);
-            content.AddChild(UIGenerators.TextBox(nameof(Presenter.Vatin)), 2, 8);
-            content.AddChild(UIGenerators.TextBox(nameof(Presenter.DeviceId)), 2, 10);
+            var dp = new DatePicker { DisplayDateStart = new DateTime(2020, 1, 1) };
+            dp.SetBinding(DatePicker.SelectedDateProperty, nameof(Presenter.BeginDate));
+            dp.SetBinding(DatePicker.DisplayDateEndProperty, nameof(Presenter.EndDate));
+            content.AddChild(dp, 2, 2);
+            
+            dp = new DatePicker { DisplayDateStart = DateTime.Today };
+            dp.SetBinding(DatePicker.SelectedDateProperty, nameof(Presenter.EndDate));
+            dp.SetBinding(DatePicker.DisplayDateStartProperty, nameof(Presenter.BeginDate));
+            content.AddChild(dp, 2, 4);
+
+            var tb = new TextBox();
+            tb.SetBinding(TextBox.TextProperty, nameof(Presenter.Token));
+            content.AddChild(tb, 2, 6);
+
+            tb = new TextBox();
+            tb.SetBinding(TextBox.TextProperty, nameof(Presenter.Vatin));
+            content.AddChild(tb, 2, 8);
+
+            tb = new TextBox();
+            tb.SetBinding(TextBox.TextProperty, nameof(Presenter.DeviceId));
+            content.AddChild(tb, 2, 10);
             #endregion
 
             Content = content;

@@ -38,11 +38,11 @@ namespace RetailCorrector.Parsers
 
             _content.AddChild(GenerateComboBox());
 
-            var btnParse = UIGenerators.Button("Запустить", _context.ParseCommand);
+            var btnParse = new Button { Content = "Запустить", Command = _context.ParseCommand };
             btnParse.SetBinding(Button.IsEnabledProperty, nameof(_context.IsEnabledParseButton));
             _content.AddChild(btnParse, x: 2);
 
-            var btnCancel = UIGenerators.Button("Отмена", _context.CancelCommand);
+            var btnCancel = new Button { Content = "Отмена", Command = _context.CancelCommand };
             btnCancel.SetBinding(Button.IsEnabledProperty, nameof(_context.IsEnabledCancel));
             _content.AddChild(btnCancel, x: 4);
 
