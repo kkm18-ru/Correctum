@@ -18,8 +18,10 @@ namespace RetailCorrector.Parsers.OfdRu
 
         public override async IAsyncEnumerable<Receipt> Parse([EnumeratorCancellation] CancellationToken cancellationToken)
         {
+            var parseInfo = new ParseInfo("OFD.ru", ("ИНН", Vatin), ("РНМ", DeviceId), 
+                ("Начало", BeginDate.ToShortDateString()), ("Конец", EndDate.ToShortDateString()));
+            Workspace.Instance.ParserHistory.Add(parseInfo);
             using var http = new HttpClient();
-            var baseUrl = $"";
             CountDays = (int)(EndDate - BeginDate).TotalDays + 1;
             for (var day = BeginDate; day <= EndDate; day = day.AddDays(1))
             {
@@ -32,7 +34,7 @@ namespace RetailCorrector.Parsers.OfdRu
                     continue;
                 }
                 foreach (var item in array)
-                    yield return ParseReceipt(item!);
+                    yield return ParseReceipt(item!, parseInfo.Id);
             }
         }
 

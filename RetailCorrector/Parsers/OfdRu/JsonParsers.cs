@@ -6,11 +6,12 @@ namespace RetailCorrector.Parsers.OfdRu
 {
     internal partial class OfdRuPresenter
     {
-        private static Receipt ParseReceipt(JsonNode node)
+        private static Receipt ParseReceipt(JsonNode node, Guid parseId)
         {
             var items = node["Items"]!.AsArray();
             var receipt = new Receipt
             {
+                ParseId = parseId,
                 Created = ToDateTime(node["DocDateTime"]!.GetValue<string>()),
                 DocSign = ulong.Parse(node["DecimalFiscalSign"]!.GetValue<string>()),
                 TotalSum = node["TotalSumm"]!.GetValue<uint>(),
