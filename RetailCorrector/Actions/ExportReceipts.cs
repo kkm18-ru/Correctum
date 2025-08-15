@@ -85,7 +85,7 @@ namespace RetailCorrector.Actions.ExportReceipts
                         cmd.Parameters.AddWithValue("pre", receipt.Payment.Pre);
                         cmd.Parameters.AddWithValue("post", receipt.Payment.Post);
                         cmd.Parameters.AddWithValue("other", receipt.Payment.Provision);
-                        cmd.Parameters.AddWithValue("total", receipt.Payment.TotalSum);
+                        cmd.Parameters.AddWithValue("total", receipt.TotalSum);
                         id = (long)cmd.ExecuteScalar()!;
                     }
                     foreach (var pos in receipt.Items)

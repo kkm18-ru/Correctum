@@ -6,11 +6,8 @@ namespace RetailCorrector.Parsers.Taxcom
 {
     internal sealed class TaxcomView : ParserView<TaxcomView, TaxcomPresenter>
     {
-        public TaxcomPresenter Presenter { get; } = new();
-
         public TaxcomView()
         {
-            DataContext = Presenter;
             var content = new Grid();
 
             #region Столбцы

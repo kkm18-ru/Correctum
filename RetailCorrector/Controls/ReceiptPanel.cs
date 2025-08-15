@@ -200,7 +200,7 @@ namespace RetailCorrector.Controls
             var removedCount = e.RemovedCells.Count / columnCount;
             for (var i = 0; i < removedCount; i++)
             {
-                var item = (DisplayReceipt)e.RemovedCells[i * columnCount].Item;
+                if (e.RemovedCells[i * columnCount].Item is not DisplayReceipt item) continue;
                 var row = grid.Items.IndexOf(item);
                 var ps = PositionGrid.Instance.Collection.Where(p => p.Receipt == item.ToString()).ToArray();
                 for (var j = 0; j < ps.Length; j++)
