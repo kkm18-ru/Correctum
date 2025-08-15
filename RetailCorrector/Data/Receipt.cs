@@ -1,8 +1,9 @@
 ﻿using RetailCorrector.Enums;
+using RetailCorrector.Exceptions;
 
 namespace RetailCorrector.Data
 {
-    internal struct Receipt
+    internal struct Receipt(bool @readonly = false)
     {
         public required Guid ParseId { get; set; }
         public DateTime Created { get; set; }
@@ -11,5 +12,23 @@ namespace RetailCorrector.Data
         public Position[] Items { get; set; }
         public Payment Payment { get; set; }
         public ulong TotalSum { get; set; }
+
+        #region Meta-Data
+        public int EditsCount
+        {
+            get => _editsCount;
+            set
+            {
+                if (value == _editsCount) return;
+                if (IsReadOnly && value != 0)
+                    throw new ReceiptReadOnlyException();
+                if (value < _editsCount)
+                    throw new NotImplementedException("Отмена действий в данный момент невозможна");
+                _editsCount = value;
+            }
+        }
+        private int _editsCount = 0;
+        public bool IsReadOnly { get; } = @readonly;
+        #endregion
     }
 }
