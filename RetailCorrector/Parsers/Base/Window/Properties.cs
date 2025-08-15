@@ -15,6 +15,7 @@ namespace RetailCorrector.Parsers
                 if (_generator == value) return;
                 _generator = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsEnabledParseButton));
                 Child = _generator.Invoke();
                 OnPropertyChanged(nameof(Child));
             }
@@ -24,6 +25,7 @@ namespace RetailCorrector.Parsers
 
         public bool IsEnabledCancel => _cancelSource is not null && !_cancelSource.IsCancellationRequested;
         public bool IsEnabledParse => _cancelSource is null;
+        public bool IsEnabledParseButton => _cancelSource is null && _generator is not null;
 
         private CancellationTokenSource? _cancelSource;
         public CancellationTokenSource? CancellationSource
@@ -34,6 +36,7 @@ namespace RetailCorrector.Parsers
                 _cancelSource = value;
                 OnPropertyChanged(nameof(IsEnabledCancel));
                 OnPropertyChanged(nameof(IsEnabledParse));
+                OnPropertyChanged(nameof(IsEnabledParseButton));
             }
         }
 
