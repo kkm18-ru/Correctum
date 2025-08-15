@@ -17,7 +17,7 @@
         public string PrePay { get; } = $"{(origin.Payment.Pre * 0.01):C2}";
         public string PostPay { get; } = $"{(origin.Payment.Post * 0.01):C2}";
         public string OtherPay { get; } = $"{(origin.Payment.Provision * 0.01):C2}";
-        public string Total { get; } = $"{(origin.Payment.TotalSum * 0.01):C2}";
+        public string Total { get; } = $"{(origin.TotalSum * 0.01):C2}";
 
         public override string ToString() => $"Дата: {Date}; ФПД: {Sign}";
     }

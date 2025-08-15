@@ -108,7 +108,7 @@ namespace RetailCorrector.Controls
                         2 => item.Payment.Pre * 0.01,
                         3 => item.Payment.Post * 0.01,
                         4 => item.Payment.Provision * 0.01,
-                        5 => item.Payment.TotalSum * 0.01,
+                        5 => item.TotalSum * 0.01,
                     };
                     if(!o.Action.Invoke(src, val))
                         return false;
