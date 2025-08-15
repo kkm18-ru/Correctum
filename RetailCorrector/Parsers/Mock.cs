@@ -8,10 +8,7 @@ using Bogus;
 
 namespace RetailCorrector.Parsers.Mock
 {
-    internal sealed class MockView : ParserView<MockView, MockPresenter>
-    {
-        public MockPresenter Presenter { get; } = new();
-    }
+    internal sealed class MockView : ParserView<MockView, MockPresenter>;
 
     internal partial class MockPresenter : ParserPresenter<MockPresenter, MockView>
     {

@@ -6,6 +6,11 @@ namespace RetailCorrector.Parsers
         where TV : ParserView<TV, TP>, new()
         where TP : ParserPresenter<TP, TV>, new()
     {
-        TP Presenter { get; }
+        public TP Presenter => (TP)DataContext;
+
+        protected ParserView()
+        {
+            DataContext = new TP();
+        }
     }
 }

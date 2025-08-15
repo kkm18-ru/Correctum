@@ -8,7 +8,7 @@ namespace RetailCorrector.Parsers
         public RelayCommand ParseCommand = new(async _ =>
         {
             Instance!.CancellationSource = new();
-            var presenter = (ParserPresenter)((dynamic)Instance.Child!).Presenter;
+            var presenter = (IParserPresenter)((dynamic)Instance.Child!).Presenter;
             await foreach(var receipt in presenter.Parse(Instance.CancellationSource.Token))
                 Workspace.Instance.Receipts.Add(receipt);
             Instance.CancellationSource = null;
