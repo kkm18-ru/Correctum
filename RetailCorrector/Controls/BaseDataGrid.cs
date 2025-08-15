@@ -16,6 +16,7 @@ namespace RetailCorrector.Controls
                 AutoGenerateColumns = false;            
             HeadersVisibility = DataGridHeadersVisibility.Column;
             FontFamily = (FontFamily)Application.Current.Resources["jbmono"];
+            VirtualizingStackPanel.SetIsVirtualizing(this, true);
         }
 
         protected void AddStarColumn(string name, string binding, double min = 0, double stars = 1)
