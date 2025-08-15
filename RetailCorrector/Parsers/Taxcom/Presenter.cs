@@ -9,6 +9,9 @@ namespace RetailCorrector.Parsers.Taxcom
     {
         public override async IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken)
         {
+            var parseInfo = new ParseInfo("Taxcom", ("Логин", Login), ("РНМ", DeviceId), 
+                ("Начало", BeginDate.ToShortDateString()), ("Конец", EndDate.ToShortDateString()));
+            Workspace.Instance.ParserHistory.Add(parseInfo);
             using var http = new HttpClient() 
             { 
                 BaseAddress = new Uri("https://lk-ofd.taxcom.ru") 
@@ -22,7 +25,7 @@ namespace RetailCorrector.Parsers.Taxcom
                 JsonArray arr;
                 (hasNextPage, arr) = await GetReceipts(http, cash, i);
                 foreach (var doc in ParseReceipts(arr))
-                    yield return await GetReceipt(http, doc);
+                    yield return await GetReceipt(http, doc, parseInfo.Id);
             }
         }
     }
