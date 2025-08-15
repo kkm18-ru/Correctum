@@ -2,10 +2,8 @@
 
 namespace RetailCorrector.Actions
 {
-    internal class SummaryReceiptView : ActionView<SummaryReceiptView, SummaryReceiptPresenter>;
-
     [RegisterAction("Суммирование чеков")]
-    internal class SummaryReceiptPresenter : ActionPresenter<SummaryReceiptPresenter, SummaryReceiptView>
+    internal class SummaryReceipt : ActionPresenter<SummaryReceipt>
     {
         public override void Start()
         {

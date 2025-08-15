@@ -8,6 +8,13 @@
         public abstract void Start();
     }
 
+    internal abstract class ActionPresenter<T> : IActionPresenter
+        where T : ActionPresenter<T>, new()
+    {
+        public static void Show() => new ActionWindow(new T()).ShowDialog();
+        public abstract void Start();
+    }
+
     internal interface IActionPresenter
     {
         void Start();

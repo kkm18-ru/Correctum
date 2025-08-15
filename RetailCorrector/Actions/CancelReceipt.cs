@@ -5,10 +5,8 @@ using System.Windows;
 
 namespace RetailCorrector.Actions.CancelReceipt
 {
-    internal class CancelReceiptView : ActionView<CancelReceiptView, CancelReceiptPresenter>;
-
     [RegisterAction("Генерация аннулирующих чеков")]
-    internal class CancelReceiptPresenter : ActionPresenter<CancelReceiptPresenter, CancelReceiptView>
+    internal class CancelReceipt : ActionPresenter<CancelReceipt>
     {
         public override void Start()
         {

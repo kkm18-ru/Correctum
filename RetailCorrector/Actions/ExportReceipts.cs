@@ -5,10 +5,8 @@ using System.Windows;
 
 namespace RetailCorrector.Actions.ExportReceipts
 {
-    internal class ExportReceiptsView : ActionView<ExportReceiptsView, ExportReceiptsPresenter>;
-
     [RegisterAction("Экспорт чеков")]
-    internal class ExportReceiptsPresenter : ActionPresenter<ExportReceiptsPresenter, ExportReceiptsView>
+    internal class ExportReceipts : ActionPresenter<ExportReceipts>
     {
         const string CREATE_POSITION_TABLE = """
             CREATE TABLE position (
