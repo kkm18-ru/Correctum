@@ -38,6 +38,10 @@ namespace RetailCorrector.Controls
             textBlockFactory.SetValue(TextBlock.FontSizeProperty, 14.0);
             textBlockFactory.SetValue(TextBlock.MarginProperty, new Thickness(3));
 
+            var rowStyle = new Style(typeof(DataGridRow));
+            rowStyle.Setters.Add(new Setter(DataGridRow.BackgroundProperty, new Binding("Background")));
+            RowStyle = rowStyle;
+
             GroupStyle.Add(new GroupStyle
             {
                 Panel = new ItemsPanelTemplate(

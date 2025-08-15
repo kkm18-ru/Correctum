@@ -1,4 +1,6 @@
-﻿namespace RetailCorrector.Data
+﻿using System.Windows.Media;
+
+namespace RetailCorrector.Data
 {
     internal readonly struct DisplayReceipt(Receipt origin)
     {
@@ -20,6 +22,12 @@
         public string PostPay { get; } = $"{(origin.Payment.Post * 0.01):C2}";
         public string OtherPay { get; } = $"{(origin.Payment.Provision * 0.01):C2}";
         public string Total { get; } = $"{(origin.TotalSum * 0.01):C2}";
+
+        public Brush Background { get; } = origin.IsReadOnly switch
+        {
+            true => Brushes.LightGray,
+            false => Brushes.White
+        };
 
         public override string ToString() => $"Дата: {Date}; ФПД: {Sign}";
     }
