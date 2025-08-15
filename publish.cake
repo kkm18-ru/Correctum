@@ -45,6 +45,4 @@ Task("Publish")
 	MoveFileToDirectory($"TEMP/RetailCorrector-{version}.exe", "\\\\192.168.2.89\\share_egais\\Distr\\RetailCorrector");
 });
 
-Task
-
 RunTarget(target);
