@@ -2,6 +2,7 @@
 using RetailCorrector.WindowTypes;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace RetailCorrector.Parsers
 {
@@ -60,7 +61,12 @@ namespace RetailCorrector.Parsers
             if (e.PropertyName is not nameof(_context.Child)) return;
             _content.Children.Remove(_content.Children[^1]);
             _content.AddChild(_context.Child, y: 2, dx: 5);
-            _context.Child.SetBinding(Control.IsHitTestVisibleProperty, nameof(_context.IsEnabledParse));
+            _context.Child.SetBinding(Control.IsEnabledProperty, 
+                new Binding(nameof(_context.IsEnabledParse)) 
+                { 
+                    Mode = BindingMode.OneWay,
+                    Source = _context
+                });
         }
 
         private ComboBox GenerateComboBox()
