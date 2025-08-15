@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Dapper;
+using Microsoft.Data.Sqlite;
 using System.IO;
 using System.Windows;
 
@@ -58,53 +59,40 @@ namespace RetailCorrector.Actions.ExportReceipts
         {
             var guid = Guid.CreateVersion7();
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RetailCorrector", $"{guid}.db");
+            if (!Directory.Exists(Path.GetDirectoryName(path))) 
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
             using (var conn = new SqliteConnection($"Data Source = \"{path}\""))
             {
                 conn.Open();
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = CREATE_RECEIPT_TABLE;
-                    cmd.ExecuteNonQuery();
-                }
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = CREATE_POSITION_TABLE;
-                    cmd.ExecuteNonQuery();
-                }
+                conn.Execute(CREATE_RECEIPT_TABLE);
+                conn.Execute(CREATE_POSITION_TABLE);
                 foreach (var receipt in Workspace.Instance.Receipts)
                 {
-                    long id = 0;
-                    using (var cmd = conn.CreateCommand())
+                    var id = conn.QuerySingle<long>(ADD_RECEIPT, new
                     {
-                        cmd.CommandText = ADD_RECEIPT;
-                        cmd.Parameters.AddWithValue("date", $"{receipt.Created:yyyy'-'MM'-'dd' 'HH':'mm':'ss}");
-                        cmd.Parameters.AddWithValue("type", (int)receipt.Type);
-                        cmd.Parameters.AddWithValue("sign", $"{receipt.DocSign}");
-                        cmd.Parameters.AddWithValue("cash", receipt.Payment.Cash);
-                        cmd.Parameters.AddWithValue("ecash", receipt.Payment.ECash);
-                        cmd.Parameters.AddWithValue("pre", receipt.Payment.Pre);
-                        cmd.Parameters.AddWithValue("post", receipt.Payment.Post);
-                        cmd.Parameters.AddWithValue("other", receipt.Payment.Provision);
-                        cmd.Parameters.AddWithValue("total", receipt.Payment.TotalSum);
-                        id = (long)cmd.ExecuteScalar()!;
-                    }
+                        date = $"{receipt.Created:yyyy'-'MM'-'dd' 'HH':'mm':'ss}",
+                        type = (int)receipt.Type,
+                        sign = $"{receipt.DocSign}",
+                        cash = receipt.Payment.Cash,
+                        ecash = receipt.Payment.ECash,
+                        pre = receipt.Payment.Pre,
+                        post = receipt.Payment.Post,
+                        other = receipt.Payment.Provision,
+                        total = receipt.Payment.TotalSum,
+                    });
                     foreach (var pos in receipt.Items)
-                    {
-                        using (var cmd = conn.CreateCommand())
+                        conn.Execute(ADD_POSITION, new
                         {
-                            cmd.CommandText = ADD_POSITION;
-                            cmd.Parameters.AddWithValue("name", pos.Name);
-                            cmd.Parameters.AddWithValue("payment", (int)pos.PayMethod);
-                            cmd.Parameters.AddWithValue("type", (int)pos.Type);
-                            cmd.Parameters.AddWithValue("tax", (int)pos.TaxRate);
-                            cmd.Parameters.AddWithValue("unit", (int?)pos.MeasureUnit);
-                            cmd.Parameters.AddWithValue("price", pos.Price);
-                            cmd.Parameters.AddWithValue("quantity", pos.Quantity);
-                            cmd.Parameters.AddWithValue("total", pos.Cost);
-                            cmd.Parameters.AddWithValue("receipt", id);
-                            cmd.ExecuteNonQuery();
-                        }
-                    }
+                            name = pos.Name,
+                            payment = (int)pos.PayMethod,
+                            type = (int)pos.Type,
+                            tax = (int)pos.TaxRate,
+                            unit = (int?)pos.MeasureUnit,
+                            price = pos.Price,
+                            quantity = pos.Quantity,
+                            total = pos.Cost,
+                            receipt = id,
+                        });
                 }
             }
             MessageBox.Show($"Чеки сохранены в {guid}.db");
