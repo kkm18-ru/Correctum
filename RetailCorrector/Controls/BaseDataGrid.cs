@@ -13,9 +13,14 @@ namespace RetailCorrector.Controls
             CanUserDeleteRows = CanUserReorderColumns =
                 CanUserResizeColumns = CanUserResizeRows =
                 CanUserSortColumns = CanUserAddRows = 
-                AutoGenerateColumns = false;            
-            HeadersVisibility = DataGridHeadersVisibility.Column;
+                AutoGenerateColumns = false;
+            EnableColumnVirtualization = EnableRowVirtualization = true;
             FontFamily = (FontFamily)Application.Current.Resources["jbmono"];
+            VirtualizingPanel.SetIsVirtualizing(this, true); 
+            VirtualizingPanel.SetIsVirtualizingWhenGrouping(this, true);
+            VirtualizingPanel.SetVirtualizationMode(this, VirtualizationMode.Recycling);
+            ScrollViewer.SetCanContentScroll(this, true); 
+            ScrollViewer.SetIsDeferredScrollingEnabled(this, true);
         }
 
         protected void AddStarColumn(string name, string binding, double min = 0, double stars = 1)

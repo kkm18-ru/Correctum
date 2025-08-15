@@ -1,5 +1,4 @@
 ﻿#pragma warning disable RC0001
-
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 #if DEBUG
@@ -17,6 +16,8 @@ namespace RetailCorrector.Parsers.Mock
 #if RELEASE
             yield break;
 #else
+            var parseInfo = new ParseInfo("Mock");
+            Workspace.Instance.ParserHistory.Add(parseInfo);
             var faker = new Faker();
             var count = faker.Random.UInt(1, 1000);
             for(var i = 0; i < count; i++)
@@ -65,7 +66,8 @@ namespace RetailCorrector.Parsers.Mock
                     DocSign = faker.Random.ULong(10000000, 99999999999),
                     Type = faker.Random.Enum<Operation>(),
                     Payment = payment,
-                    TotalSum = sum
+                    TotalSum = sum,
+                    ParseId = parseInfo.Id
                 };
             }
 #endif

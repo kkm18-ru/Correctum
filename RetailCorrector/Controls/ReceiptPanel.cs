@@ -4,7 +4,6 @@ using RetailCorrector.Utils;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
 using System.Windows.Media;
 using Xceed.Wpf.Toolkit;
@@ -192,7 +191,7 @@ namespace RetailCorrector.Controls
             for(var i = 0; i < addedCount; i++)
             {
                 var item = (DisplayReceipt)e.AddedCells[i * columnCount].Item;
-                var row = grid.Items.IndexOf(item);
+                var row = grid.Collection.IndexOf(item);
                 foreach (var p in @ref[row + _maxCount * (_index - 1)].Items)
                     PositionGrid.Instance.Collection.Add(new DisplayPostion(p, item));
             }
@@ -201,7 +200,7 @@ namespace RetailCorrector.Controls
             for (var i = 0; i < removedCount; i++)
             {
                 if (e.RemovedCells[i * columnCount].Item is not DisplayReceipt item) continue;
-                var row = grid.Items.IndexOf(item);
+                var row = grid.Collection.IndexOf(item);
                 var ps = PositionGrid.Instance.Collection.Where(p => p.Receipt == item.ToString()).ToArray();
                 for (var j = 0; j < ps.Length; j++)
                     PositionGrid.Instance.Collection.Remove(ps[j]);
@@ -211,13 +210,13 @@ namespace RetailCorrector.Controls
         private void Refresh(object? _ = null)
         {
             PositionGrid.Instance.Collection.Clear();
-            grid.Items.Clear();
+            grid.Collection.Clear();
             if (CachedCountPages == 0) return;
             if (Workspace.Instance.Receipts.Count == 0) return;
-            var page = Workspace.Instance.Receipts.Chunk(MaxCountReceipts).ToArray()[_index - 1];
+            var page = Workspace.Instance.Receipts.Skip(MaxCountReceipts * (_index - 1)).Take(MaxCountReceipts);
             foreach (var item in page)
-                grid.Items.Add(new DisplayReceipt(item));
-            grid.Items.Refresh();
+                grid.Collection.Add(new DisplayReceipt(item));
+            ((ListCollectionView)CollectionViewSource.GetDefaultView(grid.Collection)).Refresh();
         }
 
         public static void UpdateReceiptList()

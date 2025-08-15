@@ -73,13 +73,13 @@ namespace RetailCorrector.Parsers.Taxcom
             return new Guid(json["data"]["receiptId"].GetValue<string>());
         }
 
-        private async Task<Receipt> GetReceipt(HttpClient http, (string, int) docInfo)
+        private async Task<Receipt> GetReceipt(HttpClient http, (string, int) docInfo, Guid parseId)
         {
             var id = await GetReceiptId(http, docInfo);
             var uri = $"/api/cashdesk/documents/getTaggedReceipt?receiptGuid={id:D}";
             var resp = await http.GetStringAsync(uri);
             var json = JsonNode.Parse(resp)["data"]["Document"]["Value"].AsArray();
-            return ParseReceipt(json);
+            return ParseReceipt(json, parseId);
         }
     }
 }

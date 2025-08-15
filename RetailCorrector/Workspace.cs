@@ -5,6 +5,7 @@ namespace RetailCorrector
 {
     internal class Workspace
     {
+        public ObservableCollection<ParseInfo> ParserHistory { get; }
         public ObservableCollection<Receipt> Receipts { get; }
         public uint TaskId { get; set; }
 
@@ -12,6 +13,7 @@ namespace RetailCorrector
 
         private Workspace()
         {
+            ParserHistory = [];
             Receipts = [];
         }
 

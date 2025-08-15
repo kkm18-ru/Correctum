@@ -2,6 +2,8 @@
 {
     internal readonly struct DisplayReceipt(Receipt origin)
     {
+        public string Parse { get; } = Workspace.Instance.ParserHistory
+            .FirstOrDefault(p=>p.Id == origin.ParseId).ToString();
         public string Date { get; } = $"{origin.Created:yyyy'-'MM'-'dd' 'HH':'mm}";
         public string Sign { get; } = $"{origin.DocSign}";
         public string Type { get; } = origin.Type switch

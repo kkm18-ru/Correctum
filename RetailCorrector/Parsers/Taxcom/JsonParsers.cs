@@ -13,10 +13,10 @@ namespace RetailCorrector.Parsers.Taxcom
                     doc["documentNumber"].GetValue<int>());
         }
 
-        private static Receipt ParseReceipt(JsonArray arr)
+        private static Receipt ParseReceipt(JsonArray arr, Guid parseId)
         {
             var payment = new Payment();
-            var receipt = new Receipt();
+            var receipt = new Receipt { ParseId = parseId };
             var positions = new List<Position>();
             foreach (var tag in arr)
             {
