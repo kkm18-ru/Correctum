@@ -25,6 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Dapper" Version="2.1.66" />
 	  <PackageReference Include="Extended.Wpf.Toolkit" Version="4.7.25104.5739" />
 	  <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.8" />
 	  <PackageReference Include="Serilog" Version="4.3.0" />
