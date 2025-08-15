@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Data.Sqlite;
 using System.IO;
 using System.Windows;
@@ -78,7 +78,7 @@ namespace RetailCorrector.Actions.ExportReceipts
                         pre = receipt.Payment.Pre,
                         post = receipt.Payment.Post,
                         other = receipt.Payment.Provision,
-                        total = receipt.Payment.TotalSum,
+                        total = receipt.TotalSum,
                     });
                     foreach (var pos in receipt.Items)
                         conn.Execute(ADD_POSITION, new

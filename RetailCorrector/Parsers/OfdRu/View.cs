@@ -6,11 +6,8 @@ namespace RetailCorrector.Parsers.OfdRu
 {
     internal class OfdRuView : ParserView<OfdRuView, OfdRuPresenter>
     {
-        public OfdRuPresenter Presenter { get; } = new OfdRuPresenter();
-
         public OfdRuView()
         {
-            DataContext = Presenter;
             var content = new Grid();
 
             #region Столбцы

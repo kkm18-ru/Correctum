@@ -20,6 +20,10 @@
 		<ProjectReference Include="..\RetailCorrector.Analyzers\RetailCorrector.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+		<PackageReference Include="Bogus" Version="35.6.3" />
+	</ItemGroup>
+
 	<ItemGroup>
 	  <PackageReference Include="Dapper" Version="2.1.66" />
 	  <PackageReference Include="Extended.Wpf.Toolkit" Version="4.7.25104.5739" />
