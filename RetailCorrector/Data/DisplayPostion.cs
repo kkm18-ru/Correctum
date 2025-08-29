@@ -68,7 +68,7 @@ namespace RetailCorrector.Data
             Enums.TaxRate.Tax20     => "НДС 20%",
             _                       => "???",
         };
-        public string Price { get; } = $"{(origin.Price * 0.01):C2}";
+        public string Price { get; } = $"{(origin.Price * 0.01):F2}";
         public string Quantity { get; } = $"{(origin.Quantity * 0.001):F3}{origin.MeasureUnit switch
         {
             null                => "",
@@ -97,6 +97,6 @@ namespace RetailCorrector.Data
             MeasureUnit.TByte   => " Тбайт",
             _                   => " ???"
         }}";
-        public string Cost { get; } = $"{(origin.Cost * 0.01):C2}";
+        public string Cost { get; } = $"{(origin.Cost * 0.01):F2}";
     }
 }

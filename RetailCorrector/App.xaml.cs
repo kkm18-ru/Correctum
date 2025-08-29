@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
@@ -12,6 +13,7 @@ public partial class App : Application
 {
     public App()
     {
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
         LoadFonts();
         ConfigureLogger();
         Workspace.New();
