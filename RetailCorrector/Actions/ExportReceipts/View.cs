@@ -6,17 +6,17 @@ namespace RetailCorrector.Actions.ExportReceipts
 {
     internal class ExportReceiptsView : ActionView<ExportReceiptsView, ExportReceiptsPresenter>
     {
-        private readonly string[] Items = [ "SQLite", "Fptr-скрипт" ];
+        private readonly string[] Items = [ "SQLite", "Fptr-скрипт (ФФД 1.2)" ];
 
         public ExportReceiptsView()
         {
-            (Height, Width) = (22, 220);
+            (Height, Width) = (22, 300);
             var grid = new Grid();
             Content = grid;
 
-            grid.AddColumn(GridUnitType.Star, 6);
+            grid.AddColumn(GridUnitType.Pixel, 115);
             grid.AddColumn(GridUnitType.Pixel, 5);
-            grid.AddColumn(GridUnitType.Star, 5);
+            grid.AddColumn(GridUnitType.Star);
 
             grid.AddChild(new TextBlock()
             {
