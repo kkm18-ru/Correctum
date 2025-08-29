@@ -7,8 +7,11 @@ namespace RetailCorrector.UI
 {
     internal class ActionWindow : DialogWindow
     {
-        public ActionWindow(UserControl view) : 
-            this((IAction)view.DataContext) { }
+        public ActionWindow(UserControl view) :
+            this((IAction)view.DataContext)
+        {
+            ((StackPanel)Content).Children.Insert(0, view);
+        }
 
         public ActionWindow(IAction action)
         {
