@@ -16,12 +16,12 @@ namespace RetailCorrector.Data
             Enums.Operation.RefundOutcome => "Возврат расхода",
             _ => "???"
         };
-        public string Cash { get; } = $"{(origin.Payment.Cash * 0.01):C2}";
-        public string eCash { get; } = $"{(origin.Payment.ECash * 0.01):C2}";
-        public string PrePay { get; } = $"{(origin.Payment.Pre * 0.01):C2}";
-        public string PostPay { get; } = $"{(origin.Payment.Post * 0.01):C2}";
-        public string OtherPay { get; } = $"{(origin.Payment.Provision * 0.01):C2}";
-        public string Total { get; } = $"{(origin.TotalSum * 0.01):C2}";
+        public string Cash { get; } = $"{(origin.Payment.Cash * 0.01):F2}";
+        public string eCash { get; } = $"{(origin.Payment.ECash * 0.01):F2}";
+        public string PrePay { get; } = $"{(origin.Payment.Pre * 0.01):F2}";
+        public string PostPay { get; } = $"{(origin.Payment.Post * 0.01):F2}";
+        public string OtherPay { get; } = $"{(origin.Payment.Provision * 0.01):F2}";
+        public string Total { get; } = $"{(origin.TotalSum * 0.01):F2}";
 
         public Brush Background { get; } = origin.IsReadOnly switch
         {
