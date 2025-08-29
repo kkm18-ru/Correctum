@@ -1,4 +1,4 @@
-using Dapper;
+﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using System.IO;
 using System.Windows;
@@ -6,7 +6,7 @@ using System.Windows;
 namespace RetailCorrector.Actions.ExportReceipts
 {
     [RegisterAction("Экспорт чеков")]
-    internal class ExportReceipts : ActionPresenter<ExportReceipts>
+    internal partial class ExportReceiptsPresenter : ActionPresenter<ExportReceiptsPresenter, ExportReceiptsView>
     {
         const string CREATE_POSITION_TABLE = """
             CREATE TABLE position (
@@ -57,7 +57,7 @@ namespace RetailCorrector.Actions.ExportReceipts
         {
             var guid = Guid.CreateVersion7();
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RetailCorrector", $"{guid}.db");
-            if (!Directory.Exists(Path.GetDirectoryName(path))) 
+            if (!Directory.Exists(Path.GetDirectoryName(path)))
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
             using (var conn = new SqliteConnection($"Data Source = \"{path}\""))
             {
