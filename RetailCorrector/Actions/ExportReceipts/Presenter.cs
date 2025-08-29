@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace RetailCorrector.Actions.ExportReceipts
@@ -54,6 +55,24 @@ namespace RetailCorrector.Actions.ExportReceipts
             """;
 
         public override void Start()
+        {
+            switch (_type)
+            {
+                case Enums.ExportDestination.SQLite:
+                    SQLite();
+                    break;
+                case Enums.ExportDestination.FPTR:
+                    Fptr();
+                    break;
+            }
+        }
+
+        private void Fptr()
+        {
+
+        }
+
+        private void SQLite()
         {
             var guid = Guid.CreateVersion7();
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RetailCorrector", $"{guid}.db");
