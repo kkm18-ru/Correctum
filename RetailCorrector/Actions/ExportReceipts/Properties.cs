@@ -11,7 +11,7 @@ namespace RetailCorrector.Actions.ExportReceipts
             get => (int)_type;
             set
             {
-                if ((int)_type != value) return;
+                if ((int)_type == value) return;
                 _type = (ExportDestination)value;
                 OnPropertyChanged();
             }
