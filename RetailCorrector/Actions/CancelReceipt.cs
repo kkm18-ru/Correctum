@@ -1,12 +1,12 @@
-﻿using RetailCorrector.Controls;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
+using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 using System.Windows;
 
-namespace RetailCorrector.Actions.CancelReceipt
+namespace RetailCorrector.Actions
 {
     [RegisterAction("Генерация аннулирующих чеков")]
-    internal class CancelReceipt : ActionPresenter<CancelReceipt>
+    internal class CancelReceipt : ActionBase<CancelReceipt>
     {
         public override void Start()
         {
@@ -26,7 +26,7 @@ namespace RetailCorrector.Actions.CancelReceipt
                     DocSign = receipt.DocSign,
                     Items = (Position[])receipt.Items.Clone(),
                     Payment = receipt.Payment,
-                    Type = receipt.Type switch // todo в 1.05 in -> out -> in
+                    Type = receipt.Type switch
                     {
                         Enums.Operation.RefundOutcome => Enums.Operation.Outcome,
                         Enums.Operation.Outcome => Enums.Operation.RefundOutcome,

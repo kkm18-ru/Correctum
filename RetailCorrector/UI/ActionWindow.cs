@@ -1,0 +1,32 @@
+﻿using RetailCorrector.Actions;
+using RetailCorrector.UI.WindowTypes;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace RetailCorrector.UI
+{
+    internal class ActionWindow : DialogWindow
+    {
+        public ActionWindow(UserControl view) : 
+            this((IAction)view.DataContext) { }
+
+        public ActionWindow(IAction action)
+        {
+            SizeToContent = SizeToContent.WidthAndHeight;
+            var stack = new StackPanel { Margin = new(5, 5, 5, 10) };
+            var btn = new Button
+            {
+                Content = "  Выполнить  ",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new(0,5,0,-5)
+            };
+            btn.Click += (_, _) =>
+            {
+                action.Start();
+                Close();
+            };
+            stack.Children.Add(btn);
+            Content = stack;
+        }
+    }
+}

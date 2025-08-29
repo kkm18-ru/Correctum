@@ -43,7 +43,7 @@ namespace RetailCorrector.Generators
                 using RetailCorrector.Utils;
                 using System.Windows.Controls;
 
-                namespace RetailCorrector.Controls
+                namespace RetailCorrector.UI.Controls
                 {
                     internal partial class ActionMenuButton
                     {
@@ -57,11 +57,11 @@ namespace RetailCorrector.Generators
             foreach (var symb in arr)
             {
                 if (symb is not ITypeSymbol type || type.IsStatic || type.IsAbstract) continue;
-                if (!type.BaseType?.ToDisplayString().StartsWith("RetailCorrector.Actions.ActionPresenter") ?? true) continue;
+                if (!type.BaseType?.ToDisplayString().StartsWith("RetailCorrector.Actions.ActionBase") ?? true) continue;
                 if (!hash.Add(type.ToDisplayString())) continue;
                 var attr = type.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == "RetailCorrector.RegisterActionAttribute");
                 if(attr is null)
-                    debug.AppendLine(string.Format(TEMPLATE, type.Name.Replace("Presenter", ""), type.ToDisplayString()));
+                    debug.AppendLine(string.Format(TEMPLATE, type.Name, type.ToDisplayString()));
                 else builder.AppendLine(string.Format(TEMPLATE, attr?.ConstructorArguments[0].Value, type.ToDisplayString()));
             }
             debug.AppendLine("#endif");

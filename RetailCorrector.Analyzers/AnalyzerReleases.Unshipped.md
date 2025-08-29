@@ -5,5 +5,5 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-RC0001 | Интеграция | Warning | MissingDisplayNameIntegration
-RC0002 | Действие | Warning | MissingDisplayNameAction
+RC0001 | Интеграция | Warning | Integrations.MissingDisplayName
+RC0002 | Действие | Warning | Actions.MissingDisplayName

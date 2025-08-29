@@ -44,7 +44,7 @@ namespace RetailCorrector.Generators
         }
 
         private bool CheckBaseType(ITypeSymbol symbol, string @class) =>
-            symbol.BaseType?.ToDisplayString().StartsWith($"RetailCorrector.{@class}s.{@class}Presenter") ?? false;
+            symbol.BaseType?.ToDisplayString().StartsWith($"RetailCorrector.{@class}s.{@class}Base") ?? false;
 
         private void RegisterParsers(SourceProductionContext context, ImmutableArray<Item> array)
         {
@@ -53,7 +53,7 @@ namespace RetailCorrector.Generators
             builder.AppendLine("""
                                using System.Windows.Controls;
 
-                               namespace RetailCorrector.Parsers
+                               namespace RetailCorrector.UI
                                {
                                    internal partial class Parser
                                    {

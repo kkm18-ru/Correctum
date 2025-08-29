@@ -1,22 +1,20 @@
-﻿using RetailCorrector.Data;
+﻿using RetailCorrector.Attributes;
+using RetailCorrector.Data;
 using System.Collections.ObjectModel;
 
 namespace RetailCorrector
 {
-    internal class Workspace
+    [Singleton]
+    internal partial class Workspace
     {
         public ObservableCollection<ParseInfo> ParserHistory { get; }
         public ObservableCollection<Receipt> Receipts { get; }
         public uint TaskId { get; set; }
-
-        public static Workspace Instance { get; private set; }
 
         private Workspace()
         {
             ParserHistory = [];
             Receipts = [];
         }
-
-        public static void New() => Instance = new();
     }
 }

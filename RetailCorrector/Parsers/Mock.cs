@@ -5,11 +5,11 @@ using RetailCorrector.Enums;
 using Bogus;
 #endif
 
-namespace RetailCorrector.Parsers.Mock
+namespace RetailCorrector.Parsers
 {
-    internal sealed class MockView : ParserView<MockView, MockPresenter>;
+    internal sealed class MockView : ParserView<MockView, MockParser>;
 
-    internal partial class MockPresenter : ParserPresenter<MockPresenter, MockView>
+    internal partial class MockParser : ParserBase<MockParser, MockView>
     {
         public override async IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken)
         {

@@ -1,9 +1,9 @@
-﻿using RetailCorrector.Controls;
+﻿using RetailCorrector.UI.Controls;
 
 namespace RetailCorrector.Actions
 {
     [RegisterAction("Суммирование чеков")]
-    internal class SummaryReceipt : ActionPresenter<SummaryReceipt>
+    internal class SummaryReceipt : ActionBase<SummaryReceipt>
     {
         public override void Start()
         {

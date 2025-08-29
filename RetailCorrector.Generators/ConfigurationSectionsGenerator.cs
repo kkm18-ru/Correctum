@@ -33,11 +33,11 @@ namespace RetailCorrector.Generators
             builder.AppendLine("""
                                namespace RetailCorrector;
 
-                               internal static class Configurations
+                               internal static class Configuration
                                {
                                """);
             loadMethod.AppendLine("""
-                                      static Configurations()
+                                      static Configuration()
                                       {
                                           if (!Directory.Exists(DIRECTORY_NAME))
                                               Directory.CreateDirectory(DIRECTORY_NAME);
@@ -70,7 +70,7 @@ namespace RetailCorrector.Generators
                                    }
                                }
                                """);
-            context.AddSource("Configurations.g.cs", usings.ToString() + builder.ToString());
+            context.AddSource("Configuration.g.cs", usings.ToString() + builder.ToString());
         }
 
         private void AutoInterface(SourceProductionContext context, ITypeSymbol symbol)
