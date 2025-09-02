@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Data;
+﻿using RetailCorrector.Attributes;
+using RetailCorrector.Data;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 using System.Windows;

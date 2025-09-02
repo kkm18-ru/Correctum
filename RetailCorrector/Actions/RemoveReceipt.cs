@@ -1,4 +1,5 @@
-﻿using RetailCorrector.UI.Controls;
+﻿using RetailCorrector.Attributes;
+using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 
 namespace RetailCorrector.Actions

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
+using RetailCorrector.Attributes;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;

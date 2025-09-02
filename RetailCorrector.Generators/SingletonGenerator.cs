@@ -7,50 +7,38 @@ namespace RetailCorrector.Generators
     [Generator(LanguageNames.CSharp)]
     internal class SingletonGenerator : IIncrementalGenerator
     {
+        const string ATTRIBUTE = "RetailCorrector.Attributes.SingletonAttribute";
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            context.RegisterPostInitializationOutput(CreateAttribute);
             var classes = context.SyntaxProvider.CreateSyntaxProvider(
                 (node, _) => node is ClassDeclarationSyntax,
                 (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node));
             context.RegisterSourceOutput(classes, Generate);
         }
 
-        private void Generate(SourceProductionContext context, ISymbol symbol)
+        private static void Generate(SourceProductionContext context, ISymbol symbol)
         {
             var type = (ITypeSymbol)symbol;
-            if (type.GetAttributes().All(a => a.AttributeClass.ToDisplayString() != "RetailCorrector.Attributes.SingletonAttribute")) return;
+            if (type.GetAttributes().All(a => a.AttributeClass.ToDisplayString() != ATTRIBUTE)) return;
             context.AddSource($"{type.Name}.Singleton.g.cs",
                 $$"""
-                namespace {{type.ContainingNamespace.ToDisplayString()}}
+                namespace {{type.ContainingNamespace.ToDisplayString()}};
+
+                {{type.GetAccessModifier()}} partial class {{type.Name}}
                 {
-                    {{type.GetAccessModifier()}} partial class {{type.Name}}
+                    public static {{type.Name}} Instance
                     {
-                        public static {{type.Name}} Instance
+                        get
                         {
-                            get
-                            {
-                                if(_instance is null) 
-                                    _instance = new {{type.Name}}();
-                                return _instance;
-                            }
+                            if(_instance is null) 
+                                _instance = new {{type.Name}}();
+                            return _instance;
                         }
-                        private static {{type.Name}} _instance;
                     }
+                    private static {{type.Name}} _instance;
                 }
                 """);
         }
-
-        private static void CreateAttribute(IncrementalGeneratorPostInitializationContext ctx) =>
-            ctx.AddSource("SingletonAttribute.g.cs",
-                """
-                using System;
-
-                namespace RetailCorrector.Attributes
-                {
-                    [AttributeUsage(AttributeTargets.Class)]
-                    internal class SingletonAttribute : Attribute { }
-                }
-                """);
     }
 }

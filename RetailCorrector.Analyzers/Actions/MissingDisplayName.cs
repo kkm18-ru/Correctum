@@ -46,7 +46,7 @@ namespace RetailCorrector.Analyzers.Actions
                 return;
 
             var hasMyRequiredAttribute = classSymbol.GetAttributes()
-                .Any(attr => attr.AttributeClass?.ToDisplayString() == "RetailCorrector.RegisterActionAttribute");
+                .Any(attr => attr.AttributeClass?.ToDisplayString() == "RetailCorrector.Attributes.RegisterActionAttribute");
 
             if (!hasMyRequiredAttribute)
             {

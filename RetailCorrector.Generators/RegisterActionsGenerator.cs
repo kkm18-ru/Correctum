@@ -10,34 +10,20 @@ namespace RetailCorrector.Generators
     [Generator]
     internal class RegisterActionsGenerator : IIncrementalGenerator
     {
+        const string ATTRIBUTE = "RetailCorrector.Attributes.RegisterActionAttribute";
+        const string TEMPLATE = "Items.Add(new MenuItem {{ Header = \"{0}\", Command = new RelayCommand(_ => {1}.Show()) }});";
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            context.RegisterPostInitializationOutput(AttributeGenerate);
             var provider = context.SyntaxProvider.CreateSyntaxProvider(
                 (node, _) => node is ClassDeclarationSyntax,
                 (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node));
             context.RegisterSourceOutput(provider.Collect(), Generate);
         }
 
-        private void AttributeGenerate(IncrementalGeneratorPostInitializationContext ctx)
+        private static void Generate(SourceProductionContext ctx, ImmutableArray<ISymbol> arr)
         {
             var builder = new StringBuilder();
-            builder.AppendLine(
-                """
-                namespace RetailCorrector;
-                
-                [AttributeUsage(AttributeTargets.Class)]
-                internal class RegisterActionAttribute(string displayName) : Attribute;
-                """);
-            ctx.AddSource("RegisterActionAttribute.g.cs", builder.ToString());
-        }
-
-        private void Generate(SourceProductionContext ctx, ImmutableArray<ISymbol> arr)
-        {
-            const string TEMPLATE = "                Items.Add(new MenuItem {{ Header = \"{0}\", Command = new RelayCommand(_ => {1}.Show()) }});";
-
-            var builder = new StringBuilder();
-            var debug = new StringBuilder();
             builder.AppendLine(
                 """
                 using RetailCorrector.Utils;
@@ -52,6 +38,7 @@ namespace RetailCorrector.Generators
                             public ActionMenu()
                             {
                 """);
+            var debug = new StringBuilder();
             debug.AppendLine("#if DEBUG");
             var hash = new HashSet<string>();
             foreach (var symb in arr)
@@ -59,15 +46,15 @@ namespace RetailCorrector.Generators
                 if (symb is not ITypeSymbol type || type.IsStatic || type.IsAbstract) continue;
                 if (!type.BaseType?.ToDisplayString().StartsWith("RetailCorrector.Actions.ActionBase") ?? true) continue;
                 if (!hash.Add(type.ToDisplayString())) continue;
-                var attr = type.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == "RetailCorrector.RegisterActionAttribute");
+                var attr = type.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == ATTRIBUTE);
                 if(attr is null)
                     debug.AppendLine(string.Format(TEMPLATE, type.Name, type.ToDisplayString()));
                 else builder.AppendLine(string.Format(TEMPLATE, attr?.ConstructorArguments[0].Value, type.ToDisplayString()));
             }
-            debug.AppendLine("#endif");
             builder.AppendLine(debug.ToString());
             builder.AppendLine(
                 """
+                #endif
                             }
                         }
                     }
