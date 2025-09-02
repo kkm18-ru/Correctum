@@ -2,8 +2,9 @@
   <Configurations>
     <Platform Name="x86" />
   </Configurations>
-  <Folder Name="/Cake-файлы/">
-    <File Path="publish.cake" />
+  <Folder Name="/Элементы решения/">
+    <File Path="build.bat" />
+    <File Path="RetailCorrector.iss" />
   </Folder>
   <Project Path="RetailCorrector.Analyzers/RetailCorrector.Analyzers.csproj" />
   <Project Path="RetailCorrector.Generators/RetailCorrector.Generators.csproj" />
