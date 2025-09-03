@@ -2,23 +2,22 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using RetailCorrector.Generators;
 using System.Collections.Immutable;
 using System.Linq;
 
-namespace RetailCorrector.Analyzers.Integrations
+namespace RetailCorrector.Analyzers.Parsers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class MissingDisplayName : DiagnosticAnalyzer
     {
         private const string Title = "Неявная регистрация интеграции";
-        private const string MessageFormat = "У класса {0} отсутствует атрибут [RegisterIntegration]";
-        private const string Description = 
-            "Для добавления интеграции в Release-сборку нужно ее явно зарегистрировать, атрибутом [RegisterIntegration]";
+        private const string MessageFormat = "У класса {0} отсутствует атрибут [RegisterParser]";
+        private const string Description =
+            "Для добавления интеграции в Release-сборку нужно ее явно зарегистрировать, атрибутом [RegisterParser].";
 
         private readonly static DiagnosticDescriptor Rule = new(
-            DiagnosticIds.MissingDisplayNameIntegration,
-            Title, MessageFormat, DiagnosticCategories.Intergration,
+            DiagnosticIds.MissingDisplayNameParser,
+            Title, MessageFormat, DiagnosticCategories.Parser,
             DiagnosticSeverity.Warning, true, Description);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
@@ -42,12 +41,11 @@ namespace RetailCorrector.Analyzers.Integrations
                 return;
 
             var baseType = classSymbol.BaseType;
-            if (!baseType.ToDisplayString().StartsWith("RetailCorrector.Fiscals.FiscalBase") &&
-                !baseType.ToDisplayString().StartsWith("RetailCorrector.Parsers.ParserBase"))
+            if (!baseType.ToDisplayString().StartsWith("RetailCorrector.Parsers.ParserBase"))
                 return;
 
             var hasMyRequiredAttribute = classSymbol.GetAttributes()
-                .Any(attr => attr.AttributeClass?.ToDisplayString() == "RetailCorrector.RegisterIntegrationAttribute");
+                .Any(attr => attr.AttributeClass?.ToDisplayString() == "RetailCorrector.Attributes.RegisterParserAttribute");
 
             if (!hasMyRequiredAttribute)
             {

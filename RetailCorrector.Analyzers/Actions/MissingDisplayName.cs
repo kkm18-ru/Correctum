@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using RetailCorrector.Generators;
 using System.Collections.Immutable;
 using System.Linq;
 
@@ -14,7 +13,7 @@ namespace RetailCorrector.Analyzers.Actions
         private const string Title = "Неявная регистрация действия";
         private const string MessageFormat = "У класса {0} отсутствует атрибут [RegisterAction]";
         private const string Description =
-            "Для добавления действия в Release-сборку нужно ее явно зарегистрировать, атрибутом [RegisterAction]";
+            "Для добавления действия в Release-сборку нужно ее явно зарегистрировать, атрибутом [RegisterAction].";
 
         private readonly static DiagnosticDescriptor Rule = new(
             DiagnosticIds.MissingDisplayNameAction,
