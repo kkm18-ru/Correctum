@@ -21,7 +21,8 @@ namespace RetailCorrector.Generators
                 });
             var sources = context.SyntaxProvider.CreateSyntaxProvider(
                 (n, _) => n is ClassDeclarationSyntax,
-                (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node)).Collect().Combine(config);
+                (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node))
+                .Collect().Combine(config);
             context.RegisterSourceOutput(sources, (ctx, v) => Register(ctx, v.Left, v.Right));
         }
 
