@@ -9,7 +9,7 @@ DisableProgramGroupPage=yes
 OutputBaseFilename=RetailCorrector-{#AppVersion}
 SolidCompression=yes
 WizardStyle=modern
-OutputDir=TEMP
+OutputDir=.
 
 [Languages]
 Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
@@ -18,7 +18,7 @@ Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "TEMP\publish\*"; DestDir: "{app}"
+Source: "{#SourcePath}\*"; DestDir: "{app}"
 
 [Icons]
 Name: "{group}\RetailCorrector"; Filename: "{app}\RetailCorrector.exe"
