@@ -2,10 +2,11 @@
 using RetailCorrector.Data;
 using Dapper;
 using System.Runtime.CompilerServices;
+using RetailCorrector.Attributes;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterIntegration("Frontol xPOS")]
+    [RegisterParser("Frontol xPOS")]
     internal partial class FxPOS : ParserBase<FxPOS, FxPOS.View>
     {
         public override async IAsyncEnumerable<Receipt> Parse([EnumeratorCancellation] CancellationToken cancellationToken)

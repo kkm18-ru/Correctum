@@ -1,10 +1,11 @@
-﻿using RetailCorrector.Data;
+﻿using RetailCorrector.Attributes;
+using RetailCorrector.Data;
 using System.Net.Http;
 using System.Text.Json.Nodes;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterIntegration("Taxcom")]
+    [RegisterParser("Taxcom")]
     internal partial class Taxcom : ParserBase<Taxcom, Taxcom.View>
     {
         public override async IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken)

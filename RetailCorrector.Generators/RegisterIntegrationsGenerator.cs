@@ -14,7 +14,6 @@ namespace RetailCorrector.Generators
     {
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            context.RegisterPostInitializationOutput(GenerateAttribute);
             var sources = context.SyntaxProvider.CreateSyntaxProvider(
                 (n, _) => n is ClassDeclarationSyntax syntax,
                 (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node));
@@ -34,7 +33,7 @@ namespace RetailCorrector.Generators
                 if (hash.Add(type.ToDisplayString()))
                 {
                     string? displayName = null;
-                    if (type.GetAttributes().FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "RetailCorrector.RegisterIntegrationAttribute") is { } attr)
+                    if (type.GetAttributes().FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "RetailCorrector.Attributes.RegisterParserAttribute") is { } attr)
                         displayName = (string)attr.ConstructorArguments[0].Value!;
                     parsers.Add((type.ToDisplayString(), displayName));
                 }
@@ -76,14 +75,5 @@ namespace RetailCorrector.Generators
 
             context.AddSource("Parsers.g.cs", builder.ToString());
         }
-
-        private void GenerateAttribute(IncrementalGeneratorPostInitializationContext ctx) => 
-            ctx.AddSource("RegisterIntegrationAttribute.g.cs",
-                """
-                namespace RetailCorrector;
-
-                [AttributeUsage(AttributeTargets.Class)]
-                internal class RegisterIntegrationAttribute(string displayName) : Attribute;
-                """);
     }
 }

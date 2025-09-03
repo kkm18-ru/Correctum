@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Data;
+﻿using RetailCorrector.Attributes;
+using RetailCorrector.Data;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
@@ -6,7 +7,7 @@ using System.Windows;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterIntegration("OFD.ru (Петер-Сервис)")]
+    [RegisterParser("OFD.ru (Петер-Сервис)")]
     internal partial class OfdRu: ParserBase<OfdRu, OfdRu.View>
     {
         private string Url(DateTime date)
