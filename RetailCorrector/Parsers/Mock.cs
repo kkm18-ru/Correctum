@@ -1,4 +1,4 @@
-﻿#pragma warning disable RC0001
+﻿#pragma warning disable RC1000
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 #if DEBUG

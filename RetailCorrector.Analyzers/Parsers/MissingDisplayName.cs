@@ -10,15 +10,16 @@ namespace RetailCorrector.Analyzers.Parsers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class MissingDisplayName : DiagnosticAnalyzer
     {
-        private const string Title = "Неявная регистрация интеграции";
+        private const string Title = "Неявная регистрация парсера";
         private const string MessageFormat = "У класса {0} отсутствует атрибут [RegisterParser]";
         private const string Description =
-            "Для добавления интеграции в Release-сборку нужно ее явно зарегистрировать, атрибутом [RegisterParser].";
+            "Для добавления парсера в Release-сборку нужно ее явно зарегистрировать, атрибутом [RegisterParser].";
+        private const string HelpUri = "https://gitlab.com/ornaras/retailcorrector/-/wikis/analyzers-codes/rc1xxx#rc1000";
 
         private readonly static DiagnosticDescriptor Rule = new(
             DiagnosticIds.MissingDisplayNameParser,
             Title, MessageFormat, DiagnosticCategories.Parser,
-            DiagnosticSeverity.Warning, true, Description);
+            DiagnosticSeverity.Warning, true, Description, HelpUri);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
