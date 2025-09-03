@@ -22,12 +22,6 @@ namespace RetailCorrector.Parsers
                 content.AddColumn(GridUnitType.Pixel, 20);
                 #endregion
 
-                #region Строки
-                content.AddRow(GridUnitType.Pixel, 20);
-                content.AddRow(GridUnitType.Pixel, 5);
-                content.AddRow(GridUnitType.Pixel, 20);
-                #endregion
-
                 #region Ввод пути к базе
                 content.AddChild(new TextBlock { Text = "Путь к главной базе: " });
                 var tb = new TextBox();
