@@ -31,7 +31,7 @@ public partial class App : Application
 
     private void LoadFonts()
     {
-        var dir = Path.Combine(AppContext.BaseDirectory, "Resources", "Fonts");
+        var dir = Path.Combine(AppContext.BaseDirectory, "assets", "fonts");
         Resources.Add("jbmono", new FontFamily(new(Path.Combine(dir, "JetBrainsMono.ttf")), "#JetBrains Mono"));
     }
 }
