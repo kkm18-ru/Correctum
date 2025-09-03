@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Utils;
+﻿using RetailCorrector.Exports;
+using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -8,8 +9,6 @@ namespace RetailCorrector.Actions
     {
         internal class View : ActionView<View, ExportReceipts>
         {
-            private readonly string[] Items = ["SQLite", "Fptr-скрипт (ФФД 1.2)"];
-
             public View()
             {
                 (Height, Width) = (22, 300);
@@ -30,8 +29,12 @@ namespace RetailCorrector.Actions
 
             private ComboBox DrawSelector()
             {
-                var cb = new ComboBox { ItemsSource = Items };
-                cb.SetBinding(ComboBox.SelectedIndexProperty, nameof(Context.Type));
+                var cb = new ComboBox
+                {
+                    ItemsSource = ExportReceipts.Exporters,
+                    DisplayMemberPath = nameof(IExport.Name)
+                };
+                cb.SetBinding(ComboBox.SelectedValueProperty, nameof(Context.Exporter));
                 return cb;
             }
         }

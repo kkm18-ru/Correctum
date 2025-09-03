@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Enums;
+﻿using RetailCorrector.Exports;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -6,17 +6,19 @@ namespace RetailCorrector.Actions
 {
     internal partial class ExportReceipts : INotifyPropertyChanged
     {
-        public int Type
+        public IExport Exporter
         {
-            get => (int)_type;
+            get => _export;
             set
             {
-                if ((int)_type == value) return;
-                _type = (ExportDestination)value;
+                if (_export == value) return;
+                _export = value;
                 OnPropertyChanged();
             }
         }
-        private ExportDestination _type;
+        private IExport _export = Exporters[0];
+
+        public readonly static IExport[] Exporters = [ new Sqlite(), new Fptr() ];
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propName = "") =>
