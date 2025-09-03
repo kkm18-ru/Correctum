@@ -15,9 +15,9 @@
             where d.DOCUMENTSTATE = 1 and d.ECRDOCUMENTTYPE = 0 and tr.TRTYPE = 45 
             limit @limit offset @offset;
             """;
-        const string GET_POSITIONS = 
+        const string GET_POSITIONS =
             """
-            select             
+            select
                 cast(w.NAME as TEXT) as Name, 
                 cast(w.PAYMENT_TYPE as INTEGER) as PayMethod,
                 cast(w.ITEM_TYPE as INTEGER) as Type,
@@ -25,7 +25,8 @@
                 cast(tr.PRICE/100 as INTEGER) as Price,
                 cast(tr.QUANTITY/1000 as INTEGER) as Quantity,    
                 cast(w.MEASURE as INTEGER) as MeasureUnit,
-                cast(tr.TOTAL/100 as INTEGER) as Cost
+                cast(tr.TOTAL/100 as INTEGER) as Cost,
+                cast(w.MARKING as BOOLEAN) as HasMark
             from TRANSACTIONS as tr inner join WARE as w on w.CODE = tr.WARECODE
             where tr.TRTYPE in (6,16) and tr.DOCUMENTID = @Id;
             """;

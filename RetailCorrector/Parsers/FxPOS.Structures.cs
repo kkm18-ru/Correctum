@@ -24,6 +24,7 @@ namespace RetailCorrector.Parsers
             public ulong Quantity { get; set; }
             public int MeasureUnit { get; set; }
             public ulong Cost { get; set; }
+            public bool HasMark { get; set; }
 
             public static explicit operator Position(InnerPosition raw) => new()
             {
@@ -59,20 +60,22 @@ namespace RetailCorrector.Parsers
                     23 => Enums.MeasureUnit.Other,
                 },
                 PayMethod = (PayMethod)raw.PayMethod,
-                Type = raw.Type switch
+                Type = (raw.Type, raw.HasMark) switch
                 {
-                    1 => PositionType.Product,
-                    2 => PositionType.Excise,
-                    3 => PositionType.Work,
-                    4 => PositionType.Service,
-                    10 => PositionType.Payment,
-                    12 => PositionType.Other,
-                    13 => PositionType.Agent,
-                    14 => PositionType.Lottery,
-                    15 => PositionType.IntellectualProperty,
-                    16 => PositionType.Forfeit,
-                    17 => PositionType.ResortFee,
-                    18 => PositionType.FromBankAgent,
+                    (1, false) => PositionType.Product,
+                    (1, true) => PositionType.Mark,
+                    (2, false) => PositionType.Excise,
+                    (2, true) => PositionType.ExciseMark,
+                    (3, _) => PositionType.Work,
+                    (4, _) => PositionType.Service,
+                    (10, _) => PositionType.Payment,
+                    (12, _) => PositionType.Other,
+                    (13, _) => PositionType.Agent,
+                    (14, _) => PositionType.Lottery,
+                    (15, _) => PositionType.IntellectualProperty,
+                    (16, _) => PositionType.Forfeit,
+                    (17, _) => PositionType.ResortFee,
+                    (18, _) => PositionType.FromBankAgent,
                 },
                 TaxRate = raw.TaxRate switch
                 {
