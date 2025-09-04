@@ -89,34 +89,11 @@ namespace RetailCorrector.Parsers
             }
         }
 
-        public int CountDays
-        {
-            get => _days;
-            set
-            {
-                if (value <= 0) return;
-                _days = value;
-                OnPropertyChanged();
-            }
-        }
-        public int CurrentDayNumber
-        {
-            get => _day;
-            set
-            {
-                if (_day == value) return;
-                _day = value;
-                OnPropertyChanged();
-            }
-        }
-
         private DateTime _begin = DateTime.Today;
         private DateTime _end = DateTime.Today;
         private string _vatin = "";
         private string _deviceId = "";
         private string _token = "";
-        private int _days = 1;
-        private int _day = 0;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propName = "") =>

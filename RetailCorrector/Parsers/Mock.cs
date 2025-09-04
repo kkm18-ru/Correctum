@@ -11,11 +11,9 @@ namespace RetailCorrector.Parsers
 
     internal partial class MockParser : ParserBase<MockParser, MockView>
     {
-        public override async IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken)
+        public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken)
         {
-#if RELEASE
-            yield break;
-#else
+            progress.Report(-1);
             var parseInfo = new ParseInfo("Mock");
             Workspace.Instance.ParserHistory.Add(parseInfo);
             var faker = new Faker();
@@ -70,7 +68,7 @@ namespace RetailCorrector.Parsers
                     ParseId = parseInfo.Id
                 };
             }
-#endif
+            progress.Report(1);
         }
     }
 }

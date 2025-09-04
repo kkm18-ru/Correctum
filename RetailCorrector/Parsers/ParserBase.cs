@@ -7,11 +7,11 @@ namespace RetailCorrector.Parsers
         where TV : ParserView<TV, TP>, new()
     {
         public static TV ShowView() => new();
-        public abstract IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken);
+        public abstract IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken);
     }
 
     internal interface IParser
     {
-        IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken);
+        IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken);
     }
 }

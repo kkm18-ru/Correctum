@@ -8,7 +8,7 @@ namespace RetailCorrector.Parsers
     [RegisterParser("Taxcom")]
     internal partial class Taxcom : ParserBase<Taxcom, Taxcom.View>
     {
-        public override async IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken)
+        public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken)
         {
             var parseInfo = new ParseInfo("Taxcom", ("Логин", Login), ("РНМ", DeviceId), 
                 ("Начало", BeginDate.ToShortDateString()), ("Конец", EndDate.ToShortDateString()));

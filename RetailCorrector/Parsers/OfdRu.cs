@@ -17,19 +17,19 @@ namespace RetailCorrector.Parsers
                 $"AuthToken={Token}&dateFrom={dayText}T00:00:00&dateTo={dayText}T23:59:59";
         }
 
-        public override async IAsyncEnumerable<Receipt> Parse([EnumeratorCancellation] CancellationToken cancellationToken)
+        public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var parseInfo = new ParseInfo("OFD.ru", ("ИНН", Vatin), ("РНМ", DeviceId), 
                 ("Начало", BeginDate.ToShortDateString()), ("Конец", EndDate.ToShortDateString()));
             Workspace.Instance.ParserHistory.Add(parseInfo);
             using var http = new HttpClient();
-            CountDays = (int)(EndDate - BeginDate).TotalDays + 1;
+            progress.Report(-(int)(EndDate - BeginDate).TotalDays - 1);
             for (var day = BeginDate; day <= EndDate; day = day.AddDays(1))
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var array = await GetContent(http, day, cancellationToken);
-                CurrentDayNumber++;
-                if(array is null)
+                progress.Report((long)(day - BeginDate).TotalDays + 1);
+                if (array is null)
                 {
                     MessageBox.Show($"Не удалось получить чеки за {day:d}");
                     continue;
