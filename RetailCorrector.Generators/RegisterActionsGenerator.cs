@@ -7,7 +7,7 @@ using System.Text;
 
 namespace RetailCorrector.Generators
 {
-    [Generator]
+    [Generator(LanguageNames.CSharp)]
     internal class RegisterActionsGenerator : IIncrementalGenerator
     {
         const string ATTRIBUTE = "RetailCorrector.Attributes.RegisterActionAttribute";
@@ -21,17 +21,10 @@ namespace RetailCorrector.Generators
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            var config = context.AnalyzerConfigOptionsProvider
-                .Select((options, _) =>
-                {
-                    if (options.GlobalOptions.TryGetValue("build_property.Configuration", out var configuration))
-                        return configuration;
-                    return "Unknown";
-                });
             var provider = context.SyntaxProvider.CreateSyntaxProvider(
                 (node, _) => node is ClassDeclarationSyntax,
                 (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node))
-                .Collect().Combine(config);
+                .Collect().Combine(context.GetConfigurationName());
             context.RegisterSourceOutput(provider, (ctx, v) => Generate(ctx, v.Left, v.Right));
         }
 
