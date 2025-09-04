@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using RetailCorrector.UI;
 
 namespace RetailCorrector.Parsers
 {
@@ -6,7 +7,7 @@ namespace RetailCorrector.Parsers
         where TP : ParserBase<TP, TV>, new()
         where TV : ParserView<TV, TP>, new()
     {
-        public static TV ShowView() => new();
+        public static void Show() => new ParserWindow(new TV()).ShowDialog();
         public abstract IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken);
     }
 

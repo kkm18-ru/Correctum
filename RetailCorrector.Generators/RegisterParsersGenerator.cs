@@ -10,57 +10,63 @@ namespace RetailCorrector.Generators
     [Generator(LanguageNames.CSharp)]
     internal class RegisterParsersGenerator : IIncrementalGenerator
     {
+        const string ATTRIBUTE = "RetailCorrector.Attributes.RegisterParserAttribute";
+        const string TEMPLATE = """
+                            Items.Add(new MenuItem 
+                            {{ 
+                                Header = "{0}", 
+                                Command = new RelayCommand(_ => {1}.Show()) 
+                            }});
+            """;
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             var sources = context.SyntaxProvider.CreateSyntaxProvider(
                 (n, _) => n is ClassDeclarationSyntax,
                 (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node))
                 .Collect().Combine(context.GetConfigurationName());
-            context.RegisterSourceOutput(sources, (ctx, v) => Register(ctx, v.Left, v.Right));
+            context.RegisterSourceOutput(sources, (ctx, v) => Generate(ctx, v.Left, v.Right));
         }
 
-        private static void Register(SourceProductionContext context, ImmutableArray<ISymbol> array, string conf)
+        private static void Generate(SourceProductionContext ctx, ImmutableArray<ISymbol> arr, string conf)
         {
             var builder = new StringBuilder();
             builder.AppendLine(
                 """
+                using RetailCorrector.Utils;
                 using System.Windows.Controls;
 
-                namespace RetailCorrector.UI
+                namespace RetailCorrector.UI.Controls
                 {
-                    internal partial class Parser
+                    internal partial class ParserMenuButton
                     {
-                        public readonly static KeyValuePair<string, Func<Control>>[] Parsers = [
+                        private class ParserMenu : ContextMenu
+                        {
+                            public ParserMenu()
+                            {
                 """);
             var hash = new HashSet<string>();
-            foreach (var symb in array)
+            foreach (var symb in arr)
             {
-                if (symb is not ITypeSymbol type || type.IsAbstract || type.IsStatic) continue;
-                if (!type.BaseType?.ToDisplayString().StartsWith($"RetailCorrector.Parsers.ParserBase") ?? true)
-                    continue;
-                if (hash.Add(type.ToDisplayString()))
+                if (symb is not ITypeSymbol type || type.IsStatic || type.IsAbstract) continue;
+                if (!type.BaseType?.ToDisplayString().StartsWith("RetailCorrector.Parsers.ParserBase") ?? true) continue;
+                if (!hash.Add(type.ToDisplayString())) continue;
+                var attr = type.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == ATTRIBUTE);
+                if (attr is null)
                 {
-                    string displayName = null;
-                    if (type.GetAttributes().FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "RetailCorrector.Attributes.RegisterParserAttribute") is { } attr)
-                        displayName = (string)attr.ConstructorArguments[0].Value!;
-                    if(displayName is null)
-                    {
-                        if (conf.ToUpper() == "DEBUG")
-                        {
-                            var @class = type.ToDisplayString();
-                            var _displayName = @class.Split('.');
-                            builder.AppendLine($"            new(\"[DEBUG] {_displayName[_displayName.Length - 1].Replace("Presenter", "")}\", {@class}.ShowView),");
-                        }
-                    }else builder.AppendLine($"            new(\"{displayName}\", {type.ToDisplayString()}.ShowView),");
+                    if (conf.ToUpper() == "DEBUG")
+                        builder.AppendLine(string.Format(TEMPLATE, type.Name, type.ToDisplayString()));
                 }
+                else builder.AppendLine(string.Format(TEMPLATE, attr?.ConstructorArguments[0].Value, type.ToDisplayString()));
             }
-            builder.AppendLine($$"""
-                                       ];
-                                   }
-                               }
-                               """);
-
-            context.AddSource("Parsers.g.cs", builder.ToString());
+            builder.AppendLine(
+                """
+                            }
+                        }
+                    }
+                }
+                """);
+            ctx.AddSource("ParsersMenu.g.cs", builder.ToString());
         }
     }
 }
