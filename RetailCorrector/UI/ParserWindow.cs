@@ -65,6 +65,7 @@ namespace RetailCorrector.UI
             btn.Click += async (_, _) =>
             {
                 cts = new CancellationTokenSource();
+                Workspace.Instance.ParserHistory.Add(parser.GenerateInfo());
                 try
                 {
                     await foreach (var receipt in parser.Parse(progress, cts.Token))

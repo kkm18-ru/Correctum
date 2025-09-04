@@ -9,11 +9,12 @@ namespace RetailCorrector.Parsers
 {
     internal partial class MockParser : ParserBase<MockParser>
     {
+        public override ParseInfo GenerateInfo() =>
+            parseInfo = new ParseInfo("Mock");
+
         public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken)
         {
-            progress.Report(-1);
-            var parseInfo = new ParseInfo("Mock");
-            Workspace.Instance.ParserHistory.Add(parseInfo);
+            progress.Report(-1);            
             var faker = new Faker();
             var count = faker.Random.UInt(1, 1000);
             for(var i = 0; i < count; i++)

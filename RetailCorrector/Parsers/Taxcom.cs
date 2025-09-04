@@ -8,11 +8,15 @@ namespace RetailCorrector.Parsers
     [RegisterParser("Taxcom")]
     internal partial class Taxcom : ParserBase<Taxcom, Taxcom.View>
     {
+        public override ParseInfo GenerateInfo() =>
+            parseInfo = new ParseInfo("Taxcom",
+                ("Логин", Login),
+                ("РНМ", DeviceId),
+                ("Начало", BeginDate.ToShortDateString()),
+                ("Конец", EndDate.ToShortDateString()));
+
         public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken)
         {
-            var parseInfo = new ParseInfo("Taxcom", ("Логин", Login), ("РНМ", DeviceId), 
-                ("Начало", BeginDate.ToShortDateString()), ("Конец", EndDate.ToShortDateString()));
-            Workspace.Instance.ParserHistory.Add(parseInfo);
             using var http = new HttpClient() 
             { 
                 BaseAddress = new Uri("https://lk-ofd.taxcom.ru") 

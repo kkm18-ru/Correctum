@@ -10,6 +10,13 @@ namespace RetailCorrector.Parsers
     [RegisterParser("OFD.ru (Петер-Сервис)")]
     internal partial class OfdRu: ParserBase<OfdRu, OfdRu.View>
     {
+        public override ParseInfo GenerateInfo() =>
+            parseInfo = new ParseInfo("OFD.ru", 
+                ("ИНН", Vatin), 
+                ("РНМ", DeviceId),
+                ("Начало", BeginDate.ToShortDateString()), 
+                ("Конец", EndDate.ToShortDateString()));
+
         private string Url(DateTime date)
         {
             var dayText = date.ToString("yyyy'-'MM'-'dd");
@@ -19,9 +26,6 @@ namespace RetailCorrector.Parsers
 
         public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            var parseInfo = new ParseInfo("OFD.ru", ("ИНН", Vatin), ("РНМ", DeviceId), 
-                ("Начало", BeginDate.ToShortDateString()), ("Конец", EndDate.ToShortDateString()));
-            Workspace.Instance.ParserHistory.Add(parseInfo);
             using var http = new HttpClient();
             progress.Report(-(int)(EndDate - BeginDate).TotalDays - 1);
             for (var day = BeginDate; day <= EndDate; day = day.AddDays(1))

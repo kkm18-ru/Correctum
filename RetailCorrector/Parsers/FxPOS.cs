@@ -1,18 +1,19 @@
-﻿using Microsoft.Data.Sqlite;
-using RetailCorrector.Data;
-using Dapper;
-using System.Runtime.CompilerServices;
+﻿using Dapper;
+using Microsoft.Data.Sqlite;
 using RetailCorrector.Attributes;
+using RetailCorrector.Data;
+using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Parsers
 {
     [RegisterParser("Frontol xPOS")]
     internal partial class FxPOS : ParserBase<FxPOS, FxPOS.View>
     {
+        public override ParseInfo GenerateInfo() =>
+            parseInfo = new ParseInfo("Frontol xPOS", ("Путь", Path));
+
         public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            var parseInfo = new ParseInfo("Frontol xPOS", ("Путь", Path));
-            Workspace.Instance.ParserHistory.Add(parseInfo);
             using var conn = new SqliteConnection($"Data Source={Path};Mode=ReadOnly");
             var count = await conn.ExecuteScalarAsync<int>(COUNT_RECEIPTS);
             progress.Report(-count);
