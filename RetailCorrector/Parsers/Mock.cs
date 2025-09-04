@@ -7,9 +7,7 @@ using Bogus;
 
 namespace RetailCorrector.Parsers
 {
-    internal sealed class MockView : ParserView<MockView, MockParser>;
-
-    internal partial class MockParser : ParserBase<MockParser, MockView>
+    internal partial class MockParser : ParserBase<MockParser>
     {
         public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken)
         {
