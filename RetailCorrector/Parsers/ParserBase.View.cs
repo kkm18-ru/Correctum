@@ -10,6 +10,7 @@ namespace RetailCorrector.Parsers
 
         protected ParserView()
         {
+            Margin = new System.Windows.Thickness(0, 0, 0, 5);
             DataContext = new TP();
         }
     }
