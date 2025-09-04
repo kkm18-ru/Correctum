@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Parsers;
+using RetailCorrector.UI.Controls;
 using RetailCorrector.UI.WindowTypes;
 using RetailCorrector.Utils;
 using System.Windows;
@@ -64,8 +65,29 @@ namespace RetailCorrector.UI
             btn.Click += async (_, _) =>
             {
                 cts = new CancellationTokenSource();
-                await foreach (var p in parser.Parse(progress, cts.Token)) ;
-                Close();
+                try
+                {
+                    await foreach (var receipt in parser.Parse(progress, cts.Token))
+                        Workspace.Instance.Receipts.Add(receipt);
+                    cts.Dispose();
+                    Close();
+                    ReceiptPanel.UpdateReceiptList();
+                }
+                catch (Exception e)
+                {
+                    if (e is OperationCanceledException || e is TaskCanceledException)
+                    {
+                        var lastParse = Workspace.Instance.ParserHistory[^1];
+                        for (var i = Workspace.Instance.Receipts.Count - 1; i >= 0; i--)
+                        {
+                            if (Workspace.Instance.Receipts[i].ParseId == lastParse.Id)
+                                Workspace.Instance.Receipts.RemoveAt(i);
+                        }
+                        Workspace.Instance.ParserHistory.Remove(lastParse);
+                        MessageBox.Show("Выгрузка чеков была отменена пользователем");
+                    }
+                    else throw;
+                }
             };
             grid.AddChild(btn,2);
 
