@@ -1,6 +1,8 @@
 ﻿using RetailCorrector.Utils;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using Xceed.Wpf.Toolkit;
 
 namespace RetailCorrector.Parsers
 {
@@ -38,14 +40,30 @@ namespace RetailCorrector.Parsers
                 #endregion
 
                 #region Ввод
-                var dp = new DatePicker { DisplayDateStart = new DateTime(2020, 1, 1) };
-                dp.SetBinding(DatePicker.SelectedDateProperty, nameof(Presenter.BeginDate));
-                dp.SetBinding(DatePicker.DisplayDateEndProperty, nameof(Presenter.EndDate));
+                var dp = new DateTimePicker
+                {
+                    Minimum = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                    Format = DateTimeFormat.ShortDate,
+                    CultureInfo = CultureInfo.GetCultureInfo("ru-RU"),
+                    TimePickerVisibility = Visibility.Collapsed,
+                    ShowButtonSpinner = false,
+                    ShowDropDownButton = false
+                };
+                dp.SetBinding(DateTimePicker.ValueProperty, nameof(Presenter.BeginDate));
+                dp.SetBinding(DateTimePicker.MaximumProperty, nameof(Presenter.EndDate));
                 content.AddChild(dp, 2);
 
-                dp = new DatePicker { DisplayDateStart = DateTime.Today };
-                dp.SetBinding(DatePicker.SelectedDateProperty, nameof(Presenter.EndDate));
-                dp.SetBinding(DatePicker.DisplayDateStartProperty, nameof(Presenter.BeginDate));
+                dp = new DateTimePicker
+                { 
+                    Minimum = DateTime.Today,
+                    Format = DateTimeFormat.ShortDate,
+                    CultureInfo = CultureInfo.GetCultureInfo("ru-RU"),
+                    TimePickerVisibility = Visibility.Collapsed,
+                    ShowButtonSpinner = false,
+                    ShowDropDownButton = false
+                };
+                dp.SetBinding(DateTimePicker.ValueProperty, nameof(Presenter.EndDate));
+                dp.SetBinding(DateTimePicker.MinimumProperty, nameof(Presenter.BeginDate));
                 content.AddChild(dp, 2, 2);
 
                 var tb = new TextBox();
