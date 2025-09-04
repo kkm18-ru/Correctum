@@ -21,7 +21,7 @@ namespace RetailCorrector.Parsers
             {
                 progress.Report(i);
                 cancellationToken.ThrowIfCancellationRequested();
-                var docs = (await conn.QueryAsync<Document>(GET_RECEIPTS, new { limit = LIMIT, offset = i })).ToArray();
+                var docs = (await Task.Run(() => conn.QueryAsync<Document>(GET_RECEIPTS, new { limit = LIMIT, offset = i }))).ToArray();
                 for(var j = 0; j < docs.Length; j++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -29,11 +29,11 @@ namespace RetailCorrector.Parsers
                     yield return new()
                     {
                         ParseId = parseInfo.Id,
-                        Items = [.. (await conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j])).Select(i => (Position)i)],
+                        Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => (Position)i)],
                         Created = docs[j].Date,
                         DocSign = docs[j].Sign,
                         TotalSum = docs[j].Total,
-                        Payment = await conn.QuerySingleAsync<Payment>(GET_PAYMENT, docs[j]),
+                        Payment = await Task.Run(() => conn.QuerySingleAsync<Payment>(GET_PAYMENT, docs[j])),
                         Type = docs[j].Type switch
                         {
                             0 or 19 => Enums.Operation.Income,
