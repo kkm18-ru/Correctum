@@ -1,4 +1,4 @@
-﻿#pragma warning disable RC0001
+﻿#pragma warning disable RC1000
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 #if DEBUG
@@ -7,17 +7,14 @@ using Bogus;
 
 namespace RetailCorrector.Parsers
 {
-    internal sealed class MockView : ParserView<MockView, MockParser>;
-
-    internal partial class MockParser : ParserBase<MockParser, MockView>
+    internal partial class MockParser : ParserBase<MockParser>
     {
-        public override async IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken)
+        public override ParseInfo GenerateInfo() =>
+            parseInfo = new ParseInfo("Mock");
+
+        public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken)
         {
-#if RELEASE
-            yield break;
-#else
-            var parseInfo = new ParseInfo("Mock");
-            Workspace.Instance.ParserHistory.Add(parseInfo);
+            progress.Report(-1);            
             var faker = new Faker();
             var count = faker.Random.UInt(1, 1000);
             for(var i = 0; i < count; i++)
@@ -70,7 +67,7 @@ namespace RetailCorrector.Parsers
                     ParseId = parseInfo.Id
                 };
             }
-#endif
+            progress.Report(1);
         }
     }
 }

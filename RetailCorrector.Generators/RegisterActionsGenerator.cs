@@ -7,21 +7,28 @@ using System.Text;
 
 namespace RetailCorrector.Generators
 {
-    [Generator]
+    [Generator(LanguageNames.CSharp)]
     internal class RegisterActionsGenerator : IIncrementalGenerator
     {
         const string ATTRIBUTE = "RetailCorrector.Attributes.RegisterActionAttribute";
-        const string TEMPLATE = "Items.Add(new MenuItem {{ Header = \"{0}\", Command = new RelayCommand(_ => {1}.Show()) }});";
+        const string TEMPLATE = """
+                            Items.Add(new MenuItem 
+                            {{ 
+                                Header = "{0}", 
+                                Command = new RelayCommand(_ => {1}.Show()) 
+                            }});
+            """;
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             var provider = context.SyntaxProvider.CreateSyntaxProvider(
                 (node, _) => node is ClassDeclarationSyntax,
-                (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node));
-            context.RegisterSourceOutput(provider.Collect(), Generate);
+                (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node))
+                .Collect().Combine(context.GetConfigurationName());
+            context.RegisterSourceOutput(provider, (ctx, v) => Generate(ctx, v.Left, v.Right));
         }
 
-        private static void Generate(SourceProductionContext ctx, ImmutableArray<ISymbol> arr)
+        private static void Generate(SourceProductionContext ctx, ImmutableArray<ISymbol> arr, string conf)
         {
             var builder = new StringBuilder();
             builder.AppendLine(
@@ -38,8 +45,6 @@ namespace RetailCorrector.Generators
                             public ActionMenu()
                             {
                 """);
-            var debug = new StringBuilder();
-            debug.AppendLine("#if DEBUG");
             var hash = new HashSet<string>();
             foreach (var symb in arr)
             {
@@ -48,13 +53,14 @@ namespace RetailCorrector.Generators
                 if (!hash.Add(type.ToDisplayString())) continue;
                 var attr = type.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == ATTRIBUTE);
                 if(attr is null)
-                    debug.AppendLine(string.Format(TEMPLATE, type.Name, type.ToDisplayString()));
+                {
+                    if(conf.ToUpper() == "DEBUG")
+                        builder.AppendLine(string.Format(TEMPLATE, type.Name, type.ToDisplayString()));
+                }
                 else builder.AppendLine(string.Format(TEMPLATE, attr?.ConstructorArguments[0].Value, type.ToDisplayString()));
             }
-            builder.AppendLine(debug.ToString());
             builder.AppendLine(
                 """
-                #endif
                             }
                         }
                     }

@@ -1,17 +1,22 @@
-﻿using RetailCorrector.Data;
+﻿using RetailCorrector.Attributes;
+using RetailCorrector.Data;
 using System.Net.Http;
 using System.Text.Json.Nodes;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterIntegration("Taxcom")]
+    [RegisterParser("Taxcom")]
     internal partial class Taxcom : ParserBase<Taxcom, Taxcom.View>
     {
-        public override async IAsyncEnumerable<Receipt> Parse(CancellationToken cancellationToken)
+        public override ParseInfo GenerateInfo() =>
+            parseInfo = new ParseInfo("Taxcom",
+                ("Логин", Login),
+                ("РНМ", DeviceId),
+                ("Начало", BeginDate.ToShortDateString()),
+                ("Конец", EndDate.ToShortDateString()));
+
+        public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken)
         {
-            var parseInfo = new ParseInfo("Taxcom", ("Логин", Login), ("РНМ", DeviceId), 
-                ("Начало", BeginDate.ToShortDateString()), ("Конец", EndDate.ToShortDateString()));
-            Workspace.Instance.ParserHistory.Add(parseInfo);
             using var http = new HttpClient() 
             { 
                 BaseAddress = new Uri("https://lk-ofd.taxcom.ru") 

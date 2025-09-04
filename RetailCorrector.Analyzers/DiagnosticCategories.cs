@@ -1,8 +1,8 @@
-﻿namespace RetailCorrector.Generators
+﻿namespace RetailCorrector.Analyzers
 {
     internal static class DiagnosticCategories
     {
-        public const string Intergration = "Интеграция";
+        public const string Parser = "Парсер";
         public const string Action = "Действие";
     }
 }

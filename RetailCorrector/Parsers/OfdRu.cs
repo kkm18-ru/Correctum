@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Data;
+﻿using RetailCorrector.Attributes;
+using RetailCorrector.Data;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
@@ -6,9 +7,16 @@ using System.Windows;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterIntegration("OFD.ru (Петер-Сервис)")]
+    [RegisterParser("OFD.ru (Петер-Сервис)")]
     internal partial class OfdRu: ParserBase<OfdRu, OfdRu.View>
     {
+        public override ParseInfo GenerateInfo() =>
+            parseInfo = new ParseInfo("OFD.ru", 
+                ("ИНН", Vatin), 
+                ("РНМ", DeviceId),
+                ("Начало", BeginDate.ToShortDateString()), 
+                ("Конец", EndDate.ToShortDateString()));
+
         private string Url(DateTime date)
         {
             var dayText = date.ToString("yyyy'-'MM'-'dd");
@@ -16,19 +24,16 @@ namespace RetailCorrector.Parsers
                 $"AuthToken={Token}&dateFrom={dayText}T00:00:00&dateTo={dayText}T23:59:59";
         }
 
-        public override async IAsyncEnumerable<Receipt> Parse([EnumeratorCancellation] CancellationToken cancellationToken)
+        public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            var parseInfo = new ParseInfo("OFD.ru", ("ИНН", Vatin), ("РНМ", DeviceId), 
-                ("Начало", BeginDate.ToShortDateString()), ("Конец", EndDate.ToShortDateString()));
-            Workspace.Instance.ParserHistory.Add(parseInfo);
             using var http = new HttpClient();
-            CountDays = (int)(EndDate - BeginDate).TotalDays + 1;
+            progress.Report(-(int)(EndDate - BeginDate).TotalDays - 1);
             for (var day = BeginDate; day <= EndDate; day = day.AddDays(1))
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var array = await GetContent(http, day, cancellationToken);
-                CurrentDayNumber++;
-                if(array is null)
+                progress.Report((long)(day - BeginDate).TotalDays + 1);
+                if (array is null)
                 {
                     MessageBox.Show($"Не удалось получить чеки за {day:d}");
                     continue;

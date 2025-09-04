@@ -14,5 +14,13 @@ namespace RetailCorrector.Generators
             Accessibility.Public => "public",
             _ => throw new NotSupportedException(),
         };
+
+        public static IncrementalValueProvider<string> GetConfigurationName(this IncrementalGeneratorInitializationContext ctx) =>
+            ctx.AnalyzerConfigOptionsProvider.Select((options, _) =>
+            {
+                if (options.GlobalOptions.TryGetValue("build_property.Configuration", out var configuration))
+                    return configuration;
+                return "Unknown";
+            });
     }
 }
