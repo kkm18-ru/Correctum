@@ -14,7 +14,7 @@ namespace RetailCorrector.Analyzers.Actions
         private const string MessageFormat = "У класса {0} отсутствует атрибут [RegisterAction]";
         private const string Description =
             "Для добавления действия в Release-сборку нужно ее явно зарегистрировать, атрибутом [RegisterAction].";
-        private const string HelpUri = "https://gitlab.com/ornaras/retailcorrector/-/wikis/analyzers/action#rc2000";
+        private const string HelpUri = "https://gitlab.com/ornaras/retailcorrector/-/wikis/analyzers/2-action#rc2000";
 
         private readonly static DiagnosticDescriptor Rule = new(
             DiagnosticIds.MissingDisplayNameAction,

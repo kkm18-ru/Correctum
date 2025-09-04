@@ -14,7 +14,7 @@ namespace RetailCorrector.Analyzers.Parsers
         private const string MessageFormat = "У класса {0} отсутствует атрибут [RegisterParser]";
         private const string Description =
             "Для добавления парсера в Release-сборку нужно ее явно зарегистрировать, атрибутом [RegisterParser].";
-        private const string HelpUri = "https://gitlab.com/ornaras/retailcorrector/-/wikis/analyzers/parser#rc1000";
+        private const string HelpUri = "https://gitlab.com/ornaras/retailcorrector/-/wikis/analyzers/1-parser#rc1000";
 
         private readonly static DiagnosticDescriptor Rule = new(
             DiagnosticIds.MissingDisplayNameParser,

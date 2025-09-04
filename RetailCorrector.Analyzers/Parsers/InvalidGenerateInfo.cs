@@ -13,7 +13,7 @@ namespace RetailCorrector.Analyzers.Parsers
         private const string Title = "Некорректная генерация информации о парсинге";
         private const string MessageFormat = "Некорректно реализован метод GenerateInfo";
         private const string Description = "При генерации информации о парсинге нужно сохранять ее в поле parseInfo.";
-        private const string HelpUri = "https://gitlab.com/ornaras/retailcorrector/-/wikis/analyzers/parser#rc1001";
+        private const string HelpUri = "https://gitlab.com/ornaras/retailcorrector/-/wikis/analyzers/1-parser#rc1001";
 
         private readonly static DiagnosticDescriptor Rule = new(
             DiagnosticIds.InvalidGenerateInfoParser,
