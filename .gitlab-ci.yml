@@ -9,4 +9,4 @@ build-to-tg:
     - dotnet9
     - inno-setup
   script:
-    - build.bat $CI_COMMIT_TAG $TELEGRAM_TOKEN $TELEGRAM_CHATID
+    - ./build.bat $CI_COMMIT_TAG $TELEGRAM_TOKEN $TELEGRAM_CHATID
