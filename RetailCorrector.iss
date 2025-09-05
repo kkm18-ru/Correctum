@@ -9,7 +9,7 @@ DisableProgramGroupPage=yes
 OutputBaseFilename=RetailCorrector-{#AppVersion}
 SolidCompression=yes
 WizardStyle=modern
-OutputDir=.
+OutputDir={#OutDir}
 
 [Languages]
 Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
