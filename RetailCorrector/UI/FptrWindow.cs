@@ -9,7 +9,21 @@ namespace RetailCorrector.UI
 {
     internal class FptrWindow : DialogWindow
     {
+        public int ProgressValue
+        {
+            get => _progressValue;
+            set
+            {
+                if (_progressValue != value) return;
+                _barProgress.Value = _progressValue = value;                
+                _txtProgress.Text = $"{_barProgress.Value} / {_barProgress.Maximum}";
+            }
+        }
+
+        private int _progressValue;
         private readonly Fptr _driver;
+        private readonly TextBlock _txtProgress;
+        private readonly ProgressBar _barProgress;
 
         public FptrWindow()
         {
@@ -24,7 +38,16 @@ namespace RetailCorrector.UI
             grid.AddColumn(GridUnitType.Pixel, 5);
             grid.AddColumn(GridUnitType.Star);
 
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+
             grid.AddChild(CreateConfigurationButton(), dx: 3);
+
+            _barProgress = CreateProgress();
+            grid.AddChild(_barProgress, 0, 2, 3);
+            _txtProgress = CreateProgressLabel();
+            grid.AddChild(_txtProgress, 0, 2, 3);
 
             Content = grid;
         }
@@ -35,10 +58,23 @@ namespace RetailCorrector.UI
             {
                 Content = "  Настройка драйвера  "
             };
-            btn.Click += (_, _) =>  _driver.showProperties(0, 
+            btn.Click += (_, _) => _driver.showProperties(0, 
                 new WindowInteropHelper(MainWindow.Instance).EnsureHandle());
             return btn;
         }
+
+        private static ProgressBar CreateProgress() => new()
+        {
+            Value = 0, 
+            Maximum = Math.Max(Workspace.Instance.Receipts.Count, 1)
+        };
+
+        private TextBlock CreateProgressLabel() => new()
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Text = $"0 / {_barProgress.Maximum}"
+        };
 
         protected override void OnClosed(EventArgs e)
         {
