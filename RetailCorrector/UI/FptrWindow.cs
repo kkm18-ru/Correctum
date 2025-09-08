@@ -24,6 +24,9 @@ namespace RetailCorrector.UI
         private readonly Fptr _driver;
         private readonly TextBlock _txtProgress;
         private readonly ProgressBar _barProgress;
+        private readonly Button _btnStart;
+        private readonly Button _btnCancel;
+        private CancellationTokenSource? cts;
 
         public FptrWindow()
         {
@@ -41,6 +44,8 @@ namespace RetailCorrector.UI
             grid.AddRow(GridUnitType.Pixel, 22);
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
 
             grid.AddChild(CreateConfigurationButton(), dx: 3);
 
@@ -48,6 +53,11 @@ namespace RetailCorrector.UI
             grid.AddChild(_barProgress, 0, 2, 3);
             _txtProgress = CreateProgressLabel();
             grid.AddChild(_txtProgress, 0, 2, 3);
+
+            _btnStart = CreateStart();
+            grid.AddChild(_btnStart, y: 4);
+            _btnCancel = CreateCancel();
+            grid.AddChild(_btnCancel, 2, 4);
 
             Content = grid;
         }
@@ -76,8 +86,62 @@ namespace RetailCorrector.UI
             Text = $"0 / {_barProgress.Maximum}"
         };
 
+        private Button CreateStart()
+        {
+            var btn = new Button
+            {
+                Content = "Запуск"
+            };
+            btn.Click += (_, _) =>
+            {
+                _btnCancel.IsEnabled = true;
+                _btnStart.IsEnabled = false;
+                cts = new CancellationTokenSource();
+                new Thread(() => ProcessingReceipts(cts.Token)) { IsBackground = true }.Start();
+            };
+            return btn;
+        }
+
+        private Button CreateCancel()
+        {
+            var btn = new Button
+            {
+                Content = "Отмена",
+                IsEnabled = false
+            };
+            btn.Click += (_, _) =>
+            {
+                _btnCancel.IsEnabled = false;
+                _btnStart.IsEnabled = true;
+                cts?.Cancel();
+                cts?.Dispose();
+            };
+            return btn;
+        }
+
+        private void ProcessingReceipts(CancellationToken token)
+        {
+            try
+            {
+                _driver.open();
+                Dispatcher.Invoke(() => ProgressValue = 0);
+                foreach (var receipt in Workspace.Instance.Receipts)
+                {
+                    token.ThrowIfCancellationRequested();
+
+                    Dispatcher.Invoke(() => ProgressValue++);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                _driver.cancelReceipt();
+                _driver.close();
+            }
+        }
+
         protected override void OnClosed(EventArgs e)
         {
+            _driver.cancelReceipt();
             _driver.close();
             _driver.destroy();
         }
