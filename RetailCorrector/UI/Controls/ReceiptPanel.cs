@@ -177,6 +177,13 @@ namespace RetailCorrector.UI.Controls
                 Margin = new(0, 5, 5, 5),
             };
             toolPanel.Children.Add(btnActions);
+
+            var btnFptr = new FptrButton
+            {
+                Height = 22,
+                Margin = new(0, 5, 5, 5),
+            };
+            toolPanel.Children.Add(btnFptr);
         }
 
         private void Grid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
