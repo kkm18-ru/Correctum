@@ -83,8 +83,12 @@ namespace RetailCorrector.Utils
             if (opcode is null) return false;
             fptr.setParam(Constants.LIBFPTR_PARAM_RECEIPT_TYPE, (int)opcode);
             fptr.setParam(Constants.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, args.Print);
-            fptr.setParam(1173, args.CorrType); // todo add for ffd 1.05
-            fptr.setParam(1174, corrData); // todo add for ffd 1.05
+
+            if (GetFFD(fptr) >= 110) // todo add for ffd 1.05
+            {
+                fptr.setParam(1173, args.CorrType);
+                fptr.setParam(1174, corrData);
+            }
             fptr.setParam(1192, doc.DocSign);
             return 0 == fptr.openReceipt();
         }
