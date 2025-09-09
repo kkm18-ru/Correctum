@@ -21,7 +21,7 @@ namespace RetailCorrector.UI
         }
 
         private int _progressValue;
-        private readonly Fptr _driver;
+        private readonly IFptr _driver;
         private readonly TextBlock _txtProgress;
         private readonly ProgressBar _barProgress;
         private readonly Button _btnStart;
@@ -125,11 +125,30 @@ namespace RetailCorrector.UI
             {
                 _driver.open();
                 Dispatcher.Invoke(() => ProgressValue = 0);
-                foreach (var receipt in Workspace.Instance.Receipts)
+                var @ref = Workspace.Instance.Receipts;
+                while(ProgressValue < @ref.Count)
                 {
+                    if (FptrPresenter.GetSessionState(_driver) is null) goto fail;
+                    if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_EXPIRED)
+                    {
+                        _driver.setParam(Constants.LIBFPTR_PARAM_REPORT_TYPE, Constants.LIBFPTR_RT_CLOSE_SHIFT);
+                        if (0 != _driver.report()) goto fail;
+                    }
+                    if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_CLOSED &&
+                        0 != _driver.openShift()) goto fail;
+                    
+                    var receipt = @ref[ProgressValue];
                     token.ThrowIfCancellationRequested();
-
+                    if (!FptrPresenter.OpenReceipt(_driver, receipt)) goto fail;
+                    if (receipt.Items.Any(pos => !FptrPresenter.AddPosition(_driver, pos))) goto fail;
+                    if (!FptrPresenter.TotalReceipt(_driver, receipt.TotalSum)) goto fail;
+                    if (!FptrPresenter.Payment(_driver, receipt.Payment)) goto fail;
+                    if (0 != _driver.closeReceipt()) goto fail;
                     Dispatcher.Invoke(() => ProgressValue++);
+                    continue;
+                    
+                    fail:
+                        FptrPresenter.CancelReceipt(_driver);
                 }
             }
             catch (OperationCanceledException)
