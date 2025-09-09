@@ -42,21 +42,23 @@ namespace RetailCorrector.Utils
             return 0 == fptr.registration();
         }
 
-        public static bool Payment(IFptr fptr, Payment pay) =>
-            SinglePayment(fptr, 0, pay.Cash) && SinglePayment(fptr, 1, pay.ECash) &&
-            SinglePayment(fptr, 2, pay.Pre) && SinglePayment(fptr, 3, pay.Post) &&
-            SinglePayment(fptr, 4, pay.Provision);
+        public static bool Payment(IFptr fptr, Payment pay, CancellationToken token) =>
+            SinglePayment(fptr, 0, pay.Cash, token) && SinglePayment(fptr, 1, pay.ECash, token) &&
+            SinglePayment(fptr, 2, pay.Pre, token) && SinglePayment(fptr, 3, pay.Post, token) &&
+            SinglePayment(fptr, 4, pay.Provision, token);
 
-        private static bool SinglePayment(IFptr fptr, uint type, ulong sum)
+        private static bool SinglePayment(IFptr fptr, uint type, ulong sum, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             if (sum == 0) return true;
             fptr.setParam(Constants.LIBFPTR_PARAM_PAYMENT_TYPE, type);
             fptr.setParam(Constants.LIBFPTR_PARAM_PAYMENT_SUM, sum/100.0);
             return 0 == fptr.payment();
         }
 
-        public static bool TotalReceipt(IFptr fptr, ulong total)
+        public static bool TotalReceipt(IFptr fptr, ulong total, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             fptr.setParam(Constants.LIBFPTR_PARAM_SUM, total / 100.0);
             return 0 == fptr.receiptTotal();
         }
@@ -68,8 +70,9 @@ namespace RetailCorrector.Utils
             public int CorrType { get; set; }
         }
         
-        public static bool OpenReceipt(IFptr fptr, Receipt doc, OpenReceiptArgs args)
+        public static bool OpenReceipt(IFptr fptr, Receipt doc, OpenReceiptArgs args, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             var ffd = GetFFD(fptr);
             byte[] corrData = [];
 
@@ -80,12 +83,14 @@ namespace RetailCorrector.Utils
                 fptr.utilFormTlv();
                 corrData = fptr.getParamByteArray(Constants.LIBFPTR_PARAM_TAG_VALUE);
             }
+            token.ThrowIfCancellationRequested();
 
             var opcode = GetOperation(fptr, doc.Type);
             if (opcode is null) return false;
             fptr.setParam(Constants.LIBFPTR_PARAM_RECEIPT_TYPE, (uint)opcode);
             fptr.setParam(Constants.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, args.Print);
 
+            token.ThrowIfCancellationRequested();
             if (ffd >= 110) // todo add for ffd 1.05
             {
                 fptr.setParam(1173, args.CorrType);

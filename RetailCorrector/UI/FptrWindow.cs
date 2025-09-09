@@ -1,4 +1,5 @@
 ﻿using Atol.Drivers10.Fptr;
+using RetailCorrector.Data;
 using RetailCorrector.UI.WindowTypes;
 using RetailCorrector.Utils;
 using System.Windows;
@@ -147,13 +148,7 @@ namespace RetailCorrector.UI
                 Content = "Отмена",
                 IsEnabled = false
             };
-            btn.Click += (_, _) =>
-            {
-                _btnCancel.IsEnabled = false;
-                _btnStart.IsEnabled = true;
-                cts?.Cancel();
-                cts?.Dispose();
-            };
+            btn.Click += Cancel;
             return btn;
         }
         
@@ -169,78 +164,21 @@ namespace RetailCorrector.UI
             {
                 _driver.open();
                 var @ref = Workspace.Instance.Receipts;
-                if (FptrPresenter.GetFFD(_driver) == 120 && 
-                    @ref.SelectMany(r => r.Items).Any(p => p.MeasureUnit is null))
+                if (MissingUnitFor120(@ref))
                 {
                     System.Windows.MessageBox.Show("На ФФД 1.2 единицы измерения обязаны присутствовать!");
                     return;
                 }
 
-                    ProgressValue = 0;
+                ProgressValue = 0;
                 while(ProgressValue < @ref.Count)
                 {
-                    if (FptrPresenter.GetSessionState(_driver) is null)
-                    {
-                        FptrPresenter.CancelReceipt(_driver);
-                        continue;
-                    }
-                    if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_EXPIRED)
-                    {
-                        _driver.setParam(Constants.LIBFPTR_PARAM_REPORT_TYPE, Constants.LIBFPTR_RT_CLOSE_SHIFT);
-                        if (0 != _driver.report())
-                        {
-                            FptrPresenter.CancelReceipt(_driver);
-                            continue;
-                        }
-                    }
-                    if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_CLOSED &&
-                        0 != _driver.openShift())
-                    {
-                        FptrPresenter.CancelReceipt(_driver);
-                        continue;
-                    }
-
-                    var receipt = @ref[ProgressValue];
                     token.ThrowIfCancellationRequested();
-                    FptrPresenter.OpenReceiptArgs openArgs = new();
-                    Dispatcher.Invoke(() =>
-                    {
-                        openArgs.Act = string.IsNullOrWhiteSpace(_inputAct.Text) ? " " : _inputAct.Text;
-                        openArgs.Print = _cbPrint.SelectedIndex > 0;
-                        openArgs.CorrType = _cbCorrType.SelectedIndex;
-                    });
-                    token.ThrowIfCancellationRequested();
-                    if (!FptrPresenter.OpenReceipt(_driver, receipt, openArgs))
-                    {
-                        FptrPresenter.CancelReceipt(_driver);
-                        continue;
-                    }
-                    token.ThrowIfCancellationRequested();
-                    if (receipt.Items.Any(pos => !FptrPresenter.AddPosition(_driver, pos, token)))
-                    {
-                        FptrPresenter.CancelReceipt(_driver);
-                        continue;
-                    }
-                    token.ThrowIfCancellationRequested();
-                    if (!FptrPresenter.TotalReceipt(_driver, receipt.TotalSum))
-                    {
-                        FptrPresenter.CancelReceipt(_driver);
-                        continue;
-                    }
-                    token.ThrowIfCancellationRequested();
-                    if (!FptrPresenter.Payment(_driver, receipt.Payment))
-                    {
-                        FptrPresenter.CancelReceipt(_driver);
-                        continue;
-                    }
-                    token.ThrowIfCancellationRequested();
-                    if (0 != _driver.closeReceipt())
-                    {
-                        FptrPresenter.CancelReceipt(_driver);
-                        continue;
-                    }
-                    ProgressValue++;
+                    if (ProcessingSession() && ProcessingReceipt(@ref[ProgressValue], token))
+                        ProgressValue++;
+                    else FptrPresenter.CancelReceipt(_driver);
                 }
+                Cancel(null, null!);
             }
             catch (OperationCanceledException)
             {
@@ -248,6 +186,46 @@ namespace RetailCorrector.UI
                 _driver.close();
             }
         }
+
+        private void Cancel(object? s, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(() => _btnCancel.IsEnabled = false);
+            Dispatcher.Invoke(() => _btnStart.IsEnabled = true);
+            cts?.Cancel();
+            cts?.Dispose();
+        }
+
+        private bool ProcessingReceipt(Receipt receipt, CancellationToken token)
+        {
+            FptrPresenter.OpenReceiptArgs openArgs = new();
+            Dispatcher.Invoke(() =>
+            {
+                openArgs.Act = string.IsNullOrWhiteSpace(_inputAct.Text) ? " " : _inputAct.Text;
+                openArgs.Print = _cbPrint.SelectedIndex > 0;
+                openArgs.CorrType = _cbCorrType.SelectedIndex;
+            });
+            return FptrPresenter.OpenReceipt(_driver, receipt, openArgs, token) &&
+                receipt.Items.All(pos => FptrPresenter.AddPosition(_driver, pos, token)) &&
+                FptrPresenter.TotalReceipt(_driver, receipt.TotalSum, token) &&
+                FptrPresenter.Payment(_driver, receipt.Payment, token) &&
+                0 == _driver.closeReceipt();
+        }
+
+        private bool ProcessingSession()
+        {
+            if (FptrPresenter.GetSessionState(_driver) is null) return false;
+            if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_EXPIRED)
+            {
+                _driver.setParam(Constants.LIBFPTR_PARAM_REPORT_TYPE, Constants.LIBFPTR_RT_CLOSE_SHIFT);
+                if (0 != _driver.report()) return false;
+            }
+            if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_CLOSED && 0 != _driver.openShift())
+                return false;
+            return true;
+        }
+
+        private bool MissingUnitFor120(IEnumerable<Receipt> @ref) =>
+            FptrPresenter.GetFFD(_driver) == 120 && @ref.SelectMany(r => r.Items).Any(p => p.MeasureUnit is null);
 
         protected override void OnClosed(EventArgs e)
         {
