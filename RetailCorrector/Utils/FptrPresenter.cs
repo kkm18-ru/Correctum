@@ -27,8 +27,9 @@ namespace RetailCorrector.Utils
             };
         }
 
-        public static bool AddPosition(IFptr fptr, Position pos)
+        public static bool AddPosition(IFptr fptr, Position pos, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             var ffd = GetFFD(fptr);
             fptr.setParam(Constants.LIBFPTR_PARAM_COMMODITY_NAME, pos.Name);
             fptr.setParam(Constants.LIBFPTR_PARAM_PRICE, pos.Price / 100.0);

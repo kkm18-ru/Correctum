@@ -197,10 +197,15 @@ namespace RetailCorrector.UI
                         openArgs.Print = _cbPrint.SelectedIndex > 0;
                         openArgs.CorrType = _cbCorrType.SelectedIndex;
                     });
+                    token.ThrowIfCancellationRequested();
                     if (!FptrPresenter.OpenReceipt(_driver, receipt, openArgs)) goto fail;
-                    if (receipt.Items.Any(pos => !FptrPresenter.AddPosition(_driver, pos))) goto fail;
+                    token.ThrowIfCancellationRequested();
+                    if (receipt.Items.Any(pos => !FptrPresenter.AddPosition(_driver, pos, token))) goto fail;
+                    token.ThrowIfCancellationRequested();
                     if (!FptrPresenter.TotalReceipt(_driver, receipt.TotalSum)) goto fail;
+                    token.ThrowIfCancellationRequested();
                     if (!FptrPresenter.Payment(_driver, receipt.Payment)) goto fail;
+                    token.ThrowIfCancellationRequested();
                     if (0 != _driver.closeReceipt()) goto fail;
                     ProgressValue++;
                     continue;
