@@ -60,14 +60,21 @@ namespace RetailCorrector.Utils
             return 0 == fptr.receiptTotal();
         }
 
-        public static bool OpenReceipt(IFptr fptr, Receipt doc)
+        public readonly struct OpenReceiptArgs()
+        {
+            public required string Act { get; init; }
+            public required bool Print { get; init; }
+            public required int CorrType { get; init; }
+        }
+        
+        public static bool OpenReceipt(IFptr fptr, Receipt doc, OpenReceiptArgs args)
         {
             byte[] corrData = [];
 
             if(GetFFD(fptr) >= 110)  // todo add for ffd 1.05
             {
                 fptr.setParam(1178, doc.Created);
-                fptr.setParam(1179, " "); // todo to UI
+                fptr.setParam(1179, args.Act);
                 fptr.utilFormTlv();
                 corrData = fptr.getParamByteArray(Constants.LIBFPTR_PARAM_TAG_VALUE);
             }
@@ -75,8 +82,8 @@ namespace RetailCorrector.Utils
             var opcode = GetOperation(fptr, doc.Type);
             if (opcode is null) return false;
             fptr.setParam(Constants.LIBFPTR_PARAM_RECEIPT_TYPE, (int)opcode);
-            fptr.setParam(Constants.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, true); // todo to UI
-            fptr.setParam(1173, 0); // todo to UI // todo add for ffd 1.05
+            fptr.setParam(Constants.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, args.Print);
+            fptr.setParam(1173, args.CorrType); // todo add for ffd 1.05
             fptr.setParam(1174, corrData); // todo add for ffd 1.05
             fptr.setParam(1192, doc.DocSign);
             return 0 == fptr.openReceipt();

@@ -26,6 +26,9 @@ namespace RetailCorrector.UI
         private readonly ProgressBar _barProgress;
         private readonly Button _btnStart;
         private readonly Button _btnCancel;
+        private readonly TextBox _inputAct;
+        private readonly ComboBox _cbCorrType;
+        private readonly ComboBox _cbPrint;
         private CancellationTokenSource? cts;
 
         public FptrWindow()
@@ -37,10 +40,16 @@ namespace RetailCorrector.UI
                 Margin = new Thickness(5)
             };
 
-            grid.AddColumn(GridUnitType.Star);
+            grid.AddColumn(GridUnitType.Pixel, 93);
             grid.AddColumn(GridUnitType.Pixel, 5);
-            grid.AddColumn(GridUnitType.Star);
+            grid.AddColumn(GridUnitType.Pixel, 125);
 
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Pixel, 22);
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Pixel, 22);
@@ -48,16 +57,36 @@ namespace RetailCorrector.UI
             grid.AddRow(GridUnitType.Pixel, 22);
 
             grid.AddChild(CreateConfigurationButton(), dx: 3);
+            
+            grid.AddChild(CreateLabel("Печатать ли чек"), y: 2);
+            _cbPrint = new ComboBox
+            {
+                ItemsSource = new[] { "Нет", "Да" },
+                SelectedIndex = 1
+            };
+            grid.AddChild(_cbPrint, 2, 2);
+            
+            grid.AddChild(CreateLabel("Вид коррекции"), y: 4);
+            _cbCorrType = new ComboBox
+            {
+                ItemsSource = new[] { "Самостоятельная", "По предписанию" },
+                SelectedIndex = 0
+            };
+            grid.AddChild(_cbCorrType, 2, 4);
+            
+            grid.AddChild(CreateLabel("Номер акта"), y: 6);// todo Добавить подсказку
+            _inputAct = new TextBox();
+            grid.AddChild(_inputAct, 2, 6);
 
             _barProgress = CreateProgress();
-            grid.AddChild(_barProgress, 0, 2, 3);
+            grid.AddChild(_barProgress, 0, 8, 3);
             _txtProgress = CreateProgressLabel();
-            grid.AddChild(_txtProgress, 0, 2, 3);
+            grid.AddChild(_txtProgress, 0, 8, 3);
 
             _btnStart = CreateStart();
-            grid.AddChild(_btnStart, y: 4);
+            grid.AddChild(_btnStart, y: 10);
             _btnCancel = CreateCancel();
-            grid.AddChild(_btnCancel, 2, 4);
+            grid.AddChild(_btnCancel, 2, 10);
 
             Content = grid;
         }
@@ -118,6 +147,12 @@ namespace RetailCorrector.UI
             };
             return btn;
         }
+        
+        private static TextBlock CreateLabel(string text) => new()
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            Text = $"{text}: "
+        };
 
         private void ProcessingReceipts(CancellationToken token)
         {
@@ -139,7 +174,13 @@ namespace RetailCorrector.UI
                     
                     var receipt = @ref[ProgressValue];
                     token.ThrowIfCancellationRequested();
-                    if (!FptrPresenter.OpenReceipt(_driver, receipt)) goto fail;
+                    var openArgs = new FptrPresenter.OpenReceiptArgs
+                    {
+                        Act = string.IsNullOrWhiteSpace(_inputAct.Text) ? " " : _inputAct.Text,
+                        Print = _cbPrint.SelectedIndex > 0,
+                        CorrType = _cbCorrType.SelectedIndex
+                    };
+                    if (!FptrPresenter.OpenReceipt(_driver, receipt, openArgs)) goto fail;
                     if (receipt.Items.Any(pos => !FptrPresenter.AddPosition(_driver, pos))) goto fail;
                     if (!FptrPresenter.TotalReceipt(_driver, receipt.TotalSum)) goto fail;
                     if (!FptrPresenter.Payment(_driver, receipt.Payment)) goto fail;
