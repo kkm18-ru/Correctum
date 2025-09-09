@@ -208,7 +208,7 @@ namespace RetailCorrector.UI
                 {
                     int _m = 0, _r = 0;
                     Dispatcher.Invoke(() => (_m, _r) = ((int)_maxBufferSize.Value!, (int)_recBufferSize.Value!));
-                    FptrPresenter.WaitClearBuffer(_driver, _m, _r);
+                    FptrPresenter.WaitClearBuffer(_driver, _m, _r, token);
                     if (FptrPresenter.GetSessionState(_driver) is null)
                     {
                         FptrPresenter.CancelReceipt(_driver);

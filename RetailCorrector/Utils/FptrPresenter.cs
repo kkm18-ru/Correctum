@@ -7,12 +7,13 @@ namespace RetailCorrector.Utils
 {
     internal static class FptrPresenter
     {
-        public static void WaitClearBuffer(IFptr fptr, int max, int record)
+        public static void WaitClearBuffer(IFptr fptr, int max, int record, CancellationToken token)
         {
             var count = GetUnsentDocuments(fptr);
             if (count < max) return;
             while(count > record)
             {
+                token.ThrowIfCancellationRequested();
                 Thread.Sleep(1000);
                 count = GetUnsentDocuments(fptr);
             }
