@@ -14,7 +14,9 @@ namespace RetailCorrector.Utils
             while(count > record)
             {
                 token.ThrowIfCancellationRequested();
+                fptr.close();
                 Thread.Sleep(1000);
+                if(fptr.open() != 0) continue;
                 count = GetUnsentDocuments(fptr);
             }
         }
