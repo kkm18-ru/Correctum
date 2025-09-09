@@ -97,7 +97,7 @@ namespace RetailCorrector.UI
             {
                 HorizontalAlignment = HorizontalAlignment.Right,
                 Value = 45,
-                Minimum = 30,
+                Minimum = 31,
                 Width = 60
             };
             grid.AddChild(_maxBufferSize, 2, 8);
@@ -106,13 +106,13 @@ namespace RetailCorrector.UI
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Value = 30,
                 Minimum = 15,
-                Maximum = 45,
+                Maximum = 44,
                 Width = 60
             };
             grid.AddChild(_recBufferSize, 2, 8);
 
-            _maxBufferSize.ValueChanged += (_, _) => _recBufferSize.Maximum = _maxBufferSize.Value;
-            _recBufferSize.ValueChanged += (_, _) => _maxBufferSize.Minimum = _recBufferSize.Value;
+            _maxBufferSize.ValueChanged += (_, _) => _recBufferSize.Maximum = _maxBufferSize.Value - 1;
+            _recBufferSize.ValueChanged += (_, _) => _maxBufferSize.Minimum = _recBufferSize.Value + 1;
 
             _barProgress = CreateProgress();
             grid.AddChild(_barProgress, 0, 10, 3);
