@@ -73,8 +73,17 @@ namespace RetailCorrector.UI
                 SelectedIndex = 0
             };
             grid.AddChild(_cbCorrType, 2, 4);
-            
-            grid.AddChild(CreateLabel("Номер акта"), y: 6);// todo Добавить подсказку
+
+            var lbl = CreateLabel("Номер акта");
+            lbl.ToolTip = new ToolTip
+            {
+                Content = """
+                          Данный параметр нужно использовать только в двух случаях:
+                          1) Коррекция выполняется по требованию ФНС
+                          2) Коррекция выполняется на кассе с ФФД 1.05, так как чек ранее не был сформирован 
+                          """
+            }; 
+            grid.AddChild(lbl, y: 6);
             _inputAct = new TextBox();
             grid.AddChild(_inputAct, 2, 6);
 
