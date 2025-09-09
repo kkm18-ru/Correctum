@@ -4,6 +4,7 @@ using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using Xceed.Wpf.Toolkit;
 
 namespace RetailCorrector.UI
 {
@@ -29,6 +30,8 @@ namespace RetailCorrector.UI
         private readonly TextBox _inputAct;
         private readonly ComboBox _cbCorrType;
         private readonly ComboBox _cbPrint;
+        private readonly IntegerUpDown _maxBufferSize;
+        private readonly IntegerUpDown _recBufferSize;
         private CancellationTokenSource? cts;
 
         public FptrWindow()
@@ -44,6 +47,8 @@ namespace RetailCorrector.UI
             grid.AddColumn(GridUnitType.Pixel, 5);
             grid.AddColumn(GridUnitType.Pixel, 125);
 
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Pixel, 22);
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Pixel, 22);
@@ -87,15 +92,37 @@ namespace RetailCorrector.UI
             _inputAct = new TextBox();
             grid.AddChild(_inputAct, 2, 6);
 
+            grid.AddChild(CreateLabel("Лимит буфера"), y: 8);
+            _maxBufferSize = new IntegerUpDown
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Value = 45,
+                Minimum = 30,
+                Width = 60
+            };
+            grid.AddChild(_maxBufferSize, 2, 8);
+            _recBufferSize = new IntegerUpDown
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Value = 30,
+                Minimum = 15,
+                Maximum = 45,
+                Width = 60
+            };
+            grid.AddChild(_recBufferSize, 2, 8);
+
+            _maxBufferSize.ValueChanged += (_, _) => _recBufferSize.Maximum = _maxBufferSize.Value;
+            _recBufferSize.ValueChanged += (_, _) => _maxBufferSize.Minimum = _recBufferSize.Value;
+
             _barProgress = CreateProgress();
-            grid.AddChild(_barProgress, 0, 8, 3);
+            grid.AddChild(_barProgress, 0, 10, 3);
             _txtProgress = CreateProgressLabel();
-            grid.AddChild(_txtProgress, 0, 8, 3);
+            grid.AddChild(_txtProgress, 0, 10, 3);
 
             _btnStart = CreateStart();
-            grid.AddChild(_btnStart, y: 10);
+            grid.AddChild(_btnStart, y: 12);
             _btnCancel = CreateCancel();
-            grid.AddChild(_btnCancel, 2, 10);
+            grid.AddChild(_btnCancel, 2, 12);
 
             Content = grid;
         }
@@ -172,7 +199,7 @@ namespace RetailCorrector.UI
                 if (FptrPresenter.GetFFD(_driver) == 120 && 
                     @ref.SelectMany(r => r.Items).Any(p => p.MeasureUnit is null))
                 {
-                    MessageBox.Show("На ФФД 1.2 единицы измерения обязаны присутствовать!");
+                    System.Windows.MessageBox.Show("На ФФД 1.2 единицы измерения обязаны присутствовать!");
                     return;
                 }
 
@@ -200,7 +227,7 @@ namespace RetailCorrector.UI
                         FptrPresenter.CancelReceipt(_driver);
                         continue;
                     }
-                    
+
                     var receipt = @ref[ProgressValue];
                     token.ThrowIfCancellationRequested();
                     FptrPresenter.OpenReceiptArgs openArgs = new();
@@ -232,7 +259,7 @@ namespace RetailCorrector.UI
                     if (!FptrPresenter.Payment(_driver, receipt.Payment))
                     {
                         FptrPresenter.CancelReceipt(_driver);
-                    continue;
+                        continue;
                     }
                     token.ThrowIfCancellationRequested();
                     if (0 != _driver.closeReceipt())

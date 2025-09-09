@@ -7,6 +7,24 @@ namespace RetailCorrector.Utils
 {
     internal static class FptrPresenter
     {
+        public static void WaitClearBuffer(IFptr fptr, int max, int record)
+        {
+            var count = GetUnsentDocuments(fptr);
+            if (count < max) return;
+            while(count > record)
+            {
+                Thread.Sleep(1000);
+                count = GetUnsentDocuments(fptr);
+            }
+        }
+
+        private static uint GetUnsentDocuments(IFptr fptr)
+        {
+            fptr.setParam(Constants.LIBFPTR_PARAM_FN_DATA_TYPE, Constants.LIBFPTR_FNDT_ISM_EXCHANGE_STATUS);
+            fptr.fnQueryData();
+            return fptr.getParamInt(Constants.LIBFPTR_PARAM_DOCUMENTS_COUNT);
+        }
+
         public static uint? GetSessionState(IFptr fptr)
         {
             fptr.setParam(Constants.LIBFPTR_PARAM_DATA_TYPE, Constants.LIBFPTR_DT_SHIFT_STATE);
