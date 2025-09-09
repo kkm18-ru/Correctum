@@ -32,16 +32,14 @@
             """;
         const string GET_PAYMENT =
             """  
-            select 
-                GROUP_CONCAT(CASE WHEN Type == 0 THEN Sum ELSE 0 END) as Cash,
-                GROUP_CONCAT(CASE WHEN Type == 1 THEN Sum ELSE 0 END) as ECash,
-                GROUP_CONCAT(CASE WHEN Type == 2 THEN Sum ELSE 0 END) as Pre,
-                GROUP_CONCAT(CASE WHEN Type == 3 THEN Sum ELSE 0 END) as Post,
-                GROUP_CONCAT(CASE WHEN Type == 4 THEN Sum ELSE 0 END) as Provision
-            from (select p.ECRPAYMENT as Type, sum(total)/100 as Sum
-                from TRANSACTIONS as tr inner join PAYMENT as p on tr.warecode = p.CODE
-                where tr.TRTYPE in (40, 41) and tr.documentid = @Id
-                group by p.ECRPAYMENT);
+            SELECT
+                SUM(CASE WHEN p.ECRPAYMENT = 0 THEN tr.total/100 ELSE 0 END) AS Cash,
+                SUM(CASE WHEN p.ECRPAYMENT = 1 THEN tr.total/100 ELSE 0 END) AS ECash,
+                SUM(CASE WHEN p.ECRPAYMENT = 2 THEN tr.total/100 ELSE 0 END) AS Pre,
+                SUM(CASE WHEN p.ECRPAYMENT = 3 THEN tr.total/100 ELSE 0 END) AS Post,
+                SUM(CASE WHEN p.ECRPAYMENT = 4 THEN tr.total/100 ELSE 0 END) AS Provision
+            FROM TRANSACTIONS AS tr INNER JOIN PAYMENT AS p ON tr.warecode = p.CODE
+            WHERE tr.TRTYPE IN (40, 41) AND tr.documentid = @Id;
             """;
     }
 }
