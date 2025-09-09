@@ -206,7 +206,9 @@ namespace RetailCorrector.UI
                     ProgressValue = 0;
                 while(ProgressValue < @ref.Count)
                 {
-                    FptrPresenter.WaitClearBuffer(_driver, (int)_maxBufferSize.Value!, (int)_recBufferSize.Value!);
+                    int _m = 0, _r = 0;
+                    Dispatcher.Invoke(() => (_m, _r) = ((int)_maxBufferSize.Value!, (int)_recBufferSize.Value!));
+                    FptrPresenter.WaitClearBuffer(_driver, _m, _r);
                     if (FptrPresenter.GetSessionState(_driver) is null)
                     {
                         FptrPresenter.CancelReceipt(_driver);

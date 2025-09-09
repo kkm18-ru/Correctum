@@ -20,7 +20,7 @@ namespace RetailCorrector.Utils
 
         private static uint GetUnsentDocuments(IFptr fptr)
         {
-            fptr.setParam(Constants.LIBFPTR_PARAM_FN_DATA_TYPE, Constants.LIBFPTR_FNDT_ISM_EXCHANGE_STATUS);
+            fptr.setParam(Constants.LIBFPTR_PARAM_FN_DATA_TYPE, Constants.LIBFPTR_FNDT_OFD_EXCHANGE_STATUS);
             fptr.fnQueryData();
             return fptr.getParamInt(Constants.LIBFPTR_PARAM_DOCUMENTS_COUNT);
         }
