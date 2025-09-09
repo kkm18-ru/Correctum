@@ -47,4 +47,10 @@
 		<CompilerVisibleProperty Include="Configuration" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="Atol.Drivers10.Fptr">
+	    <HintPath>C:\Program Files (x86)\ATOL\Drivers10\KKT\langs\csharp\Atol.Drivers10.Fptr.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
 </Project>

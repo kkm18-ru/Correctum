@@ -1,0 +1,289 @@
+﻿using Atol.Drivers10.Fptr;
+using RetailCorrector.UI.WindowTypes;
+using RetailCorrector.Utils;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Interop;
+using Xceed.Wpf.Toolkit;
+
+namespace RetailCorrector.UI
+{
+    internal class FptrWindow : DialogWindow
+    {
+        public int ProgressValue
+        {
+            get => _progressValue;
+            set
+            {
+                if (_progressValue == value) return;                
+                Dispatcher.Invoke(() =>_barProgress.Value = _progressValue = value);
+                Dispatcher.Invoke(() =>_txtProgress.Text = $"{_barProgress.Value} / {_barProgress.Maximum}");
+            }
+        }
+
+        private int _progressValue;
+        private readonly IFptr _driver;
+        private readonly TextBlock _txtProgress;
+        private readonly ProgressBar _barProgress;
+        private readonly Button _btnStart;
+        private readonly Button _btnCancel;
+        private readonly TextBox _inputAct;
+        private readonly ComboBox _cbCorrType;
+        private readonly ComboBox _cbPrint;
+        private readonly IntegerUpDown _maxBufferSize;
+        private readonly IntegerUpDown _recBufferSize;
+        private CancellationTokenSource? cts;
+
+        public FptrWindow()
+        {
+            SizeToContent = SizeToContent.WidthAndHeight;
+            _driver = new Fptr();
+            var grid = new Grid
+            {
+                Margin = new Thickness(5)
+            };
+
+            grid.AddColumn(GridUnitType.Pixel, 93);
+            grid.AddColumn(GridUnitType.Pixel, 5);
+            grid.AddColumn(GridUnitType.Pixel, 125);
+
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+
+            grid.AddChild(CreateConfigurationButton(), dx: 3);
+            
+            grid.AddChild(CreateLabel("Печатать ли чек"), y: 2);
+            _cbPrint = new ComboBox
+            {
+                ItemsSource = new[] { "Да", "Нет" },
+                SelectedIndex = 0
+            };
+            grid.AddChild(_cbPrint, 2, 2);
+            
+            grid.AddChild(CreateLabel("Вид коррекции"), y: 4);
+            _cbCorrType = new ComboBox
+            {
+                ItemsSource = new[] { "Самостоятельная", "По предписанию" },
+                SelectedIndex = 0
+            };
+            grid.AddChild(_cbCorrType, 2, 4);
+
+            var lbl = CreateLabel("Номер акта");
+            lbl.ToolTip = new ToolTip
+            {
+                Content = """
+                          Данный параметр нужно использовать только в двух случаях:
+                          1) Коррекция выполняется по требованию ФНС
+                          2) Коррекция выполняется на кассе с ФФД 1.05, так как чек ранее не был сформирован 
+                          """
+            }; 
+            grid.AddChild(lbl, y: 6);
+            _inputAct = new TextBox();
+            grid.AddChild(_inputAct, 2, 6);
+
+            grid.AddChild(CreateLabel("Лимит буфера"), y: 8);
+            _maxBufferSize = new IntegerUpDown
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Value = 45,
+                Minimum = 31,
+                Width = 60
+            };
+            grid.AddChild(_maxBufferSize, 2, 8);
+            _recBufferSize = new IntegerUpDown
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Value = 30,
+                Minimum = 15,
+                Maximum = 44,
+                Width = 60
+            };
+            grid.AddChild(_recBufferSize, 2, 8);
+
+            _maxBufferSize.ValueChanged += (_, _) => _recBufferSize.Maximum = _maxBufferSize.Value - 1;
+            _recBufferSize.ValueChanged += (_, _) => _maxBufferSize.Minimum = _recBufferSize.Value + 1;
+
+            _barProgress = CreateProgress();
+            grid.AddChild(_barProgress, 0, 10, 3);
+            _txtProgress = CreateProgressLabel();
+            grid.AddChild(_txtProgress, 0, 10, 3);
+
+            _btnStart = CreateStart();
+            grid.AddChild(_btnStart, y: 12);
+            _btnCancel = CreateCancel();
+            grid.AddChild(_btnCancel, 2, 12);
+
+            Content = grid;
+        }
+
+        private Button CreateConfigurationButton()
+        {
+            var btn = new Button
+            {
+                Content = "  Настройка драйвера  "
+            };
+            btn.Click += (_, _) => _driver.showProperties(0, 
+                new WindowInteropHelper(MainWindow.Instance).EnsureHandle());
+            return btn;
+        }
+
+        private static ProgressBar CreateProgress() => new()
+        {
+            Value = 0, 
+            Maximum = Math.Max(Workspace.Instance.Receipts.Count, 1)
+        };
+
+        private TextBlock CreateProgressLabel() => new()
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Text = $"0 / {_barProgress.Maximum}"
+        };
+
+        private Button CreateStart()
+        {
+            var btn = new Button
+            {
+                Content = "Запуск"
+            };
+            btn.Click += (_, _) =>
+            {
+                _btnCancel.IsEnabled = true;
+                _btnStart.IsEnabled = false;
+                cts = new CancellationTokenSource();
+                new Thread(() => ProcessingReceipts(cts.Token)) { IsBackground = true }.Start();
+            };
+            return btn;
+        }
+
+        private Button CreateCancel()
+        {
+            var btn = new Button
+            {
+                Content = "Отмена",
+                IsEnabled = false
+            };
+            btn.Click += (_, _) =>
+            {
+                _btnCancel.IsEnabled = false;
+                _btnStart.IsEnabled = true;
+                cts?.Cancel();
+                cts?.Dispose();
+            };
+            return btn;
+        }
+        
+        private static TextBlock CreateLabel(string text) => new()
+        {
+            VerticalAlignment = VerticalAlignment.Center,
+            Text = $"{text}: "
+        };
+
+        private void ProcessingReceipts(CancellationToken token)
+        {
+            try
+            {
+                _driver.open();
+                var @ref = Workspace.Instance.Receipts;
+                if (FptrPresenter.GetFFD(_driver) == 120 && 
+                    @ref.SelectMany(r => r.Items).Any(p => p.MeasureUnit is null))
+                {
+                    System.Windows.MessageBox.Show("На ФФД 1.2 единицы измерения обязаны присутствовать!");
+                    return;
+                }
+
+                    ProgressValue = 0;
+                while(ProgressValue < @ref.Count)
+                {
+                    int _m = 0, _r = 0;
+                    Dispatcher.Invoke(() => (_m, _r) = ((int)_maxBufferSize.Value!, (int)_recBufferSize.Value!));
+                    FptrPresenter.WaitClearBuffer(_driver, _m, _r, token);
+                    if (FptrPresenter.GetSessionState(_driver) is null)
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+                    if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_EXPIRED)
+                    {
+                        _driver.setParam(Constants.LIBFPTR_PARAM_REPORT_TYPE, Constants.LIBFPTR_RT_CLOSE_SHIFT);
+                        if (0 != _driver.report())
+                        {
+                            FptrPresenter.CancelReceipt(_driver);
+                            continue;
+                        }
+                    }
+                    if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_CLOSED &&
+                        0 != _driver.openShift())
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+
+                    var receipt = @ref[ProgressValue];
+                    token.ThrowIfCancellationRequested();
+                    FptrPresenter.OpenReceiptArgs openArgs = new();
+                    Dispatcher.Invoke(() =>
+                    {
+                        openArgs.Act = string.IsNullOrWhiteSpace(_inputAct.Text) ? " " : _inputAct.Text;
+                        openArgs.Print = _cbPrint.SelectedIndex > 0;
+                        openArgs.CorrType = _cbCorrType.SelectedIndex;
+                    });
+                    token.ThrowIfCancellationRequested();
+                    if (!FptrPresenter.OpenReceipt(_driver, receipt, openArgs))
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (receipt.Items.Any(pos => !FptrPresenter.AddPosition(_driver, pos, token)))
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (!FptrPresenter.TotalReceipt(_driver, receipt.TotalSum))
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (!FptrPresenter.Payment(_driver, receipt.Payment))
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (0 != _driver.closeReceipt())
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+                    ProgressValue++;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                _driver.cancelReceipt();
+                _driver.close();
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _driver.cancelReceipt();
+            _driver.close();
+            _driver.destroy();
+        }
+    }
+}
