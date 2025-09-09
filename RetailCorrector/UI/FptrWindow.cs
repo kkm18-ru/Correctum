@@ -179,14 +179,27 @@ namespace RetailCorrector.UI
                     ProgressValue = 0;
                 while(ProgressValue < @ref.Count)
                 {
-                    if (FptrPresenter.GetSessionState(_driver) is null) goto fail;
+                    FptrPresenter.WaitClearBuffer(_driver, (int)_maxBufferSize.Value!, (int)_recBufferSize.Value!);
+                    if (FptrPresenter.GetSessionState(_driver) is null)
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
                     if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_EXPIRED)
                     {
                         _driver.setParam(Constants.LIBFPTR_PARAM_REPORT_TYPE, Constants.LIBFPTR_RT_CLOSE_SHIFT);
-                        if (0 != _driver.report()) goto fail;
+                        if (0 != _driver.report())
+                        {
+                            FptrPresenter.CancelReceipt(_driver);
+                            continue;
+                        }
                     }
                     if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_CLOSED &&
-                        0 != _driver.openShift()) goto fail;
+                        0 != _driver.openShift())
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
                     
                     var receipt = @ref[ProgressValue];
                     token.ThrowIfCancellationRequested();
@@ -198,20 +211,36 @@ namespace RetailCorrector.UI
                         openArgs.CorrType = _cbCorrType.SelectedIndex;
                     });
                     token.ThrowIfCancellationRequested();
-                    if (!FptrPresenter.OpenReceipt(_driver, receipt, openArgs)) goto fail;
-                    token.ThrowIfCancellationRequested();
-                    if (receipt.Items.Any(pos => !FptrPresenter.AddPosition(_driver, pos, token))) goto fail;
-                    token.ThrowIfCancellationRequested();
-                    if (!FptrPresenter.TotalReceipt(_driver, receipt.TotalSum)) goto fail;
-                    token.ThrowIfCancellationRequested();
-                    if (!FptrPresenter.Payment(_driver, receipt.Payment)) goto fail;
-                    token.ThrowIfCancellationRequested();
-                    if (0 != _driver.closeReceipt()) goto fail;
-                    ProgressValue++;
-                    continue;
-                    
-                    fail:
+                    if (!FptrPresenter.OpenReceipt(_driver, receipt, openArgs))
+                    {
                         FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (receipt.Items.Any(pos => !FptrPresenter.AddPosition(_driver, pos, token)))
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (!FptrPresenter.TotalReceipt(_driver, receipt.TotalSum))
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (!FptrPresenter.Payment(_driver, receipt.Payment))
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                    continue;
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (0 != _driver.closeReceipt())
+                    {
+                        FptrPresenter.CancelReceipt(_driver);
+                        continue;
+                    }
+                    ProgressValue++;
                 }
             }
             catch (OperationCanceledException)
