@@ -14,7 +14,7 @@ namespace RetailCorrector.Utils
             return fptr.getParamInt(Constants.LIBFPTR_PARAM_SHIFT_STATE);
         }
 
-        private static uint? GetFFD(IFptr fptr)
+        public static uint? GetFFD(IFptr fptr)
         {
             fptr.setParam(Constants.LIBFPTR_PARAM_FN_DATA_TYPE, Constants.LIBFPTR_FNDT_FFD_VERSIONS);
             if(fptr.fnQueryData() != 0) return null;
@@ -36,8 +36,7 @@ namespace RetailCorrector.Utils
             fptr.setParam(Constants.LIBFPTR_PARAM_TAX_TYPE, (uint)pos.TaxRate);
             fptr.setParam(1212, (uint)pos.Type);
             fptr.setParam(1214, (uint)pos.PayMethod);
-            if(GetFFD(fptr) == 120) fptr.setParam(2108, (uint)pos.MeasureUnit); 
-            // todo Уведомлять об отсутствии ЕИ при ФФД 1.2
+            if(GetFFD(fptr) == 120) fptr.setParam(2108, (uint)pos.MeasureUnit!);
             return 0 == fptr.registration();
         }
 

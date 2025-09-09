@@ -168,8 +168,14 @@ namespace RetailCorrector.UI
             try
             {
                 _driver.open();
-                Dispatcher.Invoke(() => ProgressValue = 0);
                 var @ref = Workspace.Instance.Receipts;
+                if (FptrPresenter.GetFFD(_driver) == 120 && 
+                    @ref.SelectMany(r => r.Items).Any(p => p.MeasureUnit is null))
+                {
+                    MessageBox.Show("На ФФД 1.2 единицы измерения обязаны присутствовать!");
+                    return;
+                }
+                Dispatcher.Invoke(() => ProgressValue = 0);
                 while(ProgressValue < @ref.Count)
                 {
                     if (FptrPresenter.GetSessionState(_driver) is null) goto fail;
