@@ -14,9 +14,9 @@ namespace RetailCorrector.UI
             get => _progressValue;
             set
             {
-                if (_progressValue != value) return;
-                _barProgress.Value = _progressValue = value;                
-                _txtProgress.Text = $"{_barProgress.Value} / {_barProgress.Maximum}";
+                if (_progressValue == value) return;                
+                Dispatcher.Invoke(() =>_barProgress.Value = _progressValue = value);
+                Dispatcher.Invoke(() =>_txtProgress.Text = $"{_barProgress.Value} / {_barProgress.Maximum}");
             }
         }
 
@@ -61,8 +61,8 @@ namespace RetailCorrector.UI
             grid.AddChild(CreateLabel("Печатать ли чек"), y: 2);
             _cbPrint = new ComboBox
             {
-                ItemsSource = new[] { "Нет", "Да" },
-                SelectedIndex = 1
+                ItemsSource = new[] { "Да", "Нет" },
+                SelectedIndex = 0
             };
             grid.AddChild(_cbPrint, 2, 2);
             
@@ -175,7 +175,8 @@ namespace RetailCorrector.UI
                     MessageBox.Show("На ФФД 1.2 единицы измерения обязаны присутствовать!");
                     return;
                 }
-                Dispatcher.Invoke(() => ProgressValue = 0);
+
+                    ProgressValue = 0;
                 while(ProgressValue < @ref.Count)
                 {
                     if (FptrPresenter.GetSessionState(_driver) is null) goto fail;
@@ -189,18 +190,19 @@ namespace RetailCorrector.UI
                     
                     var receipt = @ref[ProgressValue];
                     token.ThrowIfCancellationRequested();
-                    var openArgs = new FptrPresenter.OpenReceiptArgs
+                    FptrPresenter.OpenReceiptArgs openArgs = new();
+                    Dispatcher.Invoke(() =>
                     {
-                        Act = string.IsNullOrWhiteSpace(_inputAct.Text) ? " " : _inputAct.Text,
-                        Print = _cbPrint.SelectedIndex > 0,
-                        CorrType = _cbCorrType.SelectedIndex
-                    };
+                        openArgs.Act = string.IsNullOrWhiteSpace(_inputAct.Text) ? " " : _inputAct.Text;
+                        openArgs.Print = _cbPrint.SelectedIndex > 0;
+                        openArgs.CorrType = _cbCorrType.SelectedIndex;
+                    });
                     if (!FptrPresenter.OpenReceipt(_driver, receipt, openArgs)) goto fail;
                     if (receipt.Items.Any(pos => !FptrPresenter.AddPosition(_driver, pos))) goto fail;
                     if (!FptrPresenter.TotalReceipt(_driver, receipt.TotalSum)) goto fail;
                     if (!FptrPresenter.Payment(_driver, receipt.Payment)) goto fail;
                     if (0 != _driver.closeReceipt()) goto fail;
-                    Dispatcher.Invoke(() => ProgressValue++);
+                    ProgressValue++;
                     continue;
                     
                     fail:
