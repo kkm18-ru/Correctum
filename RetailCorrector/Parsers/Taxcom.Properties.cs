@@ -1,5 +1,4 @@
-﻿using RetailCorrector.Validations;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
@@ -44,18 +43,7 @@ namespace RetailCorrector.Parsers
             get => _devId;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    MessageBox.Show("Ввод регистрационного номера ККТ обязателен",
-                        "Введенный регистрационный номер ККТ некорректен", 0, MessageBoxImage.Error);
-                    return;
-                }
                 if (_devId == value) return;
-                if (value.ValidKKTRegId() is ValidationResult valid && !valid)
-                {
-                    MessageBox.Show(valid, "Введенный регистрационный номер ККТ некорректен", 0, MessageBoxImage.Error);
-                    return;
-                }
                 _devId = value;
                 OnPropertyChanged();
             }

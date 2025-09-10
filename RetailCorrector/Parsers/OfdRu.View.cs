@@ -1,4 +1,6 @@
-﻿using RetailCorrector.Utils;
+﻿using RetailCorrector.UI.Controls;
+using RetailCorrector.Utils;
+using RetailCorrector.Utils.ValidationRules;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -70,12 +72,14 @@ namespace RetailCorrector.Parsers
                 tb.SetBinding(TextBox.TextProperty, nameof(Presenter.Token));
                 content.AddChild(tb, 2, 4);
 
-                tb = new TextBox();
-                tb.SetBinding(TextBox.TextProperty, nameof(Presenter.Vatin));
+                tb = new NotifyTextBox();
+                var bind = new ValidatedBinding(nameof(Presenter.Vatin), InnValidationRule.Instance);
+                tb.SetBinding(TextBox.TextProperty, bind);
                 content.AddChild(tb, 2, 6);
 
-                tb = new TextBox();
-                tb.SetBinding(TextBox.TextProperty, nameof(Presenter.DeviceId));
+                tb = new NotifyTextBox();
+                bind = new ValidatedBinding(nameof(Presenter.DeviceId), DeviceIdValidationRule.Instance);
+                tb.SetBinding(TextBox.TextProperty, bind);
                 content.AddChild(tb, 2, 8);
                 #endregion
 

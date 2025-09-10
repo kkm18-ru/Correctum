@@ -1,5 +1,4 @@
-﻿using RetailCorrector.Validations;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
@@ -35,18 +34,7 @@ namespace RetailCorrector.Parsers
             get => _vatin;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    MessageBox.Show("Ввод ИНН организации обязателен", 
-                        "Введенный ИНН некорректен", 0, MessageBoxImage.Error);
-                    return;
-                }
                 if (_vatin == value) return;
-                if (value.ValidINN() is ValidationResult valid && !valid)
-                {
-                    MessageBox.Show(valid, "Введенный ИНН некорректен", 0, MessageBoxImage.Error);
-                    return;
-                }
                 _vatin = value;
                 OnPropertyChanged();
             }
@@ -56,18 +44,7 @@ namespace RetailCorrector.Parsers
             get => _deviceId;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    MessageBox.Show("Ввод регистрационного номера ККТ обязателен",
-                        "Введенный регистрационный номер ККТ некорректен", 0, MessageBoxImage.Error);
-                    return;
-                }
                 if (_deviceId == value) return;
-                if (value.ValidKKTRegId() is ValidationResult valid && !valid)
-                {
-                    MessageBox.Show(valid, "Введенный регистрационный номер ККТ некорректен", 0, MessageBoxImage.Error);
-                    return;
-                }
                 _deviceId = value;
                 OnPropertyChanged();
             }
