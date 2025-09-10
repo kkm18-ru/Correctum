@@ -10,16 +10,17 @@ namespace RetailCorrector.Analyzers.Parsers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class MissingDisplayName : DiagnosticAnalyzer
     {
-        private const string Title = "Неявная регистрация парсера";
+        private const string Title = "Парсером невозможно воспользоваться";
         private const string MessageFormat = "У класса {0} отсутствует атрибут [RegisterParser]";
-        private const string Description =
-            "Для добавления парсера в Release-сборку нужно ее явно зарегистрировать, атрибутом [RegisterParser].";
+        private const string Description = "Все классы-парсеры должны быть помечены атрибутом [RegisterParser].";
         private const string HelpUri = "https://gitlab.com/ornaras/retailcorrector/-/wikis/analyzers/1-parser#rc1000";
+        private const string BasePath = "RetailCorrector.Parsers.ParserBase";
+        private const string AttributePath = "RetailCorrector.Attributes.RegisterParserAttribute";
 
-        private readonly static DiagnosticDescriptor Rule = new(
+        private static readonly DiagnosticDescriptor Rule = new(
             DiagnosticIds.MissingDisplayNameParser,
             Title, MessageFormat, DiagnosticCategories.Parser,
-            DiagnosticSeverity.Warning, true, Description, HelpUri);
+            DiagnosticSeverity.Error, true, Description, HelpUri);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
@@ -32,32 +33,24 @@ namespace RetailCorrector.Analyzers.Parsers
 
         private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
         {
-            var classDecl = (ClassDeclarationSyntax)context.Node;
-
-            if (classDecl.BaseList == null)return;
-
+            var classDecl = (ClassDeclarationSyntax)context.Node; 
             var semanticModel = context.SemanticModel;
-            var classSymbol = semanticModel.GetDeclaredSymbol(classDecl);
-            if (classSymbol == null || classSymbol.IsAbstract || classSymbol.IsStatic)
-                return;
-
-            var baseType = classSymbol.BaseType;
-            if (!baseType.ToDisplayString().StartsWith("RetailCorrector.Parsers.ParserBase"))
-                return;
-
-            var hasMyRequiredAttribute = classSymbol.GetAttributes()
-                .Any(attr => attr.AttributeClass?.ToDisplayString() == "RetailCorrector.Attributes.RegisterParserAttribute");
-
-            if (!hasMyRequiredAttribute)
-            {
-                var diagnostic = Diagnostic.Create(
-                    Rule,
-                    classDecl.Identifier.GetLocation(),
-                    classSymbol.Name,
-                    baseType.Name
-                );
-                context.ReportDiagnostic(diagnostic);
-            }
+            var symbol =  semanticModel.GetDeclaredSymbol(classDecl);
+            if (!IsParser(symbol) || HasAttribute(symbol)) return;
+            var diagnostic = Diagnostic.Create(Rule, classDecl.Identifier.GetLocation(), symbol!.Name);
+            context.ReportDiagnostic(diagnostic);
         }
+
+        private static bool IsCommonClass(INamedTypeSymbol classSymbol) =>
+            classSymbol is not null && !classSymbol.IsAbstract && !classSymbol.IsStatic;
+
+        private static bool IsParser(INamedTypeSymbol classSymbol) => IsCommonClass(classSymbol) &&
+            (classSymbol.BaseType?.ToDisplayString().StartsWith(BasePath) ?? false);
+
+        private static bool HasAttribute(INamedTypeSymbol classSymbol) =>
+            classSymbol.GetAttributes().Any(IsNeedAttribute);
+
+        private static bool IsNeedAttribute(AttributeData attr) =>
+            attr.AttributeClass?.ToDisplayString() == AttributePath;
     }
 }
