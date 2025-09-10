@@ -52,12 +52,9 @@ namespace RetailCorrector.Generators
                 if (!type.InheritedFrom("RetailCorrector.Parsers.ParserBase")) continue;
                 if (!hash.Add(type.ToDisplayString())) continue;
                 var attr = type.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == ATTRIBUTE);
-                if (attr is null)
-                {
-                    if (conf.ToUpper() == "DEBUG")
-                        builder.AppendLine(string.Format(TEMPLATE, type.Name, type.ToDisplayString()));
-                }
-                else builder.AppendLine(string.Format(TEMPLATE, attr?.ConstructorArguments[0].Value, type.ToDisplayString()));
+                if (attr is null) continue;
+                if (!ForOnlyDebug(attr) || conf.ToUpper() == "DEBUG")
+                    builder.AppendLine(string.Format(TEMPLATE, attr.ConstructorArguments[0].Value, type.ToDisplayString()));
             }
             builder.AppendLine(
                 """
@@ -68,5 +65,9 @@ namespace RetailCorrector.Generators
                 """);
             ctx.AddSource("ParsersMenu.g.cs", builder.ToString());
         }
+
+        private static bool ForOnlyDebug(AttributeData attr) =>
+            attr.ConstructorArguments.Length == 2 && 
+            (bool)attr.ConstructorArguments[1].Value!;
     }
 }

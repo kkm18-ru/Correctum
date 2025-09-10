@@ -1,12 +1,13 @@
-﻿#pragma warning disable RC1000
+﻿#pragma warning disable CS1998
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
-#if DEBUG
+using System.Runtime.CompilerServices;
 using Bogus;
-#endif
+using RetailCorrector.Attributes;
 
 namespace RetailCorrector.Parsers
 {
+    [RegisterParser("Рандомизатор чеков", true)]
     internal partial class MockParser : ParserBase<MockParser>
     {
         public override ParseInfo GenerateInfo() =>
