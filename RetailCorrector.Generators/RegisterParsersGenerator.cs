@@ -48,8 +48,8 @@ namespace RetailCorrector.Generators
             var hash = new HashSet<string>();
             foreach (var symb in arr)
             {
-                if (symb is not ITypeSymbol type || type.IsStatic || type.IsAbstract) continue;
-                if (!type.BaseType?.ToDisplayString().StartsWith("RetailCorrector.Parsers.ParserBase") ?? true) continue;
+                if (!symb.IsCommonClass(out var type)) continue;
+                if (!type.InheritedFrom("RetailCorrector.Parsers.ParserBase")) continue;
                 if (!hash.Add(type.ToDisplayString())) continue;
                 var attr = type.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == ATTRIBUTE);
                 if (attr is null)

@@ -22,5 +22,14 @@ namespace RetailCorrector.Generators
                     return configuration;
                 return "Unknown";
             });
+
+        public static bool IsCommonClass(this ISymbol symbol, out ITypeSymbol type)
+        {
+            type = symbol as ITypeSymbol;
+            return type is not null && !type.IsStatic && !type.IsAbstract;
+        }
+
+        public static bool InheritedFrom(this ITypeSymbol type, string path) =>
+            type.BaseType?.ToDisplayString().StartsWith(path) ?? false;
     }
 }
