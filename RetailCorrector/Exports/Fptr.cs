@@ -6,8 +6,6 @@ namespace RetailCorrector.Exports
     {
         public string Name => "Fptr-скрипт (ФФД 1.2)";
 
-        const int COUNT_RECEIPTS_PER_FILE = 25;
-
         public ValueTask<string> Export()
         {
             /* TODO-список
@@ -21,10 +19,10 @@ namespace RetailCorrector.Exports
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
             Directory.CreateDirectory(path);
             var receipts = Workspace.Instance.Receipts;
-            var n = Math.Ceiling((double)receipts.Count / COUNT_RECEIPTS_PER_FILE);
+            var n = Math.Ceiling((double)receipts.Count / Configuration.Export.CountDocsPerFile);
             for (var i = 0; i < n; i++)
             {
-                var chunk = receipts.Skip(i * COUNT_RECEIPTS_PER_FILE).Take(COUNT_RECEIPTS_PER_FILE);
+                var chunk = receipts.Skip(i * Configuration.Export.CountDocsPerFile).Take(Configuration.Export.CountDocsPerFile);
                 using var fs = new FileStream(Path.Combine(path, $"{i + 1}.txt"), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
                 using var tf = new StreamWriter(fs);
                 foreach (var receipt in chunk)

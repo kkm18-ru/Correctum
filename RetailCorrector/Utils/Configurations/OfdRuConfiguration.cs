@@ -3,7 +3,6 @@
     internal partial struct OfdRuConfiguration() : 
         IConfigurationSection<OfdRuConfiguration>
     {
-        public static string FileName => "ofdru";
         /// <summary>
         /// Задержка между запросами (в миллисекундах)
         /// </summary>

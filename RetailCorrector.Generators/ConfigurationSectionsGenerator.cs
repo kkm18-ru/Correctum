@@ -21,13 +21,6 @@ namespace RetailCorrector.Generators
         {
             var builder = new StringBuilder();
             var loadMethod = new StringBuilder();
-            var usings = new StringBuilder();
-            usings.AppendLine(
-                """
-                using Tomlyn.Model;
-                using System.IO;
-                using Tomlyn;
-                """);
             builder.AppendLine("""
                                namespace RetailCorrector;
 
@@ -37,38 +30,31 @@ namespace RetailCorrector.Generators
             loadMethod.AppendLine("""
                                       static Configuration()
                                       {
-                                          if (!Directory.Exists(DIRECTORY_NAME))
-                                              Directory.CreateDirectory(DIRECTORY_NAME);
+                                          if (!System.IO.Directory.Exists("config"))
+                                              System.IO.Directory.CreateDirectory("config");
                                   """);
             foreach (var symb in array)
             {
                 var typeSymbol = (ITypeSymbol)symb;
-                if (typeSymbol.Interfaces.All(i => i.ToDisplayString() ==
-                    "RetailCorrector.IConfigurationSection")) continue;
-                var fullname = symb.ToDisplayString();
-                var lastIndex = fullname.LastIndexOf('.');
-                usings.AppendLine($"using {fullname.Substring(0,lastIndex)};");
+                if (typeSymbol.Interfaces.All(i => !i.ToDisplayString().StartsWith("RetailCorrector.IConfigurationSection"))) continue;
                 var propName = typeSymbol.Name.Replace("Configuration", "");
                 loadMethod.AppendLine(
-                    $"        {propName} = {typeSymbol.Name}.Load(GetTable({typeSymbol.Name}.FileName));");
-                builder.AppendLine($"    public static {typeSymbol.Name} {propName} {{ get; }}");
+                    $"        {propName} = {typeSymbol.ToDisplayString()}.Load(GetTable(\"{propName.ToLower()}\"));");
+                builder.AppendLine($"    public static {typeSymbol.ToDisplayString()} {propName} {{ get; }}");
                 AutoInterface(context, typeSymbol);
             }
             loadMethod.AppendLine("    }");
-            usings.AppendLine();
             builder.AppendLine($$"""
 
-                                   private const string DIRECTORY_NAME = "Configurations";
-
                                {{loadMethod}}
-                                   private static TomlTable? GetTable(string filename) 
+                                   private static Tomlyn.Model.TomlTable? GetTable(string filename) 
                                    {
-                                       var path = Path.Combine(DIRECTORY_NAME, $"{filename}.toml");
-                                       return File.Exists(path) ? Toml.ToModel(File.ReadAllText(path)) : null;
+                                       var path = System.IO.Path.Combine("config", $"{filename}.toml");
+                                       return System.IO.File.Exists(path) ? Tomlyn.Toml.ToModel(System.IO.File.ReadAllText(path)) : null;
                                    }
                                }
                                """);
-            context.AddSource("Configuration.g.cs", usings.ToString() + builder.ToString());
+            context.AddSource("Configuration.g.cs", builder.ToString());
         }
 
         private static void AutoInterface(SourceProductionContext context, ITypeSymbol symbol)
