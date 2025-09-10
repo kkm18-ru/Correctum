@@ -14,16 +14,6 @@ namespace RetailCorrector.Parsers
         public abstract IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken);
     }
 
-    internal abstract class ParserBase<T> : IParser
-        where T : ParserBase<T>, new()
-    {
-        protected ParseInfo parseInfo;
-        public abstract ParseInfo GenerateInfo();
-
-        public static void Show() => new ParserWindow(new T()).ShowDialog();
-        public abstract IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken);
-    }
-
     internal interface IParser
     {
         ParseInfo GenerateInfo();

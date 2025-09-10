@@ -8,16 +8,15 @@ using RetailCorrector.Attributes;
 namespace RetailCorrector.Parsers
 {
     [RegisterParser("Рандомизатор чеков", true)]
-    internal partial class MockParser : ParserBase<MockParser>
+    internal partial class Mock: ParserBase<Mock, Mock.View>
     {
         public override ParseInfo GenerateInfo() =>
             parseInfo = new ParseInfo("Mock");
 
-        public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken)
+        public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            progress.Report(-1);            
             var faker = new Faker();
-            var count = faker.Random.UInt(1, 1000);
+            var count = faker.Random.Int(MinCountDocs, MaxCountDocs);
             for(var i = 0; i < count; i++)
             {
                 var posCount = faker.Random.UInt(1, 10);
@@ -68,7 +67,6 @@ namespace RetailCorrector.Parsers
                     ParseId = parseInfo.Id
                 };
             }
-            progress.Report(1);
         }
     }
 }
