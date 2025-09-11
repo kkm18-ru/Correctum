@@ -9,7 +9,9 @@ namespace RetailCorrector.Parsers;
 internal partial class Saby : ParserBase<Saby, Saby.View>
 {
     public override ParseInfo GenerateInfo() =>
-        parseInfo = new("SabyOFD");
+        parseInfo = new("SabyOFD", ("ИНН", INN), ("ККТ", Device), ("ФН", Storage), 
+            ("Старт", FromDate.ToString("dd'.'MM'.'yyyy")), 
+            ("Конец", ToDate.ToString("dd'.'MM'.'yyyy")));
 
     public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
