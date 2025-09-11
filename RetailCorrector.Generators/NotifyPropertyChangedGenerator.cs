@@ -50,7 +50,7 @@ namespace RetailCorrector.Generators
         private static string GetDefaultValue(string typeName) => typeName switch
         {
             "string" => "\"\"",
-            "System.DateTime" => "System.DateTime.Now",
+            "System.DateTime" => "System.DateTime.Today",
             _ => "default!"
         };
 
