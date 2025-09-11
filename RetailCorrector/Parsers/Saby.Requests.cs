@@ -19,6 +19,7 @@ internal partial class Saby
         req.Content = new StringContent(JsonSerializer.Serialize(content), Encoding.UTF8, "application/json");
         using var resp = await http.SendAsync(req);
         var respBody = await resp.Content.ReadAsStringAsync();
+        if (!resp.IsSuccessStatusCode) throw new ArgumentException(respBody.Split(": ")[^1].Split(')')[0]);
         var json = JsonNode.Parse(respBody)!;
         http.DefaultRequestHeaders.Add("Cookie", $"sid={json["sid"]!.GetValue<string>()}");
     }
