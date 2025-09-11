@@ -1,12 +1,14 @@
+using RetailCorrector.Data;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace RetailCorrector.Parsers;
 
 internal partial class Saby
 {
-    public async Task Auth(HttpClient http)
+    private async Task Auth(HttpClient http)
     {
         var content = new
         {
@@ -20,5 +22,23 @@ internal partial class Saby
         var respBody = await resp.Content.ReadAsStringAsync();
         var json = JsonSerializer.Deserialize<dynamic>(respBody)!;
         http.DefaultRequestHeaders.Add("Cookie", $"sid={json.sid}");
+    }
+
+    private async Task<(IEnumerable<JsonNode?>, bool)> ParsePage(HttpClient http, DateTime day, int? offset)
+    {
+        var txtDay = day.ToString("yyyy'-'MM'-'dd");
+        var urlBuilder = new StringBuilder();
+        urlBuilder.Append($"/ofd/v1/orgs/{INN}");
+        urlBuilder.Append($"/kkts/{Device}");
+        urlBuilder.Append($"/storages/{Storage}/docs");
+        urlBuilder.Append($"?dateFrom={txtDay}T00:00:00");
+        urlBuilder.Append($"&dateTo={txtDay}T23:59:59");
+        if(offset is not null) urlBuilder.Append($"&startId={offset}");
+        urlBuilder.Append($"&limit={Configuration.Saby.CountDocsByRequest}");
+        using var resp = await http.GetAsync(urlBuilder.ToString());
+        var content = await resp.Content.ReadAsStringAsync();
+        var arr = JsonNode.Parse(content)!.AsArray()!;
+        return (arr.Where(i => i?.GetPropertyName().StartsWith("receipt") ?? false), 
+            arr.Count == Configuration.Saby.CountDocsByRequest);
     }
 }
