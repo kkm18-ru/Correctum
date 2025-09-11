@@ -33,6 +33,8 @@ internal partial class Saby
         DocSign = node["fiscalSign"]!.GetValue<ulong>(),
         Type = (Operation)node["operationType"]!.GetValue<int>(),
         Payment = ToPayment(node),
-        Items = [.. node["items"]!.AsArray().Select(ToPosition)]
+        Items = [.. node["items"]!.AsArray().Select(ToPosition)],
+        TotalSum = node["totalSum"]!.GetValue<ulong>(),
+        Created = DateTimeOffset.FromUnixTimeSeconds(node["dateTime"]!.GetValue<long>()).DateTime
     };
 }
