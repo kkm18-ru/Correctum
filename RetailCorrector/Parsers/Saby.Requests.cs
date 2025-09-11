@@ -14,7 +14,7 @@ internal partial class Saby
             login = Login,
             password = Password,
         };
-        using var req = new HttpRequestMessage(HttpMethod.Post, "https://api.sbis.ru/oauth/service/");
+        using var req = new HttpRequestMessage(HttpMethod.Post, "/oauth/service/");
         req.Content = new StringContent(JsonSerializer.Serialize(content), Encoding.UTF8, "application/json");
         using var resp = await http.SendAsync(req);
         var respBody = await resp.Content.ReadAsStringAsync();
