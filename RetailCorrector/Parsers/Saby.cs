@@ -9,9 +9,9 @@ namespace RetailCorrector.Parsers;
 internal partial class Saby : ParserBase<Saby, Saby.View>
 {
     public override ParseInfo GenerateInfo() =>
-        parseInfo = new("SabyOFD", ("–ò–ù–ù", INN), ("–ö–ö–¢", Device), ("–§–ù", Storage), 
-            ("–°—Ç–∞—Ä—Ç", FromDate.ToString("dd'.'MM'.'yyyy")), 
-            ("–ö–æ–Ω–µ—Ü", ToDate.ToString("dd'.'MM'.'yyyy")));
+        parseInfo = new("SabyOFD", ("»ÕÕ", INN), ("  “", Device), ("‘Õ", Storage), 
+            ("—Ú‡Ú", FromDate.ToString("dd'.'MM'.'yyyy")), 
+            (" ÓÌÂˆ", ToDate.ToString("dd'.'MM'.'yyyy")));
 
     public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
@@ -27,7 +27,7 @@ internal partial class Saby : ParserBase<Saby, Saby.View>
             while (true)
             {
                 var (arr, @continue) = await ParsePage(http, day, offset);
-                offset = arr.ToArray()[^1]!["fiscalDocumentNumber"]!.GetValue<int>();
+                offset = arr.LastOrDefault()?["fiscalDocumentNumber"]!.GetValue<int>() ?? null;
                 foreach (var node in arr)
                 {
                     if (node is null) continue;

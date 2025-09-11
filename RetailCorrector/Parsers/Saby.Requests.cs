@@ -1,4 +1,3 @@
-using RetailCorrector.Data;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -20,8 +19,8 @@ internal partial class Saby
         req.Content = new StringContent(JsonSerializer.Serialize(content), Encoding.UTF8, "application/json");
         using var resp = await http.SendAsync(req);
         var respBody = await resp.Content.ReadAsStringAsync();
-        var json = JsonSerializer.Deserialize<dynamic>(respBody)!;
-        http.DefaultRequestHeaders.Add("Cookie", $"sid={json.sid}");
+        var json = JsonNode.Parse(respBody)!;
+        http.DefaultRequestHeaders.Add("Cookie", $"sid={json["sid"]!.GetValue<string>()}");
     }
 
     private async Task<(IEnumerable<JsonNode?>, bool)> ParsePage(HttpClient http, DateTime day, int? offset)
@@ -38,7 +37,7 @@ internal partial class Saby
         using var resp = await http.GetAsync(urlBuilder.ToString());
         var content = await resp.Content.ReadAsStringAsync();
         var arr = JsonNode.Parse(content)!.AsArray()!;
-        return (arr.Where(i => i?.GetPropertyName().StartsWith("receipt") ?? false), 
-            arr.Count == Configuration.Saby.CountDocsByRequest);
+        return (arr.Where(node => node is not null && (node["receipt"] is not null || node["receiptCorrection"] is not null))
+            .Select(i => i!["receipt"] ?? i["receiptCorrection"]), arr.Count == Configuration.Saby.CountDocsByRequest);
     }
 }
