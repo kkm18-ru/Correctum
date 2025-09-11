@@ -20,7 +20,7 @@ internal partial class Saby : ParserBase<Saby, Saby.View>
             BaseAddress = new Uri(BaseHost)
         };
         await Auth(http);
-        progress.Report(-(int)(ToDate - FromDate).TotalDays + 1);
+        progress.Report(-(int)(ToDate - FromDate).TotalDays - 1);
         for(var day = FromDate; day <= ToDate; day = day.AddDays(1))
         {
             int? offset = null;
