@@ -6,7 +6,7 @@ using System.Windows.Data;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
-namespace RetailCorrector.UI;
+namespace RetailCorrector.UI.Windows;
 
 [Singleton]
 public partial class MainWindow : Window

@@ -1,4 +1,4 @@
-﻿using RetailCorrector.UI;
+﻿using RetailCorrector.UI.Windows;
 
 namespace RetailCorrector.Actions
 {
