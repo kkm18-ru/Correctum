@@ -106,18 +106,20 @@ namespace RetailCorrector.UI
             }
             catch (Exception ex)
             {
-                if (ex is (OperationCanceledException or TaskCanceledException))
+                var lastParse = Workspace.Instance.ParserHistory[^1];
+                for (var i = Workspace.Instance.Receipts.Count - 1; i >= 0; i--)
                 {
-                    var lastParse = Workspace.Instance.ParserHistory[^1];
-                    for (var i = Workspace.Instance.Receipts.Count - 1; i >= 0; i--)
-                    {
-                        if (Workspace.Instance.Receipts[i].ParseId == lastParse.Id)
-                            Workspace.Instance.Receipts.RemoveAt(i);
-                    }
-                    Workspace.Instance.ParserHistory.Remove(lastParse);
-                    MessageBox.Show("Выгрузка чеков была отменена пользователем");
+                    if (Workspace.Instance.Receipts[i].ParseId == lastParse.Id)
+                        Workspace.Instance.Receipts.RemoveAt(i);
                 }
-                else throw;
+                Workspace.Instance.ParserHistory.Remove(lastParse);
+                if (ex is (OperationCanceledException or TaskCanceledException))
+                    MessageBox.Show("Выгрузка чеков была отменена пользователем", "", 0, MessageBoxImage.Hand);
+                else 
+                {
+                    MessageBox.Show(ex.Message, "Ошибка выгрузки чеков", 0, MessageBoxImage.Error);
+                    CancelParse(null, null!);
+                }
             }
         }
 
