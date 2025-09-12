@@ -1,11 +1,15 @@
-﻿using RetailCorrector.Utils;
+﻿using RetailCorrector.Attributes;
+using RetailCorrector.Utils;
 using System.IO;
 
 namespace RetailCorrector.Exports
 {
+    [Singleton]
     internal partial class Fptr : IExport
     {
         public string Name => "Fptr-скрипт (ФФД 1.2)";
+
+        private Fptr() { }
 
         public ValueTask<string> Export()
         {

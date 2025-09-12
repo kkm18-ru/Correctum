@@ -21,7 +21,7 @@ namespace RetailCorrector.Actions
         }
         private IExport _export = Exporters[0];
 
-        public readonly static IExport[] Exporters = [ new Sqlite(), new Fptr() ];
+        public readonly static IExport[] Exporters = [ Sqlite.Instance, Fptr.Instance ];
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propName = "") =>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RetailCorrector.Generators
@@ -8,6 +9,7 @@ namespace RetailCorrector.Generators
     internal class SingletonGenerator : IIncrementalGenerator
     {
         const string ATTRIBUTE = "RetailCorrector.Attributes.SingletonAttribute";
+        static HashSet<string> hash = new();
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
@@ -21,6 +23,7 @@ namespace RetailCorrector.Generators
         {
             var type = (ITypeSymbol)symbol;
             if (type.GetAttributes().All(a => a.AttributeClass.ToDisplayString() != ATTRIBUTE)) return;
+            if (!hash.Add(type.ToDisplayString())) return;
             context.AddSource($"{type.Name}.Singleton.g.cs",
                 $$"""
                 namespace {{type.ContainingNamespace.ToDisplayString()}};
