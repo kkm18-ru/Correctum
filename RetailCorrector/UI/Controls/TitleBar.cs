@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.Attributes;
 using RetailCorrector.UI.Windows;
+using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,14 +13,14 @@ namespace RetailCorrector.UI.Controls
         private TitleBar()
         {
             Height = 29;
-            Background = new SolidColorBrush(Color.FromRgb(0xdd, 0xdd, 0xdd));
+            Background = SystemColors.AccentColorBrush;
 
             var tb = new TextBlock
             {
-                Text = "RETAILCORRECTOR", 
-                FontFamily = new("Free 3 of 9"), 
+                Text = "RETAILCORRECTOR",
+                FontFamily = new("Free 3 of 9"),
                 FontSize = 38,
-                Foreground = new SolidColorBrush(Color.FromRgb(0xd4, 0xd4, 0xd4))
+                Foreground = new SolidColorBrush(SystemColors.AccentColor.Subtraction(9, 9, 9))
             };
             Canvas.SetLeft(tb, 5);
             Children.Add(tb);
@@ -28,7 +29,7 @@ namespace RetailCorrector.UI.Controls
             btn.Click += (_,_) => MainWindow.Instance.Close();
             Canvas.SetRight(btn, 0);
             Children.Add(btn);
-
+            
             btn = CreateButton('');
             btn.Click += (_, _) => new SettingsWindow().ShowDialog();
             Canvas.SetRight(btn, 45);
@@ -46,7 +47,8 @@ namespace RetailCorrector.UI.Controls
             FontFamily = new FontFamily("HoloLens MDL2 Assets"),
             Height = 29,
             Width = 45,
-            BorderThickness = new(0)
+            BorderThickness = new(0),
+            Background = SystemColors.AccentColorBrush,
         };
     }
 }
