@@ -1,25 +1,27 @@
 ﻿using System.Windows;
-using Atol.Drivers10.Fptr;
+using Microsoft.Win32;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using System.IO;
+using System.Text;
 
 namespace RetailCorrector.Utils
 {
     internal static class FptrPresenter
     {
-        public static uint? GetSessionState(IFptr fptr)
+        public static uint? GetSessionState(nint handle)
         {
-            fptr.setParam(Constants.LIBFPTR_PARAM_DATA_TYPE, Constants.LIBFPTR_DT_SHIFT_STATE);
-            if(fptr.queryData() != 0) return null;
-            return fptr.getParamInt(Constants.LIBFPTR_PARAM_SHIFT_STATE);
+            FptrNative.libfptr_set_param_int(handle, 65587, 14);
+            if(FptrNative.libfptr_query_data(handle) != 0) return null;
+            return FptrNative.libfptr_get_param_int(handle, 65592);
         }
 
-        public static uint? GetFFD(IFptr fptr)
+        public static uint? GetFFD(nint handle)
         {
-            fptr.setParam(Constants.LIBFPTR_PARAM_FN_DATA_TYPE, Constants.LIBFPTR_FNDT_FFD_VERSIONS);
-            if(fptr.fnQueryData() != 0) return null;
-            var fn = fptr.getParamInt(Constants.LIBFPTR_PARAM_FN_FFD_VERSION);
-            var dev = fptr.getParamInt(Constants.LIBFPTR_PARAM_FFD_VERSION);
+            FptrNative.libfptr_set_param_int(handle, 65622, 7);
+            if(FptrNative.libfptr_fn_query_data(handle) != 0) return null;
+            var fn = FptrNative.libfptr_get_param_int(handle, 65628);
+            var dev = FptrNative.libfptr_get_param_int(handle, 65629);
             return (fn, dev) switch
             {
                 (0, _) => dev, (_, 0) => fn,
@@ -27,40 +29,43 @@ namespace RetailCorrector.Utils
             };
         }
 
-        public static bool AddPosition(IFptr fptr, Position pos, CancellationToken token)
+        public static bool AddPosition(nint handle, Position pos, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            var ffd = GetFFD(fptr);
-            fptr.setParam(Constants.LIBFPTR_PARAM_COMMODITY_NAME, pos.Name);
-            fptr.setParam(Constants.LIBFPTR_PARAM_PRICE, pos.Price / 100.0);
-            fptr.setParam(Constants.LIBFPTR_PARAM_QUANTITY, pos.Quantity / 1000.0);
-            fptr.setParam(Constants.LIBFPTR_PARAM_POSITION_SUM, pos.Cost / 100.0);
-            fptr.setParam(Constants.LIBFPTR_PARAM_TAX_TYPE, (uint)pos.TaxRate);
-            fptr.setParam(1212, (uint)pos.Type);
-            fptr.setParam(1214, (uint)pos.PayMethod);
-            if(ffd == 120) fptr.setParam(2108, (uint)pos.MeasureUnit!);
-            return 0 == fptr.registration();
+            var ffd = GetFFD(handle);
+            FptrNative.libfptr_set_param_str(handle, 65631, pos.Name);
+            FptrNative.libfptr_set_param_double(handle, 65632, pos.Price / 100.0);
+            FptrNative.libfptr_set_param_double(handle, 65633, pos.Quantity / 1000.0);
+            FptrNative.libfptr_set_param_double(handle, 65634, pos.Cost / 100.0);
+            FptrNative.libfptr_set_param_int(handle, 65569, (uint)pos.TaxRate);
+            FptrNative.libfptr_set_param_int(handle, 1212, (uint)pos.Type);
+            FptrNative.libfptr_set_param_int(handle, 1214, (uint)pos.PayMethod);
+            if(ffd == 120) 
+                FptrNative.libfptr_set_param_int(handle, 2108, (uint)pos.MeasureUnit!);
+            return 0 == FptrNative.libfptr_registration(handle);
         }
 
-        public static bool Payment(IFptr fptr, Payment pay, CancellationToken token) =>
-            SinglePayment(fptr, 0, pay.Cash, token) && SinglePayment(fptr, 1, pay.ECash, token) &&
-            SinglePayment(fptr, 2, pay.Pre, token) && SinglePayment(fptr, 3, pay.Post, token) &&
-            SinglePayment(fptr, 4, pay.Provision, token);
+        public static bool Payment(nint handle, Payment pay, CancellationToken token) =>
+            SinglePayment(handle, 0, pay.Cash, token) && 
+            SinglePayment(handle, 1, pay.ECash, token) &&
+            SinglePayment(handle, 2, pay.Pre, token) && 
+            SinglePayment(handle, 3, pay.Post, token) &&
+            SinglePayment(handle, 4, pay.Provision, token);
 
-        private static bool SinglePayment(IFptr fptr, uint type, ulong sum, CancellationToken token)
+        private static bool SinglePayment(nint handle, uint type, ulong sum, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             if (sum == 0) return true;
-            fptr.setParam(Constants.LIBFPTR_PARAM_PAYMENT_TYPE, type);
-            fptr.setParam(Constants.LIBFPTR_PARAM_PAYMENT_SUM, sum/100.0);
-            return 0 == fptr.payment();
+            FptrNative.libfptr_set_param_int(handle, 65564, type);
+            FptrNative.libfptr_set_param_double(handle, 65565, sum/100.0);
+            return 0 == FptrNative.libfptr_payment(handle);
         }
 
-        public static bool TotalReceipt(IFptr fptr, ulong total, CancellationToken token)
+        public static bool TotalReceipt(nint handle, ulong total, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            fptr.setParam(Constants.LIBFPTR_PARAM_SUM, total / 100.0);
-            return 0 == fptr.receiptTotal();
+            FptrNative.libfptr_set_param_double(handle, 65613, total / 100.0);
+            return 0 == FptrNative.libfptr_receipt_total(handle);
         }
 
         public struct OpenReceiptArgs
@@ -70,58 +75,90 @@ namespace RetailCorrector.Utils
             public int CorrType { get; set; }
         }
         
-        public static bool OpenReceipt(IFptr fptr, Receipt doc, OpenReceiptArgs args, CancellationToken token)
+        public static bool OpenReceipt(nint handle, Receipt doc, OpenReceiptArgs args, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            var ffd = GetFFD(fptr);
-            byte[] corrData = [];
+            var ffd = GetFFD(handle);
+            var corrData = new byte[128];
 
             if(ffd >= 110)  // todo add for ffd 1.05
             {
-                fptr.setParam(1178, doc.Created);
-                fptr.setParam(1179, args.Act);
-                fptr.utilFormTlv();
-                corrData = fptr.getParamByteArray(Constants.LIBFPTR_PARAM_TAG_VALUE);
+                FptrNative.libfptr_set_param_datetime(handle, 1178, 
+                    doc.Created.Year, doc.Created.Month, doc.Created.Day, 
+                    doc.Created.Hour, doc.Created.Minute, doc.Created.Second);
+                FptrNative.libfptr_set_param_str(handle, 1179, args.Act);
+                FptrNative.libfptr_util_form_tlv(handle);
+                FptrNative.libfptr_get_param_bytearray(handle, 65624, corrData, corrData.Length);
             }
             token.ThrowIfCancellationRequested();
 
-            var opcode = GetOperation(fptr, doc.Type);
+            var opcode = GetOperation(handle, doc.Type);
             if (opcode is null) return false;
-            fptr.setParam(Constants.LIBFPTR_PARAM_RECEIPT_TYPE, (uint)opcode);
-            fptr.setParam(Constants.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, args.Print);
+            FptrNative.libfptr_set_param_int(handle, 65545, (uint)opcode);
+            FptrNative.libfptr_set_param_bool(handle, 65572, args.Print);
 
             token.ThrowIfCancellationRequested();
             if (ffd >= 110) // todo add for ffd 1.05
             {
-                fptr.setParam(1173, args.CorrType);
-                fptr.setParam(1174, corrData);
+                FptrNative.libfptr_set_param_int(handle, 1173, (uint)args.CorrType);
+                FptrNative.libfptr_set_param_bytearray(handle, 1174, corrData, corrData.Length);
             }
-            fptr.setParam(1192, doc.DocSign.ToString());
-            return 0 == fptr.openReceipt();
+            FptrNative.libfptr_set_param_str(handle, 1192, doc.DocSign.ToString());
+            return 0 == FptrNative.libfptr_open_receipt(handle);
         }
 
-        public static void CancelReceipt(IFptr fptr)
+        public static void CancelReceipt(nint handle)
         {
-            var code = fptr.errorCode();
-            var desc = fptr.errorDescription();
-            fptr.cancelReceipt();
-            fptr.close();
+            var code = FptrNative.libfptr_error_code(handle);
+            var desc = GetErrorDescription(handle);
+            FptrNative.libfptr_cancel_receipt(handle);
+            FptrNative.libfptr_close(handle);
             var text = $"{desc}\n\nДрайвер освободил кассу для её настройки, закройте данное окно для продолжения пробития!";
             var title = $"Произошла ошибка (Код: {code})";
             MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Hand);
-            fptr.open();
+            FptrNative.libfptr_open(handle);
         }
 
-        private static int? GetOperation(IFptr fptr, Operation opcode) => (GetFFD(fptr), opcode) switch
+        private static int? GetOperation(nint handle, Operation opcode) => (GetFFD(handle), opcode) switch
         {
             (null, _) => null,
-            (<= 105, Operation.Income or Operation.RefundOutcome) => Constants.LIBFPTR_RT_SELL,
-            (<= 105, Operation.Outcome or Operation.RefundIncome) => Constants.LIBFPTR_RT_BUY,
-            (>= 110, Operation.Income) => Constants.LIBFPTR_RT_SELL_CORRECTION,
-            (>= 110, Operation.Outcome) => Constants.LIBFPTR_RT_BUY_CORRECTION,
-            (>= 110, Operation.RefundOutcome) => Constants.LIBFPTR_RT_BUY_RETURN_CORRECTION,
-            (>= 110, Operation.RefundIncome) => Constants.LIBFPTR_RT_SELL_RETURN_CORRECTION,
+            (<= 105, Operation.Income or Operation.RefundOutcome) => 1,
+            (<= 105, Operation.Outcome or Operation.RefundIncome) => 4,
+            (>= 110, Operation.Income) => 7,
+            (>= 110, Operation.Outcome) => 9,
+            (>= 110, Operation.RefundOutcome) => 10,
+            (>= 110, Operation.RefundIncome) => 8,
             _ => throw new NotImplementedException()
         };
+
+        private static string GetErrorDescription(nint handle)
+        {
+            StringBuilder stringBuilder = new(128);
+            int num = FptrNative.libfptr_error_description(handle, stringBuilder, stringBuilder.Capacity);
+            if (num > stringBuilder.Capacity)
+            {
+                stringBuilder.EnsureCapacity(num);
+                FptrNative.libfptr_error_description(handle, stringBuilder, stringBuilder.Capacity);
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        public static nint LoadLibrary(string path)
+        {
+            var intPtr = FptrNative.LoadLibrary(path);
+            if (intPtr == IntPtr.Zero)
+            {
+                intPtr = FptrNative.LoadLibrary(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SystemX86), "msvcp140.dll"));
+                if (intPtr == IntPtr.Zero) throw new Exception("Не удалось загрузить msvcp140.dll");
+                intPtr = FptrNative.LoadLibrary(path);
+                if (intPtr == IntPtr.Zero) throw new Exception("Не удалось загрузить драйвер Fptr");
+            }
+            return intPtr;
+        }
+
+        public static string GetLocationDriver() =>
+            Path.Combine((string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ATOL\Drivers\10.0\KKT",
+                "INSTALL_DIR", "")!, "bin", "fptr10.dll");
     }
 }

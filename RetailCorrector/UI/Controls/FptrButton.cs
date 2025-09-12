@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace RetailCorrector.UI.Controls
 {
@@ -11,8 +12,15 @@ namespace RetailCorrector.UI.Controls
 
         protected override void OnClick()
         {
-            new Windows.FptrWindow().ShowDialog();
-            base.OnClick();
+            try
+            {
+                new Windows.FptrWindow().ShowDialog();
+                base.OnClick();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "", 0, MessageBoxImage.Error);
+            }
         }
     }
 }

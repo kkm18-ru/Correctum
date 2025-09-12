@@ -9,6 +9,7 @@
 		<PlatformTarget>x86</PlatformTarget>
 		<Platforms>x86</Platforms>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -45,12 +46,6 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<CompilerVisibleProperty Include="Configuration" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Reference Include="Atol.Drivers10.Fptr">
-	    <HintPath>C:\Program Files (x86)\ATOL\Drivers10\KKT\langs\csharp\Atol.Drivers10.Fptr.dll</HintPath>
-	  </Reference>
 	</ItemGroup>
 
 </Project>

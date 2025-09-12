@@ -1,5 +1,4 @@
-﻿using Atol.Drivers10.Fptr;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,7 +20,8 @@ namespace RetailCorrector.UI.Windows
         }
 
         private int _progressValue;
-        private readonly IFptr _driver;
+        private nint _driver;
+        private readonly nint _library;
         private readonly TextBlock _txtProgress;
         private readonly ProgressBar _barProgress;
         private readonly Button _btnStart;
@@ -34,7 +34,9 @@ namespace RetailCorrector.UI.Windows
         public FptrWindow()
         {
             SizeToContent = SizeToContent.WidthAndHeight;
-            _driver = new Fptr();
+            _library = FptrPresenter.LoadLibrary(FptrPresenter.GetLocationDriver());
+            if (FptrNative.libfptr_create(out _driver) != 0)
+                throw new Exception("Не удалось создать экземпляр драйвера");
             var grid = new Grid
             {
                 Margin = new Thickness(5)
@@ -106,7 +108,7 @@ namespace RetailCorrector.UI.Windows
             {
                 Content = "  Настройка драйвера  "
             };
-            btn.Click += (_, _) => _driver.showProperties(0, 
+            btn.Click += (_, _) => FptrNative.libfptr_show_properties(_driver, 0, 
                 new WindowInteropHelper(MainWindow.Instance).EnsureHandle());
             return btn;
         }
@@ -161,11 +163,11 @@ namespace RetailCorrector.UI.Windows
         {
             try
             {
-                _driver.open();
+                FptrNative.libfptr_open(_driver);
                 var @ref = Workspace.Instance.Receipts;
                 if (MissingUnitFor120(@ref))
                 {
-                    System.Windows.MessageBox.Show("На ФФД 1.2 единицы измерения обязаны присутствовать!");
+                    MessageBox.Show("На ФФД 1.2 единицы измерения обязаны присутствовать!");
                     return;
                 }
 
@@ -181,8 +183,8 @@ namespace RetailCorrector.UI.Windows
             }
             catch (OperationCanceledException)
             {
-                _driver.cancelReceipt();
-                _driver.close();
+                FptrNative.libfptr_cancel_receipt(_driver); 
+                FptrNative.libfptr_close(_driver);
             }
         }
 
@@ -207,18 +209,18 @@ namespace RetailCorrector.UI.Windows
                 receipt.Items.All(pos => FptrPresenter.AddPosition(_driver, pos, token)) &&
                 FptrPresenter.TotalReceipt(_driver, receipt.TotalSum, token) &&
                 FptrPresenter.Payment(_driver, receipt.Payment, token) &&
-                0 == _driver.closeReceipt();
+                0 == FptrNative.libfptr_close_receipt(_driver);
         }
 
         private bool ProcessingSession()
         {
             if (FptrPresenter.GetSessionState(_driver) is null) return false;
-            if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_EXPIRED)
+            if (FptrPresenter.GetSessionState(_driver) == 2)
             {
-                _driver.setParam(Constants.LIBFPTR_PARAM_REPORT_TYPE, Constants.LIBFPTR_RT_CLOSE_SHIFT);
-                if (0 != _driver.report()) return false;
+                FptrNative.libfptr_set_param_int(_driver, 65546, 0);
+                if (0 != FptrNative.libfptr_report(_driver)) return false;
             }
-            if (FptrPresenter.GetSessionState(_driver) == Constants.LIBFPTR_SS_CLOSED && 0 != _driver.openShift())
+            if (FptrPresenter.GetSessionState(_driver) == 0 && 0 != FptrNative.libfptr_open_shift(_driver))
                 return false;
             return true;
         }
@@ -228,9 +230,14 @@ namespace RetailCorrector.UI.Windows
 
         protected override void OnClosed(EventArgs e)
         {
-            _driver.cancelReceipt();
-            _driver.close();
-            _driver.destroy();
+            if (_driver != 0)
+            {
+                FptrNative.libfptr_cancel_receipt(_driver);
+                FptrNative.libfptr_close(_driver);
+                FptrNative.libfptr_destroy(out _driver);
+            }
+            if(_library != 0)
+                FptrNative.FreeLibrary(_library);
         }
     }
 }
