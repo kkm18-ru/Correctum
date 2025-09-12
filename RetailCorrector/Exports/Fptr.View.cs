@@ -93,6 +93,21 @@ namespace RetailCorrector.Exports
             var input = new TextBox();
             input.SetBinding(TextBox.TextProperty, new Binding(nameof(ActId)) { Source = this });
             content.AddChild(input, 2, 8);
+
+            if (FiscalFormat != 2)
+            {
+                content.AddRow(GridUnitType.Pixel, 5);
+                content.AddRow(GridUnitType.Auto); // OldCorrReason 10
+
+                lbl = CreateLabel("Причина коррекции");
+                content.AddChild(lbl, y: 10);
+                cb = new ComboBox
+                {
+                    ItemsSource = new[] { "Ошибка или карантин", "Чек не был пробит" },
+                };
+                cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(OldCorrReason)) { Source = this });
+                content.AddChild(cb, 2, 10);
+            }
         }
 
         private static TextBlock CreateLabel(string text) => new()
