@@ -94,7 +94,7 @@ namespace RetailCorrector.Exports
             input.SetBinding(TextBox.TextProperty, new Binding(nameof(ActId)) { Source = this });
             content.AddChild(input, 2, 8);
 
-            if (FiscalFormat != 2)
+            if (FiscalFormat == 2)
             {
                 content.AddRow(GridUnitType.Pixel, 5);
                 content.AddRow(GridUnitType.Auto); // OldCorrReason 10
