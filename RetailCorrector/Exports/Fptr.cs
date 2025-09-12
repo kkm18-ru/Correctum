@@ -3,7 +3,7 @@ using System.IO;
 
 namespace RetailCorrector.Exports
 {
-    internal class Fptr : IExport
+    internal partial class Fptr : IExport
     {
         public string Name => "Fptr-скрипт (ФФД 1.2)";
 
@@ -11,8 +11,6 @@ namespace RetailCorrector.Exports
         {
             /* TODO-список
              * 1) Добавить поддержку ФФД 1.05 и 1.1
-             * 2) Добавить настройку LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY
-             * 3) Добавить настройку 1179 и 1173
              */
             var guid = Guid.CreateVersion7();
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RetailCorrector", $"{guid}");
@@ -30,15 +28,15 @@ namespace RetailCorrector.Exports
                 foreach (var receipt in chunk)
                 {
                     tf.WriteLine($"Fptr.setParam(1178, new Date(\"{receipt.Created:yyyy'-'MM'-'dd'T'HH':'mm':'ss}\"));");
-                    tf.WriteLine("Fptr.setParam(1179, \" \");");
+                    tf.WriteLine($"Fptr.setParam(1179, \"{(string.IsNullOrWhiteSpace(ActId) ? " " : ActId)}\");");
                     tf.WriteLine("Fptr.utilFormTlv();");
                     tf.WriteLine("correctionInfo = Fptr.getParamByteArray(Fptr.LIBFPTR_PARAM_TAG_VALUE);");
                     tf.WriteLine();
                     var operation = $"{((int)receipt.Type > 2 ? "BUY" : "SELL")}_";
                     if ((int)receipt.Type % 2 == 0) operation += "RETURN_";
                     tf.WriteLine($"Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_TYPE, Fptr.LIBFPTR_RT_{operation}CORRECTION);");
-                    tf.WriteLine("Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, true);");
-                    tf.WriteLine("Fptr.setParam(1173, 0);");
+                    tf.WriteLine($"Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, {(Print == 1).ToString().ToLower()});");
+                    tf.WriteLine($"Fptr.setParam(1173, {CorrType});");
                     tf.WriteLine($"Fptr.setParam(1192, \"{receipt.DocSign}\");");
                     tf.WriteLine("Fptr.setParam(1174, correctionInfo);");
                     tf.WriteLine("Fptr.openReceipt();");
