@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using RetailCorrector.Utils;
+using System.IO;
 
 namespace RetailCorrector.Exports
 {
@@ -19,10 +20,11 @@ namespace RetailCorrector.Exports
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
             Directory.CreateDirectory(path);
             var receipts = Workspace.Instance.Receipts;
-            var n = Math.Ceiling((double)receipts.Count / Configuration.Export.CountDocsPerFile);
+            var n = Math.Ceiling((double)receipts.Count / Configuration.Instance.FptrExportDocsPerFile);
             for (var i = 0; i < n; i++)
             {
-                var chunk = receipts.Skip(i * Configuration.Export.CountDocsPerFile).Take(Configuration.Export.CountDocsPerFile);
+                var chunk = receipts.Skip(i * Configuration.Instance.FptrExportDocsPerFile)
+                    .Take(Configuration.Instance.FptrExportDocsPerFile);
                 using var fs = new FileStream(Path.Combine(path, $"{i + 1}.txt"), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
                 using var tf = new StreamWriter(fs);
                 foreach (var receipt in chunk)

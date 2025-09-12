@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.Attributes;
 using RetailCorrector.Data;
+using RetailCorrector.Utils;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
@@ -45,11 +46,11 @@ namespace RetailCorrector.Parsers
 
         private async Task<JsonArray?> GetContent(HttpClient http, DateTime day, CancellationToken cancellationToken)
         {
-            var leftTries = Configuration.OfdRu.CountTries;
+            var leftTries = Configuration.Instance.HttpTriesCount;
             do
             {
                 leftTries--;
-                await Task.Delay(Configuration.OfdRu.RequestDelay, cancellationToken);
+                await Task.Delay(Configuration.Instance.HttpRequestDelay, cancellationToken);
                 using var resp = await http.GetAsync(Url(day), cancellationToken);
                 if (!resp.IsSuccessStatusCode) continue;
                 var content = await resp.Content.ReadAsStringAsync(cancellationToken);

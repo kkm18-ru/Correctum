@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.Attributes;
 using RetailCorrector.UI.Controls;
+using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -57,5 +58,11 @@ public partial class MainWindow : Window
         dock.Children.Add(content);
 
         Content = dock;
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
+        Configuration.Instance.Save();
     }
 }
