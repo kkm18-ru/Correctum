@@ -1,3 +1,4 @@
+using RetailCorrector.Utils;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -34,11 +35,11 @@ internal partial class Saby
         urlBuilder.Append($"?dateFrom={txtDay}T00:00:00");
         urlBuilder.Append($"&dateTo={txtDay}T23:59:59");
         if(offset is not null) urlBuilder.Append($"&startId={offset}");
-        urlBuilder.Append($"&limit={Configuration.Saby.CountDocsByRequest}");
+        urlBuilder.Append($"&limit={Configuration.Instance.HttpPageSize}");
         using var resp = await http.GetAsync(urlBuilder.ToString());
         var content = await resp.Content.ReadAsStringAsync();
         var arr = JsonNode.Parse(content)!.AsArray()!;
         return (arr.Where(node => node is not null && (node["receipt"] is not null || node["receiptCorrection"] is not null))
-            .Select(i => i!["receipt"] ?? i["receiptCorrection"]), arr.Count == Configuration.Saby.CountDocsByRequest);
+            .Select(i => i!["receipt"] ?? i["receiptCorrection"]), arr.Count == Configuration.Instance.HttpPageSize);
     }
 }

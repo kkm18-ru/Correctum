@@ -11,7 +11,7 @@ namespace RetailCorrector.UI.Controls
 
         protected override void OnClick()
         {
-            new FptrWindow().ShowDialog();
+            new Windows.FptrWindow().ShowDialog();
             base.OnClick();
         }
     }

@@ -1,14 +1,13 @@
 ﻿using Atol.Drivers10.Fptr;
 using RetailCorrector.Data;
-using RetailCorrector.UI.WindowTypes;
 using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 
-namespace RetailCorrector.UI
+namespace RetailCorrector.UI.Windows
 {
-    internal class FptrWindow : DialogWindow
+    internal class FptrWindow : Types.DialogWindow
     {
         public int ProgressValue
         {

@@ -1,13 +1,12 @@
 ﻿using RetailCorrector.Parsers;
 using RetailCorrector.UI.Controls;
-using RetailCorrector.UI.WindowTypes;
 using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace RetailCorrector.UI
+namespace RetailCorrector.UI.Windows
 {
-    internal class ParserWindow : DialogWindow
+    internal class ParserWindow : Types.DialogWindow
     {
         private CancellationTokenSource? cts;
         private readonly Progress<long> progress;

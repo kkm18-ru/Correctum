@@ -1,11 +1,10 @@
 ﻿using RetailCorrector.Actions;
-using RetailCorrector.UI.WindowTypes;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace RetailCorrector.UI
+namespace RetailCorrector.UI.Windows
 {
-    internal class ActionWindow : DialogWindow
+    internal class ActionWindow : Types.DialogWindow
     {
         public ActionWindow(UserControl view) :
             this((IAction)view.DataContext)

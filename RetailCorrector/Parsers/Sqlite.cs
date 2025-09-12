@@ -2,6 +2,7 @@
 using Microsoft.Data.Sqlite;
 using RetailCorrector.Attributes;
 using RetailCorrector.Data;
+using RetailCorrector.Utils;
 using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Parsers
@@ -17,10 +18,10 @@ namespace RetailCorrector.Parsers
             using var conn = new SqliteConnection($"Data Source={Path};Mode=ReadOnly");
             var count = await conn.ExecuteScalarAsync<int>(COUNT_RECEIPTS);
             progress.Report(-count);
-            for (var i = 0; i < count; i += Configuration.Sql.LimitDocuments)
+            for (var i = 0; i < count; i += Configuration.Instance.SqlLimit)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var docs = (await Task.Run(() => conn.QueryAsync<Document>(GET_RECEIPTS, new { limit = Configuration.Sql.LimitDocuments, offset = i }))).ToArray();
+                var docs = (await Task.Run(() => conn.QueryAsync<Document>(GET_RECEIPTS, new { limit = Configuration.Instance.SqlLimit, offset = i }))).ToArray();
                 for (var j = 0; j < docs.Length; j++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();

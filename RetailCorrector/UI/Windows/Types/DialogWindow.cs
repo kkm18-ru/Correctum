@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace RetailCorrector.UI.WindowTypes
+namespace RetailCorrector.UI.Windows.Types
 {
     internal abstract class DialogWindow : Window
     {

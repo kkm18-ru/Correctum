@@ -5,7 +5,7 @@
         [STAThread]
         public static void Main()
         {
-            App.Instance.Run(UI.MainWindow.Instance);
+            App.Instance.Run(UI.Windows.MainWindow.Instance);
         }
     }
 }

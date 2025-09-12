@@ -1,5 +1,5 @@
 ﻿using RetailCorrector.Data;
-using RetailCorrector.UI;
+using RetailCorrector.UI.Windows;
 
 namespace RetailCorrector.Parsers
 {

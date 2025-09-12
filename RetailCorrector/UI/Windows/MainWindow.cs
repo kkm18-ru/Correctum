@@ -1,12 +1,13 @@
 ﻿using RetailCorrector.Attributes;
 using RetailCorrector.UI.Controls;
+using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
-namespace RetailCorrector.UI;
+namespace RetailCorrector.UI.Windows;
 
 [Singleton]
 public partial class MainWindow : Window
@@ -14,7 +15,10 @@ public partial class MainWindow : Window
     private MainWindow()
     {
         Title = "RetailCorrector";
-        (Width, Height) = (1000, 500);
+        WindowStyle = WindowStyle.None;
+        ResizeMode = ResizeMode.NoResize;
+        var area = SystemParameters.WorkArea;
+        (Width, Height, Top, Left) = (area.Width, area.Height, area.Top, area.Left);
 
         var textHeader = new FrameworkElementFactory(typeof(TextBlock));
         textHeader.SetBinding(TextBlock.TextProperty, new Binding(nameof(LayoutDocument.Title)));
@@ -42,11 +46,23 @@ public partial class MainWindow : Window
         var group = new LayoutDocumentPaneGroup(pane);
         panelLayout.Children.Add(group);
 
-        Content = new DockingManager
+        var dock = new DockPanel();
+        DockPanel.SetDock(TitleBar.Instance, Dock.Top);
+        var content = new DockingManager
         {
             AllowMixedOrientation = true,
             DocumentHeaderTemplate = headerTemplate,
             Layout = new() { RootPanel = panelLayout }
         };
+        dock.Children.Add(TitleBar.Instance);
+        dock.Children.Add(content);
+
+        Content = dock;
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
+        Configuration.Instance.Save();
     }
 }
