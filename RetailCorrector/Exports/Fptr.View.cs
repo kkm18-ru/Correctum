@@ -9,7 +9,7 @@ namespace RetailCorrector.Exports
     {
         private Grid uiParent;
 
-        private Fptr()
+        public Fptr()
         {
             PropertyChanged += (_, e) =>
             {

@@ -5,13 +5,9 @@ using System.IO;
 
 namespace RetailCorrector.Exports
 {
-    [Singleton]
+    [RegisterExport("SQLite")]
     internal partial class Sqlite : IExport
     {
-        public string Name => "SQLite";
-
-        private Sqlite() { }
-
         public ValueTask<string> Export()
         {
             var guid = Guid.CreateVersion7();

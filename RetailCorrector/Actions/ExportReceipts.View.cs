@@ -1,5 +1,4 @@
-﻿using RetailCorrector.Exports;
-using RetailCorrector.Utils;
+﻿using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,34 +8,44 @@ namespace RetailCorrector.Actions
     {
         internal class View : ActionView<View, ExportReceipts>
         {
-            protected internal static Grid grid { get; private set; }
+            private readonly Grid content = new();
             public View()
             {
-                grid = new Grid();
-                Content = grid;
+                content.RowDefinitions.Clear();
+                content.Children.Clear();
+                Content = content;
 
-                grid.AddColumn(GridUnitType.Pixel, 115);
-                grid.AddColumn(GridUnitType.Pixel, 5);
-                grid.AddColumn(GridUnitType.Pixel, 180);
+                content.AddColumn(GridUnitType.Pixel, 115);
+                content.AddColumn(GridUnitType.Pixel, 5);
+                content.AddColumn(GridUnitType.Pixel, 180);
 
-                grid.AddRow(GridUnitType.Auto);
+                content.AddRow(GridUnitType.Auto);
 
-                grid.AddChild(new TextBlock()
+                content.AddChild(new TextBlock()
                 {
                     Text = "Экспортировать как",
                     VerticalAlignment = VerticalAlignment.Center
                 });
-                grid.AddChild(DrawSelector(), 2);
+                content.AddChild(DrawSelector(), 2);
+                Context.Exporter.InitVisual(content);
             }
 
             private ComboBox DrawSelector()
             {
                 var cb = new ComboBox
                 {
-                    ItemsSource = ExportReceipts.Exporters,
-                    DisplayMemberPath = nameof(IExport.Name)
+                    ItemsSource = DisplayNames,
                 };
-                cb.SetBinding(ComboBox.SelectedValueProperty, nameof(Context.Exporter));
+                cb.SetBinding(ComboBox.SelectedIndexProperty, nameof(Context.ExporterId));
+                cb.SelectionChanged += (_, _) =>
+                {
+                    if (content.RowDefinitions.Count > 1)
+                    {
+                        content.RowDefinitions.RemoveRange(1, content.RowDefinitions.Count - 1);
+                        content.Children.RemoveRange(2, content.Children.Count - 2);
+                    }
+                    Context.Exporter.InitVisual(content);
+                };
                 return cb;
             }
         }

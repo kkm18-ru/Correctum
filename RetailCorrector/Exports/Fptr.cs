@@ -6,11 +6,9 @@ using System.IO;
 
 namespace RetailCorrector.Exports
 {
-    [Singleton]
+    [RegisterExport("Fptr-скрипт")]
     internal partial class Fptr : IExport
     {
-        public string Name => "Fptr-скрипт";
-
         public ValueTask<string> Export()
         {
             if (FiscalFormat == 2 && OldCorrReason == 1)
