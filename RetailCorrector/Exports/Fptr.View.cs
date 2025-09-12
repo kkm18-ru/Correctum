@@ -7,8 +7,43 @@ namespace RetailCorrector.Exports
 {
     internal partial class Fptr
     {
+        private Grid uiParent;
+
+        private Fptr()
+        {
+            PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(FiscalFormat))
+                {
+                    if (uiParent.RowDefinitions.Count == 11)
+                    {
+                        if (FiscalFormat == 2) return;
+                        uiParent.RowDefinitions.RemoveRange(9, 2);
+                        uiParent.Children.RemoveRange(10, 2);
+                    }
+                    else
+                    {
+                        if (FiscalFormat != 2) return;
+                        uiParent.AddRow(GridUnitType.Pixel, 5);
+                        uiParent.AddRow(GridUnitType.Auto); // OldCorrReason 10
+
+                        var lbl = CreateLabel("Причина коррекции");
+                        uiParent.AddChild(lbl, y: 10);
+                        var cb = new ComboBox
+                        {
+                            ItemsSource = new[] { "Ошибка или карантин", "Чек не был пробит" },
+                        };
+                        cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(OldCorrReason)) { Source = this });
+                        uiParent.AddChild(cb, 2, 10);
+                    }
+                }
+            };
+        }
+
         public void InitVisual(Grid content)
         {
+            uiParent = content;
+
             content.AddRow(GridUnitType.Pixel, 5);
             content.AddRow(GridUnitType.Auto); // FiscalFormat 2
             content.AddRow(GridUnitType.Pixel, 5);
@@ -22,7 +57,7 @@ namespace RetailCorrector.Exports
             content.AddChild(lbl, y: 2);
             var cb = new ComboBox
             {
-                ItemsSource = new[] { "1.2", "1.1" },
+                ItemsSource = new[] { "1.2", "1.1", "1.05" },
             };
             cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(FiscalFormat)) { Source = this });
             content.AddChild(cb, 2, 2);

@@ -1,15 +1,18 @@
 ﻿using RetailCorrector.Attributes;
 using RetailCorrector.Utils;
 using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace RetailCorrector.Exports
 {
     [Singleton]
     internal partial class Fptr : IExport
     {
-        public string Name => "Fptr-скрипт (ФФД 1.2)";
+        public string Name => "Fptr-скрипт";
 
-        private Fptr() { }
+        
 
         public ValueTask<string> Export()
         {
