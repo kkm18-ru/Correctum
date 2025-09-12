@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace RetailCorrector.Generators
@@ -13,32 +14,35 @@ namespace RetailCorrector.Generators
         {
             var classes = context.SyntaxProvider.CreateSyntaxProvider(
                 (node, _) => node is ClassDeclarationSyntax,
-                (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node));
-            context.RegisterSourceOutput(classes, Generate);
+                (gsc, _) => (ITypeSymbol)gsc.SemanticModel.GetDeclaredSymbol(gsc.Node)!);
+            context.RegisterSourceOutput(classes.Collect(), Generate);
         }
 
-        private static void Generate(SourceProductionContext context, ISymbol symbol)
+        private static void Generate(SourceProductionContext context, ImmutableArray<ITypeSymbol> array)
         {
-            var type = (ITypeSymbol)symbol;
-            if (type.GetAttributes().All(a => a.AttributeClass.ToDisplayString() != ATTRIBUTE)) return;
-            context.AddSource($"{type.Name}.Singleton.g.cs",
-                $$"""
-                namespace {{type.ContainingNamespace.ToDisplayString()}};
+            array = [..array.Where(type => type.GetAttributes()
+                .Any(ad => ad.AttributeClass?.ToDisplayString() == ATTRIBUTE))];
+            foreach (var type in array.Distinct<ITypeSymbol>(SymbolEqualityComparer.Default))
+            {
+                context.AddSource($"{type.Name}_Singleton.g.cs",
+                    $$"""
+                      namespace {{type.ContainingNamespace.ToDisplayString()}};
 
-                {{type.GetAccessModifier()}} partial class {{type.Name}}
-                {
-                    public static {{type.Name}} Instance
-                    {
-                        get
-                        {
-                            if(_instance is null) 
-                                _instance = new {{type.Name}}();
-                            return _instance;
-                        }
-                    }
-                    private static {{type.Name}} _instance;
-                }
-                """);
+                      {{type.GetAccessModifier()}} partial class {{type.Name}}
+                      {
+                          public static {{type.Name}} Instance
+                          {
+                              get
+                              {
+                                  if(_instance is null) 
+                                      _instance = new {{type.Name}}();
+                                  return _instance;
+                              }
+                          }
+                          private static {{type.Name}} _instance;
+                      }
+                      """);
+            }
         }
     }
 }

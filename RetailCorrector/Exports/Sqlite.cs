@@ -1,12 +1,16 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
+using RetailCorrector.Attributes;
 using System.IO;
 
 namespace RetailCorrector.Exports
 {
+    [Singleton]
     internal partial class Sqlite : IExport
     {
         public string Name => "SQLite";
+
+        private Sqlite() { }
 
         public ValueTask<string> Export()
         {
