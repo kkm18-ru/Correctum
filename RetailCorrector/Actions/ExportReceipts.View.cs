@@ -9,15 +9,17 @@ namespace RetailCorrector.Actions
     {
         internal class View : ActionView<View, ExportReceipts>
         {
+            protected internal static Grid grid { get; private set; }
             public View()
             {
-                (Height, Width) = (22, 300);
-                var grid = new Grid();
+                grid = new Grid();
                 Content = grid;
 
                 grid.AddColumn(GridUnitType.Pixel, 115);
                 grid.AddColumn(GridUnitType.Pixel, 5);
-                grid.AddColumn(GridUnitType.Star);
+                grid.AddColumn(GridUnitType.Pixel, 180);
+
+                grid.AddRow(GridUnitType.Auto);
 
                 grid.AddChild(new TextBlock()
                 {

@@ -14,6 +14,9 @@ namespace RetailCorrector.Actions
                 if (_export == value) return;
                 _export = value;
                 OnPropertyChanged();
+                View.grid.RowDefinitions.RemoveRange(1, View.grid.RowDefinitions.Count - 1);
+                View.grid.Children.RemoveRange(2, View.grid.Children.Count - 2);
+                _export.InitVisual(View.grid);
             }
         }
         private IExport _export = Exporters[0];
