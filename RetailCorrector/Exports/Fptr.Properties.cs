@@ -10,5 +10,9 @@ namespace RetailCorrector.Exports
         /// </summary>
         [NotifyChanged(1)] public partial int Print { get; set; }
         [NotifyChanged("")] public partial string ActId { get; set; }
+        /// <summary>
+        /// ФФД (0 - 1.2; 1 - 1.1)
+        /// </summary>
+        [NotifyChanged(0)] public partial int FiscalFormat { get; set; }
     }
 }

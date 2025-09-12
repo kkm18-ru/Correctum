@@ -10,7 +10,7 @@ namespace RetailCorrector.Exports
         public ValueTask<string> Export()
         {
             /* TODO-список
-             * 1) Добавить поддержку ФФД 1.05 и 1.1
+             * 1) Добавить поддержку ФФД 1.05
              */
             var guid = Guid.CreateVersion7();
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RetailCorrector", $"{guid}");
@@ -52,7 +52,8 @@ namespace RetailCorrector.Exports
                         tf.WriteLine($"Fptr.setParam(Fptr.LIBFPTR_PARAM_TAX_TYPE, {(int)p.TaxRate});");
                         tf.WriteLine($"Fptr.setParam(1212, {(int)p.Type});");
                         tf.WriteLine($"Fptr.setParam(1214, {(int)p.PayMethod});");
-                        tf.WriteLine($"Fptr.setParam(2108, {(int)p.MeasureUnit!});");
+                        if(FiscalFormat == 0) 
+                            tf.WriteLine($"Fptr.setParam(2108, {(int)p.MeasureUnit!});");
                         tf.WriteLine("Fptr.registration();");
                     }
                     tf.WriteLine();
