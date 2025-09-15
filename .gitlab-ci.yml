@@ -11,4 +11,4 @@ build-to-tg:
     - powershell7
     - windows10
   script:
-    - '"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -File "./build.ps1" -Version "$CI_COMMIT_TAG" -BotToken "$TELEGRAM_TOKEN" -ChatId "$TELEGRAM_CHATID"''
+    - '"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -File "./build.ps1" -Version "$CI_COMMIT_TAG" -BotToken "$TELEGRAM_TOKEN" -ChatId "$TELEGRAM_CHATID"'
