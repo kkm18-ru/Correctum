@@ -1,9 +1,10 @@
 <Solution>
   <Configurations>
+    <Platform Name="Any CPU" />
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Элементы решения/">
-    <File Path="build.bat" />
+    <File Path=".gitlab-ci.yml" />
     <File Path="RetailCorrector.iss" />
   </Folder>
   <Project Path="RetailCorrector.Analyzers/RetailCorrector.Analyzers.csproj" />
