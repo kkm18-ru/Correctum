@@ -42,6 +42,12 @@ namespace RetailCorrector.Generators
                                   }
                               }
                               private static {{type.Name}} _instance;
+
+                      """);
+                if (type is INamedTypeSymbol @class && NeedAutoConstructor(@class))
+                    builder.AppendLine($"        private {type.Name}() {{ }}");
+                builder.AppendLine(
+                    $$"""
                           }
                       }
 
@@ -49,5 +55,8 @@ namespace RetailCorrector.Generators
             }
             context.AddSource("Singletons.g.cs", builder.ToString());
         }
+
+        private static bool NeedAutoConstructor(INamedTypeSymbol type) =>
+            type.InstanceConstructors.All(c => c.DeclaredAccessibility != Accessibility.Private || c.Parameters.Length > 0);
     }
 }

@@ -7,8 +7,6 @@ namespace RetailCorrector.Utils.ValidationRules
     [Singleton]
     internal partial class DeviceIdValidationRule : ValidationRule
     {
-        private DeviceIdValidationRule() { }
-
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var text = (string)value;

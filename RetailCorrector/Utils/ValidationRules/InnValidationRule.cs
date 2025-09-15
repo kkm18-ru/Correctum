@@ -7,8 +7,6 @@ namespace RetailCorrector.Utils.ValidationRules
     [Singleton]
     internal partial class InnValidationRule : ValidationRule
     {
-        private InnValidationRule() { }
-
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var text = (string)value;
