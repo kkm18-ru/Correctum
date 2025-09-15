@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 
 namespace RetailCorrector.Generators
 {
@@ -20,29 +21,33 @@ namespace RetailCorrector.Generators
 
         private static void Generate(SourceProductionContext context, ImmutableArray<ITypeSymbol> array)
         {
+            var builder = new StringBuilder();
             array = [..array.Where(type => type.GetAttributes()
                 .Any(ad => ad.AttributeClass?.ToDisplayString() == ATTRIBUTE))];
             foreach (var type in array.Distinct<ITypeSymbol>(SymbolEqualityComparer.Default))
             {
-                context.AddSource($"{type.Name}_Singleton.g.cs",
+                builder.AppendLine(
                     $$"""
-                      namespace {{type.ContainingNamespace.ToDisplayString()}};
-
-                      {{type.GetAccessModifier()}} partial class {{type.Name}}
+                      namespace {{type.ContainingNamespace.ToDisplayString()}}
                       {
-                          public static {{type.Name}} Instance
+                          {{type.GetAccessModifier()}} partial class {{type.Name}}
                           {
-                              get
+                              public static {{type.Name}} Instance
                               {
-                                  if(_instance is null) 
-                                      _instance = new {{type.Name}}();
-                                  return _instance;
+                                  get
+                                  {
+                                      if(_instance is null) 
+                                          _instance = new {{type.Name}}();
+                                      return _instance;
+                                  }
                               }
+                              private static {{type.Name}} _instance;
                           }
-                          private static {{type.Name}} _instance;
                       }
+
                       """);
             }
+            context.AddSource("Singletons.g.cs", builder.ToString());
         }
     }
 }

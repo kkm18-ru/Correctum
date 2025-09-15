@@ -43,8 +43,35 @@ namespace RetailCorrector.Generators
             var classes = props.Where(p => p != null)
                 .GroupBy(p => p!.ContainingType, SymbolEqualityComparer.Default);
 
+            var builder = new StringBuilder();
+            builder.AppendLine($$"""
+                    using System.ComponentModel;
+                    using System.Runtime.CompilerServices;
+                    """);
             foreach (var group in classes)
-                Group(group, context);
+            {
+                var classSymbol = group.Key!;
+
+                builder.AppendLine($$"""
+
+                    namespace {{classSymbol.ContainingNamespace.ToDisplayString()}}
+                    {
+                        partial class {{classSymbol.Name}} : INotifyPropertyChanged
+                        {
+                    """);
+
+                foreach (var prop in group)
+                    builder.AppendLine(Property(prop));
+
+                builder.AppendLine("""                                    
+                            public event PropertyChangedEventHandler? PropertyChanged;
+                            private void OnPropertyChanged([CallerMemberName] string propName = "") =>
+                                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+                        }
+                    }
+                    """);
+            }
+            context.AddSource("NotifyChanged.g.cs", builder.ToString());
         }
 
         private static string GetDefaultValue(string typeName) => typeName switch
@@ -53,34 +80,6 @@ namespace RetailCorrector.Generators
             "System.DateTime" => "System.DateTime.Today",
             _ => "default!"
         };
-
-        private static void Group(IGrouping<ISymbol, IPropertySymbol> group, SourceProductionContext context)
-        {
-            var classSymbol = group.Key!;
-
-            var sb = new StringBuilder();
-            sb.AppendLine($$"""
-                    using System.ComponentModel;
-                    using System.Runtime.CompilerServices;
-
-                    namespace {{classSymbol.ContainingNamespace.ToDisplayString()}};
-
-                    partial class {{classSymbol.Name}} : INotifyPropertyChanged
-                    {
-                    """);
-
-            foreach (var prop in group)
-                sb.AppendLine(Property(prop));
-
-            sb.AppendLine("""                                    
-                        public event PropertyChangedEventHandler? PropertyChanged;
-                        private void OnPropertyChanged([CallerMemberName] string propName = "") =>
-                            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-                    }
-                    """);
-
-            context.AddSource($"{classSymbol.Name}_NotifyChanged.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
-        }
 
         private static string Property(IPropertySymbol prop)
         {
@@ -104,7 +103,7 @@ namespace RetailCorrector.Generators
                         }
                     }
 
-                """;
+            """;
         }
     }
 }
