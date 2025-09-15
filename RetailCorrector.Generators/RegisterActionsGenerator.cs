@@ -11,6 +11,7 @@ namespace RetailCorrector.Generators
     internal class RegisterActionsGenerator : IIncrementalGenerator
     {
         const string ATTRIBUTE = "RetailCorrector.Attributes.RegisterActionAttribute";
+        const string BASE = "RetailCorrector.Actions.ActionBase";
         const string TEMPLATE = """
                             Items.Add(new MenuItem 
                             {{ 
@@ -23,12 +24,11 @@ namespace RetailCorrector.Generators
         {
             var provider = context.SyntaxProvider.CreateSyntaxProvider(
                 (node, _) => node is ClassDeclarationSyntax,
-                (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node))
-                .Collect().Combine(context.GetConfigurationName());
-            context.RegisterSourceOutput(provider, (ctx, v) => Generate(ctx, v.Left, v.Right));
+                (ctx, _) => (ITypeSymbol)ctx.SemanticModel.GetDeclaredSymbol(ctx.Node));
+            context.RegisterSourceOutput(provider.Collect(), Generate);
         }
 
-        private static void Generate(SourceProductionContext ctx, ImmutableArray<ISymbol> arr, string conf)
+        private static void Generate(SourceProductionContext ctx, ImmutableArray<ITypeSymbol> arr)
         {
             var builder = new StringBuilder();
             builder.AppendLine(
@@ -38,26 +38,20 @@ namespace RetailCorrector.Generators
 
                 namespace RetailCorrector.UI.Controls
                 {
-                    internal partial class ActionMenuButton
+                    partial class ActionMenuButton
                     {
                         private class ActionMenu : ContextMenu
                         {
                             public ActionMenu()
                             {
                 """);
-            var hash = new HashSet<string>();
-            foreach (var symb in arr)
+            foreach (var symb in arr.Distinct<ITypeSymbol>(SymbolEqualityComparer.Default))
             {
-                if (!symb.IsCommonClass(out var type)) continue;
-                if (!type.InheritedFrom("RetailCorrector.Actions.ActionBase")) continue;
-                if (!hash.Add(type.ToDisplayString())) continue;
-                var attr = type.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == ATTRIBUTE);
-                if(attr is null)
-                {
-                    if(conf.ToUpper() == "DEBUG")
-                        builder.AppendLine(string.Format(TEMPLATE, type.Name, type.ToDisplayString()));
-                }
-                else builder.AppendLine(string.Format(TEMPLATE, attr?.ConstructorArguments[0].Value, type.ToDisplayString()));
+                if (!symb.IsCommonClass()) continue;
+                if (!symb.InheritedFrom(BASE)) continue;
+                var attr = symb.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == ATTRIBUTE);
+                if (attr is null) continue;
+                builder.AppendLine(string.Format(TEMPLATE, attr?.ConstructorArguments[0].Value, symb.ToDisplayString()));
             }
             builder.AppendLine(
                 """

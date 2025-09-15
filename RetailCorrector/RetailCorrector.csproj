@@ -45,7 +45,6 @@
 			<Link>assets\fonts\JetBrainsMono.ttf</Link>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<CompilerVisibleProperty Include="Configuration" />
 	</ItemGroup>
 
 </Project>

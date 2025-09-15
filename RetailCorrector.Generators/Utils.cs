@@ -15,19 +15,8 @@ namespace RetailCorrector.Generators
             _ => throw new NotSupportedException(),
         };
 
-        public static IncrementalValueProvider<string> GetConfigurationName(this IncrementalGeneratorInitializationContext ctx) =>
-            ctx.AnalyzerConfigOptionsProvider.Select((options, _) =>
-            {
-                if (options.GlobalOptions.TryGetValue("build_property.Configuration", out var configuration))
-                    return configuration;
-                return "Unknown";
-            });
-
-        public static bool IsCommonClass(this ISymbol symbol, out ITypeSymbol type)
-        {
-            type = symbol as ITypeSymbol;
-            return type is not null && !type.IsStatic && !type.IsAbstract;
-        }
+        public static bool IsCommonClass(this ITypeSymbol symbol) =>
+            !symbol.IsStatic && !symbol.IsAbstract;
 
         public static bool InheritedFrom(this ITypeSymbol type, string path) =>
             type.BaseType?.ToDisplayString().StartsWith(path) ?? false;
