@@ -38,6 +38,8 @@
                 total INTEGER NOT NULL
             );            
             """;
+        const string CREATE_PKEY_RECEIPT_INDEX = "CREATE INDEX receipt_pkey ON receipt (id);";
+        const string CREATE_RID_POSITION_INDEX = "CREATE INDEX position_rid ON position (receipt);";
         const string ADD_RECEIPT = """
             INSERT INTO receipt (date, type, sign, corr, act, cash, ecash, pre, post, other, total) 
             VALUES (@date, @type, @sign, 0, ' ', @cash, @ecash, @pre, @post, @other, @total) RETURNING id;
