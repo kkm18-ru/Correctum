@@ -31,29 +31,31 @@ public class InvalidSingleton : DiagnosticAnalyzer
         context.RegisterSyntaxNodeAction(AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
     }
 
-    private static bool HasSingletonAttribute(ClassDeclarationSyntax cds) =>
-        cds.AttributeLists.SelectMany(l => l.Attributes)
-            .Any(a => a.Name is IdentifierNameSyntax ins && ins.Identifier.Text.StartsWith("Singleton"));
+    private static bool HasSingletonAttribute(INamedTypeSymbol nts) =>
+        nts.GetAttributes().Any(a => a.AttributeClass.Name.StartsWith("Singleton"));
 
-    private static bool HasOnlyOneConstructor(ClassDeclarationSyntax cds) =>
-        cds.Members.Count(m => m is ConstructorDeclarationSyntax) == 1;
+    private static bool SearchConstructor(ISymbol symbol) =>
+        symbol is IMethodSymbol ms && ms.MethodKind == MethodKind.Constructor;
 
-    private static bool ValidConstructor(ConstructorDeclarationSyntax cds) =>
-        cds.Modifiers.Any(m => m.Text == "private") && cds.ParameterList.Parameters.Count == 0;
-    
-    private static ConstructorDeclarationSyntax GetConstructorSyntax(ClassDeclarationSyntax cds) =>
-        (ConstructorDeclarationSyntax)cds.Members.First(m => m is ConstructorDeclarationSyntax);
+    private static bool HasOnlyOneConstructor(INamedTypeSymbol nts) =>
+        nts.GetMembers().Count(SearchConstructor) == 1;
 
-    private static bool ValidSingleton(ClassDeclarationSyntax cds) =>
-        HasOnlyOneConstructor(cds) && ValidConstructor(GetConstructorSyntax(cds));
+    private static bool ValidConstructor(IMethodSymbol ms) =>
+        ms.Parameters.IsEmpty && ms.DeclaredAccessibility == Accessibility.Private;
+
+    private static IMethodSymbol GetConstructorSyntax(INamedTypeSymbol nts) =>
+        (IMethodSymbol)nts.GetMembers().First(SearchConstructor);
+
+    private static bool ValidSingleton(INamedTypeSymbol nts) =>
+        HasOnlyOneConstructor(nts) && ValidConstructor(GetConstructorSyntax(nts));
     
     private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
     {
         var cds = (ClassDeclarationSyntax)context.Node;
-        if (!HasSingletonAttribute(cds) || ValidSingleton(cds)) return;
         var semanticModel = context.SemanticModel;
-        var classSymbol = ModelExtensions.GetDeclaredSymbol(semanticModel, cds);
-        var diagnostic = Diagnostic.Create(Rule, cds.Identifier.GetLocation(), classSymbol!.Name);
+        var symbol = semanticModel.GetDeclaredSymbol(cds);
+        if (symbol is null || !HasSingletonAttribute(symbol) || ValidSingleton(symbol)) return;
+        var diagnostic = Diagnostic.Create(Rule, cds.Identifier.GetLocation(), symbol.Name);
         context.ReportDiagnostic(diagnostic);
     }
 }
