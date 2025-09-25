@@ -17,16 +17,6 @@ namespace RetailCorrector.UI.Controls
             Height = 29;
             Background = SystemColors.AccentColorBrush;
 
-            var tb = new TextBlock
-            {
-                Text = "RETAILCORRECTOR",
-                FontFamily = new("Free 3 of 9"),
-                FontSize = 38,
-                Foreground = new SolidColorBrush(SystemColors.AccentColor.Subtraction(9, 9, 9))
-            };
-            Canvas.SetLeft(tb, 5);
-            Children.Add(tb);
-
             var btn = CreateExitButton();
             Canvas.SetRight(btn, 0);
             Children.Add(btn);
