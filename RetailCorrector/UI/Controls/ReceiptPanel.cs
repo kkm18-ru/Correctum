@@ -1,6 +1,7 @@
-﻿using RetailCorrector.Data;
+﻿using RetailCorrector.Attributes;
+using RetailCorrector.Data;
 using RetailCorrector.Utils;
-using RetailCorrector.Attributes;
+using Serilog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
@@ -154,9 +155,6 @@ namespace RetailCorrector.UI.Controls
                     new(200, "200 чеков"),
                     new(500, "500 чеков"),
                     new(1000, "1000 чеков"),
-                    new(2500, "2500 чеков"),
-                    new(5000, "5000 чеков"),
-                    new(10000, "10000 чеков"),
                 ],
                 DisplayMemberPath = "Value",
                 SelectedValuePath = "Key"
@@ -211,7 +209,7 @@ namespace RetailCorrector.UI.Controls
             }
         }
 
-        private void Refresh(object? _ = null)
+        private void Refresh()
         {
             PositionGrid.Instance.Collection.Clear();
             grid.Collection.Clear();
@@ -226,7 +224,8 @@ namespace RetailCorrector.UI.Controls
         public static void UpdateReceiptList()
         {
             Instance.CachedCountPages = Workspace.Instance.Receipts.Chunk(Instance.MaxCountReceipts).Count();
-            Instance.Refresh();
+            Instance.Refresh(); 
+            Log.Information("Список чеков обновлен");
         }
     }
 }

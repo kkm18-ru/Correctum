@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using System.Reflection;
 using System.Windows;
 
 [assembly: ThemeInfo(ResourceDictionaryLocation.None,
@@ -20,7 +21,10 @@ namespace RetailCorrector
                     flushToDiskInterval: TimeSpan.FromMilliseconds(100))
                 .CreateLogger();
 
+            var info = Assembly.GetExecutingAssembly().GetName();
+            Log.Information("Запуск {Name} {Version}", info.Name, info.Version);
+
             App.Instance.Run(UI.Windows.MainWindow.Instance);
-        }
+        }            
     }
 }

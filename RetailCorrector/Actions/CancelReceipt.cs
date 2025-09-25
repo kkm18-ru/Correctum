@@ -2,6 +2,7 @@
 using RetailCorrector.Data;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
+using Serilog;
 using System.Windows;
 
 namespace RetailCorrector.Actions
@@ -13,6 +14,7 @@ namespace RetailCorrector.Actions
         {
             if(Workspace.Instance.Receipts.Any(r => r.EditsCount != 0))
             {
+                Log.Error("Генерация аннулирующих чеков, используя не перноначальные данные, запрещена!");
                 MessageBox.Show("Генерация аннулирующих чеков, используя не перноначальные данные, запрещена!");
                 return;
             }
@@ -37,7 +39,8 @@ namespace RetailCorrector.Actions
                     TotalSum = receipt.TotalSum
                 });
             }
-            ReceiptPanel.UpdateReceiptList();
+            Log.Information($"{LocaleHelper.ConjugateWord(count, "Был сгенерирован", "Было сгенерировано")} {{Count}} {LocaleHelper.ConjugateWord(count, "чек", "чека", "чеков")}", count);
+            ReceiptPanel.UpdateReceiptList();            
             MessageBox.Show($"{LocaleHelper.ConjugateWord(count, "Был сгенерирован", "Было сгенерировано")} {count} {LocaleHelper.ConjugateWord(count, "чек", "чека", "чеков")}");
         }
     }

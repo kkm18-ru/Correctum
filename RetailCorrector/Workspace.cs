@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.Attributes;
 using RetailCorrector.Data;
+using Serilog;
 using System.Collections.ObjectModel;
 
 namespace RetailCorrector
@@ -16,6 +17,7 @@ namespace RetailCorrector
             Id = Guid.CreateVersion7();
             ParserHistory = [];
             Receipts = [];
+            Log.Information("Создано новое рабочее место \"{Id:D}\"", Id);
         }
     }
 }
