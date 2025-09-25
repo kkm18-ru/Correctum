@@ -9,7 +9,6 @@ namespace RetailCorrector
     {
         public ObservableCollection<ParseInfo> ParserHistory { get; }
         public ObservableCollection<Receipt> Receipts { get; }
-        public uint TaskId { get; set; }
 
         private Workspace()
         {
