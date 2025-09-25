@@ -1,4 +1,9 @@
-﻿namespace RetailCorrector
+﻿using System.Windows;
+
+[assembly: ThemeInfo(ResourceDictionaryLocation.None,
+    ResourceDictionaryLocation.SourceAssembly)]
+
+namespace RetailCorrector
 {
     internal class Program
     {
