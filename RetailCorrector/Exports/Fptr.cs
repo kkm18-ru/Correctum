@@ -6,7 +6,7 @@ using System.IO;
 
 namespace RetailCorrector.Exports
 {
-    [RegisterExport("Fptr-скрипт")]
+    [RegisterExport(DisplayName = "Fptr-скрипт")]
     internal partial class Fptr : IExport
     {
         public string? FileFilter => null;

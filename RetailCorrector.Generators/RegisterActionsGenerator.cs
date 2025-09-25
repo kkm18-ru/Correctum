@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -51,7 +50,8 @@ namespace RetailCorrector.Generators
                 if (!symb.InheritedFrom(BASE)) continue;
                 var attr = symb.GetAttributes().FirstOrDefault(a => a.AttributeClass.ToDisplayString() == ATTRIBUTE);
                 if (attr is null) continue;
-                builder.AppendLine(string.Format(TEMPLATE, attr?.ConstructorArguments[0].Value, symb.ToDisplayString()));
+                var args = attr.NamedArguments.ToImmutableDictionary();
+                builder.AppendLine(string.Format(TEMPLATE, args["DisplayName"].Value, symb.ToDisplayString()));
             }
             builder.AppendLine(
                 """

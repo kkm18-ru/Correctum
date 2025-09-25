@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterParser("Frontol xPOS")]
+    [RegisterParser(DisplayName = "Frontol xPOS")]
     internal partial class FxPOS : ParserBase<FxPOS, FxPOS.View>
     {
         public override ParseInfo GenerateInfo() =>

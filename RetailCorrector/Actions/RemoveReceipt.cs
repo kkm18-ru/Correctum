@@ -4,7 +4,7 @@ using RetailCorrector.Utils;
 
 namespace RetailCorrector.Actions
 {
-    [RegisterAction("Удаление чеков")]
+    [RegisterAction(DisplayName = "Удаление чеков")]
     internal partial class RemoveReceipt : ActionBase<RemoveReceipt, RemoveReceipt.View>
     {
         public ConditionGrid Condition = new();

@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Parsers;
 
-[RegisterParser("SabyOFD")]
+[RegisterParser(DisplayName = "SabyOFD")]
 internal partial class Saby : ParserBase<Saby, Saby.View>
 {
     public override ParseInfo GenerateInfo() =>

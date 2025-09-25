@@ -6,7 +6,7 @@ using System.Windows;
 
 namespace RetailCorrector.Actions
 {
-    [RegisterAction("Генерация аннулирующих чеков")]
+    [RegisterAction(DisplayName = "Генерация аннулирующих чеков")]
     internal class CancelReceipt : ActionBase<CancelReceipt>
     {
         public override void Start()

@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace RetailCorrector.Actions
 {
-    [RegisterAction("Экспорт чеков")]
+    [RegisterAction(DisplayName = "Экспорт чеков")]
     internal partial class ExportReceipts : ActionBase<ExportReceipts, ExportReceipts.View>
     {
         public override async void Start()

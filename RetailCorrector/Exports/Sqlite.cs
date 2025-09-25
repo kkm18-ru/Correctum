@@ -6,7 +6,7 @@ using System.IO;
 
 namespace RetailCorrector.Exports
 {
-    [RegisterExport("SQLite")]
+    [RegisterExport(DisplayName = "SQLite")]
     internal partial class Sqlite : IExport
     {
         public string? FileFilter => "*.sql|SQLite DataBase";

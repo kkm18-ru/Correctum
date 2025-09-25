@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterParser("OFD.ru (Петер-Сервис)")]
+    [RegisterParser(DisplayName = "OFD.ru (Петер-Сервис)")]
     internal partial class OfdRu: ParserBase<OfdRu, OfdRu.View>
     {
         public override ParseInfo GenerateInfo() =>

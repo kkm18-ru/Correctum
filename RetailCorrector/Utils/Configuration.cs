@@ -10,13 +10,13 @@ namespace RetailCorrector.Utils
     {
         private const string FileName = "config.toml";
         
-        [NotifyChanged(1000)] public partial int HttpRequestDelay { get; set; }
-        [NotifyChanged(3)] public partial byte HttpTriesCount { get; set; }
-        [NotifyChanged(100)] public partial short HttpPageSize { get; set; }
+        [NotifyChanged(DefaultValue = 1000)] public partial int HttpRequestDelay { get; set; }
+        [NotifyChanged(DefaultValue = 3)] public partial byte HttpTriesCount { get; set; }
+        [NotifyChanged(DefaultValue = 100)] public partial short HttpPageSize { get; set; }
 
-        [NotifyChanged(100)] public partial int SqlLimit { get; set; }
+        [NotifyChanged(DefaultValue = 100)] public partial int SqlLimit { get; set; }
 
-        [NotifyChanged(100)] public partial int FptrExportDocsPerFile { get; set; }
+        [NotifyChanged(DefaultValue = 100)] public partial int FptrExportDocsPerFile { get; set; }
 
         private Configuration()
         {

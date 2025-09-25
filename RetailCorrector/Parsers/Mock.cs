@@ -7,7 +7,7 @@ using RetailCorrector.Attributes;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterParser("Рандомизатор чеков")]
+    [RegisterParser(DisplayName = "Рандомизатор чеков")]
     internal partial class Mock: ParserBase<Mock, Mock.View>
     {
         public override ParseInfo GenerateInfo() =>

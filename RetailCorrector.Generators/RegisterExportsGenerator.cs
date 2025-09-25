@@ -28,9 +28,8 @@ namespace RetailCorrector.Generators
             foreach (var type in arr.Distinct(SymbolEqualityComparer.Default))
             {
                 exporters.AppendLine($"            new {type.ToDisplayString()}(),");
-                var name = type.GetAttributes()
-                    .FirstOrDefault(ad => ad.AttributeClass?.ToDisplayString() == ATTRIBUTE)
-                    .ConstructorArguments.First();
+                var name = type.GetAttributes().FirstOrDefault(ad => ad.AttributeClass?.ToDisplayString() == ATTRIBUTE)
+                    .NamedArguments.ToImmutableDictionary()["DisplayName"];
                 displayNames.AppendLine($"            \"{name.Value}\",");
             }
 

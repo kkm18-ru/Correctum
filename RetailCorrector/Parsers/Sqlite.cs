@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterParser("SQLite")]
+    [RegisterParser(DisplayName = "SQLite")]
     internal partial class Sqlite : ParserBase<Sqlite, Sqlite.View>
     {
         public override ParseInfo GenerateInfo() =>

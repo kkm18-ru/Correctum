@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterParser("Taxcom")]
+    [RegisterParser(DisplayName = "Taxcom")]
     internal partial class Taxcom : ParserBase<Taxcom, Taxcom.View>
     {
         public override ParseInfo GenerateInfo() =>

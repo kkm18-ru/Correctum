@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -87,8 +86,10 @@ namespace RetailCorrector.Generators
             var propName = prop.Name;
             var fieldName = $"_{propName.ToLower()}";
 
-            var param = prop.GetAttributes().First(a => a.AttributeClass.ToDisplayString().StartsWith(AttributePath)).ConstructorArguments[0];
-            string defaultValue = param.IsNull ? GetDefaultValue(typeName) : param.ToCSharpString();
+            var args = prop.GetAttributes().First(a => a.AttributeClass.ToDisplayString().StartsWith(AttributePath)).NamedArguments.ToImmutableDictionary();
+            var defaultValue = GetDefaultValue(typeName);
+            if(args.TryGetValue("DefaultValue", out var arg) && !arg.IsNull)
+                defaultValue = arg.ToCSharpString();
 
             return $$"""
                     private {{typeName}} {{fieldName}} = {{defaultValue}};

@@ -1,4 +1,7 @@
 ﻿namespace RetailCorrector.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
-internal class NotifyChangedAttribute(object? defaultValue = null) : Attribute;
+internal class NotifyChangedAttribute : Attribute
+{
+    public object? DefaultValue { get; set; } = default;
+}
