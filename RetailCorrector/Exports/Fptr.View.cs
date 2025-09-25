@@ -45,40 +45,40 @@ namespace RetailCorrector.Exports
             uiParent = content;
 
             content.AddRow(GridUnitType.Pixel, 5);
-            content.AddRow(GridUnitType.Auto); // FiscalFormat 2
+            content.AddRow(GridUnitType.Auto); // FiscalFormat 4
             content.AddRow(GridUnitType.Pixel, 5);
-            content.AddRow(GridUnitType.Auto); // Print 4
+            content.AddRow(GridUnitType.Auto); // Print 6
             content.AddRow(GridUnitType.Pixel, 5);
-            content.AddRow(GridUnitType.Auto); // CorrType 6
+            content.AddRow(GridUnitType.Auto); // CorrType 8
             content.AddRow(GridUnitType.Pixel, 5);
-            content.AddRow(GridUnitType.Auto); // ActId 8
+            content.AddRow(GridUnitType.Auto); // ActId 10
 
             var lbl = CreateLabel("Номер акта");
-            content.AddChild(lbl, y: 2);
+            content.AddChild(lbl, y: 4);
             var cb = new ComboBox
             {
                 ItemsSource = new[] { "1.2", "1.1", "1.05" },
             };
             cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(FiscalFormat)) { Source = this });
-            content.AddChild(cb, 2, 2);
+            content.AddChild(cb, 2, 4);
 
             lbl = CreateLabel("Печатать ли чек");
-            content.AddChild(lbl, y: 4);
+            content.AddChild(lbl, y: 6);
             cb = new ComboBox
             {
                 ItemsSource = new[] { "Да", "Нет" },
             };
             cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(Print)) { Source = this });
-            content.AddChild(cb, 2, 4);
+            content.AddChild(cb, 2, 6);
 
             lbl = CreateLabel("Вид коррекции");
-            content.AddChild(lbl, y: 6);
+            content.AddChild(lbl, y: 8);
             cb = new ComboBox
             {
                 ItemsSource = new[] { "Самостоятельная", "По предписанию" },
             };
             cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(CorrType)) { Source = this });
-            content.AddChild(cb, 2, 6);
+            content.AddChild(cb, 2, 8);
 
             lbl = CreateLabel("Номер акта");
             lbl.ToolTip = new ToolTip
@@ -89,24 +89,24 @@ namespace RetailCorrector.Exports
                           2) Коррекция выполняется на кассе с ФФД 1.05, так как чек ранее не был сформирован 
                           """
             };
-            content.AddChild(lbl, y: 8);
+            content.AddChild(lbl, y: 10);
             var input = new TextBox();
             input.SetBinding(TextBox.TextProperty, new Binding(nameof(ActId)) { Source = this });
-            content.AddChild(input, 2, 8);
+            content.AddChild(input, 2, 10);
 
             if (FiscalFormat == 2)
             {
                 content.AddRow(GridUnitType.Pixel, 5);
-                content.AddRow(GridUnitType.Auto); // OldCorrReason 10
+                content.AddRow(GridUnitType.Auto); // OldCorrReason 12
 
                 lbl = CreateLabel("Причина коррекции");
-                content.AddChild(lbl, y: 10);
+                content.AddChild(lbl, y: 12);
                 cb = new ComboBox
                 {
                     ItemsSource = new[] { "Ошибка или карантин", "Чек не был пробит" },
                 };
                 cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(OldCorrReason)) { Source = this });
-                content.AddChild(cb, 2, 10);
+                content.AddChild(cb, 2, 12);
             }
         }
 

@@ -7,5 +7,6 @@ namespace RetailCorrector.Actions
     {
         public IExport Exporter => Exporters[ExporterId];
         [NotifyChanged] public partial int ExporterId { get; set; }
+        [NotifyChanged] public partial string Path { get; set; }
     }
 }

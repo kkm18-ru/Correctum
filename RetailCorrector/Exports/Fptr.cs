@@ -9,15 +9,17 @@ namespace RetailCorrector.Exports
     [RegisterExport("Fptr-скрипт")]
     internal partial class Fptr : IExport
     {
-        public ValueTask<string> Export()
+        public string? FileFilter => null;
+
+        public ValueTask Export(string? path)
         {
+            if (string.IsNullOrWhiteSpace(path))
+                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
+                    "RetailCorrector", $"{Guid.CreateVersion7()}");
+            IOHelper.CreateDirectoryIfNotExists(Path.GetDirectoryName(path));
+            IOHelper.CreateDirectoryIfNotExists(path);
             if (FiscalFormat == 2 && OldCorrReason == 1)
-                return Missing105Export();
-            var guid = Guid.CreateVersion7();
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RetailCorrector", $"{guid}");
-            if (!Directory.Exists(Path.GetDirectoryName(path)))
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-            Directory.CreateDirectory(path);
+                return Missing105Export(path);
             var receipts = Workspace.Instance.Receipts;
             var n = Math.Ceiling((double)receipts.Count / Configuration.Instance.FptrExportDocsPerFile);
             for (var i = 0; i < n; i++)
@@ -104,15 +106,13 @@ namespace RetailCorrector.Exports
                     tf.WriteLine();
                 }
             }
-            return new(path);
+            return new();
         }
 
-        public ValueTask<string> Missing105Export()
+        public ValueTask Missing105Export(string path)
         {
-            var guid = Guid.CreateVersion7();
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"{guid}.txt");
             var @ref = Workspace.Instance.Receipts;
-
+            path = Path.Combine(path, "1.txt");
             using var fs = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
             using var tf = new StreamWriter(fs);
 
@@ -190,7 +190,7 @@ namespace RetailCorrector.Exports
             WriteReceipt(r => r.Type == Operation.Income || r.Type == Operation.RefundOutcome, "SELL");
             WriteReceipt(r => r.Type == Operation.RefundIncome || r.Type == Operation.Outcome, "BUY");
             
-            return new(path);
+            return new();
         }
     }
 }

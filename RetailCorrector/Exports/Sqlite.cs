@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using RetailCorrector.Attributes;
+using RetailCorrector.Utils;
 using System.IO;
 
 namespace RetailCorrector.Exports
@@ -8,12 +9,14 @@ namespace RetailCorrector.Exports
     [RegisterExport("SQLite")]
     internal partial class Sqlite : IExport
     {
-        public ValueTask<string> Export()
+        public string? FileFilter => "*.sql|SQLite DataBase";
+
+        public ValueTask Export(string? path)
         {
-            var guid = Guid.CreateVersion7();
-            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RetailCorrector");
-            var path = Path.Combine(dir, $"{guid}.db");
-            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            if (string.IsNullOrWhiteSpace(path))
+                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
+                    "RetailCorrector", $"{Guid.CreateVersion7()}.db");
+            IOHelper.CreateDirectoryIfNotExists(Path.GetDirectoryName(path)!);
             using (var conn = new SqliteConnection($"Data Source = \"{path}\""))
             {
                 conn.Open();
@@ -50,7 +53,7 @@ namespace RetailCorrector.Exports
                         });
                 }
             }
-            return new(dir);
+            return new();
         }
     }
 }
