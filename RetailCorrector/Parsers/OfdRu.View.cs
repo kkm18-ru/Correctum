@@ -77,10 +77,19 @@ namespace RetailCorrector.Parsers
                 tb.SetBinding(TextBox.TextProperty, bind);
                 content.AddChild(tb, 2, 6);
 
-                tb = new NotifyTextBox();
-                bind = new ValidatedBinding(nameof(Presenter.DeviceId), DeviceIdValidationRule.Instance);
-                tb.SetBinding(TextBox.TextProperty, bind);
-                content.AddChild(tb, 2, 8);
+                var cb = new ComboBox 
+                { 
+                    IsEditable = true 
+                };
+                cb.SetBinding(ComboBox.SelectedValueProperty, nameof(Presenter.DeviceId));
+                content.AddChild(cb, 2, 8);
+
+                Presenter.TokenChanged += () =>
+                {
+                    cb.Items.Clear();
+                    foreach (var d in Presenter.GetDevices())
+                        cb.Items.Add(d);
+                };
                 #endregion
 
                 Content = content;
