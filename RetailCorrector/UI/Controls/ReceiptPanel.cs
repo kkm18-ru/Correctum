@@ -1,6 +1,5 @@
-﻿using RetailCorrector.Attributes;
+﻿using Kraig.Attributes;
 using RetailCorrector.Data;
-using RetailCorrector.Utils;
 using Serilog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

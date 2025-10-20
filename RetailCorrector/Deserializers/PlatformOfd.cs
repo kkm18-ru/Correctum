@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using RetailCorrector.Attributes;
+using Kraig.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 

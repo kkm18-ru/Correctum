@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Attributes;
+﻿using Kraig.Attributes;
 using Serilog;
 using System.Globalization;
 using System.IO;

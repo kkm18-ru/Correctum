@@ -1,7 +1,9 @@
-﻿namespace RetailCorrector.Parsers
+﻿using Kraig.Attributes;
+
+namespace RetailCorrector.Parsers
 {
     internal partial class Sqlite
     {
-        [Attributes.NotifyChanged] public partial string Path { get; set; }
+        [NotifyChanged] private string _path = "";
     }
 }

@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Attributes;
+﻿using Kraig.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
@@ -10,8 +10,8 @@ namespace RetailCorrector.UI.Windows
 {
     internal partial class DeserializeWindow : Types.DialogWindow
     {
-        [NotifyChanged] public partial string Text { get; set; }
-        [NotifyChanged] public partial IReceiptDeserializer Current { get; set; } 
+        [NotifyChanged] private string _text = "";
+        [NotifyChanged] private IReceiptDeserializer _current; 
 
         public DeserializeWindow(string text)
         {
