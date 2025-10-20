@@ -4,6 +4,7 @@ using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -17,6 +18,7 @@ public partial class MainWindow : Window
         Title = "RetailCorrector";
         WindowStyle = WindowStyle.None;
         ResizeMode = ResizeMode.NoResize;
+        InputBindings.Add(new KeyBinding(new RelayCommand(ShowPaste), Key.V, ModifierKeys.Control));
         var area = SystemParameters.WorkArea;
         (Width, Height, Top, Left) = (area.Width, area.Height, area.Top, area.Left);
 
@@ -58,6 +60,12 @@ public partial class MainWindow : Window
         dock.Children.Add(content);
 
         Content = dock;
+    }
+
+    private static void ShowPaste(object? obj)
+    {
+        if (!Clipboard.ContainsText()) return;
+        new DeserializeWindow(Clipboard.GetText()).Show();
     }
 
     protected override void OnClosed(EventArgs e)
