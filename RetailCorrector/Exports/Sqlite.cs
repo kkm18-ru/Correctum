@@ -22,8 +22,8 @@ namespace RetailCorrector.Exports
                 conn.Open();
                 conn.Execute(CREATE_RECEIPT_TABLE);
                 conn.Execute(CREATE_PKEY_RECEIPT_INDEX);
-                conn.Execute(CREATE_RID_POSITION_INDEX);
                 conn.Execute(CREATE_POSITION_TABLE);
+                conn.Execute(CREATE_RID_POSITION_INDEX);
                 foreach (var receipt in Workspace.Instance.Receipts)
                 {
                     var id = conn.QuerySingle<long>(ADD_RECEIPT, new
