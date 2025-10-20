@@ -15,15 +15,25 @@ namespace RetailCorrector.UI.Windows
 
         public PasteWindow(string text)
         {
+            Title = "Преобразование строки в чек";
             DataContext = this;
             Height = 550;
             Width = 400;
             Text = text;
 
-            var content = new Grid();
+            var content = new Grid
+            {
+                Margin = new Thickness(5)
+            };
+            
             content.AddRow(GridUnitType.Pixel, 21);
             content.AddRow(GridUnitType.Pixel, 5);
             content.AddRow(GridUnitType.Star);
+            
+            content.AddColumn(GridUnitType.Star);
+            content.AddColumn(GridUnitType.Pixel, 5);
+            content.AddColumn(GridUnitType.Pixel, 85);
+            
             Content = content;
 
             var tb = new TextBox
@@ -32,15 +42,22 @@ namespace RetailCorrector.UI.Windows
                 AcceptsTab = true
             };
             tb.SetBinding(TextBox.TextProperty, nameof(Text));
-            content.AddChild(tb, y: 2);
+            content.AddChild(tb, y: 2, dx: 3);
 
             var btn = new Button
             {
-                Content = "Использовать",
-                HorizontalAlignment = HorizontalAlignment.Center,
+                Content = "Обработать",
             };
             btn.Click += Submit;
-            content.AddChild(btn);
+            content.AddChild(btn, 2);
+
+            var cb = new ComboBox
+            {
+                ItemsSource = new[] { "Платформа ОФД" },
+                IsEnabled = false,
+                SelectedIndex = 0
+            };
+            content.AddChild(cb);
         }
 
         private void Submit(object? sender, RoutedEventArgs args)
