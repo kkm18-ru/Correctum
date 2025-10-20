@@ -27,7 +27,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\RetailCorrector.Generators\RetailCorrector.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\RetailCorrector.Analyzers\RetailCorrector.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 

@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Test Generators": {
-      "commandName": "DebugRoslynComponent",
-      "targetProject": "..\\RetailCorrector\\RetailCorrector.csproj"
-    }
-  }
-}
