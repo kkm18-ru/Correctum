@@ -52,7 +52,7 @@ namespace RetailCorrector.UI.Windows
                 Payment = new Payment()
             };
             var items = new List<Position>();
-            var lines = Text.Split("\n");
+            var lines = Text.Replace("\r", "").Split("\n");
             object item = null;
 
             for(var i = 0; i < lines.Length; i++)
