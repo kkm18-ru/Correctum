@@ -1,13 +1,13 @@
-using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Parsers;
 
-[RegisterParser(DisplayName = "SabyOFD")]
 internal partial class Saby : ParserBase<Saby, Saby.View>
 {
+    public override string Name => "SabyOFD";
+
     public override ParseInfo GenerateInfo() =>
         parseInfo = new("SabyOFD", ("ИНН", Inn), ("ККТ", Device), ("ФН", Storage), 
             ("Старт", FromDate.ToString("dd'.'MM'.'yyyy")), 

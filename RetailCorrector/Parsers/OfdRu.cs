@@ -1,5 +1,4 @@
-﻿using RetailCorrector.Attributes;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using Serilog;
 using System.Net.Http;
@@ -9,9 +8,10 @@ using System.Windows;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterParser(DisplayName = "OFD.ru (Петер-Сервис)")]
     internal partial class OfdRu: ParserBase<OfdRu, OfdRu.View>
     {
+        public override string Name => "OFD.ru";
+
         public override ParseInfo GenerateInfo() =>
             parseInfo = new ParseInfo("OFD.ru", 
                 ("ИНН", Vatin), 

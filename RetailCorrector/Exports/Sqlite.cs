@@ -1,14 +1,13 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
-using RetailCorrector.Attributes;
 using RetailCorrector.Utils;
 using System.IO;
 
 namespace RetailCorrector.Exports
 {
-    [RegisterExport(DisplayName = "SQLite")]
     internal partial class Sqlite : IExport
     {
+        public string Name => "SQLite";
         public string? FileFilter => "*.sql|SQLite DataBase";
 
         public ValueTask Export(string? path)

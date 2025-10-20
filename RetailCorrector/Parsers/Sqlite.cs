@@ -1,15 +1,15 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
-using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterParser(DisplayName = "SQLite")]
     internal partial class Sqlite : ParserBase<Sqlite, Sqlite.View>
     {
+        public override string Name => "SQLite";
+
         public override ParseInfo GenerateInfo() =>
             parseInfo = new ParseInfo("SQLite", ("Путь", Path));
 

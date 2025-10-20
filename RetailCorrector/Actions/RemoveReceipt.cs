@@ -1,13 +1,13 @@
-﻿using RetailCorrector.Attributes;
-using RetailCorrector.UI.Controls;
+﻿using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 
 namespace RetailCorrector.Actions
 {
-    [RegisterAction(DisplayName = "Удаление чеков")]
     internal partial class RemoveReceipt : ActionBase<RemoveReceipt, RemoveReceipt.View>
     {
         public ConditionGrid Condition = new();
+
+        public override string Name => "Удаление чеков";
 
         public override void Start()
         {

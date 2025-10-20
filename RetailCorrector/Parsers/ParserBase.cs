@@ -7,6 +7,7 @@ namespace RetailCorrector.Parsers
         where TP : ParserBase<TP, TV>, new()
         where TV : ParserView<TV, TP>, new()
     {
+        public abstract string Name { get; }
         protected ParseInfo parseInfo;
         public abstract ParseInfo GenerateInfo();
 
@@ -16,6 +17,8 @@ namespace RetailCorrector.Parsers
 
     internal interface IParser
     {
+        string Name { get; }
+        static abstract void Show();
         ParseInfo GenerateInfo();
         IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken);
     }

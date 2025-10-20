@@ -3,13 +3,13 @@ using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using System.Runtime.CompilerServices;
 using Bogus;
-using RetailCorrector.Attributes;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterParser(DisplayName = "Рандомизатор чеков")]
     internal partial class Mock: ParserBase<Mock, Mock.View>
     {
+        public override string Name => "Mock [для ОТЛАДКИ]";
+
         public override ParseInfo GenerateInfo() =>
             parseInfo = new ParseInfo("Mock");
 

@@ -1,11 +1,11 @@
-﻿using RetailCorrector.Attributes;
-using System.Windows;
+﻿using System.Windows;
 
 namespace RetailCorrector.Actions
 {
-    [RegisterAction(DisplayName = "Экспорт чеков")]
     internal partial class ExportReceipts : ActionBase<ExportReceipts, ExportReceipts.View>
     {
+        public override string Name => "Экспорт чеков";
+
         public override async void Start()
         {
             await Exporter.Export(Path);
