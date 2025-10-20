@@ -39,8 +39,9 @@ namespace RetailCorrector.Exports
                     tf.WriteSeparator();
                     tf.WritePositions(receipt.Items, false, FiscalFormat);
                     tf.WriteSeparator(2);
+                    tf.WriteTotalSum(receipt.TotalSum);
                     tf.WritePayment(receipt.Payment);
-                    tf.WriteCloseReceipt(receipt.TotalSum);
+                    tf.WriteCloseReceipt();
                     tf.WriteSeparator(3);
                 }
             }
@@ -71,8 +72,9 @@ namespace RetailCorrector.Exports
                 tf.WriteSeparator();
                 tf.WritePosition(new Position("Товар", total, 1000), true, 2);
                 tf.WriteSeparator(2);
+                tf.WriteTotalSum(total);
                 tf.WritePayment(new Payment(cash, ecash, pre, post, other));
-                tf.WriteCloseReceipt(total);
+                tf.WriteCloseReceipt();
                 tf.WriteSeparator(3);
             }
             #endregion
@@ -103,11 +105,17 @@ namespace RetailCorrector.Exports
         public static void WriteReceiptType(this StreamWriter tf, string operation) =>
             tf.WriteLine($"Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_TYPE, Fptr.LIBFPTR_RT_{operation});");
 
-        public static void WriteCloseReceipt(this StreamWriter tf, ulong sum)
+        public static void WriteCloseReceipt(this StreamWriter tf)
         {
-            tf.WriteLine($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, {Math.Round(sum / 100.0, 2)});");
             tf.WriteLine("Fptr.payment();");
             tf.WriteLine("Fptr.closeReceipt();");
+        }
+
+        public static void WriteTotalSum(this StreamWriter tf, ulong sum)
+        {
+            tf.WriteLine($"Fptr.setParam(Fptr.LIBFPTR_PARAM_SUM, {Math.Round(sum / 100.0, 2)});");
+            tf.WriteLine("Fptr.receiptTotal();");
+            tf.WriteLine();
         }
 
         private static void WriteInternalPayment(this StreamWriter tf, string type, ulong sum)

@@ -8,6 +8,6 @@ namespace RetailCorrector.Parsers
         [NotifyChanged] public partial DateTime EndDate { get; set; }
         [NotifyChanged] public partial string Vatin { get; set; }
         [NotifyChanged] public partial string DeviceId { get; set; }
-        [NotifyChanged] public partial string Token { get; set; }
+        [NotifyChanged(CreateEvent = true)] public partial string Token { get; set; }
     }
 }

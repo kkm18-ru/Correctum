@@ -91,7 +91,8 @@ namespace RetailCorrector.Generators
             if(args.TryGetValue("DefaultValue", out var arg) && !arg.IsNull)
                 defaultValue = arg.ToCSharpString();
 
-            return $$"""
+            var builder = new StringBuilder();
+            builder.AppendLine($$"""
                     private {{typeName}} {{fieldName}} = {{defaultValue}};
                     public partial {{typeName}} {{propName}}
                     {
@@ -100,11 +101,20 @@ namespace RetailCorrector.Generators
                         {
                             if ({{fieldName}} == value) return;
                             {{fieldName}} = value;
-                            OnPropertyChanged();
-                        }
-                    }
+            """);
+            if (args.TryGetValue("CreateEvent", out var addEvent) && !addEvent.IsNull && (bool)addEvent.Value!)
+                builder.AppendLine($"                {propName}Changed?.Invoke();");
 
-            """;
+            builder.AppendLine("""
+                                OnPropertyChanged();
+                            }
+                        }
+                """);
+            if (!addEvent.IsNull && (bool)addEvent.Value!)
+                builder.AppendLine($"        public event Action {propName}Changed;");
+            builder.AppendLine();
+
+            return builder.ToString();
         }
     }
 }

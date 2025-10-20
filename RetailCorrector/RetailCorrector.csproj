@@ -10,6 +10,7 @@
 		<Platforms>x86</Platforms>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -19,6 +20,10 @@
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
 		<Compile Remove="Parsers\Taxcom*.cs" />
 		<Compile Remove="Parsers\Mock*.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Assets\icon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>

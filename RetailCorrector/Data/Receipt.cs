@@ -14,6 +14,16 @@ namespace RetailCorrector.Data
         public ulong TotalSum { get; set; }
 
         #region Meta-Data
+        public Guid Id
+        {
+            get
+            {
+                if (_id == Guid.Empty)
+                    _id = Guid.CreateVersion7();
+                return _id;
+            }
+        }
+        private Guid _id;
         public int EditsCount
         {
             get => _editsCount;
