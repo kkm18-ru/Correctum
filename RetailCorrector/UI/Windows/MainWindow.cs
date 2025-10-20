@@ -65,7 +65,7 @@ public partial class MainWindow : Window
     private static void ShowPaste(object? obj)
     {
         if (!Clipboard.ContainsText()) return;
-        new PasteWindow(Clipboard.GetText()).Show();
+        new DeserializeWindow(Clipboard.GetText()).Show();
     }
 
     protected override void OnClosed(EventArgs e)
