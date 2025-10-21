@@ -167,5 +167,18 @@ namespace RetailCorrector.Utils
             FptrNative.libfptr_set_param_str(handle, 1203, inn);
             return FptrNative.libfptr_operator_login(handle) == 0;
         }
+
+        public static bool WaitReboot(nint handle, int timeout = 1000)
+        {
+            const int Delay = 100;
+            var countInteration = timeout / Delay;
+            for (var _ = 0; _ < countInteration; _++)
+            {
+                FptrNative.libfptr_set_param_int(handle, 65587, 16); // get serial number
+                if (FptrNative.libfptr_query_data(handle) == 0) return true;
+                Thread.Sleep(Delay);
+            }
+            return false;
+        }
     }
 }
