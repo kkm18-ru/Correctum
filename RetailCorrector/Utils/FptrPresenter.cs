@@ -77,9 +77,10 @@ namespace RetailCorrector.Utils
         
         public static bool OpenReceipt(nint handle, Receipt doc, OpenReceiptArgs args, CancellationToken token)
         {
+            const int DefaultCorrDataSize = 128;
             token.ThrowIfCancellationRequested();
             var ffd = GetFFD(handle);
-            var corrData = new byte[128];
+            var corrData = new byte[DefaultCorrDataSize];
 
             if(ffd >= 110)  // todo add for ffd 1.05
             {
@@ -87,8 +88,14 @@ namespace RetailCorrector.Utils
                     doc.Created.Year, doc.Created.Month, doc.Created.Day, 
                     doc.Created.Hour, doc.Created.Minute, doc.Created.Second);
                 FptrNative.libfptr_set_param_str(handle, 1179, args.Act);
-                FptrNative.libfptr_util_form_tlv(handle);
-                FptrNative.libfptr_get_param_bytearray(handle, 65624, corrData, corrData.Length);
+                if (FptrNative.libfptr_util_form_tlv(handle) != 0) return false;
+                var count = FptrNative.libfptr_get_param_bytearray(handle, 65624, corrData, DefaultCorrDataSize);
+                if (count != DefaultCorrDataSize)
+                {
+                    Array.Resize(ref corrData, count);
+                    if(count > DefaultCorrDataSize)
+                        FptrNative.libfptr_get_param_bytearray(handle, 65624, corrData, count);
+                }
             }
             token.ThrowIfCancellationRequested();
 
