@@ -202,6 +202,14 @@ namespace RetailCorrector.UI.Windows
             try
             {
                 FptrNative.libfptr_open(_driver);
+                if (UseOperator && !FptrPresenter.LoginOperator(_driver, OperatorName, OperatorInn))
+                {
+                    var code = FptrNative.libfptr_error_code(_driver);
+                    MessageBox.Show("Не удалось зарегистрировать кассира", $"Произошла ошибка (Код: {code})", 
+                        MessageBoxButton.OK, MessageBoxImage.Hand);
+                    Cancel(null, null!);
+                    token.ThrowIfCancellationRequested();
+                }
                 var @ref = Workspace.Instance.Receipts;
                 if (MissingUnitFor120(@ref))
                 {
@@ -236,8 +244,6 @@ namespace RetailCorrector.UI.Windows
 
         private bool ProcessingReceipt(Receipt receipt, CancellationToken token)
         {
-            if (UseOperator && !FptrPresenter.LoginOperator(_driver, OperatorName, OperatorInn))
-                return false;
             FptrPresenter.OpenReceiptArgs openArgs = new();
             Dispatcher.Invoke(() =>
             {
@@ -257,14 +263,11 @@ namespace RetailCorrector.UI.Windows
             if (FptrPresenter.GetSessionState(_driver) is null) return false;
             if (FptrPresenter.GetSessionState(_driver) == 2)
             {
-                if (UseOperator && !FptrPresenter.LoginOperator(_driver, OperatorName, OperatorInn))
-                    return false;
                 FptrNative.libfptr_set_param_int(_driver, 65546, 0);
                 if (0 != FptrNative.libfptr_report(_driver)) return false;
             }
 
             if (FptrPresenter.GetSessionState(_driver) != 0) return true;
-            if(UseOperator && !FptrPresenter.LoginOperator(_driver, OperatorName, OperatorInn)) return false;
             return 0 == FptrNative.libfptr_open_shift(_driver);
         }
 
