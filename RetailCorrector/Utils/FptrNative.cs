@@ -30,6 +30,10 @@ namespace RetailCorrector.Utils
 
         [LibraryImport("fptr10.dll")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        public static partial int libfptr_operator_login(IntPtr handle);
+
+        [LibraryImport("fptr10.dll")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         public static partial void libfptr_set_param_bool(IntPtr handle, int paramID, [MarshalAs(UnmanagedType.Bool)] bool value);
 
         [LibraryImport("fptr10.dll")]
