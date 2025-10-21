@@ -26,6 +26,10 @@ namespace RetailCorrector.Utils
 
         [LibraryImport("fptr10.dll")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        public static partial int libfptr_device_reboot(IntPtr handle);
+
+        [LibraryImport("fptr10.dll")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         public static partial int libfptr_fn_query_data(IntPtr handle);
 
         [LibraryImport("fptr10.dll")]
