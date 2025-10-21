@@ -1,9 +1,11 @@
 using RetailCorrector.Data;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using Kraig.Attributes;
 
 namespace RetailCorrector.Parsers;
 
+[Singleton]
 internal partial class Saby : ParserBase<Saby, Saby.View>
 {
     public override string Name => "SabyOFD";

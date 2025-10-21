@@ -3,9 +3,11 @@ using Microsoft.Data.Sqlite;
 using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using System.Runtime.CompilerServices;
+using Kraig.Attributes;
 
 namespace RetailCorrector.Parsers
 {
+    [Singleton]
     internal partial class FxPOS : ParserBase<FxPOS, FxPOS.View>
     {
         public override string Name => "Frontol xPOS";

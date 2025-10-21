@@ -5,9 +5,11 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
 using System.Windows;
+using Kraig.Attributes;
 
 namespace RetailCorrector.Parsers
 {
+    [Singleton]
     internal partial class OfdRu: ParserBase<OfdRu, OfdRu.View>
     {
         public override string Name => "OFD.ru";
