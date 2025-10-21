@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Attributes;
+﻿using Kraig.Attributes;
 using RetailCorrector.UI.Windows;
 using RetailCorrector.Utils;
 using System.Windows;

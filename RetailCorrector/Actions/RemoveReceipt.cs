@@ -1,13 +1,15 @@
-﻿using RetailCorrector.Attributes;
+﻿using Kraig.Attributes;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 
 namespace RetailCorrector.Actions
 {
-    [RegisterAction(DisplayName = "Удаление чеков")]
+    [Singleton]
     internal partial class RemoveReceipt : ActionBase<RemoveReceipt, RemoveReceipt.View>
     {
         public ConditionGrid Condition = new();
+
+        public override string Name => "Удаление чеков";
 
         public override void Start()
         {

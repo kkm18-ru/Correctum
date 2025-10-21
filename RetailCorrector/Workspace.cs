@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Attributes;
+﻿using Kraig.Attributes;
 using RetailCorrector.Data;
 using Serilog;
 using System.Collections.ObjectModel;

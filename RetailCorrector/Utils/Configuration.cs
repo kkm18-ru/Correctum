@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Attributes;
+﻿using Kraig.Attributes;
 using Tomlyn.Model;
 using Tomlyn;
 using System.IO;
@@ -10,13 +10,13 @@ namespace RetailCorrector.Utils
     {
         private const string FileName = "config.toml";
         
-        [NotifyChanged(DefaultValue = 1000)] public partial int HttpRequestDelay { get; set; }
-        [NotifyChanged(DefaultValue = 3)] public partial byte HttpTriesCount { get; set; }
-        [NotifyChanged(DefaultValue = 100)] public partial short HttpPageSize { get; set; }
+        [NotifyChanged] private int _httpRequestDelay = 1000;
+        [NotifyChanged] private byte _httpTriesCount = 3;
+        [NotifyChanged] private short _httpPageSize = 100;
 
-        [NotifyChanged(DefaultValue = 100)] public partial int SqlLimit { get; set; }
+        [NotifyChanged] private int _sqlLimit = 100;
 
-        [NotifyChanged(DefaultValue = 100)] public partial int FptrExportDocsPerFile { get; set; }
+        [NotifyChanged] private int _fptrExportDocsPerFile = 100;
 
         private Configuration()
         {

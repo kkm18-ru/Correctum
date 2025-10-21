@@ -1,13 +1,13 @@
-﻿using RetailCorrector.Attributes;
+﻿using Kraig.Attributes;
 
 namespace RetailCorrector.Parsers
 {
     internal partial class OfdRu 
     {
-        [NotifyChanged] public partial DateTime BeginDate { get; set; }
-        [NotifyChanged] public partial DateTime EndDate { get; set; }
-        [NotifyChanged] public partial string Vatin { get; set; }
-        [NotifyChanged] public partial string DeviceId { get; set; }
-        [NotifyChanged(CreateEvent = true)] public partial string Token { get; set; }
+        [NotifyChanged] private DateTime _beginDate;
+        [NotifyChanged] private DateTime _endDate;
+        [NotifyChanged] private string _vatin;
+        [NotifyChanged] private string _deviceId;
+        [NotifyChanged(GenerateEvent = true)] private string _token;
     }
 }

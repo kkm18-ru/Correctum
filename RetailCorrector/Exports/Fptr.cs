@@ -1,14 +1,15 @@
-﻿using RetailCorrector.Attributes;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
 using System.IO;
+using Kraig.Attributes;
 
 namespace RetailCorrector.Exports
 {
-    [RegisterExport(DisplayName = "Fptr-скрипт")]
+    [Singleton]
     internal partial class Fptr : IExport
     {
+        public string Name => "Fptr-скрипт";
         public string? FileFilter => null;
 
         public ValueTask Export(string? path)

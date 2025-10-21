@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Attributes;
+﻿using Kraig.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
@@ -10,11 +10,8 @@ namespace RetailCorrector.UI.Windows
 {
     internal partial class DeserializeWindow : Types.DialogWindow
     {
-        [NotifyChanged] public partial string Text { get; set; }
-        [NotifyChanged] public partial int DeserializerId { get; set; }
-
-        private IReceiptDeserializer CurrDeserializer => Deserializers[DeserializerId]; 
-        private string CurrDeserializerName => DisplayNames[DeserializerId]; 
+        [NotifyChanged] private string _text = "";
+        [NotifyChanged] private IReceiptDeserializer _current; 
 
         public DeserializeWindow(string text)
         {
@@ -56,21 +53,22 @@ namespace RetailCorrector.UI.Windows
 
             var cb = new ComboBox
             {
-                ItemsSource = DisplayNames
+                ItemsSource = ModuleRegistry.Deserializers,
+                DisplayMemberPath = "Name"
             };
-            cb.SetBinding(ComboBox.SelectedIndexProperty, nameof(DeserializerId));
+            cb.SetBinding(ComboBox.SelectedItemProperty, nameof(Current));
             content.AddChild(cb);
         }
 
         private void Submit(object? sender, RoutedEventArgs args)
         {
-            Workspace.Instance.ParserHistory.Add(new ParseInfo($"Вставка из {CurrDeserializerName}"));
+            Workspace.Instance.ParserHistory.Add(new ParseInfo($"Вставка из {Current.Name}"));
             var receipt = new Receipt
             {
                 ParseId = Workspace.Instance.ParserHistory[^1].Id,
                 Payment = new Payment()
             };
-            CurrDeserializer.Deserialize(Text, ref receipt);
+            Current.Deserialize(Text, ref receipt);
             Workspace.Instance.Receipts.Add(receipt);
             ReceiptPanel.UpdateReceiptList();
             Close();

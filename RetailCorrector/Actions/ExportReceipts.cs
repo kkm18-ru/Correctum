@@ -1,11 +1,13 @@
-﻿using RetailCorrector.Attributes;
-using System.Windows;
+﻿using System.Windows;
+using Kraig.Attributes;
 
 namespace RetailCorrector.Actions
 {
-    [RegisterAction(DisplayName = "Экспорт чеков")]
+    [Singleton]
     internal partial class ExportReceipts : ActionBase<ExportReceipts, ExportReceipts.View>
     {
+        public override string Name => "Экспорт чеков";
+
         public override async void Start()
         {
             await Exporter.Export(Path);

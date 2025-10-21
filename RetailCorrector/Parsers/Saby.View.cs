@@ -36,17 +36,17 @@ internal partial class Saby
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Auto);
 
-            grid.AddChild(CreateLabel("Логин"));
+            grid.AddChild(CreateLabel("Р›РѕРіРёРЅ"));
             var tb = new TextBox();
             tb.SetBinding(TextBox.TextProperty, nameof(Login));
             grid.AddChild(tb, 2);
 
-            grid.AddChild(CreateLabel("Пароль"), y: 2);
+            grid.AddChild(CreateLabel("РџР°СЂРѕР»СЊ"), y: 2);
             tb = new TextBox();
             tb.SetBinding(TextBox.TextProperty, nameof(Password));
             grid.AddChild(tb, 2, 2);
 
-            grid.AddChild(CreateLabel("Начало сканирования"), y: 4);
+            grid.AddChild(CreateLabel("РќР°С‡Р°Р»Рѕ СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ"), y: 4);
             var dp = new DateTimePicker
             {
                 Minimum = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
@@ -60,7 +60,7 @@ internal partial class Saby
             dp.SetBinding(DateTimePicker.MaximumProperty, nameof(ToDate));
             grid.AddChild(dp, 2, 4);
 
-            grid.AddChild(CreateLabel("Конец сканирования"), y: 6);
+            grid.AddChild(CreateLabel("РљРѕРЅРµС† СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ"), y: 6);
             dp = new DateTimePicker
             {
                 Maximum = DateTime.Today,
@@ -74,17 +74,17 @@ internal partial class Saby
             dp.SetBinding(DateTimePicker.MinimumProperty, nameof(FromDate));
             grid.AddChild(dp, 2, 6);
 
-            grid.AddChild(CreateLabel("ИНН организации"), y: 8);
+            grid.AddChild(CreateLabel("РРќРќ РѕСЂРіР°РЅРёР·Р°С†РёРё"), y: 8);
             tb = new NotifyTextBox();
-            tb.SetBinding(TextBox.TextProperty, new ValidatedBinding(nameof(INN), InnValidationRule.Instance));
+            tb.SetBinding(TextBox.TextProperty, new ValidatedBinding(nameof(Inn), InnValidationRule.Instance));
             grid.AddChild(tb, 2, 8);
 
-            grid.AddChild(CreateLabel("Регистрационный номер ККТ"), y: 10);
+            grid.AddChild(CreateLabel("Р РµРіРёСЃС‚СЂР°С†РёРѕРЅРЅС‹Р№ РЅРѕРјРµСЂ РљРљРў"), y: 10);
             tb = new NotifyTextBox();
             tb.SetBinding(TextBox.TextProperty, new ValidatedBinding(nameof(Device), DeviceIdValidationRule.Instance)); 
             grid.AddChild(tb, 2, 10);
 
-            grid.AddChild(CreateLabel("Заводской номер ФН"), y: 12);
+            grid.AddChild(CreateLabel("Р—Р°РІРѕРґСЃРєРѕР№ РЅРѕРјРµСЂ Р¤Рќ"), y: 12);
             tb = new NotifyTextBox();
             tb.SetBinding(TextBox.TextProperty, new ValidatedBinding(nameof(Storage), DeviceIdValidationRule.Instance)); 
             grid.AddChild(tb, 2, 12);

@@ -1,15 +1,17 @@
-﻿using RetailCorrector.Attributes;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 using Serilog;
 using System.Windows;
+using Kraig.Attributes;
 
 namespace RetailCorrector.Actions
 {
-    [RegisterAction(DisplayName = "Генерация аннулирующих чеков")]
-    internal class CancelReceipt : ActionBase<CancelReceipt>
+    [Singleton]
+    internal partial class CancelReceipt : ActionBase<CancelReceipt>
     {
+        public override string Name => "Генерация аннулирующих чеков";
+
         public override void Start()
         {
             if(Workspace.Instance.Receipts.Any(r => r.EditsCount != 0))

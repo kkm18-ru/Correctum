@@ -1,17 +1,19 @@
-using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using Kraig.Attributes;
 
 namespace RetailCorrector.Parsers;
 
-[RegisterParser(DisplayName = "SabyOFD")]
+[Singleton]
 internal partial class Saby : ParserBase<Saby, Saby.View>
 {
+    public override string Name => "SabyOFD";
+
     public override ParseInfo GenerateInfo() =>
-        parseInfo = new("SabyOFD", ("»ÕÕ", INN), ("  “", Device), ("‘Õ", Storage), 
-            ("—Ú‡Ú", FromDate.ToString("dd'.'MM'.'yyyy")), 
-            (" ÓÌÂˆ", ToDate.ToString("dd'.'MM'.'yyyy")));
+        parseInfo = new("SabyOFD", ("–ò–ù–ù", Inn), ("–ö–ö–¢", Device), ("–§–ù", Storage), 
+            ("–°—Ç–∞—Ä—Ç", FromDate.ToString("dd'.'MM'.'yyyy")), 
+            ("–ö–æ–Ω–µ—Ü", ToDate.ToString("dd'.'MM'.'yyyy")));
 
     public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {

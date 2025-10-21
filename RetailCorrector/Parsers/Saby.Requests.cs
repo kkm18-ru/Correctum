@@ -29,7 +29,7 @@ internal partial class Saby
     {
         var txtDay = day.ToString("yyyy'-'MM'-'dd");
         var urlBuilder = new StringBuilder();
-        urlBuilder.Append($"/ofd/v1/orgs/{INN}");
+        urlBuilder.Append($"/ofd/v1/orgs/{Inn}");
         urlBuilder.Append($"/kkts/{Device}");
         urlBuilder.Append($"/storages/{Storage}/docs");
         urlBuilder.Append($"?dateFrom={txtDay}T00:00:00");

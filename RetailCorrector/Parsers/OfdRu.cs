@@ -1,17 +1,19 @@
-﻿using RetailCorrector.Attributes;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using Serilog;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
 using System.Windows;
+using Kraig.Attributes;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterParser(DisplayName = "OFD.ru (Петер-Сервис)")]
+    [Singleton]
     internal partial class OfdRu: ParserBase<OfdRu, OfdRu.View>
     {
+        public override string Name => "OFD.ru";
+
         public override ParseInfo GenerateInfo() =>
             parseInfo = new ParseInfo("OFD.ru", 
                 ("ИНН", Vatin), 

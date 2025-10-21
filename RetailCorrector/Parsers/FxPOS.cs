@@ -1,15 +1,17 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
-using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using System.Runtime.CompilerServices;
+using Kraig.Attributes;
 
 namespace RetailCorrector.Parsers
 {
-    [RegisterParser(DisplayName = "Frontol xPOS")]
+    [Singleton]
     internal partial class FxPOS : ParserBase<FxPOS, FxPOS.View>
     {
+        public override string Name => "Frontol xPOS";
+
         public override ParseInfo GenerateInfo() =>
             parseInfo = new ParseInfo("Frontol xPOS", ("Путь", Path));
 
