@@ -75,9 +75,10 @@ namespace RetailCorrector.Actions
             {
                 var cb = new ComboBox
                 {
-                    ItemsSource = DisplayNames,
+                    DisplayMemberPath = "Name",
+                    ItemsSource = ModuleRegistry.Exporters,
                 };
-                cb.SetBinding(ComboBox.SelectedIndexProperty, nameof(Context.ExporterId));
+                cb.SetBinding(ComboBox.SelectedItemProperty, nameof(Context.Exporter));
                 cb.SelectionChanged += (_, _) =>
                 {
                     if (content.RowDefinitions.Count > 1)

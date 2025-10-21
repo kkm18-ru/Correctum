@@ -1,12 +1,12 @@
 ﻿using Kraig.Attributes;
 using RetailCorrector.Exports;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Actions
 {
     internal partial class ExportReceipts
     {
-        public IExport Exporter => Exporters[ExporterId];
-        [NotifyChanged] private int _exporterId;
+        [NotifyChanged] private IExport _exporter = ModuleRegistry.Exporters[0];
         [NotifyChanged] private string _path;
     }
 }
