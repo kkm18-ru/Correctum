@@ -2,9 +2,11 @@
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
 using System.IO;
+using Kraig.Attributes;
 
 namespace RetailCorrector.Exports
 {
+    [Singleton]
     internal partial class Fptr : IExport
     {
         public string Name => "Fptr-скрипт";
