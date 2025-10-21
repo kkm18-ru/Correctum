@@ -160,5 +160,12 @@ namespace RetailCorrector.Utils
         public static string GetLocationDriver() =>
             Path.Combine((string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ATOL\Drivers\10.0\KKT",
                 "INSTALL_DIR", "")!, "bin", "fptr10.dll");
+
+        public static bool LoginOperator(nint handle, string name, string inn)
+        {
+            FptrNative.libfptr_set_param_str(handle, 1021, name);
+            FptrNative.libfptr_set_param_str(handle, 1203, inn);
+            return FptrNative.libfptr_operator_login(handle) == 0;
+        }
     }
 }
