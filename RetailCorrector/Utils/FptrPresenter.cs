@@ -187,5 +187,11 @@ namespace RetailCorrector.Utils
             }
             return false;
         }
+
+        public static bool SilentReboot(nint handle)
+        {
+            FptrNative.libfptr_set_param_bool(handle, 65873, false);
+            return FptrNative.libfptr_device_reboot(handle) == 0;
+        }
     }
 }

@@ -202,7 +202,7 @@ namespace RetailCorrector.UI.Windows
             try
             {
                 FptrNative.libfptr_open(_driver);
-                if (FptrNative.libfptr_device_reboot(_driver) != 0 || !FptrPresenter.WaitReboot(_driver))
+                if (!FptrPresenter.SilentReboot(_driver) || !FptrPresenter.WaitReboot(_driver))
                 {
                     var code = FptrNative.libfptr_error_code(_driver);
                     MessageBox.Show("Не удалось перезагрузить ККТ", $"Произошла ошибка (Код: {code})", 
