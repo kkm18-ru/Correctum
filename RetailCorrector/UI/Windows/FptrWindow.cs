@@ -3,10 +3,11 @@ using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using Kraig.Attributes;
 
 namespace RetailCorrector.UI.Windows
 {
-    internal class FptrWindow : Types.DialogWindow
+    internal partial class FptrWindow : Types.DialogWindow
     {
         public int ProgressValue
         {
@@ -29,10 +30,20 @@ namespace RetailCorrector.UI.Windows
         private readonly TextBox _inputAct;
         private readonly ComboBox _cbCorrType;
         private readonly ComboBox _cbPrint;
+
+        private readonly CheckBox _chUseOperator;
+        private readonly TextBox _tbOperatorName;
+        private readonly TextBox _tbOperatorInn;
+        
         private CancellationTokenSource? cts;
+
+        [NotifyChanged] private bool _useOperator;
+        [NotifyChanged] private string _operatorName = "";
+        [NotifyChanged] private string _operatorInn = "";
 
         public FptrWindow()
         {
+            DataContext = this;
             SizeToContent = SizeToContent.WidthAndHeight;
             _library = FptrPresenter.LoadLibrary(FptrPresenter.GetLocationDriver());
             if (FptrNative.libfptr_create(out _driver) != 0)
@@ -46,6 +57,12 @@ namespace RetailCorrector.UI.Windows
             grid.AddColumn(GridUnitType.Pixel, 5);
             grid.AddColumn(GridUnitType.Pixel, 125);
 
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Pixel, 22);
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Pixel, 22);
@@ -89,15 +106,36 @@ namespace RetailCorrector.UI.Windows
             _inputAct = new TextBox();
             grid.AddChild(_inputAct, 2, 6);
 
+            _chUseOperator = new CheckBox
+            {
+                Content = "Авторизировать оператора?"
+            };
+            _chUseOperator.SetBinding(CheckBox.IsCheckedProperty, nameof(UseOperator));
+            grid.AddChild(_chUseOperator, 0, 8, 3);
+            
+            grid.AddChild(CreateLabel("ФИО оператора"), y: 10);
+
+            _tbOperatorName = new TextBox();
+            _tbOperatorName.SetBinding(TextBox.IsEnabledProperty, nameof(UseOperator));
+            _tbOperatorName.SetBinding(TextBox.TextProperty, nameof(OperatorName));
+            grid.AddChild(_tbOperatorName, 2, 10);
+            
+            grid.AddChild(CreateLabel("ИНН оператора"), y: 12);
+
+            _tbOperatorInn = new TextBox();
+            _tbOperatorInn.SetBinding(TextBox.IsEnabledProperty, nameof(UseOperator));
+            _tbOperatorInn.SetBinding(TextBox.TextProperty, nameof(OperatorInn));
+            grid.AddChild(_tbOperatorInn, 2, 12);
+
             _barProgress = CreateProgress();
-            grid.AddChild(_barProgress, 0, 8, 3);
+            grid.AddChild(_barProgress, 0, 14, 3);
             _txtProgress = CreateProgressLabel();
-            grid.AddChild(_txtProgress, 0, 8, 3);
+            grid.AddChild(_txtProgress, 0, 14, 3);
 
             _btnStart = CreateStart();
-            grid.AddChild(_btnStart, y: 10);
+            grid.AddChild(_btnStart, y: 16);
             _btnCancel = CreateCancel();
-            grid.AddChild(_btnCancel, 2, 10);
+            grid.AddChild(_btnCancel, 2, 16);
 
             Content = grid;
         }
