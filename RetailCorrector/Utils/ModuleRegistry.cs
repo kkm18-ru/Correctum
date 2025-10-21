@@ -20,10 +20,13 @@ internal static class ModuleRegistry
     ];
     
     public static ImmutableArray<Parsers.IParser> Parsers = [
-        RetailCorrector.Parsers.Mock.Instance,
         RetailCorrector.Parsers.Saby.Instance,
         RetailCorrector.Parsers.Sqlite.Instance,
         RetailCorrector.Parsers.OfdRu.Instance,
-        RetailCorrector.Parsers.FxPOS.Instance
+        RetailCorrector.Parsers.FxPOS.Instance,
+        
+        #if DEBUG
+        RetailCorrector.Parsers.Mock.Instance,
+        #endif
     ];
 }
