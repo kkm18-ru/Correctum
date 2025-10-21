@@ -167,5 +167,31 @@ namespace RetailCorrector.Utils
         public static string GetLocationDriver() =>
             Path.Combine((string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\ATOL\Drivers\10.0\KKT",
                 "INSTALL_DIR", "")!, "bin", "fptr10.dll");
+
+        public static bool LoginOperator(nint handle, string name, string inn)
+        {
+            FptrNative.libfptr_set_param_str(handle, 1021, name);
+            FptrNative.libfptr_set_param_str(handle, 1203, inn);
+            return FptrNative.libfptr_operator_login(handle) == 0;
+        }
+
+        public static bool WaitReboot(nint handle)
+        {
+            const int Delay = 100;
+            var countInteration = Configuration.Instance.FptrWaitRebootTimeout / Delay;
+            for (var _ = 0; _ < countInteration; _++)
+            {
+                FptrNative.libfptr_set_param_int(handle, 65587, 16); // get serial number
+                if (FptrNative.libfptr_query_data(handle) == 0) return true;
+                Thread.Sleep(Delay);
+            }
+            return false;
+        }
+
+        public static bool SilentReboot(nint handle)
+        {
+            FptrNative.libfptr_set_param_bool(handle, 65873, false);
+            return FptrNative.libfptr_device_reboot(handle) == 0;
+        }
     }
 }

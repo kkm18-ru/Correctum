@@ -17,6 +17,7 @@ namespace RetailCorrector.UI.Windows
             tab.Items.Add(CreateHttpTab());
             tab.Items.Add(CreateSqlTab());
             tab.Items.Add(CreateExportTab());
+            tab.Items.Add(CreateFptrTab());
             
             Content = tab;
         }
@@ -90,6 +91,26 @@ namespace RetailCorrector.UI.Windows
             grid.AddChild(CreateText("Количество документов в скрипте"));
             var nb = new IntegerUpDown { Minimum = 1, Maximum = 150 };
             nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.FptrExportDocsPerFile));
+            grid.AddChild(nb, 2);
+
+            return tab;
+        }
+
+        private static TabItem CreateFptrTab()
+        {
+            var tab = new TabItem { Header = "Atol-драйвер" };
+            var grid = new Grid();
+            tab.Content = grid;
+
+            grid.AddColumn(GridUnitType.Star);
+            grid.AddColumn(GridUnitType.Pixel, 5);
+            grid.AddColumn(GridUnitType.Star);
+
+            grid.AddRow(GridUnitType.Auto);
+
+            grid.AddChild(CreateText("Максимальное время ожидания перезагрузки ККТ (в мс)"));
+            var nb = new IntegerUpDown { Minimum = 1, Maximum = 10000 };
+            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.FptrWaitRebootTimeout));
             grid.AddChild(nb, 2);
 
             return tab;
