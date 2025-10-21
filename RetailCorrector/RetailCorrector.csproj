@@ -11,6 +11,7 @@
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+		<DefineConstants>SINGLETON_INTERFACE</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
