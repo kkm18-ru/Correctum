@@ -1,8 +1,10 @@
-﻿using RetailCorrector.UI.Controls;
+﻿using Kraig.Attributes;
+using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 
 namespace RetailCorrector.Actions
 {
+    [Singleton]
     internal partial class RemoveReceipt : ActionBase<RemoveReceipt, RemoveReceipt.View>
     {
         public ConditionGrid Condition = new();
