@@ -236,6 +236,8 @@ namespace RetailCorrector.UI.Windows
 
         private bool ProcessingReceipt(Receipt receipt, CancellationToken token)
         {
+            if (UseOperator && !FptrPresenter.LoginOperator(_driver, OperatorName, OperatorInn))
+                return false;
             FptrPresenter.OpenReceiptArgs openArgs = new();
             Dispatcher.Invoke(() =>
             {
@@ -255,12 +257,15 @@ namespace RetailCorrector.UI.Windows
             if (FptrPresenter.GetSessionState(_driver) is null) return false;
             if (FptrPresenter.GetSessionState(_driver) == 2)
             {
+                if (UseOperator && !FptrPresenter.LoginOperator(_driver, OperatorName, OperatorInn))
+                    return false;
                 FptrNative.libfptr_set_param_int(_driver, 65546, 0);
                 if (0 != FptrNative.libfptr_report(_driver)) return false;
             }
-            if (FptrPresenter.GetSessionState(_driver) == 0 && 0 != FptrNative.libfptr_open_shift(_driver))
-                return false;
-            return true;
+
+            if (FptrPresenter.GetSessionState(_driver) != 0) return true;
+            if(UseOperator && !FptrPresenter.LoginOperator(_driver, OperatorName, OperatorInn)) return false;
+            return 0 == FptrNative.libfptr_open_shift(_driver);
         }
 
         private bool MissingUnitFor120(IEnumerable<Receipt> @ref) =>
