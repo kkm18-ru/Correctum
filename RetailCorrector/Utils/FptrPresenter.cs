@@ -175,10 +175,10 @@ namespace RetailCorrector.Utils
             return FptrNative.libfptr_operator_login(handle) == 0;
         }
 
-        public static bool WaitReboot(nint handle, int timeout = 1000)
+        public static bool WaitReboot(nint handle)
         {
             const int Delay = 100;
-            var countInteration = timeout / Delay;
+            var countInteration = Configuration.Instance.FptrWaitRebootTimeout / Delay;
             for (var _ = 0; _ < countInteration; _++)
             {
                 FptrNative.libfptr_set_param_int(handle, 65587, 16); // get serial number

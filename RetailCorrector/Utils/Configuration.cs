@@ -17,23 +17,43 @@ namespace RetailCorrector.Utils
         [NotifyChanged] private int _sqlLimit = 100;
 
         [NotifyChanged] private int _fptrExportDocsPerFile = 100;
+        
+        [NotifyChanged] private int _fptrWaitRebootTimeout = 1500;
 
         private Configuration()
         {
-            if (File.Exists(FileName)) {
-                var conf = Toml.ToModel(File.ReadAllText(FileName));
+            if (!File.Exists(FileName)) return;
+            var conf = Toml.ToModel(File.ReadAllText(FileName));
 
-                var httpSection = (TomlTable)conf["HTTP"]!;
-                HttpRequestDelay = (int)(long)httpSection["RequestDelay"];
-                HttpTriesCount = (byte)(long)httpSection["TriesCount"];
-                HttpPageSize = (short)(long)httpSection["PageSize"];
-
-                var sqlSection = (TomlTable)conf["SQL"]!;
-                SqlLimit = (int)(long)sqlSection["Limit"];
-
-                var exportSection = (TomlTable)conf["Export"]!;
-                var fptrExportSection = (TomlTable)exportSection["Fptr"]!;
-                FptrExportDocsPerFile = (int)(long)fptrExportSection["DocsPerFile"];
+            if (conf.TryGetValue("HTTP", out var value) && value is TomlTable httpSection)
+            {
+                if (httpSection.TryGetValue("RequestDelay", out value) && value is long)
+                    HttpRequestDelay = (int)(long)value;
+                if (httpSection.TryGetValue("TriesCount", out value) && value is long)
+                    HttpTriesCount = (byte)(long)value;
+                if (httpSection.TryGetValue("PageSize", out value) && value is long)
+                    HttpPageSize = (short)(long)value;
+            }
+            
+            if (conf.TryGetValue("SQL", out value) && value is TomlTable sqlSection)
+            {
+                if (sqlSection.TryGetValue("Limit", out value) && value is long)
+                    SqlLimit = (int)(long)value;
+            }
+            
+            if (conf.TryGetValue("Export", out value) && value is TomlTable exportSection)
+            {
+                if (exportSection.TryGetValue("Fptr", out value) && value is TomlTable exportFptrSection)
+                {
+                    if (exportFptrSection.TryGetValue("DocsPerFile", out value) && value is long)
+                        FptrExportDocsPerFile = (int)(long)value;
+                }
+            }
+            
+            if (conf.TryGetValue("Fptr", out value) && value is TomlTable fpreSection)
+            {
+                if (fpreSection.TryGetValue("WaitRebootTimeout", out value) && value is long)
+                    FptrWaitRebootTimeout = (int)(long)value;
             }
         }
 
@@ -65,6 +85,12 @@ namespace RetailCorrector.Utils
                             } 
                         }
                     }
+                },
+                {
+                    "Fptr", new TomlTable()
+                    {
+                        { "WaitRebootTimeout", FptrWaitRebootTimeout }
+                    } 
                 }
             };
             File.WriteAllText(FileName, Toml.FromModel(table));
