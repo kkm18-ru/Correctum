@@ -12,6 +12,7 @@ namespace RetailCorrector.Data
         public Position[] Items { get; set; }
         public Payment Payment { get; set; }
         public ulong TotalSum { get; set; }
+        public string BuyerContact { get; set; }
 
         #region Meta-Data
         public Guid Id
