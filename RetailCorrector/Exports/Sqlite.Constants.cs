@@ -29,6 +29,7 @@
                 type  INTEGER NOT NULL,
                 sign  TEXT    NOT NULL,
                 corr  INTEGER NOT NULL,
+                buyer TEXT,
                 act   TEXT,
                 cash  INTEGER NOT NULL,
                 ecash INTEGER NOT NULL,
@@ -45,8 +46,8 @@
             VALUES (@date, @type, @sign, 0, ' ', @cash, @ecash, @pre, @post, @other, @total) RETURNING id;
             """;
         const string ADD_POSITION = """
-            INSERT INTO position (name, payment, type, tax, unit, price, quantity, total, receipt) 
-            VALUES (@name, @payment, @type, @tax, @unit, @price, @quantity, @total, @receipt);
+            INSERT INTO position (name, payment, type, tax, unit, buyer, price, quantity, total, receipt) 
+            VALUES (@name, @payment, @type, @tax, @unit, @buyer, @price, @quantity, @total, @receipt);
             """;
     }
 }

@@ -16,6 +16,7 @@ namespace RetailCorrector.Parsers
             public ulong post { get; set; }
             public ulong other { get; set; }
             public ulong total { get; set; }
+            public string buyer { get; set; }
         }
 
         private struct InnerPosition

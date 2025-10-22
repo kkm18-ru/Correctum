@@ -52,7 +52,8 @@ namespace RetailCorrector.Parsers
                             Post = docs[j].post,
                             Provision = docs[j].other,
                         },
-                        Type = docs[j].type
+                        Type = docs[j].type,
+                        BuyerContact = docs[j].buyer
                     };
                     progress.Report(i + j);
                 }

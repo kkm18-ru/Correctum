@@ -40,6 +40,8 @@ namespace RetailCorrector.UI.Windows
         [NotifyChanged] private bool _useOperator;
         [NotifyChanged] private string _operatorName = "";
         [NotifyChanged] private string _operatorInn = "";
+        [NotifyChanged] private bool _isInternet;
+        [NotifyChanged] private string _httpAddress = "";
 
         public FptrWindow()
         {
@@ -53,9 +55,9 @@ namespace RetailCorrector.UI.Windows
                 Margin = new Thickness(5)
             };
 
-            grid.AddColumn(GridUnitType.Pixel, 93);
+            grid.AddColumn(GridUnitType.Pixel, 100);
             grid.AddColumn(GridUnitType.Pixel, 5);
-            grid.AddColumn(GridUnitType.Pixel, 125);
+            grid.AddColumn(GridUnitType.Pixel, 150);
 
             grid.AddRow(GridUnitType.Pixel, 22);
             grid.AddRow(GridUnitType.Pixel, 5);
@@ -70,6 +72,10 @@ namespace RetailCorrector.UI.Windows
             grid.AddRow(GridUnitType.Pixel, 22);
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Pixel, 22);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Auto);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Auto);
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Pixel, 22);
             grid.AddRow(GridUnitType.Pixel, 5);
@@ -127,15 +133,28 @@ namespace RetailCorrector.UI.Windows
             _tbOperatorInn.SetBinding(TextBox.TextProperty, nameof(OperatorInn));
             grid.AddChild(_tbOperatorInn, 2, 12);
 
+            var check = new CheckBox
+            {
+                Content = "Применить рассчет для сети \"Интернет\""
+            };
+            check.SetBinding(CheckBox.IsCheckedProperty, nameof(IsInternet));
+            grid.AddChild(check, y: 14, dx: 3);
+
+            grid.AddChild(CreateLabel("Адрес сайта"), y: 16);
+            var input = new TextBox();
+            input.SetBinding(IsEnabledProperty, nameof(IsInternet));
+            input.SetBinding(TextBox.TextProperty, nameof(HttpAddress));
+            grid.AddChild(input, 2, 16);
+
             _barProgress = CreateProgress();
-            grid.AddChild(_barProgress, 0, 14, 3);
+            grid.AddChild(_barProgress, 0, 18, 3);
             _txtProgress = CreateProgressLabel();
-            grid.AddChild(_txtProgress, 0, 14, 3);
+            grid.AddChild(_txtProgress, 0, 18, 3);
 
             _btnStart = CreateStart();
-            grid.AddChild(_btnStart, y: 16);
+            grid.AddChild(_btnStart, y: 20);
             _btnCancel = CreateCancel();
-            grid.AddChild(_btnCancel, 2, 16);
+            grid.AddChild(_btnCancel, 2, 20);
 
             Content = grid;
         }
@@ -258,6 +277,8 @@ namespace RetailCorrector.UI.Windows
                 openArgs.Act = string.IsNullOrWhiteSpace(_inputAct.Text) ? " " : _inputAct.Text;
                 openArgs.Print = _cbPrint.SelectedIndex > 0;
                 openArgs.CorrType = _cbCorrType.SelectedIndex;
+                openArgs.IsInternetPayment = IsInternet;
+                openArgs.HttpAddress = HttpAddress;
             });
             return FptrPresenter.OpenReceipt(_driver, receipt, openArgs, token) &&
                 receipt.Items.All(pos => FptrPresenter.AddPosition(_driver, pos, token)) &&

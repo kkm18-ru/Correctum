@@ -70,6 +70,8 @@ namespace RetailCorrector.Utils
 
         public struct OpenReceiptArgs
         {
+            public bool IsInternetPayment { get; set; }
+            public string HttpAddress { get; set; }
             public string Act { get; set; }
             public bool Print { get; set; }
             public int CorrType { get; set; }
@@ -103,6 +105,13 @@ namespace RetailCorrector.Utils
             if (opcode is null) return false;
             FptrNative.libfptr_set_param_int(handle, 65545, (uint)opcode);
             FptrNative.libfptr_set_param_bool(handle, 65572, args.Print);
+
+            if (args.IsInternetPayment)
+            {
+                FptrNative.libfptr_set_param_bool(handle, 1125, true);
+                FptrNative.libfptr_set_param_str(handle, 1008, doc.BuyerContact);
+                FptrNative.libfptr_set_param_str(handle, 1187, args.HttpAddress);
+            }
 
             token.ThrowIfCancellationRequested();
             if (ffd >= 110) // todo add for ffd 1.05

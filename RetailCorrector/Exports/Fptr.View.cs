@@ -52,6 +52,10 @@ namespace RetailCorrector.Exports
             content.AddRow(GridUnitType.Auto); // CorrType 8
             content.AddRow(GridUnitType.Pixel, 5);
             content.AddRow(GridUnitType.Auto); // ActId 10
+            content.AddRow(GridUnitType.Pixel, 5);
+            content.AddRow(GridUnitType.Auto); // IsInternet 12
+            content.AddRow(GridUnitType.Pixel, 5);
+            content.AddRow(GridUnitType.Auto); // HttpAddress 14
 
             var lbl = CreateLabel("Номер акта");
             content.AddChild(lbl, y: 2);
@@ -94,19 +98,32 @@ namespace RetailCorrector.Exports
             input.SetBinding(TextBox.TextProperty, new Binding(nameof(ActId)) { Source = this });
             content.AddChild(input, 2, 8);
 
+            var check = new CheckBox
+            {
+                Content = "Применить рассчет для сети \"Интернет\""
+            };
+            check.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(IsInternet)) { Source = this });
+            content.AddChild(check, y: 10, dx: 3);
+
+            content.AddChild(CreateLabel("Адрес сайта"), y: 12);
+            input = new TextBox();
+            input.SetBinding(TextBox.IsEnabledProperty, new Binding(nameof(IsInternet)) { Source = this });
+            input.SetBinding(TextBox.TextProperty, new Binding(nameof(HttpAddress)) { Source = this });
+            content.AddChild(input, 2, 12);
+
             if (FiscalFormat == 2)
             {
                 content.AddRow(GridUnitType.Pixel, 5);
-                content.AddRow(GridUnitType.Auto); // OldCorrReason 12
+                content.AddRow(GridUnitType.Auto); // OldCorrReason 16
 
                 lbl = CreateLabel("Причина коррекции");
-                content.AddChild(lbl, y: 10);
+                content.AddChild(lbl, y: 14);
                 cb = new ComboBox
                 {
                     ItemsSource = new[] { "Ошибка или карантин", "Чек не был пробит" },
                 };
                 cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(OldCorrReason)) { Source = this });
-                content.AddChild(cb, 2, 10);
+                content.AddChild(cb, 2, 14);
             }
         }
 

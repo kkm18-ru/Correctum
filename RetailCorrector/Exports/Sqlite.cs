@@ -38,6 +38,7 @@ namespace RetailCorrector.Exports
                         post = receipt.Payment.Post,
                         other = receipt.Payment.Provision,
                         total = receipt.TotalSum,
+                        buyer = receipt.BuyerContact,
                     });
                     foreach (var pos in receipt.Items)
                         conn.Execute(ADD_POSITION, new

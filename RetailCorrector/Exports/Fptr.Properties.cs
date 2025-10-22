@@ -6,6 +6,10 @@ namespace RetailCorrector.Exports
     {
         [NotifyChanged] private int _corrType  = 0;
 
+        [NotifyChanged] private bool _isInternet;
+
+        [NotifyChanged] private string _httpAddress = "";
+
         /// <summary>
         /// Печатать, ли чеки? (0 - Да; 1 - Нет)
         /// </summary>

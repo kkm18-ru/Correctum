@@ -34,6 +34,12 @@ namespace RetailCorrector.Exports
                     tf.WriteGenerateCorrData(ActId, receipt.Created, FiscalFormat == 2);
                     tf.WriteReceiptType(receipt, FiscalFormat);
                     tf.WriteLine($"Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, {(Print == 1).ToString().ToLower()});");
+                    if (IsInternet)
+                    {
+                        tf.WriteLine($"Fptr.setParam(1125, true);");
+                        tf.WriteLine($"Fptr.setParam(1187, {HttpAddress});");
+                        tf.WriteLine($"Fptr.setParam(1008, {receipt.BuyerContact});");
+                    }
                     tf.WriteUseCorrData(CorrType, FiscalFormat == 2);
                     tf.WriteLine($"Fptr.setParam(1192, \"{receipt.DocSign}\");");
                     tf.WriteLine("Fptr.openReceipt();");
