@@ -8,6 +8,5 @@
     <File Path="RetailCorrector.iss" />
     <File Path="nuget.config" />
   </Folder>
-  <Project Path="RetailCorrector.Analyzers/RetailCorrector.Analyzers.csproj" />
   <Project Path="RetailCorrector/RetailCorrector.csproj" />
 </Solution>
