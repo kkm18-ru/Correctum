@@ -128,9 +128,30 @@ namespace RetailCorrector.Utils
             var code = FptrNative.libfptr_error_code(handle);
             var desc = GetErrorDescription(handle);
             FptrNative.libfptr_cancel_receipt(handle);
+            var title = $"Произошла ошибка (Код: {code})";
+            if (code == 137)
+            {
+                FptrNative.libfptr_set_param_int(handle, 65622, 17);
+                if(FptrNative.libfptr_fn_query_data(handle) == 0 &&       // Получение свободного места
+                    FptrNative.libfptr_get_param_int(handle, 65818) == 0) // 30-дневого хранилища (в КБ)
+                {
+                    var msgResult = MessageBox.Show("Выполнить автоматическое исправление ошибки?", title, MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (msgResult == MessageBoxResult.Yes)
+                    {
+                        FptrNative.libfptr_set_param_int(handle, 65546, 0);
+                        if (0 != FptrNative.libfptr_report(handle) || 0 != FptrNative.libfptr_open_shift(handle))
+                            return;
+                        var old = code;
+                        code = FptrNative.libfptr_error_code(handle);
+                        title = $"Произошла ошибка (Коды: {old}, {code})";
+                        MessageBox.Show(
+                            $"Во время попытки исправления ошибки возникла новая (Код: {code})",
+                            "Автоматическое исправление не удалось!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                }
+            }
             FptrNative.libfptr_close(handle);
             var text = $"{desc}\n\nДрайвер освободил кассу для её настройки, закройте данное окно для продолжения пробития!";
-            var title = $"Произошла ошибка (Код: {code})";
             MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Hand);
             FptrNative.libfptr_open(handle);
         }
