@@ -42,12 +42,12 @@
         const string CREATE_PKEY_RECEIPT_INDEX = "CREATE INDEX receipt_pkey ON receipt (id);";
         const string CREATE_RID_POSITION_INDEX = "CREATE INDEX position_rid ON position (receipt);";
         const string ADD_RECEIPT = """
-            INSERT INTO receipt (date, type, sign, corr, act, cash, ecash, pre, post, other, total) 
-            VALUES (@date, @type, @sign, 0, ' ', @cash, @ecash, @pre, @post, @other, @total) RETURNING id;
+            INSERT INTO receipt (date, type, sign, corr, act, cash, ecash, pre, post, other, total, buyer) 
+            VALUES (@date, @type, @sign, 0, ' ', @cash, @ecash, @pre, @post, @other, @total, @buyer) RETURNING id;
             """;
         const string ADD_POSITION = """
-            INSERT INTO position (name, payment, type, tax, unit, buyer, price, quantity, total, receipt) 
-            VALUES (@name, @payment, @type, @tax, @unit, @buyer, @price, @quantity, @total, @receipt);
+            INSERT INTO position (name, payment, type, tax, unit, price, quantity, total, receipt) 
+            VALUES (@name, @payment, @type, @tax, @unit, @price, @quantity, @total, @receipt);
             """;
     }
 }
