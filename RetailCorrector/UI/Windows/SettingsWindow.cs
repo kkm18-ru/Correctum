@@ -107,11 +107,24 @@ namespace RetailCorrector.UI.Windows
             grid.AddColumn(GridUnitType.Star);
 
             grid.AddRow(GridUnitType.Auto);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Auto);
 
             grid.AddChild(CreateText("Максимальное время ожидания перезагрузки ККТ (в мс)"));
             var nb = new IntegerUpDown { Minimum = 1, Maximum = 10000 };
             nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.FptrWaitRebootTimeout));
             grid.AddChild(nb, 2);
+
+            grid.AddChild(CreateText("Транспортный порт Atol (EoU)"), y: 2);
+            var cb = new ComboBox
+            {
+                ItemsSource = EoU.GetAvailablePorts(),
+                Text = $"COM{EoU.CurrentPort}",
+                IsEditable = true,
+            };
+            cb.IsEnabled = cb.Items.Count > 0;
+            cb.SelectionChanged += (s, e) => EoU.CurrentPort = byte.Parse(((string)cb.SelectedValue)[3..]);
+            grid.AddChild(cb, 2, 2);
 
             return tab;
         }
