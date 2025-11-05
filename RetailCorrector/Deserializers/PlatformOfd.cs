@@ -1,13 +1,13 @@
 using System.Text.RegularExpressions;
-using Kraig.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 
 namespace RetailCorrector.Deserializers;
 
-[Singleton]
 internal sealed partial class PlatformOfd : IReceiptDeserializer
 {
+    private static PlatformOfd _instance = null!;
+    public static PlatformOfd Instance => _instance ??= new PlatformOfd();
     public string Name => "Платформа ОФД";
 
     public void Deserialize(string raw, ref Receipt receipt)

@@ -1,5 +1,4 @@
-﻿using Kraig.Attributes;
-using RetailCorrector.UI.Windows;
+﻿using RetailCorrector.UI.Windows;
 using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,9 +8,11 @@ using System.Windows.Media.Animation;
 
 namespace RetailCorrector.UI.Controls
 {
-    [Singleton]
     internal partial class TitleBar : Canvas
     {
+        private static TitleBar _instance = null!;
+        public static TitleBar Instance => _instance ??= new TitleBar();
+
         private TitleBar()
         {
             Height = 29;

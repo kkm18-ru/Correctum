@@ -2,8 +2,8 @@
 using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Interop;
-using Kraig.Attributes;
 
 namespace RetailCorrector.UI.Windows
 {
@@ -34,14 +34,11 @@ namespace RetailCorrector.UI.Windows
         private readonly CheckBox _chUseOperator;
         private readonly TextBox _tbOperatorName;
         private readonly TextBox _tbOperatorInn;
-        
-        private CancellationTokenSource? cts;
 
-        [NotifyChanged] private bool _useOperator;
-        [NotifyChanged] private string _operatorName = "";
-        [NotifyChanged] private string _operatorInn = "";
-        [NotifyChanged] private bool _isInternet;
-        [NotifyChanged] private string _httpAddress = "";
+        private readonly CheckBox _chIsInternet;
+        private readonly TextBox _tbSiteAddress;
+
+        private CancellationTokenSource? cts;
 
         public FptrWindow()
         {
@@ -116,35 +113,31 @@ namespace RetailCorrector.UI.Windows
             {
                 Content = "Авторизировать оператора?"
             };
-            _chUseOperator.SetBinding(CheckBox.IsCheckedProperty, nameof(UseOperator));
             grid.AddChild(_chUseOperator, 0, 8, 3);
-            
+            var bindUseOperator = new Binding(nameof(CheckBox.IsChecked)) { Source = _chUseOperator };
+
             grid.AddChild(CreateLabel("ФИО оператора"), y: 10);
 
             _tbOperatorName = new TextBox();
-            _tbOperatorName.SetBinding(TextBox.IsEnabledProperty, nameof(UseOperator));
-            _tbOperatorName.SetBinding(TextBox.TextProperty, nameof(OperatorName));
+            _tbOperatorName.SetBinding(TextBox.IsEnabledProperty, bindUseOperator);
             grid.AddChild(_tbOperatorName, 2, 10);
             
             grid.AddChild(CreateLabel("ИНН оператора"), y: 12);
 
             _tbOperatorInn = new TextBox();
-            _tbOperatorInn.SetBinding(TextBox.IsEnabledProperty, nameof(UseOperator));
-            _tbOperatorInn.SetBinding(TextBox.TextProperty, nameof(OperatorInn));
+            _tbOperatorInn.SetBinding(TextBox.IsEnabledProperty, bindUseOperator);
             grid.AddChild(_tbOperatorInn, 2, 12);
 
-            var check = new CheckBox
+            _chIsInternet = new CheckBox
             {
                 Content = "Применить рассчет для сети \"Интернет\""
             };
-            check.SetBinding(CheckBox.IsCheckedProperty, nameof(IsInternet));
-            grid.AddChild(check, y: 14, dx: 3);
+            grid.AddChild(_chIsInternet, y: 14, dx: 3);
 
             grid.AddChild(CreateLabel("Адрес сайта"), y: 16);
-            var input = new TextBox();
-            input.SetBinding(IsEnabledProperty, nameof(IsInternet));
-            input.SetBinding(TextBox.TextProperty, nameof(HttpAddress));
-            grid.AddChild(input, 2, 16);
+            _tbSiteAddress = new TextBox();
+            _tbSiteAddress.SetBinding(IsEnabledProperty, new Binding(nameof(CheckBox.IsChecked)) { Source = _chIsInternet });
+            grid.AddChild(_tbSiteAddress, 2, 16);
 
             _barProgress = CreateProgress();
             grid.AddChild(_barProgress, 0, 18, 3);
@@ -229,7 +222,7 @@ namespace RetailCorrector.UI.Windows
                     Cancel(null, null!);
                     token.ThrowIfCancellationRequested();
                 }
-                if (UseOperator && !FptrPresenter.LoginOperator(_driver, OperatorName, OperatorInn))
+                if ((_chUseOperator.IsChecked??false) && !FptrPresenter.LoginOperator(_driver, _tbOperatorName.Text, _tbOperatorInn.Text))
                 {
                     var code = FptrNative.libfptr_error_code(_driver);
                     MessageBox.Show("Не удалось зарегистрировать кассира", $"Произошла ошибка (Код: {code})", 
@@ -277,8 +270,8 @@ namespace RetailCorrector.UI.Windows
                 openArgs.Act = string.IsNullOrWhiteSpace(_inputAct.Text) ? " " : _inputAct.Text;
                 openArgs.Print = _cbPrint.SelectedIndex > 0;
                 openArgs.CorrType = _cbCorrType.SelectedIndex;
-                openArgs.IsInternetPayment = IsInternet;
-                openArgs.HttpAddress = HttpAddress;
+                openArgs.IsInternetPayment = _chIsInternet.IsChecked ?? false;
+                openArgs.HttpAddress = _tbSiteAddress.Text;
             });
             return FptrPresenter.OpenReceipt(_driver, receipt, openArgs, token) &&
                 receipt.Items.All(pos => FptrPresenter.AddPosition(_driver, pos, token)) &&

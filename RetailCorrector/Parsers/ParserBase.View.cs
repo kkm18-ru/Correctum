@@ -1,11 +1,11 @@
 ﻿using System.Windows.Controls;
-using Kraig;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Parsers
 {
     internal abstract class ParserView<TV, TP> : UserControl
         where TV : ParserView<TV, TP>, new()
-        where TP : ParserBase<TP, TV>, ISingleton<TP>
+        where TP : ParserBase<TP, TV>, ISingleton<TP>, new()
     {
         public TP Presenter => (TP)DataContext;
 

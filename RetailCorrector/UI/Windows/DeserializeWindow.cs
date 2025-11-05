@@ -1,17 +1,43 @@
-﻿using Kraig.Attributes;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
+using RetailCorrector.Deserializers;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using RetailCorrector.Deserializers;
 
 namespace RetailCorrector.UI.Windows
 {
-    internal partial class DeserializeWindow : Types.DialogWindow
+    internal partial class DeserializeWindow : Types.DialogWindow, INotifyPropertyChanged
     {
-        [NotifyChanged] private string _text = "";
-        [NotifyChanged] private IReceiptDeserializer _current; 
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                if (_text == value) return;
+                _text = value;
+                PropertyChanged?.Invoke(this, TextNotifier);
+            }
+        }
+        public IReceiptDeserializer Current
+        {
+            get => _current;
+            set
+            {
+                if (_current == value) return;
+                _current = value;
+                PropertyChanged?.Invoke(this, CurrentNotifier);
+            }
+        }
+
+        private string _text = "";
+        private IReceiptDeserializer _current; 
+
+        private static readonly PropertyChangedEventArgs TextNotifier = new(nameof(Text));
+        private static readonly PropertyChangedEventArgs CurrentNotifier = new(nameof(Current));
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public DeserializeWindow(string text)
         {

@@ -1,13 +1,14 @@
-﻿using Kraig.Attributes;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
 using Serilog;
 using System.Collections.ObjectModel;
 
 namespace RetailCorrector
 {
-    [Singleton]
     internal partial class Workspace
     {
+        private static Workspace _instance = null!;
+        public static Workspace Instance => _instance ??= new Workspace();
+
         public Guid Id { get; }
         public ObservableCollection<ParseInfo> ParserHistory { get; }
         public ObservableCollection<Receipt> Receipts { get; }

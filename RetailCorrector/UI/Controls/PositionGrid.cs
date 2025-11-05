@@ -1,5 +1,4 @@
-﻿using Kraig.Attributes;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,10 +6,12 @@ using System.Windows.Data;
 
 namespace RetailCorrector.UI.Controls
 {
-    [Singleton]
     internal partial class PositionGrid : BaseDataGrid
     {
         public ObservableCollection<DisplayPostion> Collection { get; } = [];
+
+        private static PositionGrid _instance = null!;
+        public static PositionGrid Instance => _instance ??= new PositionGrid();
 
         private PositionGrid() : base()
         {

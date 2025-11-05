@@ -1,5 +1,4 @@
-﻿using Kraig.Attributes;
-using Serilog;
+﻿using Serilog;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -7,9 +6,11 @@ using System.Windows.Media;
 
 namespace RetailCorrector;
 
-[Singleton]
 public partial class App : Application
 {
+    private static App _instance = null!;
+    public static App Instance => _instance ??= new App();
+
     private App()
     {
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;

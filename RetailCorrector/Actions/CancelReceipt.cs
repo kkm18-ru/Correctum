@@ -3,11 +3,9 @@ using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 using Serilog;
 using System.Windows;
-using Kraig.Attributes;
 
 namespace RetailCorrector.Actions
 {
-    [Singleton]
     internal partial class CancelReceipt : ActionBase<CancelReceipt>
     {
         public override string Name => "Генерация аннулирующих чеков";

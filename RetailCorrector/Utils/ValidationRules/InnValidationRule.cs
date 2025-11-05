@@ -1,12 +1,13 @@
-﻿using Kraig.Attributes;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Controls;
 
 namespace RetailCorrector.Utils.ValidationRules
 {
-    [Singleton]
     internal partial class InnValidationRule : ValidationRule
     {
+        private static InnValidationRule _instance = null!;
+        public static InnValidationRule Instance => _instance ??= new InnValidationRule();
+
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var text = (string)value;

@@ -1,12 +1,13 @@
-﻿using Kraig.Attributes;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Controls;
 
 namespace RetailCorrector.Utils.ValidationRules
 {
-    [Singleton]
     internal partial class DeviceIdValidationRule : ValidationRule
     {
+        private static DeviceIdValidationRule _instance = null!;
+        public static DeviceIdValidationRule Instance => _instance ??= new DeviceIdValidationRule();
+
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var text = (string)value;

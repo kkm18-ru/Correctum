@@ -72,7 +72,7 @@ namespace RetailCorrector.Exports
             {
                 ItemsSource = new[] { "Да", "Нет" },
             };
-            cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(Print)) { Source = this });
+            cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(PrintMode)) { Source = this });
             content.AddChild(cb, 2, 4);
 
             lbl = CreateLabel("Вид коррекции");
@@ -108,7 +108,7 @@ namespace RetailCorrector.Exports
             content.AddChild(CreateLabel("Адрес сайта"), y: 12);
             input = new TextBox();
             input.SetBinding(TextBox.IsEnabledProperty, new Binding(nameof(IsInternet)) { Source = this });
-            input.SetBinding(TextBox.TextProperty, new Binding(nameof(HttpAddress)) { Source = this });
+            input.SetBinding(TextBox.TextProperty, new Binding(nameof(SiteAddress)) { Source = this });
             content.AddChild(input, 2, 12);
 
             if (FiscalFormat == 2)

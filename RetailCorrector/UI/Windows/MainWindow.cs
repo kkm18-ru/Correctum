@@ -1,5 +1,4 @@
-﻿using Kraig.Attributes;
-using RetailCorrector.UI.Controls;
+﻿using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,9 +9,11 @@ using Xceed.Wpf.AvalonDock.Layout;
 
 namespace RetailCorrector.UI.Windows;
 
-[Singleton]
 public partial class MainWindow : Window
 {
+    private static MainWindow _instance = null!;
+    public static MainWindow Instance => _instance ??= new MainWindow();
+
     private MainWindow()
     {
         Title = "RetailCorrector";

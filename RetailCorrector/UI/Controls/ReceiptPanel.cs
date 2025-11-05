@@ -1,5 +1,4 @@
-﻿using Kraig.Attributes;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
 using Serilog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -10,7 +9,6 @@ using Xceed.Wpf.Toolkit;
 
 namespace RetailCorrector.UI.Controls
 {
-    [Singleton]
     internal partial class ReceiptPanel : DockPanel, INotifyPropertyChanged
     {
         private int _maxCount = 200;
@@ -63,6 +61,9 @@ namespace RetailCorrector.UI.Controls
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string property = "") =>
             PropertyChanged?.Invoke(this, new(property));
+
+        private static ReceiptPanel _instance = null!;
+        public static ReceiptPanel Instance => _instance ??= new ReceiptPanel();
 
         private ReceiptPanel()
         {

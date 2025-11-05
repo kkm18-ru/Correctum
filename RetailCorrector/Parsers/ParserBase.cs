@@ -1,13 +1,16 @@
-﻿using Kraig;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
 using RetailCorrector.UI.Windows;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Parsers
 {
-    internal abstract class ParserBase<TP, TV> : IParser
-        where TP : ParserBase<TP, TV>, ISingleton<TP>
+    internal abstract class ParserBase<TP, TV> : IParser, ISingleton<TP>
+        where TP : ParserBase<TP, TV>, ISingleton<TP>, new()
         where TV : ParserView<TV, TP>, new()
     {
+        private static TP _instance = null!;
+        public static TP Instance => _instance ??= new TP();
+
         public abstract string Name { get; }
         protected ParseInfo parseInfo;
         public abstract ParseInfo GenerateInfo();

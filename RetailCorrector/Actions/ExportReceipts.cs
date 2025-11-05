@@ -1,9 +1,7 @@
 ﻿using System.Windows;
-using Kraig.Attributes;
 
 namespace RetailCorrector.Actions
 {
-    [Singleton]
     internal partial class ExportReceipts : ActionBase<ExportReceipts, ExportReceipts.View>
     {
         public override string Name => "Экспорт чеков";

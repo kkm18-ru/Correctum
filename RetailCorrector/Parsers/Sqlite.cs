@@ -3,11 +3,9 @@ using Microsoft.Data.Sqlite;
 using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using System.Runtime.CompilerServices;
-using Kraig.Attributes;
 
 namespace RetailCorrector.Parsers
 {
-    [Singleton]
     internal partial class Sqlite : ParserBase<Sqlite, Sqlite.View>
     {
         public override string Name => "SQLite";

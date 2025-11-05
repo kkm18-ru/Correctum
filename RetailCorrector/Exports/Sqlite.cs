@@ -2,15 +2,16 @@
 using Microsoft.Data.Sqlite;
 using RetailCorrector.Utils;
 using System.IO;
-using Kraig.Attributes;
 
 namespace RetailCorrector.Exports
 {
-    [Singleton]
     internal partial class Sqlite : IExport
     {
         public string Name => "SQLite";
         public string? FileFilter => "*.sql|SQLite DataBase";
+
+        private static Sqlite _instance = null!;
+        public static Sqlite Instance => _instance ??= new Sqlite();
 
         public ValueTask Export(string? path)
         {
