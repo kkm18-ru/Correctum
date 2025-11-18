@@ -6,6 +6,7 @@ internal static class ModuleRegistry
 {
     public static ImmutableArray<Deserializers.IReceiptDeserializer> Deserializers = [
         RetailCorrector.Deserializers.PlatformOfd.Instance,
+        RetailCorrector.Deserializers.OfdRuJson.Instance,
     ];
     
     public static ImmutableArray<Exports.IExport> Exporters = [
