@@ -37,7 +37,7 @@ namespace RetailCorrector.Utils
             FptrNative.libfptr_set_param_double(handle, 65632, pos.Price / 100.0);
             FptrNative.libfptr_set_param_double(handle, 65633, pos.Quantity / 1000.0);
             FptrNative.libfptr_set_param_double(handle, 65634, pos.Cost / 100.0);
-            FptrNative.libfptr_set_param_int(handle, 65569, (uint)pos.TaxRate);
+            FptrNative.libfptr_set_param_int(handle, 65569, pos.TaxRate.ToAtol());
             FptrNative.libfptr_set_param_int(handle, 1212, (uint)pos.Type);
             FptrNative.libfptr_set_param_int(handle, 1214, (uint)pos.PayMethod);
             if(ffd == 120) 
