@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace RetailCorrector.Actions
 {
-    internal partial class ExportReceipts: INotifyPropertyChanged
+    internal partial class ExportReceipts : INotifyPropertyChanged
     {
         #region Свойства
         public IExport Exporter
