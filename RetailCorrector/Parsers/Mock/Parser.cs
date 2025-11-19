@@ -6,7 +6,7 @@ using Bogus;
 
 namespace RetailCorrector.Parsers
 {
-    internal partial class Mock: ParserBase<Mock, Mock.View>
+    internal partial class Mock : ParserBase<Mock, Mock.View>
     {
         public override string Name => "Mock [для ОТЛАДКИ]";
 

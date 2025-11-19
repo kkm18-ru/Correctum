@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace RetailCorrector.Parsers;
 
-internal partial class Saby: INotifyPropertyChanged
+internal partial class Saby : INotifyPropertyChanged
 {
     public string Login
     {

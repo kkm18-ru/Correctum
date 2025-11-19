@@ -6,7 +6,7 @@ using System.Windows.Controls;
 
 namespace RetailCorrector.Parsers
 {
-    internal partial class FxPOS 
+    internal partial class FxPOS
     {
         internal class View : ParserView<View, FxPOS>
         {

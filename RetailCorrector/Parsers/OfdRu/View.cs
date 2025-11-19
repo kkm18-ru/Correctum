@@ -8,7 +8,8 @@ using Xceed.Wpf.Toolkit;
 
 namespace RetailCorrector.Parsers
 {
-    internal partial class OfdRu {
+    internal partial class OfdRu
+    {
         internal class View : ParserView<View, OfdRu>
         {
             public View()

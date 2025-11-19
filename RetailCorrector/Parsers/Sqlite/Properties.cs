@@ -2,7 +2,7 @@
 
 namespace RetailCorrector.Parsers
 {
-    internal partial class Sqlite: INotifyPropertyChanged
+    internal partial class Sqlite : INotifyPropertyChanged
     {
         public string Path
         {

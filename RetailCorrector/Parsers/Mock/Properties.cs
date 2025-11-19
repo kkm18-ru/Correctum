@@ -2,7 +2,7 @@
 
 namespace RetailCorrector.Parsers
 {
-    internal partial class Mock: INotifyPropertyChanged
+    internal partial class Mock : INotifyPropertyChanged
     {
         public int MinCountDocs
         {
