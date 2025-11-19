@@ -208,7 +208,7 @@ namespace RetailCorrector.Utils.Integrations.Fptr
         public static bool WaitReboot(nint handle)
         {
             const int Delay = 100;
-            var countInteration = Configuration.Instance.FptrWaitRebootTimeout / Delay;
+            var countInteration = Configuration.Instance.Fptr.WaitRebootTimeout / Delay;
             for (var _ = 0; _ < countInteration; _++)
             {
                 FptrNative.libfptr_set_param_int(handle, 65587, 16); // get serial number

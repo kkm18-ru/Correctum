@@ -47,11 +47,11 @@ namespace RetailCorrector.Parsers
 
         private async Task<JsonArray?> GetContent(HttpClient http, DateTime day, CancellationToken cancellationToken)
         {
-            var leftTries = Configuration.Instance.HttpTriesCount;
+            var leftTries = Configuration.Instance.HttpClient.TriesCount;
             do
             {
                 leftTries--;
-                await Task.Delay(Configuration.Instance.HttpRequestDelay, cancellationToken);
+                await Task.Delay(Configuration.Instance.HttpClient.RequestDelay, cancellationToken);
                 using var resp = await http.GetAsync(Url(day), cancellationToken);
                 if (!resp.IsSuccessStatusCode) continue;
                 var content = await resp.Content.ReadAsStringAsync(cancellationToken);

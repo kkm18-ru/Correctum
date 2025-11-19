@@ -24,11 +24,11 @@ namespace RetailCorrector.Exporters
             if (FiscalFormat == 2 && OldCorrReason == 1)
                 return Missing105Export(path);
             var receipts = Workspace.Instance.Receipts;
-            var n = Math.Ceiling((double)receipts.Count / Configuration.Instance.FptrExportDocsPerFile);
+            var n = Math.Ceiling((double)receipts.Count / Configuration.Instance.Exporters.Fptr.DocsPerFile);
             for (var i = 0; i < n; i++)
             {
-                var chunk = receipts.Skip(i * Configuration.Instance.FptrExportDocsPerFile)
-                    .Take(Configuration.Instance.FptrExportDocsPerFile);
+                var chunk = receipts.Skip(i * Configuration.Instance.Exporters.Fptr.DocsPerFile)
+                    .Take(Configuration.Instance.Exporters.Fptr.DocsPerFile);
                 using var fs = new FileStream(Path.Combine(path, $"{i + 1}.txt"), FileMode.Create, FileAccess.ReadWrite, FileShare.None);
                 using var tf = new StreamWriter(fs);
                 foreach (var receipt in chunk)

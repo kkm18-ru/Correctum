@@ -18,11 +18,11 @@ namespace RetailCorrector.Parsers
             using var conn = new SqliteConnection($"Data Source={Path};Mode=ReadOnly");
             var count = await conn.ExecuteScalarAsync<int>(COUNT_RECEIPTS);
             progress.Report(-count);
-            for(var i = 0; i < count; i += Configuration.Instance.SqlLimit)
+            for(var i = 0; i < count; i += Configuration.Instance.Sqlite.Limit)
             {
                 progress.Report(i);
                 cancellationToken.ThrowIfCancellationRequested();
-                var docs = (await Task.Run(() => conn.QueryAsync<Document>(GET_RECEIPTS, new { limit = Configuration.Instance.SqlLimit, offset = i }))).ToArray();
+                var docs = (await Task.Run(() => conn.QueryAsync<Document>(GET_RECEIPTS, new { limit = Configuration.Instance.Sqlite.Limit, offset = i }))).ToArray();
                 for(var j = 0; j < docs.Length; j++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();

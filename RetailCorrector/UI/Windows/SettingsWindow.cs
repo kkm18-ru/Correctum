@@ -38,7 +38,7 @@ namespace RetailCorrector.UI.Windows
 
             grid.AddChild(CreateText("Количество документов в запросе"));
             var nb = new IntegerUpDown { Minimum = 1 };
-            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.SqlLimit));
+            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.Sqlite.Limit));
             grid.AddChild(nb, 2);
 
             return tab;
@@ -62,17 +62,17 @@ namespace RetailCorrector.UI.Windows
 
             grid.AddChild(CreateText("Количество документов в ответе"));
             var nb = new IntegerUpDown { Minimum = 1 };
-            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.HttpPageSize));
+            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.HttpClient.PageSize));
             grid.AddChild(nb, 2);
 
             grid.AddChild(CreateText("Интервал между HTTP-запросами"), y: 2);
             nb = new IntegerUpDown { Minimum = 1 };
-            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.HttpRequestDelay));
+            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.HttpClient.RequestDelay));
             grid.AddChild(nb, 2, 2);
 
             grid.AddChild(CreateText("Количество попыток запроса"), y: 4);
             nb = new IntegerUpDown { Minimum = 1 };
-            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.HttpTriesCount));
+            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.HttpClient.TriesCount));
             grid.AddChild(nb, 2, 4);
 
             return tab;
@@ -92,7 +92,7 @@ namespace RetailCorrector.UI.Windows
 
             grid.AddChild(CreateText("Количество документов в скрипте"));
             var nb = new IntegerUpDown { Minimum = 1, Maximum = 150 };
-            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.FptrExportDocsPerFile));
+            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.Exporters.Fptr.DocsPerFile));
             grid.AddChild(nb, 2);
 
             return tab;
@@ -114,7 +114,7 @@ namespace RetailCorrector.UI.Windows
 
             grid.AddChild(CreateText("Максимальное время ожидания перезагрузки ККТ (в мс)"));
             var nb = new IntegerUpDown { Minimum = 1, Maximum = 10000 };
-            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.FptrWaitRebootTimeout));
+            nb.SetBinding(IntegerUpDown.ValueProperty, nameof(Configuration.Fptr.WaitRebootTimeout));
             grid.AddChild(nb, 2);
 
             grid.AddChild(CreateText("Транспортный порт Atol (EoU)"), y: 2);
