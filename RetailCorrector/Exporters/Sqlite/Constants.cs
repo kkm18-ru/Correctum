@@ -1,4 +1,4 @@
-﻿namespace RetailCorrector.Exports
+﻿namespace RetailCorrector.Exporters
 {
     internal partial class Sqlite
     {

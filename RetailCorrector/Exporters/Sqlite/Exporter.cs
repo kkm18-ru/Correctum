@@ -3,9 +3,9 @@ using Microsoft.Data.Sqlite;
 using RetailCorrector.Utils;
 using System.IO;
 
-namespace RetailCorrector.Exports
+namespace RetailCorrector.Exporters
 {
-    internal partial class Sqlite : IExport
+    internal partial class Sqlite : IExporter
     {
         public string Name => "SQLite";
         public string? FileFilter => "*.sql|SQLite DataBase";

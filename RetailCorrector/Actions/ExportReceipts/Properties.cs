@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Exports;
+﻿using RetailCorrector.Exporters;
 using RetailCorrector.Utils;
 using System.ComponentModel;
 
@@ -7,7 +7,7 @@ namespace RetailCorrector.Actions
     internal partial class ExportReceipts : INotifyPropertyChanged
     {
         #region Свойства
-        public IExport Exporter
+        public IExporter Exporter
         {
             get => _exporter;
             set
@@ -30,7 +30,7 @@ namespace RetailCorrector.Actions
         #endregion
 
         #region Переменные
-        private IExport _exporter = ModuleRegistry.Exporters[0];
+        private IExporter _exporter = ModuleRegistry.Exporters[0];
         private string _path = "";
         #endregion
 

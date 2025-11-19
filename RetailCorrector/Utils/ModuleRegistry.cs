@@ -9,9 +9,9 @@ internal static class ModuleRegistry
         RetailCorrector.Deserializers.OfdRuJson.Instance,
     ];
     
-    public static ImmutableArray<Exports.IExport> Exporters = [
-        Exports.Fptr.Instance,
-        Exports.Sqlite.Instance,
+    public static ImmutableArray<Exporters.IExporter> Exporters = [
+        RetailCorrector.Exporters.Fptr.Instance,
+        RetailCorrector.Exporters.Sqlite.Instance,
     ];
     
     public static ImmutableArray<Actions.IAction> Actions = [

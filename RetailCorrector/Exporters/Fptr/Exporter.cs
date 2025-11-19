@@ -3,9 +3,9 @@ using RetailCorrector.Enums;
 using RetailCorrector.Utils;
 using System.IO;
 
-namespace RetailCorrector.Exports
+namespace RetailCorrector.Exporters
 {
-    internal partial class Fptr : IExport
+    internal partial class Fptr : IExporter
     {
         public string Name => "Fptr-скрипт";
         public string? FileFilter => null;

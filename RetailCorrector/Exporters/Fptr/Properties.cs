@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace RetailCorrector.Exports
+namespace RetailCorrector.Exporters
 {
     internal partial class Fptr : INotifyPropertyChanged
     {

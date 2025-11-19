@@ -1,8 +1,8 @@
 ﻿using System.Windows.Controls;
 
-namespace RetailCorrector.Exports
+namespace RetailCorrector.Exporters
 {
-    internal interface IExport
+    internal interface IExporter
     {
         string Name { get; }
         string? FileFilter { get; }

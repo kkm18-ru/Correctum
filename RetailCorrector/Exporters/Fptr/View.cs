@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace RetailCorrector.Exports
+namespace RetailCorrector.Exporters
 {
     internal partial class Fptr
     {
