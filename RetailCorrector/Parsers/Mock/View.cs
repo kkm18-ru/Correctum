@@ -1,9 +1,9 @@
-﻿using RetailCorrector.Utils;
-using Xceed.Wpf.Toolkit;
+﻿using Xceed.Wpf.Toolkit;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Data;
 using System.Globalization;
+using RetailCorrector.Utils.Extensions;
 
 namespace RetailCorrector.Parsers
 {

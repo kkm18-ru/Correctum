@@ -1,4 +1,6 @@
 ﻿using RetailCorrector.Utils;
+using RetailCorrector.Utils.Extensions;
+using RetailCorrector.Utils.Integrations;
 using System.Windows;
 using System.Windows.Controls;
 using Xceed.Wpf.Toolkit;

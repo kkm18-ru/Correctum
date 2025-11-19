@@ -4,7 +4,7 @@ using System.ServiceProcess;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace RetailCorrector.Utils
+namespace RetailCorrector.Utils.Integrations
 {
     internal static class EoU
     {

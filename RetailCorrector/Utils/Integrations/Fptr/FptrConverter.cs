@@ -1,6 +1,6 @@
 ﻿using RetailCorrector.Enums;
 
-namespace RetailCorrector.Utils
+namespace RetailCorrector.Utils.Integrations.Fptr
 {
     internal static class FptrConverter
     {

@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
-using RetailCorrector.Utils;
+using RetailCorrector.Utils.Helpers;
 using System.IO;
 
 namespace RetailCorrector.Exporters

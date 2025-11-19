@@ -1,6 +1,6 @@
 ﻿using RetailCorrector.Parsers;
 using RetailCorrector.UI.Controls;
-using RetailCorrector.Utils;
+using RetailCorrector.Utils.Extensions;
 using System.Windows;
 using System.Windows.Controls;
 

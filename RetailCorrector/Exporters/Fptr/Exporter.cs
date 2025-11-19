@@ -1,6 +1,7 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
+using RetailCorrector.Utils.Helpers;
 using System.IO;
 
 namespace RetailCorrector.Exporters

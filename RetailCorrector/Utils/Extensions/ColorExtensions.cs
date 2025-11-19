@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace RetailCorrector.Utils
+namespace RetailCorrector.Utils.Extensions
 {
     internal static class ColorExtensions
     {

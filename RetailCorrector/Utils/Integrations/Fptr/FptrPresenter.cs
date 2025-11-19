@@ -5,7 +5,7 @@ using RetailCorrector.Enums;
 using System.IO;
 using System.Text;
 
-namespace RetailCorrector.Utils
+namespace RetailCorrector.Utils.Integrations.Fptr
 {
     internal static class FptrPresenter
     {

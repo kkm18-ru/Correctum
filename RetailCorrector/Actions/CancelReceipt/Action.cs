@@ -1,6 +1,6 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.UI.Controls;
-using RetailCorrector.Utils;
+using RetailCorrector.Utils.Helpers;
 using Serilog;
 using System.Windows;
 

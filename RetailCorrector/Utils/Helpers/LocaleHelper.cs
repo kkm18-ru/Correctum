@@ -1,4 +1,4 @@
-﻿namespace RetailCorrector.Utils
+﻿namespace RetailCorrector.Utils.Helpers
 {
     internal static class LocaleHelper
     {

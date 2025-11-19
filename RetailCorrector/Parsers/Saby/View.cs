@@ -1,5 +1,6 @@
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
+using RetailCorrector.Utils.Extensions;
 using RetailCorrector.Utils.ValidationRules;
 using System.Globalization;
 using System.Windows;

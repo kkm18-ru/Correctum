@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace RetailCorrector.Utils
+namespace RetailCorrector.Utils.Integrations.Fptr
 {
     internal static partial class FptrNative
     {

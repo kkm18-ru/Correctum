@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.Data;
-using RetailCorrector.Utils;
+using RetailCorrector.Utils.Extensions;
+using RetailCorrector.Utils.Integrations.Fptr;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;

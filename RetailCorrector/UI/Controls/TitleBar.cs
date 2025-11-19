@@ -1,5 +1,5 @@
 ﻿using RetailCorrector.UI.Windows;
-using RetailCorrector.Utils;
+using RetailCorrector.Utils.Extensions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;

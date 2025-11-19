@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace RetailCorrector.Utils
+namespace RetailCorrector.Utils.Helpers
 {
     internal static class IOHelper
     {

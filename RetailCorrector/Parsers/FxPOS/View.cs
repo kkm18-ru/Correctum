@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 using RetailCorrector.UI.Windows;
-using RetailCorrector.Utils;
+using RetailCorrector.Utils.Extensions;
 using System.Windows;
 using System.Windows.Controls;
 

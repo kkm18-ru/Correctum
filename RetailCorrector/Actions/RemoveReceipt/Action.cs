@@ -1,5 +1,5 @@
 ﻿using RetailCorrector.UI.Controls;
-using RetailCorrector.Utils;
+using RetailCorrector.Utils.Helpers;
 
 namespace RetailCorrector.Actions
 {

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace RetailCorrector.Utils
+namespace RetailCorrector.Utils.Extensions
 {
     internal static class GridExtensions
     {
