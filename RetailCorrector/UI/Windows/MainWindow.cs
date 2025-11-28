@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
+using RetailCorrector.Utils.Integrations;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -72,6 +73,7 @@ public partial class MainWindow : Window
     protected override void OnClosed(EventArgs e)
     {
         base.OnClosed(e);
+        FptrHandle.FreeLibrary();
         Configuration.Instance.Save();
     }
 }

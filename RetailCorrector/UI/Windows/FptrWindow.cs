@@ -1,10 +1,9 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.Utils.Extensions;
-using RetailCorrector.Utils.Integrations.Fptr;
+using RetailCorrector.Utils.Integrations;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Interop;
 
 namespace RetailCorrector.UI.Windows
 {
@@ -22,8 +21,7 @@ namespace RetailCorrector.UI.Windows
         }
 
         private int _progressValue;
-        private nint _driver;
-        private readonly nint _library;
+        private readonly FptrHandle handle;
         private readonly TextBlock _txtProgress;
         private readonly ProgressBar _barProgress;
         private readonly Button _btnStart;
@@ -45,9 +43,7 @@ namespace RetailCorrector.UI.Windows
         {
             DataContext = this;
             SizeToContent = SizeToContent.WidthAndHeight;
-            _library = FptrPresenter.LoadLibrary(FptrPresenter.GetLocationDriver());
-            if (FptrNative.libfptr_create(out _driver) != 0)
-                throw new Exception("Не удалось создать экземпляр драйвера");
+            handle = new FptrHandle();
             var grid = new Grid
             {
                 Margin = new Thickness(5)
@@ -159,8 +155,7 @@ namespace RetailCorrector.UI.Windows
             {
                 Content = "  Настройка драйвера  "
             };
-            btn.Click += (_, _) => FptrNative.libfptr_show_properties(_driver, 0, 
-                new WindowInteropHelper(MainWindow.Instance).EnsureHandle());
+            btn.Click += (_, _) => handle.ShowProperties(this);
             return btn;
         }
 
@@ -214,19 +209,17 @@ namespace RetailCorrector.UI.Windows
         {
             try
             {
-                FptrNative.libfptr_open(_driver);
-                if (!FptrPresenter.SilentReboot(_driver) || !FptrPresenter.WaitReboot(_driver))
+                handle.Connect();
+                if (!handle.Reboot(true) || !handle.WaitReboot())
                 {
-                    var code = FptrNative.libfptr_error_code(_driver);
-                    MessageBox.Show("Не удалось перезагрузить ККТ", $"Произошла ошибка (Код: {code})", 
+                    MessageBox.Show("Не удалось перезагрузить ККТ", $"Произошла ошибка (Код: {handle.ErrorCode})", 
                         MessageBoxButton.OK, MessageBoxImage.Hand);
                     Cancel(null, null!);
                     token.ThrowIfCancellationRequested();
                 }
-                if ((_chUseOperator.IsChecked??false) && !FptrPresenter.LoginOperator(_driver, _tbOperatorName.Text, _tbOperatorInn.Text))
+                if ((_chUseOperator.IsChecked??false) && !handle.LoginOperator(_tbOperatorName.Text, _tbOperatorInn.Text))
                 {
-                    var code = FptrNative.libfptr_error_code(_driver);
-                    MessageBox.Show("Не удалось зарегистрировать кассира", $"Произошла ошибка (Код: {code})", 
+                    MessageBox.Show("Не удалось зарегистрировать кассира", $"Произошла ошибка (Код: {handle.ErrorCode})", 
                         MessageBoxButton.OK, MessageBoxImage.Hand);
                     Cancel(null, null!);
                     token.ThrowIfCancellationRequested();
@@ -242,16 +235,16 @@ namespace RetailCorrector.UI.Windows
                 while(ProgressValue < @ref.Count)
                 {
                     token.ThrowIfCancellationRequested();
-                    if (ProcessingSession() && ProcessingReceipt(@ref[ProgressValue], token))
+                    if (handle.ProcessSession() && ProcessingReceipt(@ref[ProgressValue], token))
                         ProgressValue++;
-                    else FptrPresenter.CancelReceipt(_driver);
+                    else handle.CancelReceipt();
                 }
                 Cancel(null, null!);
             }
             catch (OperationCanceledException)
             {
-                FptrNative.libfptr_cancel_receipt(_driver); 
-                FptrNative.libfptr_close(_driver);
+                handle.CancelReceipt();
+                handle.Disconnect();
             }
         }
 
@@ -265,7 +258,8 @@ namespace RetailCorrector.UI.Windows
 
         private bool ProcessingReceipt(Receipt receipt, CancellationToken token)
         {
-            FptrPresenter.OpenReceiptArgs openArgs = new();
+            token.ThrowIfCancellationRequested();
+            OpenReceiptArgs openArgs = new();
             Dispatcher.Invoke(() =>
             {
                 openArgs.Act = string.IsNullOrWhiteSpace(_inputAct.Text) ? " " : _inputAct.Text;
@@ -274,39 +268,24 @@ namespace RetailCorrector.UI.Windows
                 openArgs.IsInternetPayment = _chIsInternet.IsChecked ?? false;
                 openArgs.HttpAddress = _tbSiteAddress.Text;
             });
-            return FptrPresenter.OpenReceipt(_driver, receipt, openArgs, token) &&
-                receipt.Items.All(pos => FptrPresenter.AddPosition(_driver, pos, token)) &&
-                FptrPresenter.TotalReceipt(_driver, receipt.TotalSum, token) &&
-                FptrPresenter.Payment(_driver, receipt.Payment, token) &&
-                0 == FptrNative.libfptr_close_receipt(_driver);
-        }
-
-        private bool ProcessingSession()
-        {
-            if (FptrPresenter.GetSessionState(_driver) is null) return false;
-            if (FptrPresenter.GetSessionState(_driver) == 2)
-            {
-                FptrNative.libfptr_set_param_int(_driver, 65546, 0);
-                if (0 != FptrNative.libfptr_report(_driver)) return false;
-            }
-
-            if (FptrPresenter.GetSessionState(_driver) != 0) return true;
-            return 0 == FptrNative.libfptr_open_shift(_driver);
+            return handle.OpenReceipt(receipt, openArgs) &&
+                receipt.Items.All(handle.AddPosition) &&
+                handle.SetTotal(receipt.TotalSum / 100.0) &&
+                handle.Payment(receipt.Payment) &&
+                handle.CloseReceipt();
         }
 
         private bool MissingUnitFor120(IEnumerable<Receipt> @ref) =>
-            FptrPresenter.GetFFD(_driver) == 120 && @ref.SelectMany(r => r.Items).Any(p => p.MeasureUnit is null);
+            handle.DocFormat == 120 && @ref.SelectMany(r => r.Items).Any(p => p.MeasureUnit is null);
 
         protected override void OnClosed(EventArgs e)
         {
-            if (_driver != 0)
+            if (!handle.IsInvalid)
             {
-                FptrNative.libfptr_cancel_receipt(_driver);
-                FptrNative.libfptr_close(_driver);
-                FptrNative.libfptr_destroy(out _driver);
+                handle.CancelReceipt();
+                handle.Disconnect();
+                handle.Dispose();
             }
-            if(_library != 0)
-                FptrNative.FreeLibrary(_library);
         }
     }
 }
