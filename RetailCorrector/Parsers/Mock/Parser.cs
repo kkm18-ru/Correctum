@@ -64,7 +64,8 @@ namespace RetailCorrector.Parsers
                     Type = faker.Random.Enum<Operation>(),
                     Payment = payment,
                     TotalSum = sum,
-                    ParseId = parseInfo.Id
+                    ParseId = parseInfo.Id,
+                    TaxationSystem = faker.Random.Enum<TaxationSystem>()
                 };
             }
         }

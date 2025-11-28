@@ -17,6 +17,7 @@ namespace RetailCorrector.UI.Controls
             AddColumn("Дата", "Date", 121);
             AddColumn("ФПД", "Sign", 93);
             AddColumn("Операция", "Type", 114);
+            AddColumn("СНО", "TaxationSystem", 158);
             AddColumn("Налично", "Cash", 158);
             AddColumn("Безналично", "eCash", 158);
             AddColumn("Предоплата", "PrePay", 158);

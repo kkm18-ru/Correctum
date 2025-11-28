@@ -23,6 +23,16 @@ namespace RetailCorrector.Data
         public string PostPay { get; } = $"{(origin.Payment.Post * 0.01):F2}";
         public string OtherPay { get; } = $"{(origin.Payment.Provision * 0.01):F2}";
         public string Total { get; } = $"{(origin.TotalSum * 0.01):F2}";
+        public string TaxationSystem { get; } = origin.TaxationSystem switch
+        {
+            Enums.TaxationSystem.OSN => "ОСН",
+            Enums.TaxationSystem.USNIncome => "УСН доход",
+            Enums.TaxationSystem.USNIncomeExpenditure => "УСН доход-расход",
+            Enums.TaxationSystem.ENVD => "ЕНВД",
+            Enums.TaxationSystem.ESN => "ЕСН",
+            Enums.TaxationSystem.Patent => "Патент",
+            _ => "???"
+        };
 
         public Brush Background { get; } = origin.IsReadOnly switch
         {

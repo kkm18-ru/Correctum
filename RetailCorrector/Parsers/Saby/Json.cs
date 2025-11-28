@@ -35,6 +35,7 @@ internal partial class Saby
         Payment = ToPayment(node),
         Items = [.. node["items"]!.AsArray().Select(ToPosition)],
         TotalSum = node["totalSum"]!.GetValue<ulong>(),
+        TaxationSystem = (TaxationSystem)node["appliedTaxationType"]!.GetValue<int>(),
         Created = DateTimeOffset.FromUnixTimeSeconds(node["dateTime"]!.GetValue<long>()).DateTime
     };
 }

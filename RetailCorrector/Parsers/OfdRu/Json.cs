@@ -17,7 +17,8 @@ namespace RetailCorrector.Parsers
                 TotalSum = node["TotalSumm"]!.GetValue<uint>(),
                 Payment = ParsePayment(node),
                 Items = new Position[items.Count],
-                Type = ToOperation(node["OperationType"]!.GetValue<string>())
+                Type = ToOperation(node["OperationType"]!.GetValue<string>()),
+                TaxationSystem = (TaxationSystem)node["TaxationType"]!.GetValue<int>()
             };
             for (var i = 0; i < items.Count; i++)
                 receipt.Items[i] = ParsePosition(items[i]!);

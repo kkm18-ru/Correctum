@@ -104,6 +104,7 @@ namespace RetailCorrector.Utils.Integrations.Fptr
             var opcode = GetOperation(handle, doc.Type);
             if (opcode is null) return false;
             FptrNative.libfptr_set_param_int(handle, 65545, (uint)opcode);
+            FptrNative.libfptr_set_param_int(handle, 1055, (uint)doc.TaxationSystem);
             FptrNative.libfptr_set_param_bool(handle, 65572, args.Print);
 
             if (args.IsInternetPayment)
