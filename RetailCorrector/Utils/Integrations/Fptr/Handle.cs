@@ -16,8 +16,9 @@ namespace RetailCorrector.Utils.Integrations
 
         static FptrHandle()
         {
-            var dllPath = Path.Combine((string)Registry.GetValue(regeditKeyName, "INSTALL_DIR", "")!, "bin", "fptr10.dll");
+            var dllPath = (string)Registry.GetValue(regeditKeyName, "INSTALL_DIR", "")!;
             if (dllPath == "") throw new ArgumentNullException(null, "Не найден путь к драйверу ККТ Atol");
+            dllPath = Path.Combine(dllPath, "bin", "fptr10.dll");
             hLibrary = NativeLibrary.Load(dllPath);
 
             createHandle = GetDelegateOfLib<HandleManagementDelegate>("libfptr_create");
