@@ -158,7 +158,8 @@ internal sealed class FptrWindow : Types.DialogWindow
             while(context.CurrentProgress < @ref.Count)
             {
                 token.ThrowIfCancellationRequested();
-                if (handle.ProcessSession() && ProcessingReceipt(@ref[context.CurrentProgress], token))
+                if (handle.ProcessSession(!((FptrWindowDataContext)data).Print) && 
+                    ProcessingReceipt(@ref[context.CurrentProgress], token))
                     context.CurrentProgress++;
                 else handle.CancelReceipt();
             }
