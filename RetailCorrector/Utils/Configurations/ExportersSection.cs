@@ -2,6 +2,6 @@
 {
     internal sealed class ExportersSection
     {
-        public Exporters.FptrSection Fptr { get; set; }
+        public Exporters.FptrSection Fptr { get; init; } = new();
     }
 }
