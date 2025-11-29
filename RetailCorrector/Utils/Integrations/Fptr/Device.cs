@@ -69,7 +69,7 @@ namespace RetailCorrector.Utils.Integrations
         public bool WaitReboot()
         {
             const int Delay = 100;
-            var countInteration = Configuration.Instance.FptrWaitRebootTimeout / Delay;
+            var countInteration = Configuration.Instance.Fptr.WaitRebootTimeout / Delay;
             for (var _ = 0; _ < countInteration; _++)
             {
                 SetInteger(65587, 16); // get serial number
