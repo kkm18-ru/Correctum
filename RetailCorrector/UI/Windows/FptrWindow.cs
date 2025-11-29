@@ -1,291 +1,433 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.Utils.Extensions;
 using RetailCorrector.Utils.Integrations;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace RetailCorrector.UI.Windows
+namespace RetailCorrector.UI.Windows;
+
+internal sealed class FptrWindow : Types.DialogWindow
 {
-    internal partial class FptrWindow : Types.DialogWindow
+    private readonly FptrHandle handle;
+    private readonly object data;
+
+    private CancellationTokenSource? cts;
+
+    public FptrWindow()
     {
-        public int ProgressValue
+        DataContext = data = new FptrWindowDataContext();
+        SizeToContent = SizeToContent.WidthAndHeight;
+        handle = new FptrHandle();
+        var grid = new Grid
         {
-            get => _progressValue;
-            set
-            {
-                if (_progressValue == value) return;                
-                Dispatcher.Invoke(() =>_barProgress.Value = _progressValue = value);
-                Dispatcher.Invoke(() =>_txtProgress.Text = $"{_barProgress.Value} / {_barProgress.Maximum}");
-            }
-        }
-
-        private int _progressValue;
-        private readonly FptrHandle handle;
-        private readonly TextBlock _txtProgress;
-        private readonly ProgressBar _barProgress;
-        private readonly Button _btnStart;
-        private readonly Button _btnCancel;
-        private readonly TextBox _inputAct;
-        private readonly ComboBox _cbCorrType;
-        private readonly ComboBox _cbPrint;
-
-        private readonly CheckBox _chUseOperator;
-        private readonly TextBox _tbOperatorName;
-        private readonly TextBox _tbOperatorInn;
-
-        private readonly CheckBox _chIsInternet;
-        private readonly TextBox _tbSiteAddress;
-
-        private CancellationTokenSource? cts;
-
-        public FptrWindow()
-        {
-            DataContext = this;
-            SizeToContent = SizeToContent.WidthAndHeight;
-            handle = new FptrHandle();
-            var grid = new Grid
-            {
-                Margin = new Thickness(5)
-            };
-
-            grid.AddColumn(GridUnitType.Pixel, 100);
-            grid.AddColumn(GridUnitType.Pixel, 5);
-            grid.AddColumn(GridUnitType.Pixel, 150);
-
-            grid.AddRow(GridUnitType.Pixel, 22);
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Pixel, 22);
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Pixel, 22);
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Pixel, 22);
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Pixel, 22);
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Pixel, 22);
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Pixel, 22);
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Auto);
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Auto);
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Pixel, 22);
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Pixel, 22);
-
-            grid.AddChild(CreateConfigurationButton(), dx: 3);
-            
-            grid.AddChild(CreateLabel("Печатать ли чек"), y: 2);
-            _cbPrint = new ComboBox
-            {
-                ItemsSource = new[] { "Да", "Нет" },
-                SelectedIndex = 0
-            };
-            grid.AddChild(_cbPrint, 2, 2);
-            
-            grid.AddChild(CreateLabel("Вид коррекции"), y: 4);
-            _cbCorrType = new ComboBox
-            {
-                ItemsSource = new[] { "Самостоятельная", "По предписанию" },
-                SelectedIndex = 0
-            };
-            grid.AddChild(_cbCorrType, 2, 4);
-
-            var lbl = CreateLabel("Номер акта");
-            lbl.ToolTip = new ToolTip
-            {
-                Content = """
-                          Данный параметр нужно использовать только в двух случаях:
-                          1) Коррекция выполняется по требованию ФНС
-                          2) Коррекция выполняется на кассе с ФФД 1.05, так как чек ранее не был сформирован 
-                          """
-            }; 
-            grid.AddChild(lbl, y: 6);
-            _inputAct = new TextBox();
-            grid.AddChild(_inputAct, 2, 6);
-
-            _chUseOperator = new CheckBox
-            {
-                Content = "Авторизировать оператора?"
-            };
-            grid.AddChild(_chUseOperator, 0, 8, 3);
-            var bindUseOperator = new Binding(nameof(CheckBox.IsChecked)) { Source = _chUseOperator };
-
-            grid.AddChild(CreateLabel("ФИО оператора"), y: 10);
-
-            _tbOperatorName = new TextBox();
-            _tbOperatorName.SetBinding(TextBox.IsEnabledProperty, bindUseOperator);
-            grid.AddChild(_tbOperatorName, 2, 10);
-            
-            grid.AddChild(CreateLabel("ИНН оператора"), y: 12);
-
-            _tbOperatorInn = new TextBox();
-            _tbOperatorInn.SetBinding(TextBox.IsEnabledProperty, bindUseOperator);
-            grid.AddChild(_tbOperatorInn, 2, 12);
-
-            _chIsInternet = new CheckBox
-            {
-                Content = "Применить рассчет для сети \"Интернет\""
-            };
-            grid.AddChild(_chIsInternet, y: 14, dx: 3);
-
-            grid.AddChild(CreateLabel("Адрес сайта"), y: 16);
-            _tbSiteAddress = new TextBox();
-            _tbSiteAddress.SetBinding(IsEnabledProperty, new Binding(nameof(CheckBox.IsChecked)) { Source = _chIsInternet });
-            grid.AddChild(_tbSiteAddress, 2, 16);
-
-            _barProgress = CreateProgress();
-            grid.AddChild(_barProgress, 0, 18, 3);
-            _txtProgress = CreateProgressLabel();
-            grid.AddChild(_txtProgress, 0, 18, 3);
-
-            _btnStart = CreateStart();
-            grid.AddChild(_btnStart, y: 20);
-            _btnCancel = CreateCancel();
-            grid.AddChild(_btnCancel, 2, 20);
-
-            Content = grid;
-        }
-
-        private Button CreateConfigurationButton()
-        {
-            var btn = new Button
-            {
-                Content = "  Настройка драйвера  "
-            };
-            btn.Click += (_, _) => handle.ShowProperties(this);
-            return btn;
-        }
-
-        private static ProgressBar CreateProgress() => new()
-        {
-            Value = 0, 
-            Maximum = Math.Max(Workspace.Instance.Receipts.Count, 1)
+            Margin = new Thickness(5)
         };
 
-        private TextBlock CreateProgressLabel() => new()
-        {
-            VerticalAlignment = VerticalAlignment.Center,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            Text = $"0 / {_barProgress.Maximum}"
-        };
 
-        private Button CreateStart()
-        {
-            var btn = new Button
-            {
-                Content = "Запуск"
-            };
-            btn.Click += (_, _) =>
-            {
-                _btnCancel.IsEnabled = true;
-                _btnStart.IsEnabled = false;
-                cts = new CancellationTokenSource();
-                new Thread(() => ProcessingReceipts(cts.Token)) { IsBackground = true }.Start();
-            };
-            return btn;
-        }
+        grid.AddColumn(GridUnitType.Pixel, 100);
+        grid.AddColumn(GridUnitType.Pixel, 5);
+        grid.AddColumn(GridUnitType.Pixel, 150);
 
-        private Button CreateCancel()
-        {
-            var btn = new Button
-            {
-                Content = "Отмена",
-                IsEnabled = false
-            };
-            btn.Click += Cancel;
-            return btn;
-        }
+        grid.AddRow(GridUnitType.Auto);
+        grid.AddRow(GridUnitType.Pixel, 5);
+        grid.AddRow(GridUnitType.Auto);
+        grid.AddRow(GridUnitType.Pixel, 5);
+        grid.AddRow(GridUnitType.Auto);
+        grid.AddRow(GridUnitType.Pixel, 5);
+        grid.AddRow(GridUnitType.Auto);
+        grid.AddRow(GridUnitType.Pixel, 5);
+        grid.AddRow(GridUnitType.Auto);
+        grid.AddRow(GridUnitType.Pixel, 5);
+        grid.AddRow(GridUnitType.Auto);
+        grid.AddRow(GridUnitType.Pixel, 5);
+        grid.AddRow(GridUnitType.Auto);
+        grid.AddRow(GridUnitType.Pixel, 5);
+        grid.AddRow(GridUnitType.Auto);
+        grid.AddRow(GridUnitType.Pixel, 5);
+        grid.AddRow(GridUnitType.Auto);
+        grid.AddRow(GridUnitType.Pixel, 5);
+        grid.AddRow(GridUnitType.Auto);
+
+        grid.AddChild(new Button()
+            .SetEnabledBinding()
+            .SetClickAction((_, _) => handle.ShowProperties(this))
+            .SetContent("Настройка драйвера"), dx: 3);
+
+        grid.AddChild(new CheckBox()
+            .SetContent("Печатать ли чек?")
+            .SetCheckedBinding(nameof(FptrWindowDataContext.Print))
+            .SetEnabledBinding(), y: 2, dx: 3);
         
-        private static TextBlock CreateLabel(string text) => new()
-        {
-            VerticalAlignment = VerticalAlignment.Center,
-            Text = $"{text}: "
-        };
+        grid.AddChild(new TextBlock()
+            .SetText("Вид коррекции:")
+            .SetCenter(), y: 4);
+        grid.AddChild(new ComboBox()
+            .SetItems("Самостоятельная", "По предписанию")
+            .SetIndexBinding(nameof(FptrWindowDataContext.CorrectionType))
+            .SetEnabledBinding(), 2, 4);
 
-        private void ProcessingReceipts(CancellationToken token)
+        grid.AddChild(new TextBlock()
+            .SetText("Номер акта:")
+            .SetToolTip(Locale.ActTip)
+            .SetCenter(), y: 6);
+        grid.AddChild(new TextBox()
+            .SetTextBinding(nameof(FptrWindowDataContext.Act))
+            .SetEnabledBinding(), 2, 6);
+
+        grid.AddChild(new TextBlock()
+            .SetText("ФИО оператора:")
+            .SetCenter(), y: 8);
+        grid.AddChild(new TextBox()
+            .SetTextBinding(nameof(FptrWindowDataContext.OperatorName))
+            .SetEnabledBinding(), 2, 8);
+        
+        grid.AddChild(new TextBlock()
+            .SetText("ИНН оператора:")
+            .SetCenter(), y: 10);
+        grid.AddChild(new TextBox()
+            .SetTextBinding(nameof(FptrWindowDataContext.OperatorINN))
+            .SetEnabledBinding(), 2, 10);
+
+        grid.AddChild(new CheckBox()
+            .SetContent("Применить рассчет для сети \"Интернет\"")
+            .SetCheckedBinding(nameof(FptrWindowDataContext.IsInternet))
+            .SetEnabledBinding(), y: 12, dx: 3);
+
+        grid.AddChild(new TextBlock()
+            .SetText("Адрес сайта:")
+            .SetCenter(), y: 14);
+        grid.AddChild(new TextBox()
+            .SetTextBinding(nameof(FptrWindowDataContext.Address))
+            .SetEnabledBinding(), 2, 14);
+
+        grid.AddChild(CreateProgress(), 0, 16, 3);
+        grid.AddChild(new TextBlock()
+            .SetTextBinding(Bindings.ProgressText)
+            .SetCenter(), 0, 16, 3);
+
+        grid.AddChild(new Button()
+            .SetEnabledBinding()
+            .SetClickAction(Start)
+            .SetContent("Запуск"), y: 18);
+        grid.AddChild(new Button()
+            .SetEnabledBinding(false)
+            .SetContent("Отмена")
+            .SetClickAction(Cancel), 2, 18);
+
+        Content = grid;
+    }
+
+    private static ProgressBar CreateProgress()
+    {
+        var _ = new ProgressBar { Maximum = Math.Max(Workspace.Instance.Receipts.Count, 1) };
+        _.SetBinding(ProgressBar.ValueProperty, nameof(FptrWindowDataContext.CurrentProgress));
+        return _;
+    }
+
+    private void Start(object s, RoutedEventArgs e)
+    {
+        ((FptrWindowDataContext)DataContext).SetStatus(true);
+        cts = new CancellationTokenSource();
+        new Thread(() => ProcessingReceipts(cts.Token)) { IsBackground = true }.Start();
+    }
+    
+    private void ProcessingReceipts(CancellationToken token)
+    {
+        var context = (FptrWindowDataContext)data;
+        try
         {
-            try
+            handle.Connect();
+            if (string.IsNullOrWhiteSpace(context.OperatorName) && 
+                !handle.LoginOperator(context.OperatorName, context.OperatorINN))
             {
-                handle.Connect();
-                if (!handle.Reboot(true) || !handle.WaitReboot())
-                {
-                    MessageBox.Show("Не удалось перезагрузить ККТ", $"Произошла ошибка (Код: {handle.ErrorCode})", 
-                        MessageBoxButton.OK, MessageBoxImage.Hand);
-                    Cancel(null, null!);
-                    token.ThrowIfCancellationRequested();
-                }
-                if ((_chUseOperator.IsChecked??false) && !handle.LoginOperator(_tbOperatorName.Text, _tbOperatorInn.Text))
-                {
-                    MessageBox.Show("Не удалось зарегистрировать кассира", $"Произошла ошибка (Код: {handle.ErrorCode})", 
-                        MessageBoxButton.OK, MessageBoxImage.Hand);
-                    Cancel(null, null!);
-                    token.ThrowIfCancellationRequested();
-                }
-                var @ref = Workspace.Instance.Receipts;
-                if (MissingUnitFor120(@ref))
-                {
-                    MessageBox.Show("На ФФД 1.2 единицы измерения обязаны присутствовать!");
-                    return;
-                }
-
-                ProgressValue = 0;
-                while(ProgressValue < @ref.Count)
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (handle.ProcessSession() && ProcessingReceipt(@ref[ProgressValue], token))
-                        ProgressValue++;
-                    else handle.CancelReceipt();
-                }
+                MessageBox.Show("Не удалось зарегистрировать кассира", $"Произошла ошибка (Код: {handle.ErrorCode})", 
+                    MessageBoxButton.OK, MessageBoxImage.Hand);
                 Cancel(null, null!);
+                token.ThrowIfCancellationRequested();
             }
-            catch (OperationCanceledException)
+            var @ref = Workspace.Instance.Receipts;
+            if (MissingUnitFor120(@ref))
             {
-                handle.CancelReceipt();
-                handle.Disconnect();
+                MessageBox.Show("На ФФД 1.2 единицы измерения обязаны присутствовать!");
+                return;
             }
-        }
 
-        private void Cancel(object? s, RoutedEventArgs e)
-        {
-            Dispatcher.Invoke(() => _btnCancel.IsEnabled = false);
-            Dispatcher.Invoke(() => _btnStart.IsEnabled = true);
-            cts?.Cancel();
-            cts?.Dispose();
-        }
-
-        private bool ProcessingReceipt(Receipt receipt, CancellationToken token)
-        {
-            token.ThrowIfCancellationRequested();
-            OpenReceiptArgs openArgs = new();
-            Dispatcher.Invoke(() =>
+            context.CurrentProgress = 0;
+            while(context.CurrentProgress < @ref.Count)
             {
-                openArgs.Act = string.IsNullOrWhiteSpace(_inputAct.Text) ? " " : _inputAct.Text;
-                openArgs.Print = _cbPrint.SelectedIndex > 0;
-                openArgs.CorrType = _cbCorrType.SelectedIndex;
-                openArgs.IsInternetPayment = _chIsInternet.IsChecked ?? false;
-                openArgs.HttpAddress = _tbSiteAddress.Text;
-            });
-            return handle.OpenReceipt(receipt, openArgs) &&
-                receipt.Items.All(handle.AddPosition) &&
-                handle.SetTotal(receipt.TotalSum / 100.0) &&
-                handle.Payment(receipt.Payment) &&
-                handle.CloseReceipt();
-        }
-
-        private bool MissingUnitFor120(IEnumerable<Receipt> @ref) =>
-            handle.DocFormat == 120 && @ref.SelectMany(r => r.Items).Any(p => p.MeasureUnit is null);
-
-        protected override void OnClosed(EventArgs e)
-        {
-            if (!handle.IsInvalid)
-            {
-                handle.CancelReceipt();
-                handle.Disconnect();
-                handle.Dispose();
+                token.ThrowIfCancellationRequested();
+                if (handle.ProcessSession() && ProcessingReceipt(@ref[context.CurrentProgress], token))
+                    context.CurrentProgress++;
+                else handle.CancelReceipt();
             }
+            Cancel(null, null!);
+        }
+        catch (OperationCanceledException)
+        {
+            handle.CancelReceipt();
+            handle.Disconnect();
         }
     }
+
+    private void Cancel(object? s, RoutedEventArgs e)
+    {
+        ((FptrWindowDataContext)data).SetStatus(false);
+        cts?.Cancel();
+        cts?.Dispose();
+    }
+
+    private bool ProcessingReceipt(Receipt receipt, CancellationToken token)
+    {
+        var context = (FptrWindowDataContext)data;
+        token.ThrowIfCancellationRequested();
+        OpenReceiptArgs openArgs = new();
+        Dispatcher.Invoke(() =>
+        {
+            openArgs.Act = string.IsNullOrWhiteSpace(context.Act) ? " " : context.Act;
+            openArgs.Print = context.Print;
+            openArgs.CorrType = context.CorrectionType;
+            openArgs.IsInternetPayment = context.IsInternet;
+            openArgs.HttpAddress = context.Address;
+        });
+        return handle.OpenReceipt(receipt, openArgs) &&
+            receipt.Items.All(handle.AddPosition) &&
+            handle.SetTotal(receipt.TotalSum / 100.0) &&
+            handle.Payment(receipt.Payment) &&
+            handle.CloseReceipt();
+    }
+
+    private bool MissingUnitFor120(IEnumerable<Receipt> @ref) =>
+        handle.DocFormat == 120 && @ref.SelectMany(r => r.Items).Any(p => p.MeasureUnit is null);
+
+    protected override void OnClosed(EventArgs e)
+    {
+        if (!handle.IsInvalid)
+        {
+            handle.CancelReceipt();
+            handle.Disconnect();
+            handle.Dispose();
+        }
+    }
+}
+
+file sealed class FptrWindowDataContext : INotifyPropertyChanged
+{
+    public string Act
+    {
+        get => act;
+        set
+        {
+            if (act == value) return;
+            act = value;
+            PropertyChanged?.Invoke(this, ActKey);
+        }
+    }
+    public string Address
+    {
+        get => address;
+        set
+        {
+            if (address == value) return;
+            address = value;
+            PropertyChanged?.Invoke(this, AddressKey);
+        }
+    }
+    public string OperatorName
+    {
+        get => operatorName;
+        set
+        {
+            if (operatorName == value) return;
+            operatorName = value;
+            PropertyChanged?.Invoke(this, OperatorNameKey);
+        }
+    }
+    public string OperatorINN
+    {
+        get => operatorINN;
+        set
+        {
+            if (operatorINN == value) return;
+            operatorINN = value;
+            PropertyChanged?.Invoke(this, OperatorINNKey);
+        }
+    }
+    public int CurrentProgress
+    {
+        get => curProgress;
+        set
+        {
+            if (curProgress == value) return;
+            curProgress = value;
+            PropertyChanged?.Invoke(this, CurrentProgressKey);
+        }
+    }
+    public bool IsInternet
+    {
+        get => isInternet;
+        set
+        {
+            if (isInternet == value) return;
+            isInternet = value;
+            PropertyChanged?.Invoke(this, IsInternetKey);
+        }
+    }
+    public int CorrectionType
+    {
+        get => correctionType;
+        set
+        {
+            if(correctionType == value) return;
+            correctionType = value;
+            PropertyChanged?.Invoke(this, CorrectionTypeKey);
+        }
+    }
+    public bool Print
+    {
+        get => print;
+        set
+        {
+            if (print == value) return;
+            print = value;
+            PropertyChanged?.Invoke(this, PrintKey);
+        }
+    }
+    public bool Processing => processing;
+    public bool Idle => !processing;
+
+    public void SetStatus(bool processing)
+    {
+        this.processing = processing;
+        PropertyChanged?.Invoke(this, IdleKey);
+        PropertyChanged?.Invoke(this, ProcessingKey);
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private readonly PropertyChangedEventArgs ActKey = new(nameof(Act));
+    private readonly PropertyChangedEventArgs AddressKey = new(nameof(Address));
+    private readonly PropertyChangedEventArgs OperatorNameKey = new(nameof(OperatorName));
+    private readonly PropertyChangedEventArgs OperatorINNKey = new(nameof(OperatorINN));
+    private readonly PropertyChangedEventArgs CurrentProgressKey = new(nameof(CurrentProgress));
+    private readonly PropertyChangedEventArgs IsInternetKey = new(nameof(IsInternet));
+    private readonly PropertyChangedEventArgs PrintKey = new(nameof(Print));
+    private readonly PropertyChangedEventArgs CorrectionTypeKey = new(nameof(CorrectionType));
+    private readonly PropertyChangedEventArgs ProcessingKey = new(nameof(Processing));
+    private readonly PropertyChangedEventArgs IdleKey = new(nameof(Idle));
+
+    private string act = "";
+    private string address = "";
+    private int correctionType = 0;
+    private string operatorName = "";
+    private string operatorINN = "";
+    private int curProgress = 0;
+    private bool isInternet = false;
+    private bool print = true;
+    private bool processing = false;
+}
+
+file static class FptrWindowHelper
+{
+
+    public static T SetEnabledBinding<T>(this T element, bool idle = true)
+        where T : FrameworkElement
+    {
+        element.SetBinding(UIElement.IsEnabledProperty,
+            idle ? Bindings.IdleEnabled : Bindings.ProcessingEnabled);
+        return element;
+    }
+
+    public static T SetToolTip<T>(this T element, string text)
+        where T : FrameworkElement
+    {
+        element.ToolTip = new ToolTip { Content = text };
+        return element;
+    }
+
+    public static TextBox SetTextBinding(this TextBox element, string path)
+    {
+        element.SetBinding(TextBox.TextProperty, path);
+        return element;
+    }
+
+    public static TextBlock SetTextBinding(this TextBlock element, Binding binding)
+    {
+        element.SetBinding(TextBlock.TextProperty, binding);
+        return element;
+    }
+
+    public static TextBlock SetText(this TextBlock element, string value)
+    {
+        element.Text = value;
+        return element;
+    }
+
+    public static CheckBox SetCheckedBinding(this CheckBox element, string path)
+    {
+        element.SetBinding(CheckBox.IsCheckedProperty, path);
+        return element;
+    }
+
+    public static ComboBox SetIndexBinding(this ComboBox element, string path)
+    {
+        element.SetBinding(ComboBox.SelectedIndexProperty, path);
+        return element;
+    }
+
+    public static T SetContent<T>(this T element, string value)
+        where T : ContentControl
+    {
+        element.Content = value;
+        return element;
+    }
+
+    public static ComboBox SetItems(this ComboBox element, params IEnumerable<string> items)
+    {
+        element.ItemsSource = items;
+        return element;
+    }
+
+    public static Button SetClickAction(this Button element, RoutedEventHandler handler)
+    {
+        element.Click += handler;
+        return element;
+    }
+
+    public static T SetCenter<T>(this T element)
+        where T : FrameworkElement
+    {
+        element.HorizontalAlignment = HorizontalAlignment.Center;
+        element.VerticalAlignment = VerticalAlignment.Center;
+        return element;
+    }
+}
+
+file static class Locale
+{
+    public const string ActTip =
+        """
+        Данный параметр нужно использовать только в двух случаях:
+        1) Коррекция выполняется по требованию ФНС
+        2) Коррекция выполняется на кассе с ФФД 1.05, так как чек ранее не был сформирован 
+        """;
+}
+
+file static class Bindings
+{
+    public readonly static Binding ProgressText = 
+        new(nameof(FptrWindowDataContext.CurrentProgress))
+        {
+            StringFormat = $"{{0}} / {Workspace.Instance.Receipts.Count}",
+            Mode = BindingMode.OneWay
+        };
+
+    public readonly static Binding IdleEnabled = 
+        new(nameof(FptrWindowDataContext.Idle))
+        { Mode = BindingMode.OneWay };
+
+    public  readonly static Binding ProcessingEnabled = 
+        new(nameof(FptrWindowDataContext.Processing))
+        { Mode = BindingMode.OneWay };
 }

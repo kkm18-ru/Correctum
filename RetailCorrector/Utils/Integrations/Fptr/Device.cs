@@ -59,24 +59,5 @@ namespace RetailCorrector.Utils.Integrations
             SetString(1203, inn);
             return operatorLogin(handle) == 0;
         }
-
-        public bool Reboot(bool silent = false)
-        {
-            if (silent) SetBoolean(65873, false);
-            return deviceReboot(handle) == 0;
-        }
-
-        public bool WaitReboot()
-        {
-            const int Delay = 100;
-            var countInteration = Configuration.Instance.Fptr.WaitRebootTimeout / Delay;
-            for (var _ = 0; _ < countInteration; _++)
-            {
-                SetInteger(65587, 16); // get serial number
-                if (Query()) return true;
-                Thread.Sleep(Delay);
-            }
-            return false;
-        }
     }
 }

@@ -26,7 +26,6 @@ namespace RetailCorrector.Utils
         public SqliteSection Sqlite { get; init; } = new();
         public HttpClientSection HttpClient { get; init; } = new();
         public ExportersSection Exporters { get; init; } = new();
-        public FptrSection Fptr { get; init; } = new();
 
         public void Save() => File.WriteAllText(FileName, Toml.FromModel(this));
     }

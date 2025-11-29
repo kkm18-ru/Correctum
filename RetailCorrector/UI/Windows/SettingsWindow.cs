@@ -110,13 +110,6 @@ internal class SettingsWindow : Types.DialogWindow
         grid.AddColumn(GridUnitType.Star);
 
         grid.AddRow(GridUnitType.Auto);
-        grid.AddRow(GridUnitType.Pixel, 5);
-        grid.AddRow(GridUnitType.Auto);
-
-        grid.AddChild(CreateText("Максимальное время ожидания перезагрузки ККТ (в мс)"));
-        var nb = new IntegerUpDown { Minimum = 1, Maximum = 10000 };
-        nb.SetBinding(IntegerUpDown.ValueProperty, Bindings.FptrRebootTimeout);
-        grid.AddChild(nb, 2);
 
         grid.AddChild(CreateText("Транспортный порт Atol (EoU)"), y: 2);
         var cb = new ComboBox
@@ -156,10 +149,6 @@ file static class Bindings
     public readonly static Binding HttpDelay =
         new(nameof(Configuration.HttpClient.RequestDelay))
         { Source = Configuration.Instance.HttpClient };
-
-    public readonly static Binding FptrRebootTimeout =
-        new(nameof(Configuration.Fptr.WaitRebootTimeout))
-        { Source = Configuration.Instance.Fptr };
 
     public readonly static Binding ExportFptrFileSize =
         new(nameof(Configuration.Exporters.Fptr.DocsPerFile))
