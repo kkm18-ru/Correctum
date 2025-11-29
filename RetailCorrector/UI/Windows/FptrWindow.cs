@@ -217,84 +217,84 @@ file sealed class FptrWindowDataContext : INotifyPropertyChanged
 {
     public string Act
     {
-        get => act;
+        get;
         set
         {
-            if (act == value) return;
-            act = value;
+            if (field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, ActKey);
         }
-    }
+    } = "";
     public string Address
     {
-        get => address;
+        get;
         set
         {
-            if (address == value) return;
-            address = value;
+            if (field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, AddressKey);
         }
-    }
+    } = "";
     public string OperatorName
     {
-        get => operatorName;
+        get;
         set
         {
-            if (operatorName == value) return;
-            operatorName = value;
+            if (field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, OperatorNameKey);
         }
-    }
+    } = "";
     public string OperatorINN
     {
-        get => operatorINN;
+        get;
         set
         {
-            if (operatorINN == value) return;
-            operatorINN = value;
+            if (field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, OperatorINNKey);
         }
-    }
+    } = "";
     public int CurrentProgress
     {
-        get => curProgress;
+        get;
         set
         {
-            if (curProgress == value) return;
-            curProgress = value;
+            if (field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, CurrentProgressKey);
         }
     }
     public bool IsInternet
     {
-        get => isInternet;
+        get;
         set
         {
-            if (isInternet == value) return;
-            isInternet = value;
+            if (field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, IsInternetKey);
         }
     }
     public int CorrectionType
     {
-        get => correctionType;
+        get;
         set
         {
-            if(correctionType == value) return;
-            correctionType = value;
+            if(field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, CorrectionTypeKey);
         }
     }
     public bool Print
     {
-        get => print;
+        get;
         set
         {
-            if (print == value) return;
-            print = value;
+            if (field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, PrintKey);
         }
-    }
+    } = true;
     public bool Processing => processing;
     public bool Idle => !processing;
 
@@ -318,14 +318,6 @@ file sealed class FptrWindowDataContext : INotifyPropertyChanged
     private readonly PropertyChangedEventArgs ProcessingKey = new(nameof(Processing));
     private readonly PropertyChangedEventArgs IdleKey = new(nameof(Idle));
 
-    private string act = "";
-    private string address = "";
-    private int correctionType = 0;
-    private string operatorName = "";
-    private string operatorINN = "";
-    private int curProgress = 0;
-    private bool isInternet = false;
-    private bool print = true;
     private bool processing = false;
 }
 

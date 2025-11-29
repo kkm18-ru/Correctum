@@ -20,26 +20,26 @@ namespace RetailCorrector.Data
         {
             get
             {
-                if (_id == Guid.Empty)
-                    _id = Guid.CreateVersion7();
-                return _id;
+                if (field == Guid.Empty)
+                    field = Guid.CreateVersion7();
+                return field;
             }
         }
-        private Guid _id;
+
         public int EditsCount
         {
-            get => _editsCount;
+            get;
             set
             {
-                if (value == _editsCount) return;
+                if (value == field) return;
                 if (IsReadOnly && value != 0)
                     throw new ReceiptReadOnlyException();
-                if (value < _editsCount)
+                if (value < field)
                     throw new NotImplementedException("Отмена действий в данный момент невозможна");
-                _editsCount = value;
+                field = value;
             }
         }
-        private int _editsCount = 0;
+
         public bool IsReadOnly { get; } = @readonly;
         #endregion
     }

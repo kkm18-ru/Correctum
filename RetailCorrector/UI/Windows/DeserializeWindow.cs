@@ -13,27 +13,24 @@ namespace RetailCorrector.UI.Windows
     {
         public string Text
         {
-            get => _text;
+            get;
             set
             {
-                if (_text == value) return;
-                _text = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, TextNotifier);
             }
-        }
+        } = "";
         public IReceiptDeserializer Current
         {
-            get => _current;
+            get;
             set
             {
-                if (_current == value) return;
-                _current = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, CurrentNotifier);
             }
         }
-
-        private string _text = "";
-        private IReceiptDeserializer _current; 
 
         private static readonly PropertyChangedEventArgs TextNotifier = new(nameof(Text));
         private static readonly PropertyChangedEventArgs CurrentNotifier = new(nameof(Current));

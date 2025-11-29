@@ -8,8 +8,7 @@ namespace RetailCorrector.Parsers
         where TP : ParserBase<TP, TV>, ISingleton<TP>, new()
         where TV : ParserView<TV, TP>, new()
     {
-        private static TP _instance = null!;
-        public static TP Instance => _instance ??= new TP();
+        public static TP Instance => field ??= new TP();
 
         public abstract string Name { get; }
         protected ParseInfo parseInfo;

@@ -5,8 +5,7 @@ namespace RetailCorrector.Utils.ValidationRules
 {
     internal partial class InnValidationRule : ValidationRule
     {
-        private static InnValidationRule _instance = null!;
-        public static InnValidationRule Instance => _instance ??= new InnValidationRule();
+        public static InnValidationRule Instance => field ??= new InnValidationRule();
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {

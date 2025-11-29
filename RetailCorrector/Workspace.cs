@@ -6,8 +6,7 @@ namespace RetailCorrector
 {
     internal partial class Workspace
     {
-        private static Workspace _instance = null!;
-        public static Workspace Instance => _instance ??= new Workspace();
+        public static Workspace Instance => field ??= new Workspace();
 
         public Guid Id { get; }
         public ObservableCollection<ParseInfo> ParserHistory { get; }

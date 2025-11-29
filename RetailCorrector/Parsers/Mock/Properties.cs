@@ -6,27 +6,24 @@ namespace RetailCorrector.Parsers
     {
         public int MinCountDocs
         {
-            get => _minCountDocs;
+            get;
             set
             {
-                if (_minCountDocs == value) return;
-                _minCountDocs= value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, MinCountDocsNotifier);
             }
-        }
+        } = 1;
         public int MaxCountDocs
         {
-            get => _maxCountDocs;
+            get;
             set
             {
-                if (_maxCountDocs == value) return;
-                _maxCountDocs = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, MaxCountDocsNotifier);
             }
-        }
-
-        private int _minCountDocs = 1;
-        private int _maxCountDocs = 1000;
+        } = 1000;
 
         private static readonly PropertyChangedEventArgs MinCountDocsNotifier = new(nameof(MinCountDocs));
         private static readonly PropertyChangedEventArgs MaxCountDocsNotifier = new(nameof(MaxCountDocs));

@@ -7,8 +7,7 @@ namespace RetailCorrector.Actions
         where TV : ActionView<TV, TP>, new()
         where TP : ActionBase<TP, TV>, ISingleton<TP>, new()
     {
-        public static TP Instance => _instance ??= new TP();
-        private static TP _instance = null!;
+        public static TP Instance => field ??= new TP();
 
         public abstract string Name { get; }
         public void Show() => new ActionWindow(new TV()).ShowDialog();
@@ -18,8 +17,7 @@ namespace RetailCorrector.Actions
     internal abstract class ActionBase<T> : IAction, ISingleton<T>
         where T : ActionBase<T>, ISingleton<T>, new()
     {
-        public static T Instance => _instance ??= new T();
-        private static T _instance = null!;
+        public static T Instance => field ??= new T();
 
         public abstract string Name { get; }
         public void Show() => new ActionWindow(T.Instance).ShowDialog();

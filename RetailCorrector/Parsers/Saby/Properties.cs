@@ -6,82 +6,74 @@ internal partial class Saby : INotifyPropertyChanged
 {
     public string Login
     {
-        get => _login;
+        get;
         set
         {
-            if(_login == value) return;
-            _login = value;
+            if(field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, LoginNotifier);
         }
-    }
+    } = "";
     public string Password
     {
-        get => _password;
+        get;
         set
         {
-            if(_password == value) return;
-            _password = value;
+            if(field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, PasswordNotifier);
         }
-    }
+    } = "";
     public string Inn
     {
-        get => _inn;
+        get;
         set
         {
-            if(_inn == value) return;
-            _inn = value;
+            if(field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, InnNotifier);
         }
-    }
+    } = "";
     public string Device
     {
-        get => _device;
+        get;
         set
         {
-            if(_device == value) return;
-            _device = value;
+            if(field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, DeviceNotifier);
         }
-    }
+    } = "";
     public string Storage
     {
-        get => _storage;
+        get;
         set
         {
-            if(_storage == value) return;
-            _storage = value;
+            if (field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, StorageNotifier);
         }
-    }
+    } = "";
     public DateTime FromDate
     {
-        get => _fromDate;
+        get;
         set
         {
-            if(_fromDate == value) return;
-            _fromDate = value;
+            if(field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, FromDateNotifier);
         }
-    }
+    } = DateTime.Today;
     public DateTime ToDate
     {
-        get => _toDate;
+        get;
         set
         {
-            if(_toDate == value) return;
-            _toDate = value;
+            if (field == value) return;
+            field = value;
             PropertyChanged?.Invoke(this, ToDateNotifier);
         }
-    }
-
-    private string _login = "";
-    private string _password = "";
-    private string _inn = "";
-    private string _device = "";
-    private string _storage = "";
-    private DateTime _fromDate = DateTime.Today;
-    private DateTime _toDate = DateTime.Today;
+    } = DateTime.Today;
 
     private readonly static PropertyChangedEventArgs LoginNotifier = new(nameof(Login));
     private readonly static PropertyChangedEventArgs PasswordNotifier = new(nameof(Password));

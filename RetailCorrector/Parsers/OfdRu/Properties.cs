@@ -6,72 +6,65 @@ namespace RetailCorrector.Parsers
     {
         public string Token
         {
-            get => _token;
+            get;
             set
             {
-                if (_token == value) return;
-                _token = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, TokenNotifier);
                 TokenChanged?.Invoke();
             }
-        }
+        } = "";
         public string DeviceId
         {
-            get => _deviceId;
+            get;
             set
             {
-                if (_deviceId == value) return;
-                _deviceId = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, DeviceIdNotifier);
             }
-        }
+        } = "";
         public string Storage
         {
-            get => _storage;
+            get;
             set
             {
-                if (_storage == value) return;
-                _storage = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, StorageNotifier);
             }
-        }
+        } = "";
         public string Vatin
         {
-            get => _vatin;
+            get;
             set
             {
-                if (_vatin == value) return;
-                _vatin = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, VatinNotifier);
             }
-        }
+        } = "";
         public DateTime BeginDate
         {
-            get => _beginDate;
+            get;
             set
             {
-                if (_beginDate == value) return;
-                _beginDate = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, BeginDateNotifier);
             }
-        }
+        } = DateTime.Today;
         public DateTime EndDate
         {
-            get => _endDate;
+            get;
             set
             {
-                if (_endDate == value) return;
-                _endDate = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, EndDateNotifier);
             }
-        }
-
-        private string _token = "";
-        private string _deviceId = "";
-        private string _vatin = "";
-        private string _storage = "";
-        private DateTime _beginDate = DateTime.Today;
-        private DateTime _endDate = DateTime.Today;
+        } = DateTime.Today;
 
         private readonly static PropertyChangedEventArgs TokenNotifier = new(nameof(Token));
         private readonly static PropertyChangedEventArgs DeviceIdNotifier = new(nameof(DeviceId));

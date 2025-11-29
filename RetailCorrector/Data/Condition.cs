@@ -6,43 +6,40 @@ namespace RetailCorrector.Data
 {
     public class Condition(int num, bool pos = false, int part = -1, int opcode = -1, string val = "") : INotifyPropertyChanged
     {
-        private int _number = num;
         public int Number
         {
-            get => _number;
+            get;
             set
             {
-                if (_number == value) return;
-                _number = value;
+                if (field == value) return;
+                field = value;
                 OnPropertyChanged();
             }
-        }
+        } = num;
 
-        private bool _position = pos;
         public bool IsPosition
         {
-            get => _position;
+            get;
             set
             {
-                if (_position == value) return;
-                _position = value;
+                if (field == value) return;
+                field = value;
                 OnPropertyChanged();
                 PartId = -1;
                 Parts.Clear();
                 foreach (var part in value ? PositionParts : ReceiptParts)
                     Parts.Add(part);
             }
-        }
+        } = pos;
         public string TypeName => Types[IsPosition];
 
-        private int _partId = part;
         public int PartId
         {
-            get => _partId;
+            get;
             set
             {
-                if (_partId == value) return;
-                if (_partId == -1 || value == -1 || Parts[_partId].Type != Parts[value].Type)
+                if (field == value) return;
+                if (field == -1 || value == -1 || Parts[field].Type != Parts[value].Type)
                 {
                     OperationId = -1;
                     Operations.Clear();
@@ -59,38 +56,36 @@ namespace RetailCorrector.Data
                             Operations.Add(part);
                     }
                 }
-                _partId = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(PartText));
             }
-        }
+        } = part;
         public string PartText => PartId == -1 ? "" : Parts[PartId].Name;
 
-        private int _operationId = opcode;
         public int OperationId
         {
-            get => _operationId;
+            get;
             set
             {
-                if (_operationId == value) return;
-                _operationId = value;
+                if (field == value) return;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(OperationText));
             }
-        }
+        } = opcode;
         public string OperationText => OperationId == -1 ? "" : Operations[OperationId].Name;
 
-        private string _value = val;
         public string Value
         {
-            get => _value;
+            get;
             set
             {
-                if (_value == value) return;
-                _value = value;
+                if (field == value) return;
+                field = value;
                 OnPropertyChanged();
             }
-        }
+        } = val;
 
         public static Dictionary<bool, string> Types = new()
         {

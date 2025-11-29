@@ -11,8 +11,7 @@ namespace RetailCorrector.Exporters
         public string Name => "Fptr-скрипт";
         public string? FileFilter => null;
 
-        private static Fptr _instance = null!;
-        public static Fptr Instance => _instance ??= new Fptr();
+        public static Fptr Instance => field ??= new Fptr();
 
         public ValueTask Export(string? path)
         {
@@ -21,7 +20,7 @@ namespace RetailCorrector.Exporters
                     "RetailCorrector", $"{Guid.CreateVersion7()}");
             IOHelper.CreateDirectoryIfNotExists(Path.GetDirectoryName(path));
             IOHelper.CreateDirectoryIfNotExists(path);
-            if (FiscalFormat == 2 && OldCorrReason == 1)
+            if (FiscalFormat == 2 && !FixOldReceipts)
                 return Missing105Export(path);
             var receipts = Workspace.Instance.Receipts;
             var n = Math.Ceiling((double)receipts.Count / Configuration.Instance.Exporters.Fptr.DocsPerFile);
@@ -35,8 +34,8 @@ namespace RetailCorrector.Exporters
                 {
                     tf.WriteGenerateCorrData(ActId, receipt.Created, FiscalFormat == 2);
                     tf.WriteReceiptType(receipt, FiscalFormat);
-                    tf.WriteLine($"Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, {(PrintMode == 1).ToString().ToLower()});");
-                    if (_isInternet)
+                    tf.WriteLine($"Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, {(!Print).ToString().ToLower()});");
+                    if (IsInternet)
                     {
                         tf.WriteLine($"Fptr.setParam(1125, true);");
                         tf.WriteLine($"Fptr.setParam(1187, {SiteAddress});");

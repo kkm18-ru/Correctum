@@ -8,8 +8,7 @@ namespace RetailCorrector;
 
 public partial class App : Application
 {
-    private static App _instance = null!;
-    public static App Instance => _instance ??= new App();
+    public static App Instance => field ??= new App();
 
     private App()
     {

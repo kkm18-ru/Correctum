@@ -6,18 +6,17 @@ namespace RetailCorrector.Utils
 {
     internal partial class Configuration
     {
-        private static Configuration _instance = null!;
         public static Configuration Instance
         {
             get
             {
-                if(_instance is null)
+                if(field is null)
                 {
                     if(File.Exists(FileName) && Toml.TryToModel<Configuration>(File.ReadAllText(FileName), out var x, out _))
-                        _instance = x;
-                    else _instance = new Configuration();
+                        field = x;
+                    else field = new Configuration();
                 }
-                return _instance;
+                return field;
             }
         }
 

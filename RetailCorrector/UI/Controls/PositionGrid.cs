@@ -10,8 +10,7 @@ namespace RetailCorrector.UI.Controls
     {
         public ObservableCollection<DisplayPostion> Collection { get; } = [];
 
-        private static PositionGrid _instance = null!;
-        public static PositionGrid Instance => _instance ??= new PositionGrid();
+        public static PositionGrid Instance => field ??= new PositionGrid();
 
         private PositionGrid() : base()
         {

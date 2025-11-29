@@ -7,98 +7,87 @@ namespace RetailCorrector.Exporters
         #region Свойства
         public int CorrType
         {
-            get => _isSelfCorr ? 0 : 1;
+            get;
             set
             {
-                if (_isSelfCorr == (value == 0)) return;
-                _isSelfCorr = value == 0;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, CorrTypeNotifier);
             }
-        }
-        public int IsInternet
+        } = 0;
+        public bool IsInternet
         {
-            get => _isInternet ? 1 : 0;
+            get;
             set
             {
-                if (_isInternet == (value == 1)) return;
-                _isInternet = value == 1;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, IsInternetNotifier);
             }
         }
         public string SiteAddress
         {
-            get => _httpAddress;
+            get;
             set
             {
-                if (_httpAddress == value) return;
-                _httpAddress = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, SiteAddressNotifier);
             }
         }
-        public int PrintMode
+        public bool Print
         {
-            get => _print ? 0 : 1;
+            get;
             set
             {
-                if (_print == (value == 0)) return;
-                _print = value == 0;
-                PropertyChanged?.Invoke(this, PrintModeNotifier);
+                if (field == value) return;
+                field = value;
+                PropertyChanged?.Invoke(this, PrintNotifier);
             }
         }
         public string ActId
         {
-            get => _actId;
+            get;
             set
             {
-                if (_actId == value) return;
-                _actId = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, ActIdNotifier);
             }
         }
-        public int FiscalFormat
-        {
-            get => _fiscalFormat;
-            set
-            {
-                if (_fiscalFormat == value) return;
-                _fiscalFormat = value;
-                PropertyChanged?.Invoke(this, FiscalFormatNotifier);
-            }
-        }
-        public int OldCorrReason
-        {
-            get => _wasReceipt ? 0 : 1;
-            set
-            {
-                if (_wasReceipt == (value == 0)) return;
-                _wasReceipt = value == 0;
-                PropertyChanged?.Invoke(this, OldCorrReasonNotifier);
-            }
-        }
-        #endregion
-
-        #region Переменные
-        private bool _isSelfCorr = true;
-        private bool _isInternet = false;
-        private string _httpAddress = "";
-        private bool _print = false;
-        private string _actId = "";
-        private bool _wasReceipt = true;
-
         /// <summary>
         /// ФФД (0 - 1.2; 1 - 1.1; 2 - 1.05)
         /// </summary>
-        private int _fiscalFormat = 0;
+        public int FiscalFormat
+        {
+            get;
+            set
+            {
+                if (field == value) return;
+                field = value;
+                PropertyChanged?.Invoke(this, FiscalFormatNotifier);
+            }
+        }
+        public bool FixOldReceipts
+        {
+            get;
+            set
+            {
+                if (field == value) return;
+                field = value;
+                PropertyChanged?.Invoke(this, FixOldReceiptsNotifier);
+            }
+        } = true;
         #endregion
 
         #region Кеш PropertyChangedEventArgs
         private readonly static PropertyChangedEventArgs CorrTypeNotifier = new(nameof(CorrType));
         private readonly static PropertyChangedEventArgs IsInternetNotifier = new(nameof(IsInternet));
         private readonly static PropertyChangedEventArgs SiteAddressNotifier = new(nameof(SiteAddress));
-        private readonly static PropertyChangedEventArgs PrintModeNotifier = new(nameof(PrintMode));
+        private readonly static PropertyChangedEventArgs PrintNotifier = new(nameof(Print));
         private readonly static PropertyChangedEventArgs ActIdNotifier = new(nameof(ActId));
         private readonly static PropertyChangedEventArgs FiscalFormatNotifier = new(nameof(FiscalFormat));
-        private readonly static PropertyChangedEventArgs OldCorrReasonNotifier = new(nameof(OldCorrReason));
+        private readonly static PropertyChangedEventArgs FixOldReceiptsNotifier = new(nameof(FixOldReceipts));
         #endregion
 
 

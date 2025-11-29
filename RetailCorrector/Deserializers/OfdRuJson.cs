@@ -6,8 +6,7 @@ namespace RetailCorrector.Deserializers
 {
     internal sealed partial class OfdRuJson : IReceiptDeserializer
     {
-        private static OfdRuJson _instance = null!;
-        public static OfdRuJson Instance => _instance ??= new OfdRuJson();
+        public static OfdRuJson Instance => field ??= new OfdRuJson();
         public string Name => "ОФД.ру (JSON)";
 
         const string DATE_FORMAT = "yyyy-MM-ddTHH:mm:ss";

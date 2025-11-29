@@ -6,8 +6,7 @@ namespace RetailCorrector.Deserializers;
 
 internal sealed partial class PlatformOfd : IReceiptDeserializer
 {
-    private static PlatformOfd _instance = null!;
-    public static PlatformOfd Instance => _instance ??= new PlatformOfd();
+    public static PlatformOfd Instance => field ??= new PlatformOfd();
     public string Name => "Платформа ОФД";
 
     public void Deserialize(string raw, ref Receipt receipt)

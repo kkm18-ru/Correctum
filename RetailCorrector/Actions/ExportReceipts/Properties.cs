@@ -9,29 +9,24 @@ namespace RetailCorrector.Actions
         #region Свойства
         public IExporter Exporter
         {
-            get => _exporter;
+            get;
             set
             {
-                if (_exporter == value) return;
-                _exporter = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, ExporterNotifier);
             }
-        }
+        } = ModuleRegistry.Exporters[0];
         public string Path
         {
-            get => _path;
+            get;
             set
             {
-                if (_path == value) return;
-                _path = value;
+                if (field == value) return;
+                field = value;
                 PropertyChanged?.Invoke(this, PathNotifier);
             }
-        }
-        #endregion
-
-        #region Переменные
-        private IExporter _exporter = ModuleRegistry.Exporters[0];
-        private string _path = "";
+        } = "";
         #endregion
 
         #region Кеш PropertyChangedEventArgs

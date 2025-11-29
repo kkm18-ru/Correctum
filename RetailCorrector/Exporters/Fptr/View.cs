@@ -27,14 +27,12 @@ namespace RetailCorrector.Exporters
                         uiParent.AddRow(GridUnitType.Pixel, 5);
                         uiParent.AddRow(GridUnitType.Auto); // OldCorrReason 10
 
-                        var lbl = CreateLabel("Причина коррекции");
-                        uiParent.AddChild(lbl, y: 10);
-                        var cb = new ComboBox
+                        var ch = new CheckBox
                         {
-                            ItemsSource = new[] { "Ошибка или карантин", "Чек не был пробит" },
+                            Content = "Исправляются старые чеки?"
                         };
-                        cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(OldCorrReason)) { Source = this });
-                        uiParent.AddChild(cb, 2, 10);
+                        ch.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(FixOldReceipts)) { Source = this });
+                        uiParent.AddChild(ch, y: 14, dx: 3);
                     }
                 }
             };
@@ -66,13 +64,16 @@ namespace RetailCorrector.Exporters
             cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(FiscalFormat)) { Source = this });
             content.AddChild(cb, 2, 2);
 
+            var ch = new CheckBox { Content = "Печатать ли чек?" };
+            cb.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(Print)) { Source = this });
+            content.AddChild(ch, y: 4, dx: 3);
+
             lbl = CreateLabel("Печатать ли чек");
             content.AddChild(lbl, y: 4);
             cb = new ComboBox
             {
                 ItemsSource = new[] { "Да", "Нет" },
             };
-            cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(PrintMode)) { Source = this });
             content.AddChild(cb, 2, 4);
 
             lbl = CreateLabel("Вид коррекции");
@@ -116,14 +117,12 @@ namespace RetailCorrector.Exporters
                 content.AddRow(GridUnitType.Pixel, 5);
                 content.AddRow(GridUnitType.Auto); // OldCorrReason 16
 
-                lbl = CreateLabel("Причина коррекции");
-                content.AddChild(lbl, y: 14);
-                cb = new ComboBox
+                ch = new CheckBox
                 {
-                    ItemsSource = new[] { "Ошибка или карантин", "Чек не был пробит" },
+                    Content = "Исправляются старые чеки?"
                 };
-                cb.SetBinding(ComboBox.SelectedIndexProperty, new Binding(nameof(OldCorrReason)) { Source = this });
-                content.AddChild(cb, 2, 14);
+                ch.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(FixOldReceipts)) { Source = this });
+                content.AddChild(ch, y: 14, dx: 3);
             }
         }
 

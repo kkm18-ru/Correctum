@@ -10,8 +10,7 @@ namespace RetailCorrector.Exporters
         public string Name => "SQLite";
         public string? FileFilter => "*.sql|SQLite DataBase";
 
-        private static Sqlite _instance = null!;
-        public static Sqlite Instance => _instance ??= new Sqlite();
+        public static Sqlite Instance => field ??= new Sqlite();
 
         public ValueTask Export(string? path)
         {

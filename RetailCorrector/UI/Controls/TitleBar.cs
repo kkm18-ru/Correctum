@@ -10,8 +10,7 @@ namespace RetailCorrector.UI.Controls
 {
     internal partial class TitleBar : Canvas
     {
-        private static TitleBar _instance = null!;
-        public static TitleBar Instance => _instance ??= new TitleBar();
+        public static TitleBar Instance => field ??= new TitleBar();
 
         private TitleBar()
         {

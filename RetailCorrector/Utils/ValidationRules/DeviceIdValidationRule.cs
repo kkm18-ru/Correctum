@@ -5,8 +5,7 @@ namespace RetailCorrector.Utils.ValidationRules
 {
     internal partial class DeviceIdValidationRule : ValidationRule
     {
-        private static DeviceIdValidationRule _instance = null!;
-        public static DeviceIdValidationRule Instance => _instance ??= new DeviceIdValidationRule();
+        public static DeviceIdValidationRule Instance => field ??= new DeviceIdValidationRule();
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {

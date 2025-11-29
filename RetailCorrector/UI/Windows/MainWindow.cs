@@ -12,8 +12,7 @@ namespace RetailCorrector.UI.Windows;
 
 public partial class MainWindow : Window
 {
-    private static MainWindow _instance = null!;
-    public static MainWindow Instance => _instance ??= new MainWindow();
+    public static MainWindow Instance => field ??= new MainWindow();
 
     private MainWindow()
     {

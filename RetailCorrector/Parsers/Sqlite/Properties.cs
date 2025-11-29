@@ -6,16 +6,14 @@ namespace RetailCorrector.Parsers
     {
         public string Path
         {
-            get => _path;
+            get;
             set
             {
-                if (value == _path) return;
-                _path = value;
+                if (value == field) return;
+                field = value;
                 PropertyChanged?.Invoke(this, PathNotifier);
             }
-        }
-
-        private string _path = "";
+        } = "";
 
         private static readonly PropertyChangedEventArgs PathNotifier = new(nameof(Path));
 

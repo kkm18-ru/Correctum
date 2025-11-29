@@ -10,19 +10,18 @@ namespace RetailCorrector.UI.Controls
     {
         public ObservableCollection<Condition> Conditions { get; } = [];
 
-        private int _conditionIndex = -1;
         public int ConditionIndex
         {
-            get => _conditionIndex;
+            get;
             set
             {
-                if (_conditionIndex == value) return;
-                _conditionIndex = value;
+                if (field == value) return;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsEnabledRemove));
                 OnPropertyChanged(nameof(ForegroundRemove));
             }
-        }
+        } = -1;
         public bool IsEnabledRemove => ConditionIndex != -1;
         public Brush ForegroundRemove => IsEnabledRemove ? Brushes.Red : Brushes.LightGray;
 

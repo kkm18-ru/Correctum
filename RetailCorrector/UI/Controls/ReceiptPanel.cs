@@ -11,47 +11,44 @@ namespace RetailCorrector.UI.Controls
 {
     internal partial class ReceiptPanel : DockPanel, INotifyPropertyChanged
     {
-        private int _maxCount = 200;
         public int MaxCountReceipts
         {
-            get => _maxCount;
+            get;
             set
             {
-                if (value == _maxCount) return;
-                _maxCount = value;
+                if (value == field) return;
+                field = value;
                 OnPropertyChanged();
                 UpdateReceiptList();
             }
-        }
+        } = 200;
 
-        public int _index = 1;
         public int IndexPage
         {
-            get => _index;
+            get;
             set
             {
-                if (value == _index || value < 1 || value > CachedCountPages) return;
-                _index = value;
+                if (value == field || value < 1 || value > CachedCountPages) return;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsEnabledPrevButtons));
                 OnPropertyChanged(nameof(IsEnabledNextButtons));
                 Refresh();
             }
-        }
+        } = 1;
 
-        private int _cacheCountPages = 0;
         public int CachedCountPages
         {
-            get => _cacheCountPages;
+            get;
             set
             {
-                if (_cacheCountPages == value) return;
-                _cacheCountPages = value;
+                if (field == value) return;
+                field = value;
                 OnPropertyChanged();
                 if (IndexPage > value) IndexPage = value;
                 else OnPropertyChanged(nameof(IsEnabledNextButtons));
             }
-        }
+        } = 0;
 
         public bool IsEnabledPrevButtons => IndexPage > 1;
         public bool IsEnabledNextButtons => IndexPage < CachedCountPages;
@@ -62,8 +59,7 @@ namespace RetailCorrector.UI.Controls
         private void OnPropertyChanged([CallerMemberName] string property = "") =>
             PropertyChanged?.Invoke(this, new(property));
 
-        private static ReceiptPanel _instance = null!;
-        public static ReceiptPanel Instance => _instance ??= new ReceiptPanel();
+        public static ReceiptPanel Instance => field ??= new ReceiptPanel();
 
         private ReceiptPanel()
         {
@@ -194,7 +190,7 @@ namespace RetailCorrector.UI.Controls
             {
                 var item = (DisplayReceipt)e.AddedCells[i * columnCount].Item;
                 var row = grid.Collection.IndexOf(item);
-                foreach (var p in @ref[row + _maxCount * (_index - 1)].Items)
+                foreach (var p in @ref[row + MaxCountReceipts * (IndexPage - 1)].Items)
                     PositionGrid.Instance.Collection.Add(new DisplayPostion(p, item));
             }
 
@@ -215,7 +211,7 @@ namespace RetailCorrector.UI.Controls
             grid.Collection.Clear();
             if (CachedCountPages == 0) return;
             if (Workspace.Instance.Receipts.Count == 0) return;
-            var page = Workspace.Instance.Receipts.Skip(MaxCountReceipts * (_index - 1)).Take(MaxCountReceipts);
+            var page = Workspace.Instance.Receipts.Skip(MaxCountReceipts * (IndexPage - 1)).Take(MaxCountReceipts);
             foreach (var item in page)
                 grid.Collection.Add(new DisplayReceipt(item));
             ((ListCollectionView)CollectionViewSource.GetDefaultView(grid.Collection)).Refresh();
