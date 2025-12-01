@@ -21,6 +21,78 @@ internal sealed partial class FirstOfd : ParserBase<FirstOfd, FirstOfd.View>, IN
             PropertyChanged?.Invoke(this, CachedApiKeyArgs);
         }
     } = "";
+
+    public FirstOfdOrganisation[] Organizations
+    {
+        get;
+        private set
+        {
+            if (value == field) return;
+            field = value;
+            PropertyChanged?.Invoke(this, CachedOrganizationsArgs);
+        }
+    } = [];
+
+    public string OrganizationId
+    {
+        get;
+        set
+        {
+            if (value == field) return;
+            field = value;
+            PropertyChanged?.Invoke(this, CachedOrganizationIdArgs);
+            KKT = null;
+            KKTs = string.IsNullOrWhiteSpace(value) ? [] :
+                client!.FetchDevicesAsync(value)
+                .ConfigureAwait(false).GetAwaiter().GetResult();
+        }
+    } = "";
+
+    public FirstOfdKKT[] KKTs
+    {
+        get;
+        private set
+        {
+            if (value == field) return;
+            field = value;
+            PropertyChanged?.Invoke(this, CachedKKTsArgs);
+        }
+    } = [];
+
+    public FirstOfdKKT? KKT
+    {
+        get;
+        set
+        {
+            if (value.Equals(field)) return;
+            field = value;
+            PropertyChanged?.Invoke(this, CachedKKTArgs);
+            Drives = value?.Drives ?? [];
+            DriveId = "";
+        }
+    } = null;
+
+    public string[] Drives
+    {
+        get;
+        private set
+        {
+            if (value == field) return;
+            field = value;
+            PropertyChanged?.Invoke(this, CachedDrivesArgs);
+        }
+    } = [];
+
+    public string DriveId
+    {
+        get;
+        set
+        {
+            if (value == field) return;
+            field = value;
+            PropertyChanged?.Invoke(this, CachedDriveIdArgs);
+        }
+    } = "";
     #endregion
 
     #region Команды
@@ -28,18 +100,29 @@ internal sealed partial class FirstOfd : ParserBase<FirstOfd, FirstOfd.View>, IN
     {
         client?.Dispose();
         client = new FirstOfdClient(ApiKey);
+        Organizations = client.FetchOrganisationsAsync()
+            .ConfigureAwait(false).GetAwaiter().GetResult();
+        OrganizationId = "";
     });
     #endregion
 
     #region Кэш аргументов событий
     private static readonly PropertyChangedEventArgs CachedApiKeyArgs = new(nameof(ApiKey));
+    private static readonly PropertyChangedEventArgs CachedOrganizationsArgs = new(nameof(Organizations));
+    private static readonly PropertyChangedEventArgs CachedOrganizationIdArgs = new(nameof(OrganizationId));
+    private static readonly PropertyChangedEventArgs CachedKKTsArgs = new(nameof(KKTs));
+    private static readonly PropertyChangedEventArgs CachedKKTArgs = new(nameof(KKT));
+    private static readonly PropertyChangedEventArgs CachedDrivesArgs = new(nameof(Drives));
+    private static readonly PropertyChangedEventArgs CachedDriveIdArgs = new(nameof(DriveId));
     #endregion
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private FirstOfdClient? client;
 
     public override ParseInfo GenerateInfo() =>
-        parseInfo = new ParseInfo(Name);
+        parseInfo = new ParseInfo(Name, 
+            ("ККТ", KKT!.Value.RegNumber), 
+            ("ФН", DriveId));
 
     public override IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken)
     {
