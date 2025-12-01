@@ -1,8 +1,6 @@
 ﻿using System.Net.Http;
 using System.Text.Json.Nodes;
 using System.Windows;
-using Organisation = (string id, string name);
-using KKT = (int id, string regNumb, string[] drives);
 
 namespace RetailCorrector.Utils.Integrations;
 
@@ -29,13 +27,13 @@ internal class FirstOfdClient : IDisposable
     /// <exception cref="HttpRequestException"/>
     /// <exception cref="UriFormatException"/>
     /// <exception cref="OperationCanceledException"/>
-    public async Task<Organisation[]> FetchOrganisationsAsync(CancellationToken cancel = default)
+    public async Task<FirstOfdOrganisation[]> FetchOrganisationsAsync(CancellationToken cancel = default)
     {
         using var resp = await client.GetAsync("v2/organisations", cancel);
         var respStream = await resp.Content.ReadAsStreamAsync(cancel);
         var json = await JsonNode.ParseAsync(respStream, cancellationToken: cancel);
         var array = json!.AsArray();
-        var result = new Organisation[array.Count];
+        var result = new FirstOfdOrganisation[array.Count];
         for (var i = 0; i < result.Length; i++)
         {
             var item = array[i]!;
@@ -46,7 +44,7 @@ internal class FirstOfdClient : IDisposable
                 MessageBox.Show($"Не удалось получить идентификатор \"{displayName}\"");
                 continue;
             }
-            result[i] = (key.GetValue<string>(), displayName);
+            result[i] = new(key.GetValue<string>(), displayName);
         }
         return result;
     }
@@ -61,13 +59,13 @@ internal class FirstOfdClient : IDisposable
     /// <exception cref="HttpRequestException"/>
     /// <exception cref="UriFormatException"/>
     /// <exception cref="OperationCanceledException"/>
-    public async Task<KKT[]> FetchDevicesAsync(string orgKey, CancellationToken cancel = default)
+    public async Task<FirstOfdKKT[]> FetchDevicesAsync(string orgKey, CancellationToken cancel = default)
     {
         using var resp = await client.GetAsync($"v2/organisations/{orgKey}/kkms", cancel);
         var respStream = await resp.Content.ReadAsStreamAsync(cancel);
         var json = await JsonNode.ParseAsync(respStream, cancellationToken: cancel);
         var kkts = json!["kkms"]!.AsArray();
-        var result = new KKT[kkts.Count];
+        var result = new FirstOfdKKT[kkts.Count];
         for (var i = 0; i < result.Length; i++)
         {
             var item = kkts[i]!;
@@ -77,8 +75,20 @@ internal class FirstOfdClient : IDisposable
             var drives = new string[jsonDrives.Count];
             for (var j = 0; j < drives.Length; j++)
                 drives[j] = jsonDrives[j]!["fsFactoryNumber"]!.GetValue<string>();
-            result[i] = (id, regNumb, drives);
+            result[i] = new(id, regNumb, drives);
         }
         return result;
     }
+}
+
+internal readonly struct FirstOfdOrganisation(string id, string name)
+{
+    public string Id { get; } = id;
+    public string Name { get; } = name;
+}
+internal readonly struct FirstOfdKKT(int id, string regNumb, string[] drives)
+{
+    public int Id { get; } = id;
+    public string RegNumber { get; } = regNumb;
+    public string[] Drives { get; } = drives;
 }
