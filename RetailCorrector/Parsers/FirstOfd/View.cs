@@ -27,6 +27,10 @@ partial class FirstOfd
             grid.AddRow(GridUnitType.Auto);
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Auto);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Auto);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Auto);
 
             grid.AddChild(new Label()
                 .SetContent("API-ключ: "));
@@ -57,6 +61,20 @@ partial class FirstOfd
                 .SetItemsBinding(nameof(Presenter.Drives))
                 .SetSelectedValueBinding(nameof(Presenter.DriveId)), 2, 8);
 
+            grid.AddChild(new Label()
+                .SetContent("Начало периода: "), y: 10);
+            grid.AddChild(new DatePicker()
+                .SetRange(begin: new DateTime(2016, 06, 01))
+                .SetRangeBinding(endPath: nameof(Presenter.EndDate))
+                .SetDateBinding(nameof(Presenter.BeginDate)), 2, 10);
+
+            grid.AddChild(new Label()
+                .SetContent("Окончание периода: "), y: 12);
+            grid.AddChild(new DatePicker()
+                .SetRange(end: DateTime.Now)
+                .SetRangeBinding(beginPath: nameof(Presenter.BeginDate))
+                .SetDateBinding(nameof(Presenter.EndDate)), 2, 12);
+
             Content = grid;
         }
     }
@@ -86,6 +104,28 @@ file static class UIHelpers
     public static ComboBox SetSelectedValueBinding(this ComboBox element, string path)
     {
         element.SetBinding(ComboBox.SelectedValueProperty, path);
+        return element;
+    }
+
+    public static DatePicker SetDateBinding(this DatePicker element, string path)
+    {
+        element.SetBinding(DatePicker.SelectedDateProperty, path);
+        return element;
+    }
+
+    public static DatePicker SetRangeBinding(this DatePicker element, string beginPath = "", string endPath = "")
+    {
+        if (!string.IsNullOrWhiteSpace(beginPath))
+            element.SetBinding(DatePicker.DisplayDateStartProperty, beginPath);
+        if (!string.IsNullOrWhiteSpace(endPath))
+            element.SetBinding(DatePicker.DisplayDateEndProperty, endPath);
+        return element;
+    }
+
+    public static DatePicker SetRange(this DatePicker element, DateTime? begin = null, DateTime? end = null)
+    {
+        if (begin is null) element.DisplayDateStart = begin;
+        if (end is null) element.DisplayDateEnd = end;
         return element;
     }
 

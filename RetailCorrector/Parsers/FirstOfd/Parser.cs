@@ -93,6 +93,28 @@ internal sealed partial class FirstOfd : ParserBase<FirstOfd, FirstOfd.View>, IN
             PropertyChanged?.Invoke(this, CachedDriveIdArgs);
         }
     } = "";
+
+    public DateTime BeginDate
+    {
+        get;
+        set
+        {
+            if (value == field) return;
+            field = value;
+            PropertyChanged?.Invoke(this, CachedBeginDateArgs);
+        }
+    } = DateTime.Today;
+
+    public DateTime EndDate
+    {
+        get;
+        set
+        {
+            if (value == field) return;
+            field = value;
+            PropertyChanged?.Invoke(this, CachedEndDateArgs);
+        }
+    } = DateTime.Today;
     #endregion
 
     #region Команды
@@ -114,6 +136,8 @@ internal sealed partial class FirstOfd : ParserBase<FirstOfd, FirstOfd.View>, IN
     private static readonly PropertyChangedEventArgs CachedKKTArgs = new(nameof(KKT));
     private static readonly PropertyChangedEventArgs CachedDrivesArgs = new(nameof(Drives));
     private static readonly PropertyChangedEventArgs CachedDriveIdArgs = new(nameof(DriveId));
+    private static readonly PropertyChangedEventArgs CachedBeginDateArgs = new(nameof(BeginDate));
+    private static readonly PropertyChangedEventArgs CachedEndDateArgs = new(nameof(EndDate));
     #endregion
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -122,7 +146,8 @@ internal sealed partial class FirstOfd : ParserBase<FirstOfd, FirstOfd.View>, IN
     public override ParseInfo GenerateInfo() =>
         parseInfo = new ParseInfo(Name, 
             ("ККТ", KKT!.Value.RegNumber), 
-            ("ФН", DriveId));
+            ("ФН", DriveId), 
+            ("Период", $"{BeginDate:d} - {EndDate:d}"));
 
     public override IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, CancellationToken cancellationToken)
     {
