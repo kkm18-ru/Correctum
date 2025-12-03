@@ -5,7 +5,8 @@ namespace RetailCorrector.Data
 {
     internal struct Receipt(bool @readonly = false)
     {
-        public required Guid ParseId { get; set; }
+        public required Guid ParseId { get; init; }
+        public int DocNumber { get; set; }
         public DateTime Created { get; set; }
         public ulong DocSign { get; set; }
         public Operation Type { get; set; }

@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace RetailCorrector.Parsers;
@@ -32,6 +33,7 @@ internal partial class Saby : INotifyPropertyChanged
             if(field == value) return;
             field = value;
             PropertyChanged?.Invoke(this, InnNotifier);
+            UpdateDevices();
         }
     } = "";
     public string Device
@@ -44,16 +46,8 @@ internal partial class Saby : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, DeviceNotifier);
         }
     } = "";
-    public string Storage
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            PropertyChanged?.Invoke(this, StorageNotifier);
-        }
-    } = "";
+
+    public ObservableCollection<string> Devices { get; set; } = [];
     public DateTime FromDate
     {
         get;
@@ -74,14 +68,48 @@ internal partial class Saby : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, ToDateNotifier);
         }
     } = DateTime.Today;
+    public bool Authorizing
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, CanAuthorizeNotifier);
+        }
+    } = false;
+    public bool Authorized
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, AuthorizedNotifier);
+        }
+    } = false;
+
+    public bool CanAuthorize => !Authorizing;
+
+    private int ProgressValue = 0;
+
+#pragma warning disable S3168
+    private async void UpdateDevices()
+    {
+        Devices.Clear();
+        await foreach (var regId in _client.EnumerateDevicesAsync(Inn))
+            Devices.Add(regId);
+    }
+#pragma warning restore S3168
 
     private readonly static PropertyChangedEventArgs LoginNotifier = new(nameof(Login));
     private readonly static PropertyChangedEventArgs PasswordNotifier = new(nameof(Password));
     private readonly static PropertyChangedEventArgs InnNotifier = new(nameof(Inn));
     private readonly static PropertyChangedEventArgs DeviceNotifier = new(nameof(Device));
-    private readonly static PropertyChangedEventArgs StorageNotifier = new(nameof(Storage));
     private readonly static PropertyChangedEventArgs FromDateNotifier = new(nameof(FromDate));
     private readonly static PropertyChangedEventArgs ToDateNotifier = new(nameof(ToDate));
+    private readonly static PropertyChangedEventArgs CanAuthorizeNotifier = new(nameof(CanAuthorize));
+    private readonly static PropertyChangedEventArgs AuthorizedNotifier = new(nameof(Authorized));
 
     public event PropertyChangedEventHandler? PropertyChanged;
 }

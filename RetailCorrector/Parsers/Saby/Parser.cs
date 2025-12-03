@@ -1,5 +1,5 @@
 using RetailCorrector.Data;
-using System.Net.Http;
+using RetailCorrector.Utils.Integrations;
 using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Parsers;
@@ -7,35 +7,62 @@ namespace RetailCorrector.Parsers;
 internal partial class Saby : ParserBase<Saby, Saby.View>
 {
     public override string Name => "SabyOFD";
+    private readonly SabyClient _client = new();
 
     public override ParseInfo GenerateInfo() =>
-        parseInfo = new("SabyOFD", ("ИНН", Inn), ("ККТ", Device), ("ФН", Storage), 
+        parseInfo = new ParseInfo(Name, ("ИНН", Inn), ("ККТ", Device), 
             ("Старт", FromDate.ToString("dd'.'MM'.'yyyy")), 
             ("Конец", ToDate.ToString("dd'.'MM'.'yyyy")));
 
-    public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<Receipt> Parse
+        (IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        using var http = new HttpClient
+        var drives = await _client.FetchDrivesAsync(Inn, Device, FromDate, ToDate, cancellationToken);
+        progress.Report(-drives.Sum(drive =>
         {
-            BaseAddress = new Uri(BaseHost)
-        };
-        await Auth(http);
-        progress.Report(-(int)(ToDate - FromDate).TotalDays - 1);
-        for(var day = FromDate; day <= ToDate; day = day.AddDays(1))
+            var (start, end) = GetAvailablePeriod(drive);
+            return (end.Date - start.Date).Days + 1;
+        }));
+        ProgressValue = 0;
+        foreach (var drive in drives)
         {
-            int? offset = null;
-            while (true)
-            {
-                var (arr, @continue) = await ParsePage(http, day, offset);
-                offset = arr.LastOrDefault()?["fiscalDocumentNumber"]!.GetValue<int>() ?? null;
-                foreach (var node in arr)
-                {
-                    if (node is null) continue;
-                    yield return ToReceipt(node);
-                }
-                if (!@continue) break;
-            }
-            progress.Report((long)(day - FromDate).TotalDays + 1);
+            await foreach (var receipt in ParseByStorage(drive, progress, cancellationToken))
+                yield return receipt;
         }
+    }
+
+    private async IAsyncEnumerable<Receipt> ParseByStorage
+        (SabyDriveResponse drive,IProgress<long> progress,  [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        var baseRequest = new SabyReceiptsRequest(parseInfo.Id, Inn, Device, drive.Id);
+        var (start, end) = GetAvailablePeriod(drive);
+        for(var day = start; day <= end; day = day.AddDays(1))
+        {
+            var request = baseRequest with { DateFrom = day, DateTo = day.AddSeconds(86_399) };
+            await foreach (var receipt in ParseByDay(request, cancellationToken))
+                yield return receipt;
+            progress.Report(++ProgressValue);
+        }
+    }
+
+    private async IAsyncEnumerable<Receipt> ParseByDay
+        (SabyReceiptsRequest args, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        var offset = 0;
+        while (true)
+        {
+            var receipts = await _client.FetchReceiptsAsync(args, offset, cancellationToken);
+            if (receipts is null || receipts.Length == 0) break;
+            offset = receipts[^1].DocNumber;
+            foreach (var receipt in receipts) yield return receipt;
+        }
+    }
+
+    private (DateTime, DateTime) GetAvailablePeriod(SabyDriveResponse drive)
+    {
+        var end = drive.DateEnd ?? DateTime.Now;
+        end = end > ToDate ? ToDate : end;
+        var start = drive.DateStart > FromDate ? drive.DateStart : FromDate;
+        return (start.Date, end.Date);
     }
 }
