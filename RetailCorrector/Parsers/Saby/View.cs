@@ -5,6 +5,7 @@ using RetailCorrector.Utils.ValidationRules;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using RetailCorrector.Utils.Integrations;
 using Xceed.Wpf.Toolkit;
 using MessageBox = System.Windows.MessageBox;
 
@@ -64,7 +65,12 @@ internal partial class Saby
                 catch (Exception e)
                 {
                     Dispatcher.Invoke(() => Presenter.Authorized = false);
-                    MessageBox.Show(e.Message, "Произошла ошибка...", 0, MessageBoxImage.Error);
+                    var (message, caption) = e switch
+                    {
+                        SabyException s => (s.Description, s.Title),
+                        _ => (e.Message, "Произошла ошибка...")
+                    };
+                    MessageBox.Show(message, caption, 0, MessageBoxImage.Error);
                 }
                 finally
                 {

@@ -3,7 +3,9 @@ using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Http.Resilience;
 using Polly;
 using RetailCorrector.Data;
@@ -47,6 +49,11 @@ internal class SabyClient
         req.Content = JsonContent.Create(body);
         using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
+        if(!resp.IsSuccessStatusCode)
+        {
+            var node = await JsonNode.ParseAsync(stream, cancellationToken: cancel).ConfigureAwait(false);
+            throw new SabyException(node?["error"]?.GetValue<string>() ?? "");
+        }
         var json = await JsonSerializer.DeserializeAsync<AuthResponse>(stream, cancellationToken: cancel).ConfigureAwait(false);
         _client.DefaultRequestHeaders.Add("Cookie", $"sid={json.SessionId}");
     }
@@ -299,4 +306,20 @@ file struct ItemResponse
     [JsonPropertyName("paymentType")]
     public PayMethod? Payment { get; set; }
 
+}
+
+public partial class SabyException : Exception
+{
+    public string Title { get; init; }
+    public string Description { get; init; }
+    
+    public SabyException(string errorMessage) : base(errorMessage)
+    {
+        var match = MessageRegex().Match(errorMessage.Replace("\\\"", "\""));
+        Title = match.Groups["title"].Value;
+        Description = match.Groups["desc"].Value;
+    }
+
+    [GeneratedRegex(@"(?<title>.+) \[0\] \(ОПИСАНИЕ: (?<desc>.+)\)")]
+    private static partial Regex MessageRegex();
 }
