@@ -2,11 +2,9 @@ using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Extensions;
 using RetailCorrector.Utils.ValidationRules;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using RetailCorrector.Utils.Integrations;
-using Xceed.Wpf.Toolkit;
 using MessageBox = System.Windows.MessageBox;
 
 namespace RetailCorrector.Parsers;
@@ -80,31 +78,23 @@ internal partial class Saby
             grid.AddChild(btn, y: 4, dx: 3);
 
             grid.AddChild(CreateLabel("Начало сканирования"), y: 6);
-            var dp = new DateTimePicker
+            var dp = new DatePicker
             {
-                Minimum = new DateTime(2016, 6, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                Format = DateTimeFormat.ShortDate,
-                CultureInfo = CultureInfo.GetCultureInfo("ru-RU"),
-                TimePickerVisibility = Visibility.Collapsed,
-                ShowButtonSpinner = false,
-                ShowDropDownButton = false
+                DisplayDateStart = new DateTime(2016, 6, 1, 0,0,0, (DateTimeKind)0),
+                SelectedDateFormat = DatePickerFormat.Short
             };
-            dp.SetBinding(DateTimePicker.ValueProperty, nameof(FromDate));
-            dp.SetBinding(DateTimePicker.MaximumProperty, nameof(ToDate));
+            dp.SetBinding(DatePicker.SelectedDateProperty, nameof(FromDate));
+            dp.SetBinding(DatePicker.DisplayDateEndProperty, nameof(ToDate));
             grid.AddChild(dp, 2, 6);
 
             grid.AddChild(CreateLabel("Конец сканирования"), y: 8);
-            dp = new DateTimePicker
+            dp = new DatePicker
             {
-                Maximum = DateTime.Today,
-                Format = DateTimeFormat.ShortDate,
-                CultureInfo = CultureInfo.GetCultureInfo("ru-RU"),
-                TimePickerVisibility = Visibility.Collapsed,
-                ShowButtonSpinner = false,
-                ShowDropDownButton = false
+                DisplayDateEnd = DateTime.Today,
+                SelectedDateFormat = DatePickerFormat.Short
             };
-            dp.SetBinding(DateTimePicker.ValueProperty, nameof(ToDate));
-            dp.SetBinding(DateTimePicker.MinimumProperty, nameof(FromDate));
+            dp.SetBinding(DatePicker.SelectedDateProperty, nameof(ToDate));
+            dp.SetBinding(DatePicker.DisplayDateStartProperty, nameof(FromDate));
             grid.AddChild(dp, 2, 8);
 
             grid.AddChild(CreateLabel("ИНН организации"), y: 10);

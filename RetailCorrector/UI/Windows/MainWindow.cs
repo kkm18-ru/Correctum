@@ -1,4 +1,5 @@
-﻿using RetailCorrector.UI.Controls;
+﻿using System.Globalization;
+using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations;
 using System.Windows;
@@ -16,6 +17,8 @@ public partial class MainWindow : Window
 
     private MainWindow()
     {
+        Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
+        
         Title = "RetailCorrector";
         WindowStyle = WindowStyle.None;
         ResizeMode = ResizeMode.NoResize;
