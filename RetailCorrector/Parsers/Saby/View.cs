@@ -80,7 +80,7 @@ internal partial class Saby
             grid.AddChild(CreateLabel("Начало сканирования"), y: 6);
             var dp = new DatePicker
             {
-                DisplayDateStart = new DateTime(2016, 6, 1, 0,0,0, (DateTimeKind)0),
+                DisplayDateStart = Constants.OfdBeginDate,
                 SelectedDateFormat = DatePickerFormat.Short
             };
             dp.SetBinding(DatePicker.SelectedDateProperty, nameof(FromDate));

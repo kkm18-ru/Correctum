@@ -44,7 +44,7 @@ namespace RetailCorrector.Parsers
                 #region Ввод
                 var dp = new DatePicker
                 {
-                    DisplayDateStart = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                    DisplayDateStart = Constants.OfdBeginDate,
                     SelectedDateFormat = DatePickerFormat.Short
                 };
                 dp.SetBinding(DatePicker.SelectedDateProperty, nameof(Presenter.BeginDate));
