@@ -6,35 +6,17 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using RetailCorrector.Exceptions.Saby;
-using Microsoft.Extensions.Http.Resilience;
-using Polly;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 
 namespace RetailCorrector.Utils.Integrations;
 
 /// <summary>Обертка API-клиента SabyOFD.</summary>
-internal class SabyClient
+internal sealed class SabyClient : APIWrapper
 {
-    private static readonly HttpMessageHandler Handler = InitHandler();
     private const string BaseHost = "https://api.sbis.ru";
 
     private readonly HttpClient _client = new(Handler, disposeHandler: false) { BaseAddress = new Uri(BaseHost) };
-
-    private static ResilienceHandler InitHandler()
-    {
-        var retryPipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
-            .AddRetry(new HttpRetryStrategyOptions
-            {
-                BackoffType = DelayBackoffType.Exponential,
-                MaxRetryAttempts = 3
-            }).Build();
-        var httpHandler = new SocketsHttpHandler
-        {
-            PooledConnectionLifetime = TimeSpan.FromMinutes(10)
-        };
-        return new ResilienceHandler(retryPipeline) { InnerHandler = httpHandler };
-    }
 
     /// <summary>Аутентификация в API SabyOFD.</summary>
     /// <param name="login">Логин пользователя от личного кабинета Saby.</param>

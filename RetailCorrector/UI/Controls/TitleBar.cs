@@ -20,15 +20,20 @@ namespace RetailCorrector.UI.Controls
             var btn = CreateExitButton();
             Canvas.SetRight(btn, 0);
             Children.Add(btn);
-            
-            btn = CreateButton("");
-            btn.Click += (_, _) => new SettingsWindow().ShowDialog();
-            Canvas.SetRight(btn, 45);
-            Children.Add(btn);
 
             btn = CreateButton("");
             btn.Click += (_,_) => MainWindow.Instance.WindowState = WindowState.Minimized;
-            Canvas.SetRight(btn, 90);
+            Canvas.SetRight(btn, 45);
+            Children.Add(btn);
+
+            btn = CreateButton("");
+            btn.Click += (_, _) => new SettingsWindow().ShowDialog();
+            Canvas.SetRight(btn, 110);
+            Children.Add(btn);
+
+            btn = CreateButton("");
+            btn.Click += (_, _) => new FeedbackWindow().ShowDialog();
+            Canvas.SetRight(btn, 155);
             Children.Add(btn);
         }
 
