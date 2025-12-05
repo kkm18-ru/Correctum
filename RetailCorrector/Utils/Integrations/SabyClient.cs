@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
+using RetailCorrector.Exceptions.Saby;
 using Microsoft.Extensions.Http.Resilience;
 using Polly;
 using RetailCorrector.Data;
@@ -52,7 +52,7 @@ internal class SabyClient
         if(!resp.IsSuccessStatusCode)
         {
             var node = await JsonNode.ParseAsync(stream, cancellationToken: cancel).ConfigureAwait(false);
-            throw new SabyException(node?["error"]?.GetValue<string>() ?? "");
+            throw new SabyAuthException(node?["error"]?.GetValue<string>() ?? "");
         }
         var json = await JsonSerializer.DeserializeAsync<AuthResponse>(stream, cancellationToken: cancel).ConfigureAwait(false);
         _client.DefaultRequestHeaders.Add("Cookie", $"sid={json.SessionId}");
@@ -68,6 +68,7 @@ internal class SabyClient
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/ofd/v1/orgs/{inn}/kkts");
         using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
+        if (!resp.IsSuccessStatusCode) throw new SabyException(stream);
         var enumerable = JsonSerializer.DeserializeAsyncEnumerable<KktResponse>(stream, cancellationToken: cancel)
             .ConfigureAwait(false);
         await foreach (var kkt in enumerable)
@@ -87,6 +88,7 @@ internal class SabyClient
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/ofd/v1/orgs/{inn}/kkts/{regId}/storages");
         using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
+        if (!resp.IsSuccessStatusCode) throw new SabyException(stream);
         var json = await JsonSerializer.DeserializeAsync<SabyDriveResponse[]>(stream, cancellationToken: cancel) ?? [];
         return [..json.Where(i => !(i.DateStart > dateTo || (i.DateEnd is not null && i.DateEnd < dateFrom)))];
     }
@@ -103,6 +105,7 @@ internal class SabyClient
         builder.Append($"&startId={offset}&limit={Configuration.Instance.HttpClient.PageSize}");
         using var resp = await _client.GetAsync(builder.ToString(), cancel);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancel);
+        if (!resp.IsSuccessStatusCode) throw new SabyException(stream);
         var json = await JsonSerializer.DeserializeAsync<DocumentResponse[]>(stream, cancellationToken: cancel) ?? [];
         return json.Length == 0 ? null :
             [..json.Where(i => i.GenericReceipt is not null)
@@ -308,18 +311,3 @@ file struct ItemResponse
 
 }
 
-public partial class SabyException : Exception
-{
-    public string Title { get; init; }
-    public string Description { get; init; }
-    
-    public SabyException(string errorMessage) : base(errorMessage)
-    {
-        var match = MessageRegex().Match(errorMessage.Replace("\\\"", "\""));
-        Title = match.Groups["title"].Value;
-        Description = match.Groups["desc"].Value;
-    }
-
-    [GeneratedRegex(@"(?<title>.+) \[0\] \(ОПИСАНИЕ: (?<desc>.+)\)")]
-    private static partial Regex MessageRegex();
-}

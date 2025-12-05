@@ -4,7 +4,7 @@ using RetailCorrector.Utils.Extensions;
 using RetailCorrector.Utils.ValidationRules;
 using System.Windows;
 using System.Windows.Controls;
-using RetailCorrector.Utils.Integrations;
+using RetailCorrector.Exceptions.Saby;
 using MessageBox = System.Windows.MessageBox;
 
 namespace RetailCorrector.Parsers;
@@ -65,7 +65,7 @@ internal partial class Saby
                     Dispatcher.Invoke(() => Presenter.Authorized = false);
                     var (message, caption) = e switch
                     {
-                        SabyException s => (s.Description, s.Title),
+                        SabyAuthException s => (s.Description, s.Title),
                         _ => (e.Message, "Произошла ошибка...")
                     };
                     MessageBox.Show(message, caption, 0, MessageBoxImage.Error);
