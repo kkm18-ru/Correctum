@@ -37,32 +37,13 @@ namespace RetailCorrector.Parsers
                     pos[j].Cost = pos[j].Price * (pos[j].Quantity / 1000);
                     sum += pos[j].Cost;
                 }
-                var payment = new Payment();
-                switch(faker.Random.Byte(0, 4))
-                {
-                    case 0:
-                        payment.Cash = sum;
-                        break;
-                    case 1:
-                        payment.ECash = sum;
-                        break;
-                    case 2:
-                        payment.Pre = sum;
-                        break;
-                    case 3:
-                        payment.Post = sum;
-                        break;
-                    case 4:
-                        payment.Provision = sum;
-                        break;
-                }
                 yield return new()
                 {
                     Items = pos,
                     Created = faker.Date.Past(),
                     DocSign = faker.Random.ULong(10000000, 99999999999),
                     Type = faker.Random.Enum<Operation>(),
-                    Payment = payment,
+                    PaymentSums = [new PaymentSum(faker.Random.Enum<PaymentType>(), sum)],
                     TotalSum = sum,
                     ParseId = parseInfo.Id,
                     TaxationSystem = faker.Random.Enum<TaxationSystem>()

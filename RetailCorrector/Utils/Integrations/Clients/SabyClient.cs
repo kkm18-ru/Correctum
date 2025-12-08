@@ -235,14 +235,14 @@ file struct ReceiptResponse
     {
         ParseId = parseId,
         Items = Items.Select(ToPosition).ToArray(),
-        Payment = new Payment
+        PaymentSums = [..new PaymentSum[]
         {
-            Cash = Cash,
-            ECash = Ecash,
-            Pre = Prepaid,
-            Post = Credit,
-            Provision = Provision
-        },
+            new(PaymentType.Cash, Cash),
+            new(PaymentType.NonCash, Ecash),
+            new(PaymentType.Advance, Prepaid),
+            new(PaymentType.Credit, Credit),
+            new(PaymentType.Other, Provision)
+        }.Where(i => i.Sum > 0)],
         Type = Operation,
         BuyerContact = Buyer,
         DocSign = Sign,

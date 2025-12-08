@@ -195,7 +195,7 @@ internal sealed class FptrWindow : Types.DialogWindow
         return handle.OpenReceipt(receipt, openArgs) &&
             receipt.Items.All(handle.AddPosition) &&
             handle.SetTotal(receipt.TotalSum / 100.0) &&
-            handle.Payment(receipt.Payment) &&
+            handle.Payment(receipt.PaymentSums) &&
             handle.CloseReceipt();
     }
 

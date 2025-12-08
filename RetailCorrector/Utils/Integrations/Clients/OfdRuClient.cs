@@ -101,11 +101,13 @@ file struct Document
     public string OperationType { get; set; }
     public TaxationSystem TaxationType { get; set; }
     public DocumentItem[] Items { get; set; }
+
     public ulong CashSumm { get; set; }
     public ulong ECashSumm { get; set; }
     public ulong PrepaidSumm { get; set; }
     public ulong CreditSumm { get; set; }
     public ulong ProvisionSumm { get; set; }
+
 
     public Receipt ToReceipt(Guid ParseId) => new()
     {
@@ -121,14 +123,14 @@ file struct Document
             _ => throw new NotSupportedException($"Тип операции '{OperationType}' не поддерживается.")
         },
         Items = [.. Items.Select(i => i.ToPosition())],
-        Payment = new Payment
+        PaymentSums = [.. new PaymentSum[] 
         {
-            Cash = CashSumm,
-            ECash = ECashSumm,
-            Pre = PrepaidSumm,
-            Post = CreditSumm,
-            Provision = ProvisionSumm
-        },
+            new(PaymentType.Cash, CashSumm),
+            new(PaymentType.NonCash, ECashSumm),
+            new(PaymentType.Advance, PrepaidSumm),
+            new(PaymentType.Credit, CreditSumm),
+            new(PaymentType.Other, ProvisionSumm)
+        }.Where(p => p.Sum > 0)],
         TotalSum = TotalSumm,
         TaxationSystem = TaxationType
     };

@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using RetailCorrector.Enums;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -101,11 +102,11 @@ namespace RetailCorrector.UI.Controls
                 {
                     object src = cond.PartId switch
                     {
-                        0 => item.Payment.Cash * 0.01,
-                        1 => item.Payment.ECash * 0.01,
-                        2 => item.Payment.Pre * 0.01,
-                        3 => item.Payment.Post * 0.01,
-                        4 => item.Payment.Provision * 0.01,
+                        0 => item.PaymentSums.FirstOrDefault(p => p.Type == PaymentType.Cash).Sum * 0.01,
+                        1 => item.PaymentSums.FirstOrDefault(p => p.Type == PaymentType.NonCash).Sum * 0.01,
+                        2 => item.PaymentSums.FirstOrDefault(p => p.Type == PaymentType.Advance).Sum * 0.01,
+                        3 => item.PaymentSums.FirstOrDefault(p => p.Type == PaymentType.Credit).Sum * 0.01,
+                        4 => item.PaymentSums.FirstOrDefault(p => p.Type == PaymentType.Other).Sum * 0.01,
                         5 => item.TotalSum * 0.01,
                     };
                     if(!o.Action.Invoke(src, val))

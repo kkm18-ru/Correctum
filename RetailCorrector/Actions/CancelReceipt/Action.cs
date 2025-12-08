@@ -28,7 +28,7 @@ namespace RetailCorrector.Actions
                     Created = receipt.Created,
                     DocSign = receipt.DocSign,
                     Items = (Position[])receipt.Items.Clone(),
-                    Payment = receipt.Payment,
+                    PaymentSums = receipt.PaymentSums,
                     Type = receipt.Type switch
                     {
                         Enums.Operation.RefundOutcome => Enums.Operation.Outcome,

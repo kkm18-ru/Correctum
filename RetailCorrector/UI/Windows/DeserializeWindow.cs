@@ -90,7 +90,7 @@ namespace RetailCorrector.UI.Windows
             var receipt = new Receipt
             {
                 ParseId = Workspace.Instance.ParserHistory[^1].Id,
-                Payment = new Payment()
+                PaymentSums = [],
             };
             Current.Deserialize(Text, ref receipt);
             Workspace.Instance.Receipts.Add(receipt);

@@ -62,19 +62,20 @@ namespace RetailCorrector.Utils.Integrations
             return receiptTotal(handle) == 0;
         }
 
-        public bool Payment(uint type, double sum)
+        public bool Payment(PaymentSum data)
         {
-            SetInteger(65564, type);
-            SetDouble(65565, sum);
+            SetInteger(65564, (uint)data.Type);
+            SetDouble(65565, data.Sum / 100.0);
             return payment(handle) == 0;
         }
 
-        public bool Payment(Payment pay) =>
-            (pay.Cash == 0 || Payment(0, pay.Cash / 100.0)) &&
-            (pay.ECash == 0 || Payment(1, pay.ECash / 100.0)) &&
-            (pay.Pre == 0 || Payment(2, pay.Pre / 100.0)) &&
-            (pay.Post == 0 || Payment(3, pay.Post / 100.0)) &&
-            (pay.Provision == 0 || Payment(4, pay.Provision / 100.0));
+        public bool Payment(PaymentSum[] array)
+        {
+            foreach(var data in array)
+                if (!Payment(data)) 
+                    return false;
+            return true;
+        }
 
         public bool CloseReceipt() => closeReceipt(handle) == 0;
 

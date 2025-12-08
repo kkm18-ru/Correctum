@@ -21,14 +21,14 @@ namespace RetailCorrector.Deserializers
             receipt.Created = DateTime.ParseExact(doc["DateTime"]!.GetValue<string>(), DATE_FORMAT, null);
             receipt.Type = (Operation)doc["OperationType"]!.GetValue<int>();
             receipt.TotalSum = doc["Amount_Total"]!.GetValue<ulong>();
-            receipt.Payment = new Payment
+            receipt.PaymentSums = [.. new PaymentSum[] 
             {
-                Cash = doc["Amount_Cash"]!.GetValue<ulong>(),
-                ECash = doc["Amount_ECash"]!.GetValue<ulong>(),
-                Pre = doc["Amount_Advance"]!.GetValue<ulong>(),
-                Post = doc["Amount_Loan"]!.GetValue<ulong>(),
-                Provision = doc["Amount_Granting"]!.GetValue<ulong>(),
-            };
+                new(PaymentType.Cash, doc["Amount_Cash"]!.GetValue<ulong>()),
+                new(PaymentType.NonCash, doc["Amount_ECash"]!.GetValue<ulong>()),
+                new(PaymentType.Advance, doc["Amount_Advance"]!.GetValue<ulong>()),
+                new(PaymentType.Credit, doc["Amount_Loan"]!.GetValue<ulong>()),
+                new(PaymentType.Other, doc["Amount_Granting"]!.GetValue<ulong>())
+            }.Where(p => p.Sum > 0)];
             receipt.Items = new Position[items.Count];
             for(var i = 0; i< receipt.Items.Length; i++)
             {

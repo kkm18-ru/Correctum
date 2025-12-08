@@ -12,6 +12,7 @@ internal sealed partial class PlatformOfd : IReceiptDeserializer
     public void Deserialize(string raw, ref Receipt receipt)
     {
         var items = new List<Position>();
+        var paysums = new List<PaymentSum>(2);
         var lines = raw.Replace("\r", "").Split("\n");
         object? item = null;
 
@@ -42,39 +43,19 @@ internal sealed partial class PlatformOfd : IReceiptDeserializer
                     receipt.TotalSum = ulong.Parse(value);
                     break;
                 case "1031":
-                {
-                    var payment = receipt.Payment;
-                    payment.Cash = ulong.Parse(value);
-                    receipt.Payment = payment;
-                }
+                    paysums.Add(new PaymentSum(PaymentType.Cash, ulong.Parse(value)));
                     break;
                 case "1081":
-                {
-                    var payment = receipt.Payment;
-                    payment.ECash = ulong.Parse(value);
-                    receipt.Payment = payment;
-                }
+                    paysums.Add(new PaymentSum(PaymentType.NonCash, ulong.Parse(value)));
                     break;
                 case "1215":
-                {
-                    var payment = receipt.Payment;
-                    payment.Pre = ulong.Parse(value);
-                    receipt.Payment = payment;
-                }
+                    paysums.Add(new PaymentSum(PaymentType.Advance, ulong.Parse(value)));
                     break;
                 case "1216":
-                {
-                    var payment = receipt.Payment;
-                    payment.Post = ulong.Parse(value);
-                    receipt.Payment = payment;
-                }
+                    paysums.Add(new PaymentSum(PaymentType.Credit, ulong.Parse(value)));
                     break;
                 case "1217":
-                {
-                    var payment = receipt.Payment;
-                    payment.Provision = ulong.Parse(value);
-                    receipt.Payment = payment;
-                }
+                    paysums.Add(new PaymentSum(PaymentType.Other, ulong.Parse(value)));
                     break;
                 case "1059":
                     item = new Position();
@@ -138,6 +119,7 @@ internal sealed partial class PlatformOfd : IReceiptDeserializer
             }
         }
         receipt.Items = [..items];
+        receipt.PaymentSums = [.. paysums.Where(p => p.Sum > 0)];
     }
 
     [GeneratedRegex(@"^ (\|  )*\+- \[(?<code>\d{4})\] [a-zA-Z0-9]+( +(?<value>[^ ]*))?$")]

@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using RetailCorrector.Enums;
+using System.Windows.Media;
 
 namespace RetailCorrector.Data
 {
@@ -11,17 +12,17 @@ namespace RetailCorrector.Data
         public string Sign { get; } = $"{origin.DocSign}";
         public string Type { get; } = origin.Type switch
         {
-            Enums.Operation.Income => "Приход",
-            Enums.Operation.Outcome => "Расход",
-            Enums.Operation.RefundIncome => "Возврат прихода",
-            Enums.Operation.RefundOutcome => "Возврат расхода",
+            Operation.Income => "Приход",
+            Operation.Outcome => "Расход",
+            Operation.RefundIncome => "Возврат прихода",
+            Operation.RefundOutcome => "Возврат расхода",
             _ => "???"
         }; 
-        public string Cash { get; } = $"{(origin.Payment.Cash * 0.01):F2}";
-        public string eCash { get; } = $"{(origin.Payment.ECash * 0.01):F2}";
-        public string PrePay { get; } = $"{(origin.Payment.Pre * 0.01):F2}";
-        public string PostPay { get; } = $"{(origin.Payment.Post * 0.01):F2}";
-        public string OtherPay { get; } = $"{(origin.Payment.Provision * 0.01):F2}";
+        public string Cash { get; } = $"{(origin.PaymentSums.FirstOrDefault(p => p.Type == PaymentType.Cash).Sum * 0.01):F2}";
+        public string eCash { get; } = $"{(origin.PaymentSums.FirstOrDefault(p => p.Type == PaymentType.NonCash).Sum * 0.01):F2}";
+        public string PrePay { get; } = $"{(origin.PaymentSums.FirstOrDefault(p => p.Type == PaymentType.Advance).Sum * 0.01):F2}";
+        public string PostPay { get; } = $"{(origin.PaymentSums.FirstOrDefault(p => p.Type == PaymentType.Credit).Sum * 0.01):F2}";
+        public string OtherPay { get; } = $"{(origin.PaymentSums.FirstOrDefault(p => p.Type == PaymentType.Other).Sum * 0.01):F2}";
         public string Total { get; } = $"{(origin.TotalSum * 0.01):F2}";
         public string TaxationSystem { get; } = origin.TaxationSystem switch
         {

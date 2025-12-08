@@ -11,7 +11,7 @@ namespace RetailCorrector.Data
         public ulong DocSign { get; set; }
         public Operation Type { get; set; }
         public Position[] Items { get; set; }
-        public Payment Payment { get; set; }
+        public PaymentSum[] PaymentSums { get; set; }
         public ulong TotalSum { get; set; }
         public string BuyerContact { get; set; }
         public TaxationSystem TaxationSystem { get; set; }
