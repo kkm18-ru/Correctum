@@ -1,6 +1,6 @@
 ﻿using RetailCorrector.UI.Windows.Types;
 using RetailCorrector.Utils.Extensions;
-using RetailCorrector.Utils.Integrations;
+using RetailCorrector.Utils.Integrations.Clients;
 using System.ComponentModel;
 using System.Text;
 using System.Windows;

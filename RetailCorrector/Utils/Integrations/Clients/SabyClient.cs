@@ -9,10 +9,10 @@ using RetailCorrector.Exceptions.Saby;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 
-namespace RetailCorrector.Utils.Integrations;
+namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>Обертка API-клиента SabyOFD.</summary>
-internal sealed class SabyClient : APIWrapper
+internal sealed class SabyClient : APIClient
 {
     private const string BaseHost = "https://api.sbis.ru";
 

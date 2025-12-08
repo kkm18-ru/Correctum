@@ -2,9 +2,9 @@
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 
-namespace RetailCorrector.Utils.Integrations;
+namespace RetailCorrector.Utils.Integrations.Clients;
 
-internal class FeedbackClient : APIWrapper
+internal class FeedbackClient : APIClient
 {
     private readonly HttpClient _client = new(Handler, false);
     private const string project = "retailcorrector";

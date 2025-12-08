@@ -1,30 +1,21 @@
-﻿using System.ComponentModel;
+﻿using RetailCorrector.Utils.Integrations.Clients;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace RetailCorrector.Parsers
 {
     internal partial class OfdRu : INotifyPropertyChanged
     {
-        public string Token
+        public OfdRuDevice Device
         {
             get;
             set
             {
-                if (field == value) return;
+                if (field.Equals(value)) return;
                 field = value;
-                PropertyChanged?.Invoke(this, TokenNotifier);
-                TokenChanged?.Invoke();
+                PropertyChanged?.Invoke(this, DeviceNotifier);
             }
-        } = "";
-        public string DeviceId
-        {
-            get;
-            set
-            {
-                if (field == value) return;
-                field = value;
-                PropertyChanged?.Invoke(this, DeviceIdNotifier);
-            }
-        } = "";
+        }
         public string Storage
         {
             get;
@@ -35,14 +26,14 @@ namespace RetailCorrector.Parsers
                 PropertyChanged?.Invoke(this, StorageNotifier);
             }
         } = "";
-        public string Vatin
+        public string Token
         {
             get;
             set
             {
                 if (field == value) return;
                 field = value;
-                PropertyChanged?.Invoke(this, VatinNotifier);
+                PropertyChanged?.Invoke(this, TokenNotifier);
             }
         } = "";
         public DateTime BeginDate
@@ -65,15 +56,39 @@ namespace RetailCorrector.Parsers
                 PropertyChanged?.Invoke(this, EndDateNotifier);
             }
         } = DateTime.Today;
+        public bool Authorizing
+        {
+            get;
+            set
+            {
+                if (field == value) return;
+                field = value;
+                PropertyChanged?.Invoke(this, CanAuthorizeNotifier);
+            }
+        } = false;
+        public bool Authorized
+        {
+            get;
+            set
+            {
+                if (field == value) return;
+                field = value;
+                PropertyChanged?.Invoke(this, AuthorizedNotifier);
+            }
+        } = false;
 
-        private readonly static PropertyChangedEventArgs TokenNotifier = new(nameof(Token));
-        private readonly static PropertyChangedEventArgs DeviceIdNotifier = new(nameof(DeviceId));
+        public bool CanAuthorize => !Authorizing;
+
+        public ObservableCollection<OfdRuDevice> Devices { get; } = [];
+
+        private readonly static PropertyChangedEventArgs DeviceNotifier = new(nameof(Device));
         private readonly static PropertyChangedEventArgs StorageNotifier = new(nameof(Storage));
-        private readonly static PropertyChangedEventArgs VatinNotifier = new(nameof(Vatin));
+        private readonly static PropertyChangedEventArgs TokenNotifier = new(nameof(Token));
         private readonly static PropertyChangedEventArgs BeginDateNotifier = new(nameof(BeginDate));
         private readonly static PropertyChangedEventArgs EndDateNotifier = new(nameof(EndDate));
+        private readonly static PropertyChangedEventArgs CanAuthorizeNotifier = new(nameof(CanAuthorize));
+        private readonly static PropertyChangedEventArgs AuthorizedNotifier = new(nameof(Authorized));
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        public event Action? TokenChanged;
     }
 }

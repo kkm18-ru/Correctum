@@ -2,9 +2,9 @@
 using Polly;
 using System.Net.Http;
 
-namespace RetailCorrector.Utils.Integrations;
+namespace RetailCorrector.Utils.Integrations.Clients;
 
-internal abstract class APIWrapper
+internal abstract class APIClient
 {
     protected static readonly HttpMessageHandler Handler = InitHandler();
 
