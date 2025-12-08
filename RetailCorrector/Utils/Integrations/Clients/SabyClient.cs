@@ -200,10 +200,28 @@ file struct ReceiptResponse
     
     [JsonPropertyName("totalSum")]
     public ulong Total { get; set; }
-    
+
     [JsonPropertyName("cashTotalSum")]
     public ulong Cash { get; set; }
-    
+
+    [JsonPropertyName("nds18")]
+    public ulong SumTax18 { get; set; }
+
+    [JsonPropertyName("nds10")]
+    public ulong SumTax10 { get; set; }
+
+    [JsonPropertyName("nds0")]
+    public ulong SumTax0 { get; set; }
+
+    [JsonPropertyName("ndsNo")]
+    public ulong SumTaxNo { get; set; }
+
+    [JsonPropertyName("ndsCalculated18")]
+    public ulong SumTax118 { get; set; }
+
+    [JsonPropertyName("ndsCalculated10")]
+    public ulong SumTax110 { get; set; }
+
     [JsonPropertyName("operationType")]
     public Operation Operation { get; set; }
 
@@ -231,6 +249,9 @@ file struct ReceiptResponse
     [JsonPropertyName("fiscalDocumentNumber")]
     public int Number { get; set; }
 
+    [JsonPropertyName("amountsReceiptNds")]
+    public TaxSumsResponse TaxSums { get; set; }
+
     public Receipt ToReceipt(Guid parseId) => new()
     {
         ParseId = parseId,
@@ -243,6 +264,16 @@ file struct ReceiptResponse
             new(PaymentType.Credit, Credit),
             new(PaymentType.Other, Provision)
         }.Where(i => i.Sum > 0)],
+        TaxSums = [..new TaxSum[]
+        {
+            new(TaxRate.Without, SumTaxNo),
+            new(TaxRate.Tax0, SumTax0),
+            new(TaxRate.Tax10, SumTax10),
+            new(TaxRate.Tax20, SumTax18),
+            new(TaxRate.Calc10, SumTax110),
+            new(TaxRate.Calc20, SumTax118)
+        }.Where(i => i.Sum > 0),
+            ..TaxSums.Array.Select(t => t.ToTaxSum()).Where(i => i.Sum > 0).ToArray()],
         Type = Operation,
         BuyerContact = Buyer,
         DocSign = Sign,
@@ -293,3 +324,18 @@ file struct ItemResponse
 
 }
 
+file struct TaxSumResponse
+{
+    [JsonPropertyName("nds")]
+    public TaxRate Rate { get; set; }
+    [JsonPropertyName("ndsSum")]
+    public ulong Sum { get; set; }
+
+    public TaxSum ToTaxSum() => new(Rate, Sum);
+}
+
+file struct TaxSumsResponse
+{
+    [JsonPropertyName("amountsNds")]
+    public TaxSumResponse[] Array { get; set; }
+}

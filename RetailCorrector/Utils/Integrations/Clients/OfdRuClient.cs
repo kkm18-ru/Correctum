@@ -108,6 +108,17 @@ file struct Document
     public ulong CreditSumm { get; set; }
     public ulong ProvisionSumm { get; set; }
 
+    public ulong Tax5Summ { get; set; }
+    public ulong Tax7Summ { get; set; }
+    public ulong Tax10Summ { get; set; }
+    public ulong Tax18Summ { get; set; }
+    public ulong Tax110Summ { get; set; }
+    public ulong Tax105Summ { get; set; }
+    public ulong Tax107Summ { get; set; }
+    public ulong Tax118Summ { get; set; }
+    public ulong TaxNaSumm { get; set; }
+    public ulong Tax0Summ { get; set; }
+
 
     public Receipt ToReceipt(Guid ParseId) => new()
     {
@@ -123,7 +134,7 @@ file struct Document
             _ => throw new NotSupportedException($"Тип операции '{OperationType}' не поддерживается.")
         },
         Items = [.. Items.Select(i => i.ToPosition())],
-        PaymentSums = [.. new PaymentSum[] 
+        PaymentSums = [.. new PaymentSum[]
         {
             new(PaymentType.Cash, CashSumm),
             new(PaymentType.NonCash, ECashSumm),
@@ -131,6 +142,18 @@ file struct Document
             new(PaymentType.Credit, CreditSumm),
             new(PaymentType.Other, ProvisionSumm)
         }.Where(p => p.Sum > 0)],
+        TaxSums = [.. new TaxSum[] {
+            new(TaxRate.Tax0, Tax0Summ),
+            new(TaxRate.Tax5, Tax5Summ),
+            new(TaxRate.Tax7, Tax7Summ),
+            new(TaxRate.Tax10, Tax10Summ),
+            new(TaxRate.Tax20, Tax18Summ),
+            new(TaxRate.Without, TaxNaSumm),
+            new(TaxRate.Calc5, Tax105Summ),
+            new(TaxRate.Calc7, Tax107Summ),
+            new(TaxRate.Calc10, Tax110Summ),
+            new(TaxRate.Calc20, Tax118Summ),
+        }.Where(t => t.Sum > 0)],
         TotalSum = TotalSumm,
         TaxationSystem = TaxationType
     };

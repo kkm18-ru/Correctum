@@ -21,6 +21,7 @@ namespace RetailCorrector.Parsers
             {
                 var posCount = faker.Random.UInt(1, 10);
                 var pos = new Position[posCount];
+                var taxes = new ulong[10];
                 ulong sum = 0;
                 for(var j = 0; j < pos.Length; j++)
                 {
@@ -36,11 +37,15 @@ namespace RetailCorrector.Parsers
                     };
                     pos[j].Cost = pos[j].Price * (pos[j].Quantity / 1000);
                     sum += pos[j].Cost;
+                    taxes[(int)pos[j].TaxRate - 1] += pos[j].Cost;
                 }
                 yield return new()
                 {
                     Items = pos,
                     Created = faker.Date.Past(),
+                    TaxSums = [.. Enumerable.Range(0, taxes.Length)
+                        .Where(idx => taxes[idx] > 0)
+                        .Select(idx => new TaxSum((TaxRate)(idx + 1), taxes[idx]))],
                     DocSign = faker.Random.ULong(10000000, 99999999999),
                     Type = faker.Random.Enum<Operation>(),
                     PaymentSums = [new PaymentSum(faker.Random.Enum<PaymentType>(), sum)],

@@ -12,6 +12,7 @@ namespace RetailCorrector.Data
         public Operation Type { get; set; }
         public Position[] Items { get; set; }
         public PaymentSum[] PaymentSums { get; set; }
+        public TaxSum[] TaxSums { get; set; }
         public ulong TotalSum { get; set; }
         public string BuyerContact { get; set; }
         public TaxationSystem TaxationSystem { get; set; }

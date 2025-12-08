@@ -29,6 +29,18 @@ namespace RetailCorrector.Deserializers
                 new(PaymentType.Credit, doc["Amount_Loan"]!.GetValue<ulong>()),
                 new(PaymentType.Other, doc["Amount_Granting"]!.GetValue<ulong>())
             }.Where(p => p.Sum > 0)];
+            receipt.TaxSums = [..new TaxSum[] {
+                new(TaxRate.Tax0, doc["Nds00_TotalSumm"]!.GetValue<ulong>()),
+                new(TaxRate.Tax5, doc["Nds5_TotalSumm"]!.GetValue<ulong>()),
+                new(TaxRate.Tax7, doc["Nds7_TotalSumm"]!.GetValue<ulong>()),
+                new(TaxRate.Tax10, doc["Nds10_TotalSumm"]!.GetValue<ulong>()),
+                new(TaxRate.Tax20, doc["Nds18_TotalSumm"]!.GetValue<ulong>()),
+                new(TaxRate.Without, doc["NdsNA_TotalSumm"]!.GetValue<ulong>()),
+                new(TaxRate.Calc5, doc["Nds5_CalculatedTotalSumm"]!.GetValue<ulong>()),
+                new(TaxRate.Calc7, doc["Nds7_CalculatedTotalSumm"]!.GetValue<ulong>()),
+                new(TaxRate.Calc10, doc["Nds10_CalculatedTotalSumm"]!.GetValue<ulong>()),
+                new(TaxRate.Calc20, doc["Nds18_CalculatedTotalSumm"]!.GetValue<ulong>()),
+            }.Where(t=> t.Sum > 0)];
             receipt.Items = new Position[items.Count];
             for(var i = 0; i< receipt.Items.Length; i++)
             {

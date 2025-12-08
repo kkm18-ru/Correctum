@@ -13,6 +13,7 @@ internal sealed partial class PlatformOfd : IReceiptDeserializer
     {
         var items = new List<Position>();
         var paysums = new List<PaymentSum>(2);
+        var taxsums = new List<TaxSum>(3);
         var lines = raw.Replace("\r", "").Split("\n");
         object? item = null;
 
@@ -57,6 +58,25 @@ internal sealed partial class PlatformOfd : IReceiptDeserializer
                 case "1217":
                     paysums.Add(new PaymentSum(PaymentType.Other, ulong.Parse(value)));
                     break;
+                case "1102":
+                    taxsums.Add(new TaxSum(TaxRate.Tax20, ulong.Parse(value)));
+                    break;
+                case "1103":
+                    taxsums.Add(new TaxSum(TaxRate.Tax10, ulong.Parse(value)));
+                    break;
+                case "1104":
+                    taxsums.Add(new TaxSum(TaxRate.Tax0, ulong.Parse(value)));
+                    break;
+                case "1105":
+                    taxsums.Add(new TaxSum(TaxRate.Without, ulong.Parse(value)));
+                    break;
+                case "1106":
+                    taxsums.Add(new TaxSum(TaxRate.Calc20, ulong.Parse(value)));
+                    break;
+                case "1107":
+                    taxsums.Add(new TaxSum(TaxRate.Calc10, ulong.Parse(value)));
+                    break;
+                    // todo add 5,7,107,105
                 case "1059":
                     item = new Position();
                     break;
