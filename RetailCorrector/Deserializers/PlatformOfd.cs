@@ -103,7 +103,7 @@ internal sealed partial class PlatformOfd : IReceiptDeserializer
                 case "1023":
                 {
                     if (item is not Position pos) continue;
-                    pos.Quantity = (ulong)(double.Parse(value) * 1000);
+                    pos.Quantity = (ulong)(double.Parse(value.Replace('.',',')) * 1000);
                     item = pos;
                 }
                     break;

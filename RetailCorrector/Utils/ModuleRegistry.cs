@@ -24,6 +24,7 @@ internal static class ModuleRegistry
         RetailCorrector.Parsers.Saby.Instance,
         RetailCorrector.Parsers.Sqlite.Instance,
         RetailCorrector.Parsers.OfdRu.Instance,
+        RetailCorrector.Parsers.PlatformaOFD.Instance,
         RetailCorrector.Parsers.FxPOS.Instance,
         RetailCorrector.Parsers.Acquirer.Instance,
         
