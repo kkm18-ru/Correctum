@@ -19,6 +19,7 @@ internal class SettingsWindow : Types.DialogWindow
         tab.Items.Add(CreateHttpTab());
         tab.Items.Add(CreateFptr());
         tab.Items.Add(CreateSqlTab());
+        tab.Items.Add(CreateImportTab());
         tab.Items.Add(CreateExportTab());
         tab.Items.Add(CreateFptrTab());
         
@@ -126,6 +127,26 @@ internal class SettingsWindow : Types.DialogWindow
         return tab;
     }
 
+    private static TabItem CreateImportTab()
+    {
+        var tab = new TabItem { Header = "Импорт" };
+        var grid = new Grid();
+        tab.Content = grid;
+
+        grid.AddColumn(GridUnitType.Star);
+        grid.AddColumn(GridUnitType.Pixel, 5);
+        grid.AddColumn(GridUnitType.Star);
+
+        grid.AddRow(GridUnitType.Auto);
+
+        grid.AddChild(CreateText("Ключ интегратора Контур.ОФД"));
+        var tb = new TextBox();
+        tb.SetBinding(TextBox.TextProperty, Bindings.ImportKonturIntegrator);
+        grid.AddChild(tb, 2);
+
+        return tab;
+    }
+
     private static TabItem CreateFptrTab()
     {
         var tab = new TabItem { Header = "Atol-драйвер" };
@@ -188,4 +209,8 @@ file static class Bindings
     public readonly static Binding ExportFptrFileSize =
         new(nameof(Configuration.Exporters.Fptr.DocsPerFile))
         { Source = Configuration.Instance.Exporters.Fptr };
+
+    public readonly static Binding ImportKonturIntegrator =
+        new(nameof(Configuration.Importes.KonturIntegratorKey))
+        { Source = Configuration.Instance.Importes };
 }
