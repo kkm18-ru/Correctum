@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -39,6 +40,22 @@ internal class KonturOfdClient : APIClient
         _client.DefaultRequestHeaders.Add("Authorization", $"auth.sid {obj.SessionId}");
     }
 
+    /// <summary>Получение списка доступных организаций.</summary>
+    /// <param name="cancel">Токен, позволяющий отменить перечисление организаций.</param>
+    /// <returns>Список доступных организаций.</returns>
+    public async IAsyncEnumerable<KonturOrganization> EnumerateOrganizationsAsync
+        ([EnumeratorCancellation] CancellationToken cancel = default)
+    {
+        using var req = new HttpRequestMessage(HttpMethod.Get, "/v2/organizations");
+        using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
+        if (!resp.IsSuccessStatusCode)
+            throw new Exception(resp.StatusCode.ToString());
+        using var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
+        var enumerable = JsonSerializer.DeserializeAsyncEnumerable<KonturOrganization>
+            (stream, cancellationToken: cancel).ConfigureAwait(false);
+        await foreach (var item in enumerable) yield return item;
+    }
+
     ~KonturOfdClient()
     {
         _client.Dispose();
@@ -49,4 +66,14 @@ file struct AuthResponse
 {
     [JsonPropertyName("Sid")]
     public string SessionId { get; set; }
+}
+
+public struct KonturOrganization
+{
+    [JsonPropertyName("id")]
+    public string Id { get; set; }
+    [JsonPropertyName("shortName")]
+    public string Name { get; set; }
+
+    public readonly override string ToString() => Name;
 }
