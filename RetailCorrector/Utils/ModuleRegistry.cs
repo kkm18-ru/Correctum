@@ -25,6 +25,7 @@ internal static class ModuleRegistry
         RetailCorrector.Parsers.Sqlite.Instance,
         RetailCorrector.Parsers.OfdRu.Instance,
         RetailCorrector.Parsers.FxPOS.Instance,
+        RetailCorrector.Parsers.Acquirer.Instance,
         
         #if DEBUG
         RetailCorrector.Parsers.Mock.Instance,

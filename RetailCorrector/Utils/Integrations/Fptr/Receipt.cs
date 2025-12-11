@@ -27,7 +27,8 @@ namespace RetailCorrector.Utils.Integrations
                 SetInteger(1173, (uint)args.CorrType);
                 SetBytes(1174, corrData);
             }
-            SetString(1192, doc.DocSign.ToString());
+            if(doc.DocSign > 0) 
+                SetString(1192, doc.DocSign.ToString());
             return openReceipt(handle) == 0;
 
         }
