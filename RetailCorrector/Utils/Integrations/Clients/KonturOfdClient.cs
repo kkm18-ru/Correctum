@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Web;
 
@@ -54,6 +55,25 @@ internal class KonturOfdClient : APIClient
         var enumerable = JsonSerializer.DeserializeAsyncEnumerable<KonturOrganization>
             (stream, cancellationToken: cancel).ConfigureAwait(false);
         await foreach (var item in enumerable) yield return item;
+    }
+
+    /// <summary>Получение списка регистрационных номеров ККТ организации.</summary>
+    /// <param name="orgId">Идентификатор организации.</param>
+    /// <param name="cancel">Токен, позволяющий отменить перечисление ККТ.</param>
+    /// <returns>списка регистрационных номеров ККТ.</returns>
+    public async IAsyncEnumerable<string> EnumerateDevicesAsync (string orgId, 
+        [EnumeratorCancellation] CancellationToken cancel = default)
+    {
+        var url = $"/v2/organizations/{orgId}/cashboxes";
+        using var req = new HttpRequestMessage(HttpMethod.Get, url);
+        using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
+        if (!resp.IsSuccessStatusCode)
+            throw new Exception(resp.StatusCode.ToString());
+        using var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
+        var enumerable = JsonSerializer.DeserializeAsyncEnumerable<JsonObject>
+            (stream, cancellationToken: cancel).ConfigureAwait(false);
+        await foreach (var item in enumerable) 
+            yield return item?["regNumber"]?.GetValue<string>() ?? "";
     }
 
     ~KonturOfdClient()
