@@ -23,6 +23,7 @@ namespace RetailCorrector.Utils
         private const string FileName = "config.toml";
 
         public SqliteSection Sqlite { get; init; } = new();
+        public FptrSection Fptr { get; init; } = new();
         public HttpClientSection HttpClient { get; init; } = new();
         public ExportersSection Exporters { get; init; } = new();
 

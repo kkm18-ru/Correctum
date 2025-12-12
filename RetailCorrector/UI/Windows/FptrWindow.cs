@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using RetailCorrector.Utils;
 using RetailCorrector.Utils.Extensions;
 using RetailCorrector.Utils.Integrations;
 using System.ComponentModel;
@@ -162,6 +163,8 @@ internal sealed class FptrWindow : Types.DialogWindow
                     ProcessingReceipt(@ref[context.CurrentProgress], token))
                     context.CurrentProgress++;
                 else handle.CancelReceipt();
+                if (context.CurrentProgress > 0 && context.CurrentProgress % Configuration.Instance.Fptr.CountReceiptsBeforeDelay == 0)
+                    Thread.Sleep(60000 * Configuration.Instance.Fptr.Delay);
             }
             Cancel(null, null!);
         }

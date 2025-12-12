@@ -18,11 +18,39 @@ internal class SettingsWindow : Types.DialogWindow
         var tab = new TabControl();
         
         tab.Items.Add(CreateHttpTab());
+        tab.Items.Add(CreateFptr());
         tab.Items.Add(CreateSqlTab());
         tab.Items.Add(CreateExportTab());
         tab.Items.Add(CreateFptrTab());
         
         Content = tab;
+    }
+
+    private static TabItem CreateFptr()
+    {
+        var tab = new TabItem { Header = "Fptr" };
+        var grid = new Grid();
+        tab.Content = grid;
+
+        grid.AddColumn(GridUnitType.Star);
+        grid.AddColumn(GridUnitType.Pixel, 5);
+        grid.AddColumn(GridUnitType.Star);
+
+        grid.AddRow(GridUnitType.Auto);
+        grid.AddRow(GridUnitType.Pixel, 5);
+        grid.AddRow(GridUnitType.Auto);
+
+        grid.AddChild(CreateText("Кол-во чеков до передачи в ОФД"));
+        var nb = new IntegerUpDown { Minimum = 10, Maximum = 5000, Increment = 10 };
+        nb.SetBinding(IntegerUpDown.ValueProperty, Bindings.FptrCountReceiptsBeforeDelay);
+        grid.AddChild(nb, 2);
+
+        grid.AddChild(CreateText("Время ожидания отправки чеков"), y: 2);
+        nb = new IntegerUpDown { Minimum = 10, Maximum = 60 };
+        nb.SetBinding(IntegerUpDown.ValueProperty, Bindings.FptrDelay);
+        grid.AddChild(nb, 2, 2);
+
+        return tab;
     }
 
     private static TabItem CreateSqlTab()
@@ -134,6 +162,14 @@ internal class SettingsWindow : Types.DialogWindow
 
 file static class Bindings
 {
+    public readonly static Binding FptrDelay =
+        new(nameof(Configuration.Fptr.Delay))
+        { Source = Configuration.Instance.Fptr };
+
+    public readonly static Binding FptrCountReceiptsBeforeDelay =
+        new(nameof(Configuration.Fptr.CountReceiptsBeforeDelay))
+        { Source = Configuration.Instance.Fptr };
+
     public readonly static Binding SqliteLimit =
         new(nameof(Configuration.Sqlite.Limit))
         { Source = Configuration.Instance.Sqlite };
