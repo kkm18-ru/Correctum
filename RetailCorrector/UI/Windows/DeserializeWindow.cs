@@ -2,7 +2,6 @@
 using RetailCorrector.Deserializers;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
-using RetailCorrector.Utils.Extensions;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;

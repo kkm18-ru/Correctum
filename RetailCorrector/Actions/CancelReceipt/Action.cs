@@ -1,6 +1,5 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.UI.Controls;
-using RetailCorrector.Utils.Helpers;
 using Serilog;
 using System.Windows;
 
@@ -39,9 +38,9 @@ namespace RetailCorrector.Actions
                     TotalSum = receipt.TotalSum
                 });
             }
-            Log.Information($"{LocaleHelper.ConjugateWord(count, "Был сгенерирован", "Было сгенерировано")} {{Count}} {LocaleHelper.ConjugateWord(count, "чек", "чека", "чеков")}", count);
+            Log.Information($"{string.Conjugate(count, "Был сгенерирован", "Было сгенерировано")} {{Count}} {string.Conjugate(count, "чек", "чека", "чеков")}", count);
             ReceiptPanel.UpdateReceiptList();            
-            MessageBox.Show($"{LocaleHelper.ConjugateWord(count, "Был сгенерирован", "Было сгенерировано")} {count} {LocaleHelper.ConjugateWord(count, "чек", "чека", "чеков")}");
+            MessageBox.Show($"{string.Conjugate(count, "Был сгенерирован", "Было сгенерировано")} {count} {string.Conjugate(count, "чек", "чека", "чеков")}");
         }
     }
 }

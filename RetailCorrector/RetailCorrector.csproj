@@ -50,4 +50,8 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Using Include="RetailCorrector.Utils.Extensions" />
+	</ItemGroup>
+
 </Project>

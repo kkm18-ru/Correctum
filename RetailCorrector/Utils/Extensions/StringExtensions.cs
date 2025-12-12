@@ -1,8 +1,10 @@
-﻿namespace RetailCorrector.Utils.Helpers
+﻿namespace RetailCorrector.Utils.Extensions;
+
+internal static class StringExtensions
 {
-    internal static class LocaleHelper
+    extension(string)
     {
-        public static string ConjugateWord(long digit, string single, string few, string many)
+        public static string Conjugate(long digit, string single, string few, string many)
         {
             digit = Math.Abs(digit);
             if (digit > 10 && digit < 20) return many;
@@ -13,7 +15,8 @@
                 _ => many,
             };
         }
-        public static string ConjugateWord(long digit, string single, string many)
+
+        public static string Conjugate(long digit, string single, string many)
         {
             digit = Math.Abs(digit);
             return digit % 10 == 1 && digit != 11 ? single : many;

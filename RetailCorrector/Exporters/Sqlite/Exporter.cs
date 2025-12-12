@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
-using RetailCorrector.Utils.Helpers;
 using System.IO;
 
 namespace RetailCorrector.Exporters
@@ -17,7 +16,7 @@ namespace RetailCorrector.Exporters
             if (string.IsNullOrWhiteSpace(path))
                 path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
                     "RetailCorrector", $"{Guid.CreateVersion7()}.db");
-            IOHelper.CreateDirectoryIfNotExists(Path.GetDirectoryName(path)!);
+            Directory.CreateDirectoryIfNotExists(Path.GetDirectoryName(path)!);
             using (var conn = new SqliteConnection($"Data Source = \"{path}\""))
             {
                 conn.Open();

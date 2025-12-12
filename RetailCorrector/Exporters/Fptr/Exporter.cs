@@ -1,7 +1,6 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
-using RetailCorrector.Utils.Helpers;
 using System.IO;
 
 namespace RetailCorrector.Exporters
@@ -18,8 +17,8 @@ namespace RetailCorrector.Exporters
             if (string.IsNullOrWhiteSpace(path))
                 path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
                     "RetailCorrector", $"{Guid.CreateVersion7()}");
-            IOHelper.CreateDirectoryIfNotExists(Path.GetDirectoryName(path));
-            IOHelper.CreateDirectoryIfNotExists(path);
+            Directory.CreateDirectoryIfNotExists(Path.GetDirectoryName(path));
+            Directory.CreateDirectoryIfNotExists(path);
             if (FiscalFormat == 2 && !FixOldReceipts)
                 return Missing105Export(path);
             var receipts = Workspace.Instance.Receipts;

@@ -1,5 +1,4 @@
 ﻿using RetailCorrector.UI.Controls;
-using RetailCorrector.Utils.Helpers;
 
 namespace RetailCorrector.Actions
 {
@@ -13,7 +12,7 @@ namespace RetailCorrector.Actions
         {
             var count = Condition.DoByIndex(Workspace.Instance.Receipts.RemoveAt);
             ReceiptPanel.UpdateReceiptList();
-            System.Windows.MessageBox.Show($"{LocaleHelper.ConjugateWord(count, "Был удален", "Было удалено")} {count} {LocaleHelper.ConjugateWord(count, "чек", "чека", "чеков")}");
+            System.Windows.MessageBox.Show($"{string.Conjugate(count, "Был удален", "Было удалено")} {count} {string.Conjugate(count, "чек", "чека", "чеков")}");
         }
     }
 }

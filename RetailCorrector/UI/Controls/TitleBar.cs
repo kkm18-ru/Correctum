@@ -1,5 +1,5 @@
-﻿using RetailCorrector.UI.Windows;
-using RetailCorrector.Utils.Extensions;
+﻿using RetailCorrector.Converters;
+using RetailCorrector.UI.Windows;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -70,7 +70,7 @@ namespace RetailCorrector.UI.Controls
             content.SetValue(TextBlock.ForegroundProperty, new Binding(nameof(Button.Background))
             {
                 RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-                Converter = new ColorExtensions.TextColorConverter()
+                Converter = new TextColorConverter()
             });
             content.SetValue(TextBlock.FontFamilyProperty, new FontFamily("HoloLens MDL2 Assets"));
 

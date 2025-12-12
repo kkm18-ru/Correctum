@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using RetailCorrector.Enums;
-using RetailCorrector.Utils.Extensions;
 
 namespace RetailCorrector.Parsers;
 

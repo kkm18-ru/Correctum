@@ -1,5 +1,4 @@
-﻿using RetailCorrector.Utils.Extensions;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace RetailCorrector.Actions

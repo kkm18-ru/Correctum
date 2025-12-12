@@ -1,5 +1,4 @@
 ﻿using RetailCorrector.Data;
-using RetailCorrector.Utils.Extensions;
 using System.Windows;
 
 namespace RetailCorrector.Utils.Integrations
@@ -10,7 +9,7 @@ namespace RetailCorrector.Utils.Integrations
         {
             var corrData = Array.Empty<byte>();
             if(docFormat >= 110) GenerateCorrectionData(doc.Created, args.Act, out corrData);
-            var opcode = doc.Type.ToCorrectionOperation(docFormat);
+            var opcode = doc.Type.ToCorrection(docFormat);
             if (opcode is null) return false;
             SetInteger(65545, opcode.Value);
             SetBoolean(65572, !args.Print);
