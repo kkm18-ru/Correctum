@@ -55,6 +55,7 @@ namespace RetailCorrector.Exporters
                         });
                 }
             }
+            SqliteConnection.ClearAllPools();
             return new();
         }
     }

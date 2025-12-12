@@ -15,21 +15,22 @@ namespace RetailCorrector.Parsers
 
         public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            using var conn = new SqliteConnection($"Data Source={Path};Mode=ReadOnly");
-            var count = await conn.ExecuteScalarAsync<int>(COUNT_RECEIPTS);
-            progress.Report(-count);
-            for (var i = 0; i < count; i += Configuration.Instance.Sqlite.Limit)
+            using (var conn = new SqliteConnection($"Data Source={Path};Mode=ReadOnly"))
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                var docs = (await Task.Run(() => conn.QueryAsync<Document>(GET_RECEIPTS, new { limit = Configuration.Instance.Sqlite.Limit, offset = i }))).ToArray();
-                for (var j = 0; j < docs.Length; j++)
+                var count = await conn.ExecuteScalarAsync<int>(COUNT_RECEIPTS);
+                progress.Report(-count);
+                for (var i = 0; i < count; i += Configuration.Instance.Sqlite.Limit)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-
-                    yield return new()
+                    var docs = (await Task.Run(() => conn.QueryAsync<Document>(GET_RECEIPTS, new { limit = Configuration.Instance.Sqlite.Limit, offset = i }))).ToArray();
+                    for (var j = 0; j < docs.Length; j++)
                     {
-                        ParseId = parseInfo.Id,
-                        Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => new Position {
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        yield return new()
+                        {
+                            ParseId = parseInfo.Id,
+                            Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => new Position {
                             Name = i.name,
                             Cost = i.total,
                             MeasureUnit = i.unit,
@@ -39,23 +40,25 @@ namespace RetailCorrector.Parsers
                             TaxRate = i.tax,
                             Type = i.type
                         })],
-                        Created = docs[j].date,
-                        DocSign = ulong.Parse(docs[j].sign),
-                        TotalSum = docs[j].total,
-                        Payment = new Payment
-                        {
-                            Cash = docs[j].cash,
-                            ECash = docs[j].ecash,
-                            Pre = docs[j].pre,
-                            Post = docs[j].post,
-                            Provision = docs[j].other,
-                        },
-                        Type = docs[j].type,
-                        BuyerContact = docs[j].buyer
-                    };
-                    progress.Report(i + j);
+                            Created = docs[j].date,
+                            DocSign = ulong.Parse(docs[j].sign),
+                            TotalSum = docs[j].total,
+                            Payment = new Payment
+                            {
+                                Cash = docs[j].cash,
+                                ECash = docs[j].ecash,
+                                Pre = docs[j].pre,
+                                Post = docs[j].post,
+                                Provision = docs[j].other,
+                            },
+                            Type = docs[j].type,
+                            BuyerContact = docs[j].buyer
+                        };
+                        progress.Report(i + j);
+                    }
                 }
             }
+            SqliteConnection.ClearAllPools();
         }
     }
 }
