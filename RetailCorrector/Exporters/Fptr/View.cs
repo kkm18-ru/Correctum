@@ -68,14 +68,6 @@ namespace RetailCorrector.Exporters
             cb.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(Print)) { Source = this });
             content.AddChild(ch, y: 4, dx: 3);
 
-            lbl = CreateLabel("Печатать ли чек");
-            content.AddChild(lbl, y: 4);
-            cb = new ComboBox
-            {
-                ItemsSource = new[] { "Да", "Нет" },
-            };
-            content.AddChild(cb, 2, 4);
-
             lbl = CreateLabel("Вид коррекции");
             content.AddChild(lbl, y: 6);
             cb = new ComboBox
