@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CS1998
+#if DEBUG
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using System.Runtime.CompilerServices;
@@ -71,3 +72,4 @@ namespace RetailCorrector.Parsers
         }
     }
 }
+#endif

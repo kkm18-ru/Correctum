@@ -1,4 +1,5 @@
-﻿using Xceed.Wpf.Toolkit;
+﻿#if DEBUG
+using Xceed.Wpf.Toolkit;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Data;
@@ -67,3 +68,4 @@ namespace RetailCorrector.Parsers
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => 0;
     }
 }
+#endif

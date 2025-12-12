@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿#if DEBUG
+using System.ComponentModel;
 
 namespace RetailCorrector.Parsers
 {
@@ -31,3 +32,4 @@ namespace RetailCorrector.Parsers
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
+#endif
