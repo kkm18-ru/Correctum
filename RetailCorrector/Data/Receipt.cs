@@ -6,9 +6,13 @@ namespace RetailCorrector.Data
     internal struct Receipt(bool @readonly = false)
     {
         public required Guid ParseId { get; init; }
-        public int DocNumber { get; set; }
+        public uint DocNumber { get; set; }
+        public string RegId { get; set; }
+        public string StorageId { get; set; }
+        public uint SessionId { get; set; }
+        public uint DocInSession { get; set; }
         public DateTime Created { get; set; }
-        public ulong DocSign { get; set; }
+        public uint DocSign { get; set; }
         public Operation Type { get; set; }
         public Position[] Items { get; set; }
         public Payment Payment { get; set; }

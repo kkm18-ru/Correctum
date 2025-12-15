@@ -60,8 +60,13 @@ namespace RetailCorrector.Parsers
                 yield return new()
                 {
                     Items = pos,
+                    RegId = faker.Random.ULong(0, 9999_9999_9999_9999).ToString("D16"),
+                    StorageId = faker.Random.ULong(0, 9999_9999_9999_9999).ToString("D16"),
+                    DocNumber = faker.Random.UInt(1,100000),
+                    DocInSession = faker.Random.UInt(1,1000),
+                    SessionId = faker.Random.UInt(1,365),
                     Created = faker.Date.Past(),
-                    DocSign = faker.Random.ULong(10000000, 99999999999),
+                    DocSign = faker.Random.UInt(),
                     Type = faker.Random.Enum<Operation>(),
                     Payment = payment,
                     TotalSum = sum,

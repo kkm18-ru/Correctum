@@ -5,8 +5,11 @@ namespace RetailCorrector.Data
     internal readonly struct DisplayReceipt(Receipt origin)
     {
         public string Id { get; } = origin.Id.ToString("D");
-        public string Parse { get; } = Workspace.Instance.ParserHistory
-            .FirstOrDefault(p=>p.Id == origin.ParseId).ToString();
+        public string RegId { get; } = origin.RegId;
+        public string StorageId { get; } = origin.StorageId;
+        public string DocNumb { get; } = origin.DocNumber.ToString();
+        public string SessionId { get; } = origin.SessionId.ToString();
+        public string DocInSession { get; } = origin.DocInSession.ToString();
         public string Date { get; } = $"{origin.Created:yyyy'-'MM'-'dd' 'HH':'mm}";
         public string Sign { get; } = $"{origin.DocSign}";
         public string Type { get; } = origin.Type switch

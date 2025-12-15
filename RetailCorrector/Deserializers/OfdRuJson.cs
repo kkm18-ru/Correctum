@@ -17,7 +17,12 @@ namespace RetailCorrector.Deserializers
             var doc = json!["Document"]!;
             var items = doc["Items"]!.AsArray();
 
-            receipt.DocSign = ulong.Parse(doc["DecimalFiscalSign"]!.GetValue<string>());
+            receipt.DocSign = uint.Parse(doc["DecimalFiscalSign"]!.GetValue<string>());
+            receipt.RegId = doc["KKT_RegNumber"]!.GetValue<string>();
+            receipt.StorageId = doc["FN_FactoryNumber"]!.GetValue<string>();
+            receipt.DocNumber = doc["Document_Number"]!.GetValue<uint>();
+            receipt.DocInSession = doc["Number"]!.GetValue<uint>();
+            receipt.SessionId = doc["ShiftNumber"]!.GetValue<uint>();
             receipt.Created = DateTime.ParseExact(doc["DateTime"]!.GetValue<string>(), DATE_FORMAT, null);
             receipt.Type = (Operation)doc["OperationType"]!.GetValue<int>();
             receipt.TotalSum = doc["Amount_Total"]!.GetValue<ulong>();

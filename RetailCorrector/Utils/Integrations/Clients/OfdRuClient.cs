@@ -97,6 +97,11 @@ file struct Document
 {
     public DateTime DocDateTime { get; set; }
     public string DecimalFiscalSign { get; set; }
+    public string KktRegNumber { get; set; }
+    public string FnNumber { get; set; }
+    public uint DocNumber { get; set; }
+    public uint DocShiftNumber { get; set; }
+    public uint ReceiptNumber { get; set; }
     public ulong TotalSumm { get; set; }
     public string OperationType { get; set; }
     public TaxationSystem TaxationType { get; set; }
@@ -110,8 +115,13 @@ file struct Document
     public Receipt ToReceipt(Guid ParseId) => new()
     {
         ParseId = ParseId,
+        RegId = KktRegNumber,
+        StorageId = FnNumber,
+        DocNumber = DocNumber,
+        SessionId = DocShiftNumber,
+        DocInSession = ReceiptNumber,
         Created = DocDateTime,
-        DocSign = ulong.Parse(DecimalFiscalSign),
+        DocSign = uint.Parse(DecimalFiscalSign),
         Type = OperationType.ToLowerInvariant() switch
         {
             "income" => Operation.Income,

@@ -31,17 +31,22 @@ namespace RetailCorrector.Parsers
                         {
                             ParseId = parseInfo.Id,
                             Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => new Position {
-                            Name = i.name,
-                            Cost = i.total,
-                            MeasureUnit = i.unit,
-                            PayMethod = i.payment,
-                            Price = i.price,
-                            Quantity = i.quantity,
-                            TaxRate = i.tax,
-                            Type = i.type
-                        })],
+                                Name = i.name,
+                                Cost = i.total,
+                                MeasureUnit = i.unit,
+                                PayMethod = i.payment,
+                                Price = i.price,
+                                Quantity = i.quantity,
+                                TaxRate = i.tax,
+                                Type = i.type
+                            })],
                             Created = docs[j].date,
-                            DocSign = ulong.Parse(docs[j].sign),
+                            RegId = docs[j].devid,
+                            StorageId = docs[j].drive,
+                            SessionId = docs[j].shift,
+                            DocNumber = docs[j].doc,
+                            DocInSession = docs[j].req,
+                            DocSign = uint.Parse(docs[j].sign),
                             TotalSum = docs[j].total,
                             Payment = new Payment
                             {

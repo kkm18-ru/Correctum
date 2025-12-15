@@ -33,7 +33,25 @@ internal sealed partial class PlatformOfd : IReceiptDeserializer
                     receipt.Type = (Operation)int.Parse(value);
                     break;
                 case "1077":
-                    receipt.DocSign = ulong.Parse(value);
+                    receipt.DocSign = uint.Parse(value);
+                    break;
+                case "1037":
+                    receipt.RegId = value;
+                    break;
+                case "1055":
+                    receipt.TaxationSystem = (TaxationSystem)uint.Parse(value);
+                    break;
+                case "1041":
+                    receipt.StorageId = value;
+                    break;
+                case "1038":
+                    receipt.SessionId = uint.Parse(value);
+                    break;
+                case "1040":
+                    receipt.DocNumber = uint.Parse(value);
+                    break;
+                case "1042":
+                    receipt.DocInSession = uint.Parse(value);
                     break;
                 case "1012":
                     receipt.Created = DateTimeOffset.FromUnixTimeSeconds(long.Parse(value)).DateTime;

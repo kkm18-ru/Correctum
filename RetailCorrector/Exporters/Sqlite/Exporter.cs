@@ -38,6 +38,11 @@ namespace RetailCorrector.Exporters
                         other = receipt.Payment.Provision,
                         total = receipt.TotalSum,
                         buyer = receipt.BuyerContact,
+                        devid = receipt.RegId,
+                        drive = receipt.StorageId,
+                        shift = receipt.SessionId,
+                        doc = receipt.DocNumber,
+                        req = receipt.DocInSession,
                     });
                     foreach (var pos in receipt.Items)
                         conn.Execute(ADD_POSITION, new

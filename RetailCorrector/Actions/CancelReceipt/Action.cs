@@ -21,21 +21,15 @@ namespace RetailCorrector.Actions
             for(var i = 0; i < count; i++)
             {
                 var receipt = Workspace.Instance.Receipts[i*2];
-                Workspace.Instance.Receipts.Insert(i * 2 + 1, new Receipt(true)
-                {
-                    ParseId = receipt.ParseId,
-                    Created = receipt.Created,
-                    DocSign = receipt.DocSign,
-                    Items = (Position[])receipt.Items.Clone(),
-                    Payment = receipt.Payment,
+                Workspace.Instance.Receipts.Insert(i * 2 + 1, receipt with 
+                { 
                     Type = receipt.Type switch
                     {
                         Enums.Operation.RefundOutcome => Enums.Operation.Outcome,
                         Enums.Operation.Outcome => Enums.Operation.RefundOutcome,
                         Enums.Operation.Income => Enums.Operation.RefundIncome,
                         Enums.Operation.RefundIncome => Enums.Operation.Income,
-                    },
-                    TotalSum = receipt.TotalSum
+                    }
                 });
             }
             Log.Information($"{string.Conjugate(count, "Был сгенерирован", "Было сгенерировано")} {{Count}} {string.Conjugate(count, "чек", "чека", "чеков")}", count);

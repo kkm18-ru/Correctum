@@ -81,7 +81,7 @@ internal sealed class SabyClient : APIClient
     /// <param name="cancel">Токен, позволяющий отменить выгрузку чеков.</param>
     /// <returns>Массив чеков, если API ответил непустым массивом документов, иначе null.</returns>
     public async Task<Receipt[]?> FetchReceiptsAsync
-        (SabyReceiptsRequest args, int offset = 0, CancellationToken cancel = default)
+        (SabyReceiptsRequest args, uint offset = 0, CancellationToken cancel = default)
     {
         var builder = new StringBuilder(args.ToUri());
         builder.Append($"&startId={offset}&limit={Configuration.Instance.HttpClient.PageSize}");
@@ -192,6 +192,18 @@ file struct DocumentResponse
 
 file struct ReceiptResponse
 {
+    [JsonPropertyName("kktRegId")]
+    public string RegId { get; set; }
+    
+    [JsonPropertyName("fiscalDriveNumber")]
+    public string StorageId { get; set; }
+    
+    [JsonPropertyName("shiftNumber")]
+    public uint SessionId { get; set; }
+    
+    [JsonPropertyName("requestNumber")]
+    public uint DocInSession { get; set; }
+
     [JsonPropertyName("buyerPhoneOrAddress")]
     public string Buyer { get; set; }
     
@@ -229,11 +241,15 @@ file struct ReceiptResponse
     public ulong Provision { get; set; }
     
     [JsonPropertyName("fiscalDocumentNumber")]
-    public int Number { get; set; }
+    public uint Number { get; set; }
 
     public Receipt ToReceipt(Guid parseId) => new()
     {
         ParseId = parseId,
+        RegId = RegId,
+        StorageId = StorageId,
+        DocInSession = DocInSession,
+        SessionId = SessionId,
         Items = Items.Select(ToPosition).ToArray(),
         Payment = new Payment
         {

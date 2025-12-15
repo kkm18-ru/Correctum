@@ -14,6 +14,11 @@ namespace RetailCorrector.UI.Controls
         {
             DataContext = this;
 
+            AddColumn("РНМ", "RegId", 125);
+            AddColumn("ФН", "StorageId", 125);
+            AddColumn("№ документа", "DocNumb", 120);
+            AddColumn("№ смены", "SessionId", 120);
+            AddColumn("№ чека в смене", "DocInSession", 120);
             AddColumn("Дата", "Date", 121);
             AddColumn("ФПД", "Sign", 93);
             AddColumn("Операция", "Type", 114);

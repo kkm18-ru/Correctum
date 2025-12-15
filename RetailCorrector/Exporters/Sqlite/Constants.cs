@@ -25,6 +25,11 @@
             CREATE TABLE receipt (
                 id    INTEGER NOT NULL
                               CONSTRAINT PK_receipt PRIMARY KEY AUTOINCREMENT,
+                devid TEXT    NOT NULL,
+                drive TEXT    NOT NULL,
+                shift INTEGER NOT NULL,
+                doc   INTEGER NOT NULL,
+                req   INTEGER NOT NULL,
                 date  TEXT    NOT NULL,
                 type  INTEGER NOT NULL,
                 sign  TEXT    NOT NULL,
@@ -42,8 +47,8 @@
         const string CREATE_PKEY_RECEIPT_INDEX = "CREATE INDEX receipt_pkey ON receipt (id);";
         const string CREATE_RID_POSITION_INDEX = "CREATE INDEX position_rid ON position (receipt);";
         const string ADD_RECEIPT = """
-            INSERT INTO receipt (date, type, sign, corr, act, cash, ecash, pre, post, other, total, buyer) 
-            VALUES (@date, @type, @sign, 0, ' ', @cash, @ecash, @pre, @post, @other, @total, @buyer) RETURNING id;
+            INSERT INTO receipt (devid, drive, shift, doc, req, date, type, sign, cash, ecash, pre, post, other, total, buyer) 
+            VALUES (@devid, @drive, @shift, @doc, @req, @date, @type, @sign, @cash, @ecash, @pre, @post, @other, @total, @buyer) RETURNING id;
             """;
         const string ADD_POSITION = """
             INSERT INTO position (name, payment, type, tax, unit, price, quantity, total, receipt) 

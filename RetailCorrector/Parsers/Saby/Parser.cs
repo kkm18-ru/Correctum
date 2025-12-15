@@ -48,7 +48,7 @@ internal partial class Saby : ParserBase<Saby, Saby.View>
     private async IAsyncEnumerable<Receipt> ParseByDay
         (SabyReceiptsRequest args, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var offset = 0;
+        var offset = 0u;
         while (true)
         {
             var receipts = await _client.FetchReceiptsAsync(args, offset, cancellationToken);

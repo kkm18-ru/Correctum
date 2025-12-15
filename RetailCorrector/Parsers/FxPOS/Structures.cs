@@ -10,7 +10,7 @@ namespace RetailCorrector.Parsers
             public int Id { get; set; }
             public DateTime Date { get; set; }
             public ulong Total { get; set; }
-            public ulong Sign { get; set; }
+            public uint Sign { get; set; }
             public int Type { get; set; }
         }
 

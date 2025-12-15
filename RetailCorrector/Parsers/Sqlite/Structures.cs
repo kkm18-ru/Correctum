@@ -10,6 +10,11 @@ namespace RetailCorrector.Parsers
             public DateTime date { get; set; }
             public Operation type { get; set; }
             public string sign { get; set; }
+            public string devid { get; set; }
+            public string drive { get; set; }
+            public uint shift { get; set; }
+            public uint doc { get; set; }
+            public uint req { get; set; }
             public ulong cash { get; set; }
             public ulong ecash { get; set; }
             public ulong pre { get; set; }
