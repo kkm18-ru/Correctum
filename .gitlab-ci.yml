@@ -3,12 +3,7 @@ stages:
   - tests:unit
   - analyze:sonarcloud
   - release
-
-.mr-dev:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"'
-    - when: never
-
+  
 include:
   - local: .gitlab/ci/dev.gitlab-ci.yml
 
