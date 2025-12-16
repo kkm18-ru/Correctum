@@ -1,5 +1,5 @@
 ﻿using RetailCorrector.Data;
-using RetailCorrector.Deserializers;
+using RetailCorrector.Parsers;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -84,7 +84,7 @@ internal sealed class PlatformaOfdClient : APIClient
         var html = await resp.Content.ReadAsStringAsync(cancel);
         var raw = HttpUtility.HtmlDecode(html.Split(@"<pre>")[1].Split(@"</pre>")[0]);
         var receipt = new Receipt { ParseId = parseId };
-        PlatformOfd.Instance.Deserialize(raw, ref receipt);
+        PlatformOfd.Instance.Parse(raw, ref receipt);
         return receipt;
     }
 

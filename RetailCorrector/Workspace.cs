@@ -9,13 +9,13 @@ namespace RetailCorrector
         public static Workspace Instance => field ??= new Workspace();
 
         public Guid Id { get; }
-        public ObservableCollection<ParseInfo> ParserHistory { get; }
+        public ObservableCollection<ImportSession> ImportHistory { get; }
         public ObservableCollection<Receipt> Receipts { get; }
 
         private Workspace()
         {
             Id = Guid.CreateVersion7();
-            ParserHistory = [];
+            ImportHistory = [];
             Receipts = [];
             Log.Information("Создано новое рабочее место \"{Id:D}\"", Id);
         }

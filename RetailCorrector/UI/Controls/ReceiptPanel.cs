@@ -158,12 +158,12 @@ namespace RetailCorrector.UI.Controls
             cb.SetBinding(ComboBox.SelectedValueProperty, nameof(MaxCountReceipts));
             toolPanel.Children.Add(cb);
 
-            var btnParser = new ParserMenuButton
+            var btnImporter = new ImporterMenuButton
             {
                 Height = 22,
                 Margin = new(5),
             };
-            toolPanel.Children.Add(btnParser);
+            toolPanel.Children.Add(btnImporter);
 
             var btnActions = new ActionMenuButton
             {

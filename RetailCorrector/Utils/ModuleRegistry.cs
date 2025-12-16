@@ -4,32 +4,32 @@ namespace RetailCorrector.Utils;
 
 internal static class ModuleRegistry
 {
-    public static ImmutableArray<Deserializers.IReceiptDeserializer> Deserializers = [
-        RetailCorrector.Deserializers.PlatformOfd.Instance,
-        RetailCorrector.Deserializers.OfdRuJson.Instance,
+    public readonly static ImmutableArray<Parsers.IParser> Parsers = [
+        RetailCorrector.Parsers.PlatformOfd.Instance,
+        RetailCorrector.Parsers.OfdRuJson.Instance,
     ];
-    
-    public static ImmutableArray<Exporters.IExporter> Exporters = [
+
+    public readonly static ImmutableArray<Exporters.IExporter> Exporters = [
         RetailCorrector.Exporters.Fptr.Instance,
         RetailCorrector.Exporters.Sqlite.Instance,
     ];
-    
-    public static ImmutableArray<Actions.IAction> Actions = [
+
+    public readonly static ImmutableArray<Actions.IAction> Actions = [
         RetailCorrector.Actions.CancelReceipt.Instance,
         RetailCorrector.Actions.ExportReceipts.Instance,
         RetailCorrector.Actions.RemoveReceipt.Instance,
     ];
-    
-    public static ImmutableArray<Parsers.IParser> Parsers = [
-        RetailCorrector.Parsers.Saby.Instance,
-        RetailCorrector.Parsers.Sqlite.Instance,
-        RetailCorrector.Parsers.OfdRu.Instance,
-        RetailCorrector.Parsers.PlatformaOFD.Instance,
-        RetailCorrector.Parsers.FxPOS.Instance,
-        RetailCorrector.Parsers.Acquirer.Instance,
+
+    public readonly static ImmutableArray<Importers.IImporter> Importers = [
+        RetailCorrector.Importers.Saby.Instance,
+        RetailCorrector.Importers.Sqlite.Instance,
+        RetailCorrector.Importers.OfdRu.Instance,
+        RetailCorrector.Importers.PlatformOfd.Instance,
+        RetailCorrector.Importers.FxPOS.Instance,
+        RetailCorrector.Importers.Acquirer.Instance,
         
         #if DEBUG
-        RetailCorrector.Parsers.Mock.Instance,
+        RetailCorrector.Importers.Mock.Instance,
         #endif
     ];
 }
