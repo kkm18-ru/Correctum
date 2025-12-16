@@ -29,6 +29,20 @@ internal class KonturOfdClient : APIClient
         await foreach (var item in enumerable) yield return item;
     }
 
+    /// <summary>Перечисление доступных ККТ организации</summary>
+    /// <param name="org">Организация</param>
+    /// <param name="cancellationToken">Токен, позволяющий отменить действие</param>
+    /// <returns>Асинхронное перечисление регистрационных номеров ККТ</returns>
+    public async IAsyncEnumerable<string> EnumerateDevices
+        (KonturOrganization org, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        using var req = new HttpRequestMessage(HttpMethod.Get, $"/organizations/{org.Id:D}/cashboxes");
+        using var resp = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
+        using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        var enumerable = JsonSerializer.DeserializeAsyncEnumerable<Device>(stream, cancellationToken: cancellationToken);
+        await foreach (var item in enumerable) yield return item.RegId;
+    }
+
     ~KonturOfdClient() { _client.Dispose(); }
 }
 
@@ -51,4 +65,10 @@ public struct KonturOrganization
 
     [JsonPropertyName("creationDate")]
     public DateTimeOffset Created { get; set; }
+}
+
+file struct Device
+{
+    [JsonPropertyName("regNumber")]
+    public string RegId { get; set; }
 }
