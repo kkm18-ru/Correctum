@@ -15,7 +15,7 @@ partial class PlatformaOFD : INotifyPropertyChanged
             field = value;
             PropertyChanged?.Invoke(this, SessionIdEventArg);
         }
-    }
+    } = "";
     public string AccessToken
     {
         get;
@@ -25,7 +25,7 @@ partial class PlatformaOFD : INotifyPropertyChanged
             field = value;
             PropertyChanged?.Invoke(this, AccessTokenEventArg);
         }
-    }
+    } = "";
     public bool Authorizing
     {
         get;
@@ -46,16 +46,6 @@ partial class PlatformaOFD : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, AuthorizedNotifier);
         }
     } = false;
-    public PlatformaOfdDevice Device
-    {
-        get;
-        set
-        {
-            if (field.Equals(value)) return;
-            field = value;
-            PropertyChanged?.Invoke(this, DeviceNotifier);
-        }
-    }
     public DateTime BeginDate
     {
         get;
@@ -79,10 +69,10 @@ partial class PlatformaOFD : INotifyPropertyChanged
 
     public bool CanAuthorize => !Authorizing;
     public ObservableCollection<PlatformaOfdDevice> Devices { get; } = [];
+    public ObservableCollection<PlatformaOfdDevice> SelectedDevices { get; } = [];
 
     private readonly static PropertyChangedEventArgs SessionIdEventArg = new(nameof(SessionId));
     private readonly static PropertyChangedEventArgs AccessTokenEventArg = new(nameof(AccessToken));
-    private readonly static PropertyChangedEventArgs DeviceNotifier = new(nameof(Device));
     private readonly static PropertyChangedEventArgs BeginDateNotifier = new(nameof(BeginDate));
     private readonly static PropertyChangedEventArgs EndDateNotifier = new(nameof(EndDate));
     private readonly static PropertyChangedEventArgs CanAuthorizeNotifier = new(nameof(CanAuthorize));

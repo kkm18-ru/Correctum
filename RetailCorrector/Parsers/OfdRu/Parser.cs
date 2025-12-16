@@ -10,7 +10,6 @@ namespace RetailCorrector.Parsers
 
         public override ParseInfo GenerateInfo() =>
             parseInfo = new ParseInfo(Name,
-                ("РНМ", Device.KktRegId),
                 ("Начало", BeginDate.ToShortDateString()), 
                 ("Конец", EndDate.ToShortDateString()));
 
@@ -18,14 +17,18 @@ namespace RetailCorrector.Parsers
 
         public override async IAsyncEnumerable<Receipt> Parse(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            progress.Report(-(int)(EndDate - BeginDate).TotalDays - 1);
+            progress.Report(-((int)(EndDate - BeginDate).TotalDays + 1) * SelectedDevices.Count);
+            var i = 0;
             for (var day = BeginDate; day <= EndDate; day = day.AddDays(1))
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                var arr = await Client.FetchReceiptsAsync
-                    (parseInfo.Id, Device, day, day.AddSeconds(86399), cancellationToken);
-                foreach (var receipt in arr) yield return receipt;
-                progress.Report((long)(day - BeginDate).TotalDays + 1);
+                foreach(var device in SelectedDevices)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var arr = await Client.FetchReceiptsAsync
+                        (parseInfo.Id, device, day, day.AddSeconds(86399), cancellationToken);
+                    foreach (var receipt in arr) yield return receipt;
+                    progress.Report(++i);
+                }
             }
         }
     }

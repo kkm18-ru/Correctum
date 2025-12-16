@@ -101,7 +101,7 @@ file struct Document
     public string FnNumber { get; set; }
     public uint DocNumber { get; set; }
     public uint DocShiftNumber { get; set; }
-    public uint ReceiptNumber { get; set; }
+    public string ReceiptNumber { get; set; }
     public ulong TotalSumm { get; set; }
     public string OperationType { get; set; }
     public TaxationSystem TaxationType { get; set; }
@@ -119,7 +119,7 @@ file struct Document
         StorageId = FnNumber,
         DocNumber = DocNumber,
         SessionId = DocShiftNumber,
-        DocInSession = ReceiptNumber,
+        DocInSession = uint.Parse(ReceiptNumber),
         Created = DocDateTime,
         DocSign = uint.Parse(DecimalFiscalSign),
         Type = OperationType.ToLowerInvariant() switch

@@ -2,6 +2,7 @@
 using RetailCorrector.Utils.Integrations.Clients;
 using System.Windows;
 using System.Windows.Controls;
+using Xceed.Wpf.Toolkit;
 
 namespace RetailCorrector.Parsers;
 
@@ -20,11 +21,11 @@ internal partial class OfdRu
                     .AddBinding(Button.IsEnabledProperty, nameof(CanAuthorize))
                     .SetClickHandler(OnAuthClicked))
 
-                .AddRow("Регистрационный номер: ", new ComboBox 
+                .AddRow("Регистрационный номер: ", new CheckComboBox
                     { IsEditable = true, DisplayMemberPath = nameof(OfdRuDevice.KktRegId) }
-                    .AddBinding(ComboBox.SelectedValueProperty, nameof(Device))
-                    .AddBinding(ComboBox.ItemsSourceProperty, nameof(Devices))
-                    .AddBinding(ComboBox.IsEnabledProperty, nameof(Authorized)))
+                    .AddBinding(CheckComboBox.SelectedItemsOverrideProperty, nameof(SelectedDevices))
+                    .AddBinding(CheckComboBox.ItemsSourceProperty, nameof(Devices))
+                    .AddBinding(CheckComboBox.IsEnabledProperty, nameof(Authorized)))
 
                 .AddRow("Начало сканирования: ", new DatePicker()
                     .SetBeginDate(Constants.OfdBeginDate).SetDateFormat(DatePickerFormat.Short)
@@ -43,23 +44,23 @@ internal partial class OfdRu
         {
             try
             {
-                Dispatcher.Invoke(() => Presenter.Authorizing = true);
+                await Dispatcher.InvokeAsync(() => Presenter.Authorizing = true);
 
                 Presenter.Devices.Clear();
                 await Presenter.Client.SetAuthTokenAsync(Presenter.Token);
                 foreach (var d in await Presenter.Client.FetchDevicesAsync())
                     Presenter.Devices.Add(d);
 
-                Dispatcher.Invoke(() => Presenter.Authorized = true);
+                await Dispatcher.InvokeAsync(() => Presenter.Authorized = true);
             }
             catch (Exception e)
             {
-                Dispatcher.Invoke(() => Presenter.Authorized = false);
-                MessageBox.Show(e.Message, "Произошла ошибка...", 0, MessageBoxImage.Error);
+                await Dispatcher.InvokeAsync(() => Presenter.Authorized = false);
+                System.Windows.MessageBox.Show(e.Message, "Произошла ошибка...", 0, MessageBoxImage.Error);
             }
             finally
             {
-                Dispatcher.Invoke(() => Presenter.Authorizing = false);
+                await Dispatcher.InvokeAsync(() => Presenter.Authorizing = false);
             }
         }
     }

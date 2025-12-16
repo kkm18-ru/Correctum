@@ -1,6 +1,7 @@
 ﻿using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
+using Xceed.Wpf.Toolkit;
 
 namespace RetailCorrector.Parsers;
 
@@ -47,9 +48,9 @@ partial class PlatformaOFD
             grid.AddChild(btn, 2, 4);
 
             grid.AddChild(new TextBlock { Text = "ККТ" }, y: 6);
-            var cb = new ComboBox();
-            cb.SetBinding(ComboBox.ItemsSourceProperty, nameof(Devices));
-            cb.SetBinding(ComboBox.SelectedValueProperty, nameof(Device));
+            var cb = new CheckComboBox();
+            cb.SetBinding(CheckComboBox.ItemsSourceProperty, nameof(Devices));
+            cb.SetBinding(CheckComboBox.SelectedItemsOverrideProperty, nameof(SelectedDevices));
             cb.SetBinding(IsEnabledProperty, nameof(Authorized));
             grid.AddChild(cb, 2, 6);
 
@@ -72,23 +73,23 @@ partial class PlatformaOFD
         {
             try
             {
-                Dispatcher.Invoke(() => Presenter.Authorizing = true);
+                await Dispatcher.InvokeAsync(() => Presenter.Authorizing = true);
 
                 Presenter.Devices.Clear();
                 Presenter.Client.Auth(Presenter.AccessToken, Presenter.SessionId);
                 foreach (var d in await Presenter.Client.FetchDevicesAsync())
                     Presenter.Devices.Add(d);
 
-                Dispatcher.Invoke(() => Presenter.Authorized = true);
+                await Dispatcher.InvokeAsync(() => Presenter.Authorized = true);
             }
             catch (Exception e)
             {
-                Dispatcher.Invoke(() => Presenter.Authorized = false);
-                MessageBox.Show(e.Message, "Произошла ошибка...", 0, MessageBoxImage.Error);
+                await Dispatcher.InvokeAsync(() => Presenter.Authorized = false);
+                System.Windows.MessageBox.Show(e.Message, "Произошла ошибка...", 0, MessageBoxImage.Error);
             }
             finally
             {
-                Dispatcher.Invoke(() => Presenter.Authorizing = false);
+                await Dispatcher.InvokeAsync(() => Presenter.Authorizing = false);
             }
         }
     }

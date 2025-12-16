@@ -36,11 +36,10 @@ internal sealed class PlatformaOfdClient : APIClient
 
         var deviceIds = Regex.Matches(html, DevicePattern);
         var numbers = Regex.Matches(html, NumberPattern);
-        var devices = new PlatformaOfdDevice[deviceIds.Count+1];
-        devices[0] = new(0, "Все терминалы");
+        var devices = new PlatformaOfdDevice[deviceIds.Count];
 
-        for (var i = 0; i < devices.Length-1; i++)
-            devices[i + 1] = new(ulong.Parse(deviceIds[i].Groups["id"].Value), numbers[i * 2].Groups["numb"].Value);
+        for (var i = 0; i < devices.Length; i++)
+            devices[i] = new(ulong.Parse(deviceIds[i].Groups["id"].Value), numbers[i * 2].Groups["numb"].Value);
         return devices;
     }
 

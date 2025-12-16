@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using RetailCorrector.Exceptions.Saby;
 using MessageBox = System.Windows.MessageBox;
+using Xceed.Wpf.Toolkit;
 
 namespace RetailCorrector.Parsers;
 
@@ -103,10 +104,10 @@ internal partial class Saby
             grid.AddChild(tb, 2, 10);
 
             grid.AddChild(CreateLabel("Регистрационный номер ККТ"), y: 12);
-            var cb = new ComboBox { IsEditable = true };
-            cb.SetBinding(ComboBox.ItemsSourceProperty, nameof(Devices));
-            cb.SetBinding(ComboBox.SelectedItemProperty, nameof(Device));
-            cb.SetBinding(ComboBox.IsEnabledProperty, nameof(Authorized));
+            var cb = new CheckComboBox { IsEditable = true };
+            cb.SetBinding(CheckComboBox.ItemsSourceProperty, nameof(Devices));
+            cb.SetBinding(CheckComboBox.SelectedItemsOverrideProperty, nameof(SelectedDevices));
+            cb.SetBinding(CheckComboBox.IsEnabledProperty, nameof(Authorized));
             grid.AddChild(cb, 2, 12);
         }
 

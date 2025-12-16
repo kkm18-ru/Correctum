@@ -10,31 +10,37 @@ internal partial class Saby : ParserBase<Saby, Saby.View>
     private readonly SabyClient _client = new();
 
     public override ParseInfo GenerateInfo() =>
-        parseInfo = new ParseInfo(Name, ("ИНН", Inn), ("ККТ", Device), 
+        parseInfo = new ParseInfo(Name, ("ИНН", Inn), 
             ("Старт", FromDate.ToString("dd'.'MM'.'yyyy")), 
             ("Конец", ToDate.ToString("dd'.'MM'.'yyyy")));
 
     public override async IAsyncEnumerable<Receipt> Parse
         (IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var drives = await _client.FetchDrivesAsync(Inn, Device, FromDate, ToDate, cancellationToken);
-        progress.Report(-drives.Sum(drive =>
+        var drives = new Dictionary<string, SabyDriveResponse[]>();
+        foreach (var device in SelectedDevices)
+            drives.Add(device, await _client.FetchDrivesAsync(Inn, device, FromDate, ToDate, cancellationToken));
+
+        progress.Report(-drives.SelectMany(d => d.Value).Sum(d =>
         {
-            var (start, end) = GetAvailablePeriod(drive);
+            var (start, end) = GetAvailablePeriod(d);
             return (end.Date - start.Date).Days + 1;
         }));
         ProgressValue = 0;
-        foreach (var drive in drives)
+        foreach(var device in Devices)
         {
-            await foreach (var receipt in ParseByStorage(drive, progress, cancellationToken))
-                yield return receipt;
+            foreach (var drive in drives[device])
+            {
+                await foreach (var receipt in ParseByStorage(device, drive, progress, cancellationToken))
+                    yield return receipt;
+            }
         }
     }
 
     private async IAsyncEnumerable<Receipt> ParseByStorage
-        (SabyDriveResponse drive,IProgress<long> progress,  [EnumeratorCancellation] CancellationToken cancellationToken)
+        (string regId, SabyDriveResponse drive, IProgress<long> progress,  [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var baseRequest = new SabyReceiptsRequest(parseInfo.Id, Inn, Device, drive.Id);
+        var baseRequest = new SabyReceiptsRequest(parseInfo.Id, Inn, regId, drive.Id);
         var (start, end) = GetAvailablePeriod(drive);
         for(var day = start; day <= end; day = day.AddDays(1))
         {

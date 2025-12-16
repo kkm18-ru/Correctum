@@ -36,18 +36,9 @@ internal partial class Saby : INotifyPropertyChanged
             UpdateDevices();
         }
     } = "";
-    public string Device
-    {
-        get;
-        set
-        {
-            if(field == value) return;
-            field = value;
-            PropertyChanged?.Invoke(this, DeviceNotifier);
-        }
-    } = "";
 
     public ObservableCollection<string> Devices { get; set; } = [];
+    public ObservableCollection<string> SelectedDevices { get; set; } = [];
     public DateTime FromDate
     {
         get;
@@ -105,7 +96,6 @@ internal partial class Saby : INotifyPropertyChanged
     private readonly static PropertyChangedEventArgs LoginNotifier = new(nameof(Login));
     private readonly static PropertyChangedEventArgs PasswordNotifier = new(nameof(Password));
     private readonly static PropertyChangedEventArgs InnNotifier = new(nameof(Inn));
-    private readonly static PropertyChangedEventArgs DeviceNotifier = new(nameof(Device));
     private readonly static PropertyChangedEventArgs FromDateNotifier = new(nameof(FromDate));
     private readonly static PropertyChangedEventArgs ToDateNotifier = new(nameof(ToDate));
     private readonly static PropertyChangedEventArgs CanAuthorizeNotifier = new(nameof(CanAuthorize));

@@ -6,16 +6,6 @@ namespace RetailCorrector.Parsers
 {
     internal partial class OfdRu : INotifyPropertyChanged
     {
-        public OfdRuDevice Device
-        {
-            get;
-            set
-            {
-                if (field.Equals(value)) return;
-                field = value;
-                PropertyChanged?.Invoke(this, DeviceNotifier);
-            }
-        }
         public string Storage
         {
             get;
@@ -80,8 +70,8 @@ namespace RetailCorrector.Parsers
         public bool CanAuthorize => !Authorizing;
 
         public ObservableCollection<OfdRuDevice> Devices { get; } = [];
+        public ObservableCollection<OfdRuDevice> SelectedDevices { get; } = [];
 
-        private readonly static PropertyChangedEventArgs DeviceNotifier = new(nameof(Device));
         private readonly static PropertyChangedEventArgs StorageNotifier = new(nameof(Storage));
         private readonly static PropertyChangedEventArgs TokenNotifier = new(nameof(Token));
         private readonly static PropertyChangedEventArgs BeginDateNotifier = new(nameof(BeginDate));
