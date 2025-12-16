@@ -2,19 +2,6 @@ stages:
   - build:debug
   - tests:unit
   - analyze:sonarcloud
-  - release
   
 include:
   - local: .gitlab/ci/dev.gitlab-ci.yml
-
-build-to-tg:
-  stage: release
-  rules:
-    - if: $CI_COMMIT_TAG
-  tags:
-    - dotnet9
-    - inno-setup
-    - powershell7
-    - windows10
-  script:
-    - pwsh -File "./build.ps1" -Version "$CI_COMMIT_TAG" -BotToken "$TELEGRAM_TOKEN" -ChatId "$TELEGRAM_CHATID"
