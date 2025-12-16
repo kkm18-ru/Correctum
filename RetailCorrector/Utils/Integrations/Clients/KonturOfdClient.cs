@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -43,6 +44,25 @@ internal class KonturOfdClient : APIClient
         await foreach (var item in enumerable) yield return item.RegId;
     }
 
+    /// <summary>Перечисление чеков за период по ККТ</summary>
+    /// <param name="org">Организация</param>
+    /// <param name="beginDate">Начальная дата периода.</param>
+    /// <param name="endDate">Конечная дата периода.</param>
+    /// <param name="regId">Регистрационный номер ККТ</param>
+    /// <param name="cancellationToken">Токен, позволяющий отменить действие</param>
+    /// <returns>Асинхронное перечисление идентификатора документа</returns>
+    public async IAsyncEnumerable<KonturReceiptId> GetReceiptsId
+        (KonturOrganization org, DateTime beginDate, DateTime endDate, string regId,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        using var req = new HttpRequestMessage(HttpMethod.Post, $"/organizations/{org.Id:D}/cashreceiptbriefs/search");
+        req.Content = JsonContent.Create(new ReceiptsRequest(beginDate, endDate, regId));
+        using var resp = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
+        using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        var obj = await JsonSerializer.DeserializeAsync<ReceiptsResponse>(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+        foreach (var item in obj.Items) yield return item.Id;
+    }
+
     ~KonturOfdClient() { _client.Dispose(); }
 }
 
@@ -71,4 +91,58 @@ file struct Device
 {
     [JsonPropertyName("regNumber")]
     public string RegId { get; set; }
+}
+
+file class DateTimeConverter : JsonConverter<DateTime>
+{
+    public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        throw new NotImplementedException();
+
+    public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options) => 
+        writer.WriteStringValue(value.ToString("yyyy-MM-ddT00:00:00.000'Z'"));
+}
+
+file readonly struct ReceiptsRequest(DateTime beginDate, DateTime endDate, string device)
+{
+    [JsonPropertyName("from"), JsonConverter(typeof(DateTimeConverter))]
+    public DateTime BeginDate { get; } = beginDate;
+
+    [JsonPropertyName("to"), JsonConverter(typeof(DateTimeConverter))]
+    public DateTime EndDate { get; } = endDate; // API воспринимает это свойство некорректно
+
+    [JsonPropertyName("count")]
+    public uint Count { get; } = 1000;
+
+    [JsonPropertyName("cashboxRegNumber")]
+    public string RegId { get; } = device;
+}
+
+file struct ReceiptsResponse
+{
+    [JsonPropertyName("items")]
+    public ReceiptsItem[] Items { get; set; }
+}
+
+file struct ReceiptsItem
+{
+    [JsonPropertyName("id")]
+    public KonturReceiptId Id { get; set; }
+}
+
+public struct KonturReceiptId
+{
+    [JsonPropertyName("organizationId")]
+    public Guid OrgId { get; set; }
+
+    [JsonPropertyName("cashboxRegNumber")]
+    public string RegId { get; set; }
+
+    [JsonPropertyName("fnSerialNumber")]
+    public string DriveId { get; set; }
+
+    [JsonPropertyName("fiscalDocumentNumber")]
+    public uint DocId { get; set; }
+
+    public readonly override string ToString() =>
+        $"/organizations/{OrgId:D}/cashboxes/{RegId}/fns/{DriveId}/documents/{DocId}";
 }
