@@ -12,6 +12,7 @@ namespace RetailCorrector
         [STAThread]
         public static void Main()
         {
+            AppContext.SetSwitch("System.Net.DisableIPv6", true);
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.FromLogContext()
