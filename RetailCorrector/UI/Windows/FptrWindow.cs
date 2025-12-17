@@ -59,7 +59,7 @@ internal sealed class FptrWindow : Types.DialogWindow
             .SetContent("Печатать ли чек?")
             .SetCheckedBinding(nameof(FptrWindowDataContext.Print))
             .SetEnabledBinding(), y: 2, dx: 3);
-        
+
         grid.AddChild(new TextBlock()
             .SetText("Вид коррекции:")
             .SetCenter(), y: 4);
@@ -82,7 +82,7 @@ internal sealed class FptrWindow : Types.DialogWindow
         grid.AddChild(new TextBox()
             .SetTextBinding(nameof(FptrWindowDataContext.OperatorName))
             .SetEnabledBinding(), 2, 8);
-        
+
         grid.AddChild(new TextBlock()
             .SetText("ИНН оператора:")
             .SetCenter(), y: 10);
@@ -132,17 +132,17 @@ internal sealed class FptrWindow : Types.DialogWindow
         cts = new CancellationTokenSource();
         new Thread(() => ProcessingReceipts(cts.Token)) { IsBackground = true }.Start();
     }
-    
+
     private void ProcessingReceipts(CancellationToken token)
     {
         var context = (FptrWindowDataContext)data;
         try
         {
             handle.Connect();
-            if (string.IsNullOrWhiteSpace(context.OperatorName) && 
+            if (string.IsNullOrWhiteSpace(context.OperatorName) &&
                 !handle.LoginOperator(context.OperatorName, context.OperatorINN))
             {
-                MessageBox.Show("Не удалось зарегистрировать кассира", $"Произошла ошибка (Код: {handle.ErrorCode})", 
+                MessageBox.Show("Не удалось зарегистрировать кассира", $"Произошла ошибка (Код: {handle.ErrorCode})",
                     MessageBoxButton.OK, MessageBoxImage.Hand);
                 Cancel(null, null!);
                 token.ThrowIfCancellationRequested();
@@ -155,10 +155,10 @@ internal sealed class FptrWindow : Types.DialogWindow
             }
 
             context.CurrentProgress = 0;
-            while(context.CurrentProgress < @ref.Count)
+            while (context.CurrentProgress < @ref.Count)
             {
                 token.ThrowIfCancellationRequested();
-                if (handle.ProcessSession(!((FptrWindowDataContext)data).Print) && 
+                if (handle.ProcessSession(!((FptrWindowDataContext)data).Print) &&
                     ProcessingReceipt(@ref[context.CurrentProgress], token))
                     context.CurrentProgress++;
                 else handle.CancelReceipt();
@@ -282,7 +282,7 @@ file sealed class FptrWindowDataContext : INotifyPropertyChanged
         get;
         set
         {
-            if(field == value) return;
+            if (field == value) return;
             field = value;
             PropertyChanged?.Invoke(this, CorrectionTypeKey);
         }
@@ -347,7 +347,7 @@ file static class FptrWindowHelper
         return element;
     }
 
-    public static TextBlock SetTextBinding(this TextBlock element, Binding binding)
+    public static TextBlock SetTextBinding(this TextBlock element, BindingBase binding)
     {
         element.SetBinding(TextBlock.TextProperty, binding);
         return element;
@@ -411,18 +411,24 @@ file static class Locale
 
 file static class Bindings
 {
-    public readonly static Binding ProgressText = 
-        new(nameof(FptrWindowDataContext.CurrentProgress))
+    static Bindings()
+    {
+        ProgressText = new MultiBinding();
+        ProgressText.Bindings.Add(new Binding(nameof(FptrWindowDataContext.CurrentProgress)));
+        ProgressText.Bindings.Add(new Binding(nameof(Workspace.Instance.Receipts.Count))
         {
-            StringFormat = $"{{0}} / {Workspace.Instance.Receipts.Count}",
-            Mode = BindingMode.OneWay
-        };
+            Source = Workspace.Instance.Receipts
+        });
+        ProgressText.StringFormat = "{0} / {1}";
+    }
 
-    public readonly static Binding IdleEnabled = 
+    public readonly static MultiBinding ProgressText;
+
+    public readonly static Binding IdleEnabled =
         new(nameof(FptrWindowDataContext.Idle))
         { Mode = BindingMode.OneWay };
 
-    public  readonly static Binding ProcessingEnabled = 
+    public readonly static Binding ProcessingEnabled =
         new(nameof(FptrWindowDataContext.Processing))
         { Mode = BindingMode.OneWay };
 }
