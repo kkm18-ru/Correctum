@@ -1,6 +1,7 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.Parsers;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -12,14 +13,39 @@ internal sealed class PlatformaOfdClient : APIClient
 {
     private const string Host = "https://lk.platformaofd.ru";
     private readonly HttpClient _client = new() { BaseAddress = new Uri(Host) };
+    private string JSessionId = "";
 
     /// <summary>Установка аутентификационных данных.</summary>
-    /// <param name="accessToken">Токен доступа</param>
     /// <param name="sessionId">Идентификатор сессии</param>
-    public void Auth(string accessToken, string sessionId)
+    /// <param name="accessToken">Токен доступа</param>
+    /// <param name="refreshToken">Обновляющий токен</param>
+    public void Auth(string sessionId, string accessToken, string refreshToken)
+    {
+        JSessionId = sessionId;
+        Auth(accessToken, refreshToken);
+    }
+
+    private void Auth(string accessToken, string refreshToken)
     {
         _client.DefaultRequestHeaders.Remove("Cookie");
-        _client.DefaultRequestHeaders.Add("Cookie", $"JSESSIONID={sessionId}; access_token={accessToken}");
+        _client.DefaultRequestHeaders.Add("Cookie", $"JSESSIONID={JSessionId}; access_token={accessToken}; refresh_token={refreshToken}");
+    }
+
+    private void Auth(HttpResponseHeaders headers)
+    {
+        if (!headers.Contains("Set-Cookie")) return;
+        string access = "", refresh = "";
+        var header = headers.GetValues("Set-Cookie");
+        foreach(var value in header)
+        {
+            var @params = value.Split("; ");
+            var kv = @params[0].Split("=");
+            if (kv[0] == "access_token") access = kv[1];
+            if (kv[0] == "refresh_token") refresh = kv[1];
+        }
+        if (!string.IsNullOrWhiteSpace(access) && 
+            !string.IsNullOrWhiteSpace(refresh))
+            Auth(access, refresh);
     }
 
     /// <summary>Получение списка идентификаторов ККТ.</summary>
@@ -32,6 +58,7 @@ internal sealed class PlatformaOfdClient : APIClient
 
         using var req = new HttpRequestMessage(HttpMethod.Get, "/web/auth/terminals/monitoring");
         using var resp = await _client.SendAsync(req, cancel);
+        Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
 
         var deviceIds = Regex.Matches(html, DevicePattern);
@@ -64,6 +91,7 @@ internal sealed class PlatformaOfdClient : APIClient
 
         using var req = new HttpRequestMessage(HttpMethod.Get, url.ToString());
         using var resp = await _client.SendAsync(req, cancel);
+        Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
         var matches = Regex.Matches(html, UrlPattern);
         var arr = new PlatformaOfdReceiptReference[matches.Count];
@@ -81,6 +109,7 @@ internal sealed class PlatformaOfdClient : APIClient
     {
         using var req = new HttpRequestMessage(HttpMethod.Get, reference.ToString());
         using var resp = await _client.SendAsync(req, cancel);
+        Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
         var raw = HttpUtility.HtmlDecode(html.Split(@"<pre>")[1].Split(@"</pre>")[0]);
         var receipt = new Receipt { ParseId = parseId };

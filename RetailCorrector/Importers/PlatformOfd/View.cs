@@ -29,6 +29,8 @@ partial class PlatformOfd
             grid.AddRow(GridUnitType.Auto);
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Auto);
+            grid.AddRow(GridUnitType.Pixel, 5);
+            grid.AddRow(GridUnitType.Auto);
 
             grid.AddChild(new TextBlock { Text = "Идентификатор сессии" });
             var tb = new TextBox();
@@ -42,31 +44,37 @@ partial class PlatformOfd
             tb.SetBinding(IsEnabledProperty, nameof(CanAuthorize));
             grid.AddChild(tb, 2, 2);
 
+            grid.AddChild(new TextBlock { Text = "Токен обновления" }, y: 4);
+            tb = new TextBox();
+            tb.SetBinding(TextBox.TextProperty, nameof(RefreshToken));
+            tb.SetBinding(IsEnabledProperty, nameof(CanAuthorize));
+            grid.AddChild(tb, 2, 4);
+
             var btn = new Button { Content = "Авторизоваться" };
             btn.Click += OnAuthClicked;
             btn.SetBinding(IsEnabledProperty, nameof(CanAuthorize));
-            grid.AddChild(btn, 2, 4);
+            grid.AddChild(btn, 2, 6);
 
-            grid.AddChild(new TextBlock { Text = "ККТ" }, y: 6);
+            grid.AddChild(new TextBlock { Text = "ККТ" }, y: 8);
             var cb = new CheckComboBox();
             cb.SetBinding(CheckComboBox.ItemsSourceProperty, nameof(Devices));
             cb.SetBinding(CheckComboBox.SelectedItemsOverrideProperty, nameof(SelectedDevices));
             cb.SetBinding(IsEnabledProperty, nameof(Authorized));
-            grid.AddChild(cb, 2, 6);
+            grid.AddChild(cb, 2, 8);
 
-            grid.AddChild(new TextBlock { Text = "Начало периода" }, y: 8);
+            grid.AddChild(new TextBlock { Text = "Начало периода" }, y: 10);
             var dp = new DatePicker { DisplayDateStart = Constants.OfdBeginDate };
             dp.SetBinding(DatePicker.DisplayDateEndProperty, nameof(EndDate));
             dp.SetBinding(DatePicker.SelectedDateProperty, nameof(BeginDate));
             dp.SetBinding(IsEnabledProperty, nameof(Authorized));
-            grid.AddChild(dp, 2, 8);
+            grid.AddChild(dp, 2, 10);
 
-            grid.AddChild(new TextBlock { Text = "Конец периода" }, y: 10);
+            grid.AddChild(new TextBlock { Text = "Конец периода" }, y: 12);
             dp = new DatePicker { DisplayDateEnd = DateTime.Now };
             dp.SetBinding(DatePicker.DisplayDateStartProperty, nameof(BeginDate));
             dp.SetBinding(DatePicker.SelectedDateProperty, nameof(EndDate));
             dp.SetBinding(IsEnabledProperty, nameof(Authorized));
-            grid.AddChild(dp, 2, 10);
+            grid.AddChild(dp, 2, 12);
         }
 
         private async void OnAuthClicked(object? sender, RoutedEventArgs args)
@@ -76,7 +84,7 @@ partial class PlatformOfd
                 await Dispatcher.InvokeAsync(() => Presenter.Authorizing = true);
 
                 Presenter.Devices.Clear();
-                Presenter.Client.Auth(Presenter.AccessToken, Presenter.SessionId);
+                Presenter.Client.Auth(Presenter.SessionId, Presenter.AccessToken, Presenter.RefreshToken);
                 foreach (var d in await Presenter.Client.FetchDevicesAsync())
                     Presenter.Devices.Add(d);
 

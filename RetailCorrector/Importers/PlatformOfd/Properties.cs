@@ -26,6 +26,16 @@ partial class PlatformOfd : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, AccessTokenEventArg);
         }
     } = "";
+    public string RefreshToken
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, RefreshTokenEventArg);
+        }
+    } = "";
     public bool Authorizing
     {
         get;
@@ -73,6 +83,7 @@ partial class PlatformOfd : INotifyPropertyChanged
 
     private readonly static PropertyChangedEventArgs SessionIdEventArg = new(nameof(SessionId));
     private readonly static PropertyChangedEventArgs AccessTokenEventArg = new(nameof(AccessToken));
+    private readonly static PropertyChangedEventArgs RefreshTokenEventArg = new(nameof(RefreshToken));
     private readonly static PropertyChangedEventArgs BeginDateNotifier = new(nameof(BeginDate));
     private readonly static PropertyChangedEventArgs EndDateNotifier = new(nameof(EndDate));
     private readonly static PropertyChangedEventArgs CanAuthorizeNotifier = new(nameof(CanAuthorize));
