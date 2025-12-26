@@ -5,3 +5,16 @@ stages:
   
 include:
   - local: .gitlab/ci/dev.gitlab-ci.yml
+
+analyze-dev:
+  stage: analyze:sonarcloud
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "dev"'
+      when: on_success
+    - when: never
+  tags: [windows, dotnet10, sonarscanner, dotnet-coverage]
+  script:
+    - dotnet sonarscanner begin /k:"ornaras_retailcorrector" /o:"gitlabornaras" /d:sonar.token="$SONAR_TOKEN" /d:sonar.host.url="$SONAR_HOST_URL" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+    - dotnet build --no-incremental
+    - dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
+    - dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
