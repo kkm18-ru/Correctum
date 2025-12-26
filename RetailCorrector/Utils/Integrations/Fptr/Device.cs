@@ -18,7 +18,7 @@ namespace RetailCorrector.Utils.Integrations
                     value = new byte[count * 2];
                     errorDescription(handle, value, count);
                 }
-                return Encoding.Unicode.GetString(value, 0, count * 2).TrimEnd();
+                return Encoding.Unicode.GetString(value, 0, count * 2).Trim('\0', ' ', '\t', '\n', '\r');
             }
         }
 

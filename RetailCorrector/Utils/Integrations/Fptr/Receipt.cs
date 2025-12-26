@@ -83,10 +83,15 @@ namespace RetailCorrector.Utils.Integrations
             var (code, desc) = (ErrorCode, ErrorDescription);
             cancelReceipt(handle);
             if (code == 0) return;
+            if (AutoFixWoutAsk.Contains(code) && TryFixErrorWoutAsk(code)) return;
             var title = $"Произошла ошибка (Код: {code})";
-            var text = $"{desc}\n\nЖелаете выполнить авто-исправление?";
-            var resp = MessageBox.Show(text, title, MessageBoxButton.YesNo, MessageBoxImage.Hand);
-            if (resp == MessageBoxResult.Yes && TryFixError()) return;
+            string text;
+            if (AutoFixWithAsk.Contains(code))
+            {
+                text = $"{desc}\n\nЖелаете выполнить автоматическое исправление?";
+                var resp = MessageBox.Show(text, title, MessageBoxButton.YesNo, MessageBoxImage.Hand);
+                if (resp == MessageBoxResult.Yes && TryFixErrorWithAsk(code)) return;
+            }
             Disconnect();
             text = $"{desc}\n\nДрайвер освободил кассу для её настройки, закройте данное окно для продолжения пробития!";
             MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Hand);
