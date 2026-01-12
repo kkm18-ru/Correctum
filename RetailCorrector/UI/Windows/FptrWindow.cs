@@ -155,7 +155,13 @@ internal sealed class FptrWindow : Types.DialogWindow
         var context = (FptrWindowDataContext)data;
         try
         {
-            handle.Connect();
+            if (!handle.Connect())
+            {
+                MessageBox.Show("Не удалось подключиться к фискальному регистратору", $"Произошла ошибка (Код: {handle.ErrorCode})",
+                    MessageBoxButton.OK, MessageBoxImage.Hand);
+                Cancel(null, null!);
+                token.ThrowIfCancellationRequested();
+            }
             if (!CanElectronicallyReceipt())
             {
                 Cancel(null, null!);
