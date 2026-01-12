@@ -1,6 +1,7 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations;
+using RetailCorrector.Utils.Integrations.Clients;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -150,6 +151,68 @@ internal sealed class FptrWindow : Types.DialogWindow
         return false;
     }
 
+    private bool CheckDevice()
+    {
+        var client = new KktOnlineClient();
+        return CheckKkt(client) && CheckFn(client);
+    }
+
+    private bool CheckKkt(KktOnlineClient client)
+    {
+        var kktStatus = client.CheckKktAsAtol(handle.SerialNumber, handle.Model);
+        if (kktStatus != 0)
+        {
+            if (kktStatus == KktOnlineClient.StatusCode.NoCreated)
+            {
+                MessageBox.Show("Отсутствует в реестре произведенных экземпляров ККТ.",
+                    "Проверка ККТ на сайте ФНС", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            var msg = kktStatus switch
+            {
+                KktOnlineClient.StatusCode.Unknown => "ФНС выдал неожиданный ответ...",
+                KktOnlineClient.StatusCode.NeedRegister => "Регистрация ККТ не завершена.",
+                KktOnlineClient.StatusCode.Error => "Не удалось получить статус ККТ.",
+                _ => ""
+            };
+            var result = MessageBox.Show($"{msg}\n\nВы собираетесь продолжить проведение чеков?",
+                "Проверка ККТ на сайте ФНС", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            return result == MessageBoxResult.Yes;
+        }
+        return true;
+    }
+
+    private bool CheckFn(KktOnlineClient client)
+    {
+        var fnStatus = client.CheckDrive(handle.FnSerialNumber, 0); // todo replace 0 with actual model
+        if (fnStatus != 0)
+        {
+            if (fnStatus == KktOnlineClient.StatusCode.NoCreated)
+            {
+                MessageBox.Show("Отсутствует в реестре произведенных экземпляров ФН.",
+                    "Проверка ФН на сайте ФНС", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            if (fnStatus == KktOnlineClient.StatusCode.Archived)
+            {
+                MessageBox.Show("Ответ от ФНС: \"ФН закрыт\".", "Проверка ФН на сайте ФНС", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            var msg = fnStatus switch
+            {
+                KktOnlineClient.StatusCode.Unknown => "ФНС выдал неожиданный ответ...",
+                KktOnlineClient.StatusCode.NeedRegister => "Регистрация ФН не завершена.",
+                KktOnlineClient.StatusCode.Error => "Не удалось получить статус ФН.",
+                _ => ""
+            };
+            var result = MessageBox.Show($"{msg}\n\nВы собираетесь продолжить проведение чеков?",
+                "Проверка ФН на сайте ФНС", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            return result == MessageBoxResult.Yes;
+        }
+        return true;
+    }
+
     private void ProcessingReceipts(CancellationToken token)
     {
         var context = (FptrWindowDataContext)data;
@@ -163,6 +226,11 @@ internal sealed class FptrWindow : Types.DialogWindow
                 token.ThrowIfCancellationRequested();
             }
             if (!CanElectronicallyReceipt())
+            {
+                Cancel(null, null!);
+                token.ThrowIfCancellationRequested();
+            }
+            if (!CheckDevice())
             {
                 Cancel(null, null!);
                 token.ThrowIfCancellationRequested();

@@ -32,6 +32,32 @@ namespace RetailCorrector.Utils.Integrations
             }
         }
 
+        public uint Model
+        {
+            get
+            {
+                SetInteger(65587, 17); // DataType: ModelInfo
+                return Query() ? GetInteger(65544) : 0u;
+            }
+        }
+        public string SerialNumber
+        {
+            get
+            {
+                SetInteger(65587, 16); // DataType: SerialNumber
+                return Query() ? GetString(65559) : "";
+            }
+        }
+
+        public string FnSerialNumber
+        {
+            get
+            {
+                SetInteger(65622, 2); // FNDataType: Info
+                return QueryFN() ? GetString(65559) : "";
+            }
+        }
+
         public uint? DocFormat => docFormat;
 
         public bool Connect()
