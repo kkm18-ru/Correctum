@@ -156,7 +156,11 @@ internal sealed class FptrWindow : Types.DialogWindow
         try
         {
             handle.Connect();
-            if (!CanElectronicallyReceipt()) return;
+            if (!CanElectronicallyReceipt())
+            {
+                Cancel(null, null!);
+                token.ThrowIfCancellationRequested();
+            }
             if (string.IsNullOrWhiteSpace(context.OperatorName) &&
                 !handle.LoginOperator(context.OperatorName, context.OperatorINN))
             {
