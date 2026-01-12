@@ -55,59 +55,59 @@ internal sealed class FptrWindow : Types.DialogWindow
 
         grid.AddChild(new TextBlock()
             .SetText("Вид коррекции:")
-            .SetCenter(), y: 4);
+            .SetCenter(), y: 2);
         grid.AddChild(new ComboBox()
             .SetItems("Самостоятельная", "По предписанию")
             .SetIndexBinding(nameof(FptrWindowDataContext.CorrectionType))
-            .SetEnabledBinding(), 2, 4);
+            .SetEnabledBinding(), 2, 2);
 
         grid.AddChild(new TextBlock()
             .SetText("Номер акта:")
             .SetToolTip(Locale.ActTip)
-            .SetCenter(), y: 6);
+            .SetCenter(), y: 4);
         grid.AddChild(new TextBox()
             .SetTextBinding(nameof(FptrWindowDataContext.Act))
-            .SetEnabledBinding(), 2, 6);
+            .SetEnabledBinding(), 2, 4);
 
         grid.AddChild(new TextBlock()
             .SetText("ФИО оператора:")
-            .SetCenter(), y: 8);
+            .SetCenter(), y: 6);
         grid.AddChild(new TextBox()
             .SetTextBinding(nameof(FptrWindowDataContext.OperatorName))
-            .SetEnabledBinding(), 2, 8);
+            .SetEnabledBinding(), 2, 6);
 
         grid.AddChild(new TextBlock()
             .SetText("ИНН оператора:")
-            .SetCenter(), y: 10);
+            .SetCenter(), y: 8);
         grid.AddChild(new TextBox()
             .SetTextBinding(nameof(FptrWindowDataContext.OperatorINN))
-            .SetEnabledBinding(), 2, 10);
+            .SetEnabledBinding(), 2, 8);
 
         grid.AddChild(new CheckBox()
             .SetContent("Применить рассчет для сети \"Интернет\"")
             .SetCheckedBinding(nameof(FptrWindowDataContext.IsInternet))
-            .SetEnabledBinding(), y: 12, dx: 3);
+            .SetEnabledBinding(), y: 10, dx: 3);
 
         grid.AddChild(new TextBlock()
             .SetText("Адрес сайта:")
-            .SetCenter(), y: 14);
+            .SetCenter(), y: 12);
         grid.AddChild(new TextBox()
             .SetTextBinding(nameof(FptrWindowDataContext.Address))
-            .SetEnabledBinding(), 2, 14);
+            .SetEnabledBinding(), 2, 12);
 
-        grid.AddChild(CreateProgress(), 0, 16, 3);
+        grid.AddChild(CreateProgress(), 0, 14, 3);
         grid.AddChild(new TextBlock()
             .SetTextBinding(Bindings.ProgressText)
-            .SetCenter(), 0, 16, 3);
+            .SetCenter(), 0, 14, 3);
 
         grid.AddChild(new Button()
             .SetEnabledBinding()
             .SetClickAction(Start)
-            .SetContent("Запуск"), y: 18);
+            .SetContent("Запуск"), y: 16);
         grid.AddChild(new Button()
             .SetEnabledBinding(false)
             .SetContent("Отмена")
-            .SetClickAction(Cancel), 2, 18);
+            .SetClickAction(Cancel), 2, 16);
 
         Content = grid;
     }
