@@ -47,18 +47,11 @@ internal sealed class FptrWindow : Types.DialogWindow
         grid.AddRow(GridUnitType.Auto);
         grid.AddRow(GridUnitType.Pixel, 5);
         grid.AddRow(GridUnitType.Auto);
-        grid.AddRow(GridUnitType.Pixel, 5);
-        grid.AddRow(GridUnitType.Auto);
 
         grid.AddChild(new Button()
             .SetEnabledBinding()
             .SetClickAction((_, _) => handle.ShowProperties(this))
             .SetContent("Настройка драйвера"), dx: 3);
-
-        grid.AddChild(new CheckBox()
-            .SetContent("Печатать ли чек?")
-            .SetCheckedBinding(nameof(FptrWindowDataContext.Print))
-            .SetEnabledBinding(), y: 2, dx: 3);
 
         grid.AddChild(new TextBlock()
             .SetText("Вид коррекции:")
@@ -183,7 +176,7 @@ internal sealed class FptrWindow : Types.DialogWindow
             while (context.CurrentProgress < @ref.Count)
             {
                 token.ThrowIfCancellationRequested();
-                if (handle.ProcessSession(!((FptrWindowDataContext)data).Print) &&
+                if (handle.ProcessSession(true) &&
                     ProcessingReceipt(@ref[context.CurrentProgress], token))
                     context.CurrentProgress++;
                 else handle.CancelReceipt();
@@ -214,7 +207,6 @@ internal sealed class FptrWindow : Types.DialogWindow
         Dispatcher.Invoke(() =>
         {
             openArgs.Act = string.IsNullOrWhiteSpace(context.Act) ? " " : context.Act;
-            openArgs.Print = context.Print;
             openArgs.CorrType = context.CorrectionType;
             openArgs.IsInternetPayment = context.IsInternet;
             openArgs.HttpAddress = context.Address;
@@ -312,16 +304,6 @@ file sealed class FptrWindowDataContext : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, CorrectionTypeKey);
         }
     }
-    public bool Print
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            PropertyChanged?.Invoke(this, PrintKey);
-        }
-    } = true;
     public bool Processing => processing;
     public bool Idle => !processing;
 
@@ -340,7 +322,6 @@ file sealed class FptrWindowDataContext : INotifyPropertyChanged
     private readonly PropertyChangedEventArgs OperatorINNKey = new(nameof(OperatorINN));
     private readonly PropertyChangedEventArgs CurrentProgressKey = new(nameof(CurrentProgress));
     private readonly PropertyChangedEventArgs IsInternetKey = new(nameof(IsInternet));
-    private readonly PropertyChangedEventArgs PrintKey = new(nameof(Print));
     private readonly PropertyChangedEventArgs CorrectionTypeKey = new(nameof(CorrectionType));
     private readonly PropertyChangedEventArgs ProcessingKey = new(nameof(Processing));
     private readonly PropertyChangedEventArgs IdleKey = new(nameof(Idle));

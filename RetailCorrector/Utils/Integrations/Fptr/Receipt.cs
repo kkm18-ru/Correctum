@@ -12,7 +12,7 @@ namespace RetailCorrector.Utils.Integrations
             var opcode = doc.Type.ToCorrection(docFormat);
             if (opcode is null) return false;
             SetInteger(65545, opcode.Value);
-            SetBoolean(65572, !args.Print);
+            SetBoolean(65572, true);
             SetInteger(1055, (uint)doc.TaxationSystem);
 
             if (args.IsInternetPayment)
@@ -104,7 +104,6 @@ namespace RetailCorrector.Utils.Integrations
         public bool IsInternetPayment { get; set; }
         public string HttpAddress { get; set; }
         public string Act { get; set; }
-        public bool Print { get; set; }
         public int CorrType { get; set; }
     }
 }
