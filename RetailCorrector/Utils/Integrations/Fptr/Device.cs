@@ -6,6 +6,16 @@ namespace RetailCorrector.Utils.Integrations
 {
     internal sealed partial class FptrHandle
     {
+        public Version? ConfigurationVersion
+        {
+            get
+            {
+                SetInteger(65587, 2); // DataType: UnitVersion 
+                SetInteger(65609, 1); // UnitType: Configuration 
+                return !Query() ? null : Version.Parse(GetString(65604));
+            }
+        }
+
         public int ErrorCode => errorCode(handle);
         public string ErrorDescription
         {

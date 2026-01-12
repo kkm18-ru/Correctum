@@ -133,12 +133,37 @@ internal sealed class FptrWindow : Types.DialogWindow
         new Thread(() => ProcessingReceipts(cts.Token)) { IsBackground = true }.Start();
     }
 
+    private bool CanElectronicallyReceipt()
+    {
+        const uint printLicenseNumber = 17;
+        const string caption = "Проведение электронных чеков невозможна";
+        if (handle.ConfigurationVersion < new Version(5, 12))
+        {
+            MessageBox.Show("Версия конфигурации сильно устарела.", 
+                caption, 0, MessageBoxImage.Stop);
+            return false;
+        }
+        var license = handle.GetLicenseInfo(printLicenseNumber);
+        if (!(license?.Entered ?? false))
+        {
+            MessageBox.Show("Лицензия \"Доп. функционал Печать\" не введена!", 
+                caption, 0, MessageBoxImage.Stop);
+            return false;
+        }
+        var today = DateTime.Today;
+        if ((license?.ValidUntil ?? DateTime.MinValue) > today) return true;
+        MessageBox.Show("Срок действия лицензии \"Доп. функционал Печать\" истек!", 
+            caption, 0, MessageBoxImage.Stop);
+        return false;
+    }
+
     private void ProcessingReceipts(CancellationToken token)
     {
         var context = (FptrWindowDataContext)data;
         try
         {
             handle.Connect();
+            if (!CanElectronicallyReceipt()) return;
             if (string.IsNullOrWhiteSpace(context.OperatorName) &&
                 !handle.LoginOperator(context.OperatorName, context.OperatorINN))
             {
