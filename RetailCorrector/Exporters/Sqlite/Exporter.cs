@@ -7,7 +7,7 @@ namespace RetailCorrector.Exporters
     internal partial class Sqlite : IExporter
     {
         public string Name => "SQLite";
-        public string? FileFilter => "*.sql|SQLite DataBase";
+        public string? FileFilter => "SQLite|*.sqlite";
 
         public static Sqlite Instance => field ??= new Sqlite();
 

@@ -2,7 +2,7 @@
 
 namespace RetailCorrector.Exporters
 {
-    internal interface IExporter
+    public interface IExporter
     {
         string Name { get; }
         string? FileFilter { get; }

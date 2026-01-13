@@ -16,7 +16,6 @@ internal static class ModuleRegistry
 
     public readonly static ImmutableArray<Actions.IAction> Actions = [
         RetailCorrector.Actions.CancelReceipt.Instance,
-        RetailCorrector.Actions.ExportReceipts.Instance,
         RetailCorrector.Actions.RemoveReceipt.Instance,
     ];
 

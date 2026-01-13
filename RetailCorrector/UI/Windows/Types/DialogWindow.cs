@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace RetailCorrector.UI.Windows.Types
 {
-    internal abstract class DialogWindow : Window
+    public abstract class DialogWindow : Window
     {
         public RoutedCommand CloseCommand { get; } = 
             new(nameof(CloseCommand), typeof(DialogWindow));
