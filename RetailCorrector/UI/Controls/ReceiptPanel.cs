@@ -53,7 +53,7 @@ namespace RetailCorrector.UI.Controls
         public bool IsEnabledPrevButtons => IndexPage > 1;
         public bool IsEnabledNextButtons => IndexPage < CachedCountPages;
 
-        private ReceiptGrid grid;
+        private readonly ReceiptGrid grid;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string property = "") =>
@@ -171,13 +171,6 @@ namespace RetailCorrector.UI.Controls
                 Margin = new(0, 5, 5, 5),
             };
             toolPanel.Children.Add(btnActions);
-
-            var btnFptr = new FptrButton
-            {
-                Height = 22,
-                Margin = new(0, 5, 5, 5),
-            };
-            toolPanel.Children.Add(btnFptr);
         }
 
         private void Grid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
@@ -198,7 +191,6 @@ namespace RetailCorrector.UI.Controls
             for (var i = 0; i < removedCount; i++)
             {
                 if (e.RemovedCells[i * columnCount].Item is not DisplayReceipt item) continue;
-                var row = grid.Collection.IndexOf(item);
                 var ps = PositionGrid.Instance.Collection.Where(p => p.Receipt == item.ToString()).ToArray();
                 for (var j = 0; j < ps.Length; j++)
                     PositionGrid.Instance.Collection.Remove(ps[j]);

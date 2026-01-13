@@ -20,11 +20,7 @@ public partial class MainWindow : Window
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
         
         Title = "RetailCorrector";
-        WindowStyle = WindowStyle.None;
-        ResizeMode = ResizeMode.NoResize;
         InputBindings.Add(new KeyBinding(new RelayCommand(ShowPaste), Key.V, ModifierKeys.Control));
-        var area = SystemParameters.WorkArea;
-        (Width, Height, Top, Left) = (area.Width, area.Height, area.Top, area.Left);
 
         var textHeader = new FrameworkElementFactory(typeof(TextBlock));
         textHeader.SetBinding(TextBlock.TextProperty, new Binding(nameof(LayoutDocument.Title)));
@@ -53,14 +49,15 @@ public partial class MainWindow : Window
         panelLayout.Children.Add(group);
 
         var dock = new DockPanel();
-        DockPanel.SetDock(TitleBar.Instance, Dock.Top);
         var content = new DockingManager
         {
             AllowMixedOrientation = true,
             DocumentHeaderTemplate = headerTemplate,
             Layout = new() { RootPanel = panelLayout }
         };
-        dock.Children.Add(TitleBar.Instance);
+        var menu = new MainMenu();
+        DockPanel.SetDock(menu, Dock.Top);
+        dock.Children.Add(menu);
         dock.Children.Add(content);
 
         Content = dock;
