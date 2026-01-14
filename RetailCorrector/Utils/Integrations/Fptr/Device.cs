@@ -80,6 +80,20 @@ namespace RetailCorrector.Utils.Integrations
             }
             return false;
         }
+
+        public string GetSetting(string key)
+        {
+            var keyBytes = encoding.GetBytes(key);
+            var bytes = new byte[sizeCharacter * defaultBytesSize];
+            var size = getSingleSetting(handle, keyBytes, bytes, defaultBytesSize);
+            if (size > defaultBytesSize)
+            {
+                bytes = new byte[sizeCharacter * size];
+                getSingleSetting(handle, keyBytes, bytes, size);
+            }
+            return encoding.GetString(bytes, 0, size * sizeCharacter).TrimEnd(new char[1]);
+        }
+        
         public bool Disconnect()
         {
             docFormat = null;

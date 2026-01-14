@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System.IO;
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace RetailCorrector.Utils.Integrations
@@ -11,8 +12,10 @@ namespace RetailCorrector.Utils.Integrations
         private const string regeditKeyName = @"HKEY_LOCAL_MACHINE\SOFTWARE\ATOL\Drivers\10.0\KKT";
         private const int defaultStringSize = 128;
         private const int defaultBytesSize = 128;
+        private static readonly Encoding encoding = Encoding.Unicode;
+        private static readonly int sizeCharacter = encoding.GetByteCount(['\0']);
 
-        private readonly static nint hLibrary;
+        private static readonly nint hLibrary;
 
         static FptrHandle()
         {
@@ -34,7 +37,6 @@ namespace RetailCorrector.Utils.Integrations
             open = GetDelegateOfLib<SimpleDelegate>("libfptr_open");
             close = GetDelegateOfLib<SimpleDelegate>("libfptr_close");
             operatorLogin = GetDelegateOfLib<SimpleDelegate>("libfptr_operator_login");
-            deviceReboot = GetDelegateOfLib<SimpleDelegate>("libfptr_device_reboot");
             closeReceipt = GetDelegateOfLib<SimpleDelegate>("libfptr_close_receipt");
             cancelReceipt = GetDelegateOfLib<SimpleDelegate>("libfptr_cancel_receipt");
             payment = GetDelegateOfLib<SimpleDelegate>("libfptr_payment");
@@ -58,6 +60,8 @@ namespace RetailCorrector.Utils.Integrations
             showProperties = GetDelegateOfLib<ShowPropertiesDelegate>("libfptr_show_properties");
 
             errorDescription = GetDelegateOfLib<GetErrorDescriptionDelegate>("libfptr_error_description");
+            
+            getSingleSetting = GetDelegateOfLib<GetSettingDelegate>("libfptr_get_single_setting");
         }
 
         public FptrHandle() : base(nint.Zero, true) => createHandle(out handle);

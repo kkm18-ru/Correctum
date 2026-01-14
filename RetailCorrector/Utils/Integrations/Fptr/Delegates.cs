@@ -51,6 +51,9 @@ namespace RetailCorrector.Utils.Integrations
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int ShowPropertiesDelegate(nint handle, int parentType, nint parent);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int GetSettingDelegate(nint handle, byte[] key, byte[] value, int size);
+
 
         private static T GetDelegateOfLib<T>(string nameMethod)
             where T : Delegate

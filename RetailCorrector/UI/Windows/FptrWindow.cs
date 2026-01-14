@@ -26,7 +26,6 @@ internal sealed class FptrWindow : Types.DialogWindow
             Margin = new Thickness(5)
         };
 
-
         grid.AddColumn(GridUnitType.Pixel, 100);
         grid.AddColumn(GridUnitType.Pixel, 5);
         grid.AddColumn(GridUnitType.Pixel, 150);
@@ -51,7 +50,7 @@ internal sealed class FptrWindow : Types.DialogWindow
 
         grid.AddChild(new Button()
             .SetEnabledBinding()
-            .SetClickAction((_, _) => handle.ShowProperties(this))
+            .SetClickAction(ShowSettings)
             .SetContent("Настройка драйвера"), dx: 3);
 
         grid.AddChild(new TextBlock()
@@ -120,6 +119,24 @@ internal sealed class FptrWindow : Types.DialogWindow
         return _;
     }
 
+    private void ShowSettings(object s, RoutedEventArgs e)
+    {
+        const string text = 
+            """
+            У вас выбрано подключение к ККТ с автоматическим выбором устройства.
+            Данная настройка не рекомендуется при одновременной работе с несколькими ККТ Atol!
+            
+            Открыть повторно настройку драйвера ККТ?
+            """;
+        const MessageBoxButton button = MessageBoxButton.YesNo;
+        const MessageBoxImage icon = MessageBoxImage.Warning;
+        
+        do if (!handle.ShowProperties(this)) return;
+        while (handle.GetSetting("Port") == "1" &&
+               handle.GetSetting("UsbDevicePath") is "auto" or "" &&
+               MessageBox.Show(text, "", button, icon) == MessageBoxResult.Yes);
+    }
+    
     private void Start(object s, RoutedEventArgs e)
     {
         ((FptrWindowDataContext)DataContext).SetStatus(true);

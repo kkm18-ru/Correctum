@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace RetailCorrector.Utils.Integrations
+﻿namespace RetailCorrector.Utils.Integrations
 {
     partial class FptrHandle
     {
@@ -33,18 +31,18 @@ namespace RetailCorrector.Utils.Integrations
         }
 
         private void SetString(int paramId, string value) =>
-            setParamStr(handle, paramId, Encoding.Unicode.GetBytes(value));
+            setParamStr(handle, paramId, encoding.GetBytes(value));
 
         private string GetString(int paramId)
         {
-            var value = new byte[defaultStringSize * 2];
+            var value = new byte[defaultStringSize * sizeCharacter];
             var count = getParamStr(handle, paramId, value, defaultStringSize);
             if (count > defaultStringSize)
             {
-                value = new byte[count * 2];
+                value = new byte[count * sizeCharacter];
                 getParamStr(handle, paramId, value, count);
             }
-            return Encoding.Unicode.GetString(value, 0, count * 2).TrimEnd();
+            return encoding.GetString(value, 0, count * sizeCharacter).TrimEnd();
         }
 
         private DateTime GetDate(int paramId)

@@ -2,42 +2,43 @@
 {
     partial class FptrHandle
     {
-        private readonly static HandleManagementDelegate createHandle;          // libfptr_create
-        private readonly static HandleManagementDelegate destroyHandle;         // libfptr_destroy
+        private static readonly HandleManagementDelegate createHandle;          // libfptr_create
+        private static readonly HandleManagementDelegate destroyHandle;         // libfptr_destroy
 
-        private readonly static SimpleDelegate registration;                    // libfptr_registration
-        private readonly static SimpleDelegate openReceipt;                     // libfptr_open_receipt
-        private readonly static SimpleDelegate utilFormTLV;                     // libfptr_util_form_tlv
-        private readonly static SimpleDelegate fnQueryData;                     // libfptr_fn_query_data
-        private readonly static SimpleDelegate queryData;                       // libfptr_query_data
-        private readonly static SimpleDelegate report;                          // libfptr_report
-        private readonly static SimpleDelegate errorCode;                       // libfptr_error_code
-        private readonly static SimpleDelegate open;                            // libfptr_open
-        private readonly static SimpleDelegate close;                           // libfptr_close
-        private readonly static SimpleDelegate operatorLogin;                   // libfptr_operator_login
-        private readonly static SimpleDelegate deviceReboot;                    // libfptr_device_reboot
-        private readonly static SimpleDelegate closeReceipt;                    // libfptr_close_receipt
-        private readonly static SimpleDelegate cancelReceipt;                   // libfptr_cancel_receipt
-        private readonly static SimpleDelegate payment;                         // libfptr_payment
-        private readonly static SimpleDelegate receiptTotal;                    // libfptr_receipt_total
-        private readonly static SimpleDelegate openShift;                       // libfptr_open_shift
+        private static readonly SimpleDelegate registration;                    // libfptr_registration
+        private static readonly SimpleDelegate openReceipt;                     // libfptr_open_receipt
+        private static readonly SimpleDelegate utilFormTLV;                     // libfptr_util_form_tlv
+        private static readonly SimpleDelegate fnQueryData;                     // libfptr_fn_query_data
+        private static readonly SimpleDelegate queryData;                       // libfptr_query_data
+        private static readonly SimpleDelegate report;                          // libfptr_report
+        private static readonly SimpleDelegate errorCode;                       // libfptr_error_code
+        private static readonly SimpleDelegate open;                            // libfptr_open
+        private static readonly SimpleDelegate close;                           // libfptr_close
+        private static readonly SimpleDelegate operatorLogin;                   // libfptr_operator_login
+        private static readonly SimpleDelegate closeReceipt;                    // libfptr_close_receipt
+        private static readonly SimpleDelegate cancelReceipt;                   // libfptr_cancel_receipt
+        private static readonly SimpleDelegate payment;                         // libfptr_payment
+        private static readonly SimpleDelegate receiptTotal;                    // libfptr_receipt_total
+        private static readonly SimpleDelegate openShift;                       // libfptr_open_shift
 
-        private readonly static GetBoolDelegate getParamBool;                   // libfptr_get_param_bool
-        private readonly static GetIntDelegate getParamInt;                     // libfptr_get_param_int
-        private readonly static GetDoubleDelegate getParamDouble;               // libfptr_get_param_double
-        private readonly static GetBytesDelegate getParamByteArray;             // libfptr_get_param_bytearray
-        private readonly static GetBytesDelegate getParamStr;                   // libfptr_get_param_str
-        private readonly static GetDateDelegate getParamDateTime;               // libfptr_get_param_datetime
+        private static readonly GetBoolDelegate getParamBool;                   // libfptr_get_param_bool
+        private static readonly GetIntDelegate getParamInt;                     // libfptr_get_param_int
+        private static readonly GetDoubleDelegate getParamDouble;               // libfptr_get_param_double
+        private static readonly GetBytesDelegate getParamByteArray;             // libfptr_get_param_bytearray
+        private static readonly GetBytesDelegate getParamStr;                   // libfptr_get_param_str
+        private static readonly GetDateDelegate getParamDateTime;               // libfptr_get_param_datetime
 
-        private readonly static SetBoolDelegate setParamBool;                   // libfptr_set_param_bool
-        private readonly static SetIntDelegate setParamInt;                     // libfptr_set_param_int
-        private readonly static SetDoubleDelegate setParamDouble;               // libfptr_set_param_double
-        private readonly static SetBytesDelegate setParamByteArray;             // libfptr_set_param_bytearray
-        private readonly static SetStrDelegate setParamStr;                     // libfptr_set_param_str
-        private readonly static SetDateDelegate setParamDateTime;               // libfptr_set_param_datetime
+        private static readonly SetBoolDelegate setParamBool;                   // libfptr_set_param_bool
+        private static readonly SetIntDelegate setParamInt;                     // libfptr_set_param_int
+        private static readonly SetDoubleDelegate setParamDouble;               // libfptr_set_param_double
+        private static readonly SetBytesDelegate setParamByteArray;             // libfptr_set_param_bytearray
+        private static readonly SetStrDelegate setParamStr;                     // libfptr_set_param_str
+        private static readonly SetDateDelegate setParamDateTime;               // libfptr_set_param_datetime
 
-        private readonly static ShowPropertiesDelegate showProperties;          // libfptr_show_properties
+        private static readonly ShowPropertiesDelegate showProperties;          // libfptr_show_properties
 
-        private readonly static GetErrorDescriptionDelegate errorDescription;   // libfptr_error_description
+        private static readonly GetErrorDescriptionDelegate errorDescription;   // libfptr_error_description
+        
+        private static readonly GetSettingDelegate getSingleSetting;            // libfptr_get_single_setting
     }
 }
