@@ -252,7 +252,7 @@ internal sealed class FptrWindow : Types.DialogWindow
                 Cancel(null, null!);
                 token.ThrowIfCancellationRequested();
             }
-            if (string.IsNullOrWhiteSpace(context.OperatorName) &&
+            if (!string.IsNullOrWhiteSpace(context.OperatorName) &&
                 !handle.LoginOperator(context.OperatorName, context.OperatorINN))
             {
                 MessageBox.Show("Не удалось зарегистрировать кассира", $"Произошла ошибка (Код: {handle.ErrorCode})",

@@ -9,7 +9,6 @@
 
         private bool GetBoolean(int paramId) => getParamBool(handle, paramId);
         private uint GetInteger(int paramId) => getParamInt(handle, paramId);
-        private double GetDouble(int paramId) => getParamDouble(handle, paramId);
 
         private void SetBoolean(int paramId, bool value) => setParamBool(handle, paramId, value);
         private void SetInteger(int paramId, uint value) => setParamInt(handle, paramId, value);
@@ -53,5 +52,12 @@
 
         private void SetDate(int paramId, DateTime value) =>
             setParamDateTime(handle, paramId, value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
+
+        private Version? GetConfigurationVersion()
+        {
+            SetInteger(65587, 2); // DataType: UnitVersion 
+            SetInteger(65609, 1); // UnitType: Configuration 
+            return !Query() ? null : Version.Parse(GetString(65604));
+        }
     }
 }

@@ -6,15 +6,7 @@ namespace RetailCorrector.Utils.Integrations
 {
     internal sealed partial class FptrHandle
     {
-        public Version? ConfigurationVersion
-        {
-            get
-            {
-                SetInteger(65587, 2); // DataType: UnitVersion 
-                SetInteger(65609, 1); // UnitType: Configuration 
-                return !Query() ? null : Version.Parse(GetString(65604));
-            }
-        }
+        public Version? ConfigurationVersion { get; private set; }
 
         public int ErrorCode => errorCode(handle);
         public string ErrorDescription
@@ -76,6 +68,7 @@ namespace RetailCorrector.Utils.Integrations
                         (_, _) => Math.Min(fn, dev),
                     };
                 }
+                ConfigurationVersion = GetConfigurationVersion();
                 return true;
             }
             return false;
@@ -97,6 +90,7 @@ namespace RetailCorrector.Utils.Integrations
         public bool Disconnect()
         {
             docFormat = null;
+            ConfigurationVersion = null;
             return close(handle) == 0;
         }
 

@@ -21,6 +21,12 @@ namespace RetailCorrector.Utils.Integrations
                 SetString(1008, doc.BuyerContact);
                 SetString(1187, args.HttpAddress);
             }
+            else if (ConfigurationVersion >= new Version(5, 17))
+            {
+                SetString(1008, "none");
+                SetString(1117, "none");
+            }
+            
             if (docFormat >= 110) // todo add for ffd 1.05
             {
                 SetInteger(1173, (uint)args.CorrType);
