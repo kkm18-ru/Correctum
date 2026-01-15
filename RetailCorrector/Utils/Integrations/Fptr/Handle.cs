@@ -7,8 +7,6 @@ namespace RetailCorrector.Utils.Integrations
 {
     internal sealed partial class FptrHandle : SafeHandle
     {
-        private uint? docFormat = null;
-
         private const string regeditKeyName = @"HKEY_LOCAL_MACHINE\SOFTWARE\ATOL\Drivers\10.0\KKT";
         private const int defaultStringSize = 128;
         private const int defaultBytesSize = 128;
@@ -62,6 +60,8 @@ namespace RetailCorrector.Utils.Integrations
             errorDescription = GetDelegateOfLib<GetErrorDescriptionDelegate>("libfptr_error_description");
             
             getSingleSetting = GetDelegateOfLib<GetSettingDelegate>("libfptr_get_single_setting");
+            
+            isOpened = GetDelegateOfLib<ReturnBoolDelegate>("libfptr_is_opened");
         }
 
         public FptrHandle() : base(nint.Zero, true) => createHandle(out handle);

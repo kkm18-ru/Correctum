@@ -5,11 +5,29 @@ namespace RetailCorrector.Utils.Integrations
 {
     internal sealed partial class FptrHandle
     {
+        public uint LastReceiptNumber
+        {
+            get
+            {
+                SetInteger(65622, 4);
+                QueryFN();
+                return GetInteger(65598);
+            }
+        }
+
+        public (string, DateTime) GetReceiptInfo(uint number)
+        {
+            SetInteger(65622, 13);
+            SetInteger(65598, number);
+            QueryFN();
+            return (GetString(65626), GetDate(65590));
+        }
+        
         public bool OpenReceipt(Receipt doc, OpenReceiptArgs args)
         {
             var corrData = Array.Empty<byte>();
-            if(docFormat >= 110) GenerateCorrectionData(doc.Created, args.Act, out corrData);
-            var opcode = doc.Type.ToCorrection(docFormat);
+            if(DocFormat >= 110) GenerateCorrectionData(doc.Created, args.Act, out corrData);
+            var opcode = doc.Type.ToCorrection(DocFormat);
             if (opcode is null) return false;
             SetInteger(65545, opcode.Value);
             SetBoolean(65572, true);
@@ -27,7 +45,7 @@ namespace RetailCorrector.Utils.Integrations
                 SetString(1117, "none");
             }
             
-            if (docFormat >= 110) // todo add for ffd 1.05
+            if (DocFormat >= 110) // todo add for ffd 1.05
             {
                 SetInteger(1173, (uint)args.CorrType);
                 SetBytes(1174, corrData);
@@ -57,7 +75,7 @@ namespace RetailCorrector.Utils.Integrations
             SetInteger(65569, pos.TaxRate.ToFptr());
             SetInteger(1212, (uint)pos.Type);
             SetInteger(1214, (uint)pos.PayMethod);
-            if (docFormat == 120)
+            if (DocFormat == 120)
                 SetInteger(2108, (uint)pos.MeasureUnit!);
             return registration(handle) == 0;
         }
@@ -105,11 +123,11 @@ namespace RetailCorrector.Utils.Integrations
         }
     }
 
-    public struct OpenReceiptArgs
+    public readonly struct OpenReceiptArgs(bool internet, string site, string act, int corr)
     {
-        public bool IsInternetPayment { get; set; }
-        public string HttpAddress { get; set; }
-        public string Act { get; set; }
-        public int CorrType { get; set; }
+        public bool IsInternetPayment { get; } = internet;
+        public string HttpAddress { get; } = site;
+        public string Act { get; } = string.IsNullOrWhiteSpace(act) ? " " : act;
+        public int CorrType { get; } = corr;
     }
 }

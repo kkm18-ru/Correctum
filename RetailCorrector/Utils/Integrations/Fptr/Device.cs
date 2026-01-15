@@ -1,13 +1,23 @@
 ﻿using System.Text;
 using System.Windows;
 using System.Windows.Interop;
+using RetailCorrector.Converters;
+using RetailCorrector.Enums;
+using RetailCorrector.Utils.Integrations.Clients;
+using FnInfo = (string Model, string SerialNumber);
 
 namespace RetailCorrector.Utils.Integrations
 {
     internal sealed partial class FptrHandle
     {
         public Version? ConfigurationVersion { get; private set; }
+        public uint Model { get; private set; }
+        public string FnModel { get; private set; }
+        public string SerialNumber { get; private set; }
+        public string FnSerialNumber { get; private set; }
+        public uint DocFormat { get; private set; }
 
+        public bool IsConnected => isOpened(handle);
         public int ErrorCode => errorCode(handle);
         public string ErrorDescription
         {
@@ -24,51 +34,16 @@ namespace RetailCorrector.Utils.Integrations
             }
         }
 
-        public uint Model
-        {
-            get
-            {
-                SetInteger(65587, 17); // DataType: ModelInfo
-                return Query() ? GetInteger(65544) : 0u;
-            }
-        }
-        public string SerialNumber
-        {
-            get
-            {
-                SetInteger(65587, 16); // DataType: SerialNumber
-                return Query() ? GetString(65559) : "";
-            }
-        }
-
-        public string FnSerialNumber
-        {
-            get
-            {
-                SetInteger(65622, 2); // FNDataType: Info
-                return QueryFN() ? GetString(65559) : "";
-            }
-        }
-
-        public uint? DocFormat => docFormat;
 
         public bool Connect()
         {
             if (open(handle) == 0)
             {
-                SetInteger(65622, 7);
-                if (QueryFN())
-                {
-                    var fn = GetInteger(65628);
-                    var dev = GetInteger(65629);
-                    docFormat = (fn, dev) switch
-                    {
-                        (0, _) => dev,
-                        (_, 0) => fn,
-                        (_, _) => Math.Min(fn, dev),
-                    };
-                }
+                DocFormat = GetFormatVersion();
                 ConfigurationVersion = GetConfigurationVersion();
+                Model = GetKktModel();
+                SerialNumber = GetKktSerialNumber();
+                (FnModel, FnSerialNumber) = GetFnInfo();
                 return true;
             }
             return false;
@@ -89,8 +64,12 @@ namespace RetailCorrector.Utils.Integrations
         
         public bool Disconnect()
         {
-            docFormat = null;
+            DocFormat = 0;
             ConfigurationVersion = null;
+            Model = 0;
+            FnModel = "";
+            SerialNumber = "";
+            FnSerialNumber = "";
             return close(handle) == 0;
         }
 
@@ -102,6 +81,38 @@ namespace RetailCorrector.Utils.Integrations
             SetString(1021, fullname);
             SetString(1203, inn);
             return operatorLogin(handle) == 0;
+        }
+
+        private uint GetKktModel()
+        {
+            SetInteger(65587, 17); // DataType: ModelInfo
+            return Query() ? GetInteger(65544) : 0u;
+        }
+        
+        private string GetKktSerialNumber()
+        {
+            SetInteger(65587, 16); // DataType: SerialNumber
+            return Query() ? GetString(65559) : "";
+        }
+        
+        private FnInfo GetFnInfo()
+        {
+            SetInteger(65622, 2); // FNDataType: Info
+            return QueryFN() ? (GetString(65874),GetString(65559)) : ("","");
+        }
+        
+        private uint GetFormatVersion()
+        {
+            SetInteger(65622, 7);
+            if (!QueryFN()) return 0;
+            var fn = GetInteger(65628);
+            var dev = GetInteger(65629);
+            return (fn, dev) switch
+            {
+                (0, _) => dev,
+                (_, 0) => fn,
+                (_, _) => Math.Min(fn, dev),
+            };
         }
     }
 }

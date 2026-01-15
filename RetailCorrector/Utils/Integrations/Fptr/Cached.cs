@@ -40,5 +40,7 @@
         private static readonly GetErrorDescriptionDelegate errorDescription;   // libfptr_error_description
         
         private static readonly GetSettingDelegate getSingleSetting;            // libfptr_get_single_setting
+        
+        private static readonly ReturnBoolDelegate isOpened;                    // libfptr_is_opened
     }
 }
