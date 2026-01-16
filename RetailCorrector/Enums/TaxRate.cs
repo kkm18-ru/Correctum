@@ -1,4 +1,5 @@
-﻿namespace RetailCorrector.Enums
+﻿#pragma warning disable S1133
+namespace RetailCorrector.Enums
 {
     /// <summary>
     /// Ставки НДС
@@ -6,19 +7,25 @@
     public enum TaxRate : byte
     {
         /// <summary>
-        /// Ставка 20%
+        /// Не определено
         /// </summary>
-        Tax20 = 1,
+        Unknown = 0,
+        /// <summary>
+        /// Ставка 18%
+        /// </summary>
+        [Obsolete("С 1 января 2019 г. заменен на НДС 20%")]
+        Tax18 = 1,
         /// <summary>
         /// Ставка 10%
         /// </summary>
         Tax10 = 2,
         /// <summary>
-        /// Расчитываемая ставка 20/120%
+        /// Расчитываемая ставка 18/118
         /// </summary>
-        Calc20 = 3,
+        [Obsolete("С 1 января 2019 г. заменен на НДС 20/120")]
+        Calc18 = 3,
         /// <summary>
-        /// Расчитываемая ставка 10/110%
+        /// Расчитываемая ставка 10/110
         /// </summary>
         Calc10 = 4,
         /// <summary>
@@ -30,20 +37,38 @@
         /// </summary>
         Without = 6,
         /// <summary>
+        /// Ставка 20%
+        /// </summary>
+        [Obsolete("С 1 января 2026 г. заменен на НДС 22%")]
+        Tax20 = 7,
+        /// <summary>
+        /// Расчитываемая ставка 20/120
+        /// </summary>
+        [Obsolete("С 1 января 2026 г. заменен на НДС 22/122")]
+        Calc20 = 8,
+        /// <summary>
         /// Ставка 5%
         /// </summary>
-        Tax5 = 7,
+        Tax5 = 9,
         /// <summary>
         /// Ставка 7%
         /// </summary>
-        Tax7 = 8,
+        Tax7 = 10,
         /// <summary>
-        /// Расчитываемая ставка 5/105%
+        /// Расчитываемая ставка 5/105
         /// </summary>
-        Calc5 = 9,
+        Calc5 = 11,
         /// <summary>
-        /// Расчитываемая ставка 7/107%
+        /// Расчитываемая ставка 7/107
         /// </summary>
-        Calc7 = 10,
+        Calc7 = 12,
+        /// <summary>
+        /// Ставка 22%
+        /// </summary>
+        Tax22 = 13,
+        /// <summary>
+        /// Расчитываемая ставка 22/122
+        /// </summary>
+        Calc22 = 14
     }
 }

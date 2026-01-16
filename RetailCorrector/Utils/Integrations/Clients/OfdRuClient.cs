@@ -151,7 +151,7 @@ file struct DocumentItem
     public ulong Total { get; set; }
     public PayMethod CalculationMethod { get; set; }
     public string? ProductUnitOfMeasure { get; set; }
-    public TaxRate NDS_Rate { get; set; }
+    public byte NDS_Rate { get; set; }
     public PositionType SubjectType { get; set; }
 
     public Position ToPosition()
@@ -168,7 +168,7 @@ file struct DocumentItem
             Cost = Total,
             PayMethod = CalculationMethod,
             MeasureUnit = mu,
-            TaxRate = NDS_Rate,
+            TaxRate = EnumUtils.ToTaxRate(NDS_Rate),
             Type = SubjectType
         };
     }

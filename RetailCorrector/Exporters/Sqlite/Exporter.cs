@@ -50,7 +50,7 @@ namespace RetailCorrector.Exporters
                             name = pos.Name,
                             payment = (int)pos.PayMethod,
                             type = (int)pos.Type,
-                            tax = (int)pos.TaxRate,
+                            tax = pos.TaxRate.ToFns(),
                             unit = (int?)pos.MeasureUnit,
                             price = pos.Price,
                             quantity = pos.Quantity,

@@ -59,13 +59,17 @@ namespace RetailCorrector.Data
             Enums.TaxRate.Calc5     => "НДС 5/105",
             Enums.TaxRate.Calc7     => "НДС 7/107",
             Enums.TaxRate.Calc10    => "НДС 10/110",
+            Enums.TaxRate.Calc18    => "НДС 18/118",
             Enums.TaxRate.Calc20    => "НДС 20/120",
+            Enums.TaxRate.Calc22    => "НДС 22/122",
             Enums.TaxRate.Without   => "-",
             Enums.TaxRate.Tax0      => "НДС 0%",
             Enums.TaxRate.Tax5      => "НДС 5%",
             Enums.TaxRate.Tax7      => "НДС 7%",
             Enums.TaxRate.Tax10     => "НДС 10%",
+            Enums.TaxRate.Tax18     => "НДС 18%",
             Enums.TaxRate.Tax20     => "НДС 20%",
+            Enums.TaxRate.Tax22     => "НДС 22%",
             _                       => "???",
         };
         public string Price { get; } = $"{(origin.Price * 0.01):F2}";

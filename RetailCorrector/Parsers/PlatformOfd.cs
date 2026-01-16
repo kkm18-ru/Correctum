@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Parsers;
 
@@ -135,7 +136,7 @@ internal sealed partial class PlatformOfd : IParser
                 case "1199":
                 {
                     if (item is not Position pos) continue;
-                    pos.TaxRate = (TaxRate)int.Parse(value);
+                    pos.TaxRate = EnumUtils.ToTaxRate(byte.Parse(value));
                     item = pos;
                 }
                     break;

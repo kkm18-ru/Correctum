@@ -72,7 +72,7 @@ namespace RetailCorrector.Utils.Integrations
             SetDouble(65632, pos.Price / 100.0);
             SetDouble(65633, pos.Quantity / 1000.0);
             SetDouble(65634, pos.Cost / 100.0);
-            SetInteger(65569, pos.TaxRate.ToFptr());
+            SetInteger(65569, (uint)pos.TaxRate);
             SetInteger(1212, (uint)pos.Type);
             SetInteger(1214, (uint)pos.PayMethod);
             if (DocFormat == 120)

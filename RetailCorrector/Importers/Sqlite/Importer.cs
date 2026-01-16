@@ -37,7 +37,7 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                             PayMethod = i.payment,
                             Price = i.price,
                             Quantity = i.quantity,
-                            TaxRate = i.tax,
+                            TaxRate = EnumUtils.ToTaxRate(i.tax),
                             Type = i.type
                         })],
                         Created = docs[j].date,
