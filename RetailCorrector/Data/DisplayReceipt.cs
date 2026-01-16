@@ -43,6 +43,6 @@ namespace RetailCorrector.Data
             false => Brushes.White
         };
 
-        public override string ToString() => $"ID: {Id}; Дата: {Date}; ФПД: {Sign}";
+        public override string ToString() => $"Чек №{DocNumb} (ККТ: {RegId}; ФН: {StorageId})";
     }
 }
