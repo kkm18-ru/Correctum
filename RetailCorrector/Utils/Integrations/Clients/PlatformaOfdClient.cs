@@ -105,7 +105,7 @@ internal sealed class PlatformaOfdClient : APIClient
     /// <param name="parseId">Идентификтор сессии парсера.</param>
     /// <param name="cancel">Токен, позволяющий отменить получение информации о чеке.</param>
     /// <returns>Информация о чеке.</returns>
-    public async Task<Receipt> FetchReceiptAsync(PlatformaOfdReceiptReference reference, Guid parseId = default, CancellationToken cancel = default)
+    public async Task<Receipt?> FetchReceiptAsync(PlatformaOfdReceiptReference reference, Guid parseId = default, CancellationToken cancel = default)
     {
         using var req = new HttpRequestMessage(HttpMethod.Get, reference.ToString());
         using var resp = await _client.SendAsync(req, cancel);
@@ -113,8 +113,7 @@ internal sealed class PlatformaOfdClient : APIClient
         var html = await resp.Content.ReadAsStringAsync(cancel);
         var raw = HttpUtility.HtmlDecode(html.Split(@"<pre>")[1].Split(@"</pre>")[0]);
         var receipt = new Receipt { ParseId = parseId };
-        PlatformOfd.Instance.Parse(raw, ref receipt);
-        return receipt;
+        return PlatformOfd.Instance.Parse(raw, ref receipt) ? receipt : null;
     }
 
     ~PlatformaOfdClient()

@@ -1,164 +1,119 @@
-using System.Text.RegularExpressions;
+using System.Windows;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
+using Serilog;
 
 namespace RetailCorrector.Parsers;
 
-internal sealed partial class PlatformOfd : IParser
+internal sealed class PlatformOfd : IParser
 {
+    public string Name => "Платформа ОФД (Реквизиты)";
     public static PlatformOfd Instance => field ??= new PlatformOfd();
-    public string Name => "Платформа ОФД";
 
-    public void Parse(string raw, ref Receipt receipt)
+    private readonly Stack<ushort> _propStack = new(5);
+    
+    private delegate void UpdatePaymentDelegate(ref Payment payment, ulong sum);
+    private delegate void UpdatePositionDelegate(ref Position position, ReadOnlySpan<char> value);
+    
+    public bool Parse(string raw, ref Receipt receipt)
     {
-        var items = new List<Position>();
-        var lines = raw.Replace("\r", "").Split("\n");
-        object? item = null;
-
-        foreach (var line in lines)
+        var span = raw.AsSpan();
+        Span<char> rawValue = stackalloc char[128];
+        foreach (var range in span.Split('\n'))
         {
-            var match = SyntaxRegex().Match(line);
-            if (!match.Success) continue;
-            if (item is not null && !match.Groups[1].Success)
-            {
-                if (item is Position pos)
-                    items.Add(pos);
-                item = null;
-            }
+            var line = span[range];
+            if(line.IsEmpty) continue;
+            if(line[1] is not ('+' or '|')) continue;
+            
+            var level = line.Count('|');
+            while (level < _propStack.Count)
+                _propStack.Pop();
+            
+            var tagIndex = line.IndexOf('[');
+            if (!ushort.TryParse(line.Slice(tagIndex + 1, 4), out var tag)) continue;
 
-            var value = match.Groups["value"].Value.Replace('·', ' ');
-            switch (match.Groups["code"].Value)
+            if (line.Length < 43)
             {
-                case "1054":
-                    receipt.Type = (Operation)int.Parse(value);
-                    break;
-                case "1077":
-                    receipt.DocSign = uint.Parse(value);
-                    break;
-                case "1037":
-                    receipt.RegId = value;
-                    break;
-                case "1055":
-                    receipt.TaxationSystem = (TaxationSystem)uint.Parse(value);
-                    break;
-                case "1041":
-                    receipt.StorageId = value;
-                    break;
-                case "1038":
-                    receipt.SessionId = uint.Parse(value);
-                    break;
-                case "1040":
-                    receipt.DocNumber = uint.Parse(value);
-                    break;
-                case "1042":
-                    receipt.DocInSession = uint.Parse(value);
-                    break;
-                case "1012":
-                    receipt.Created = DateTimeOffset.FromUnixTimeSeconds(long.Parse(value)).DateTime;
-                    break;
-                case "1020":
-                    receipt.TotalSum = ulong.Parse(value);
-                    break;
-                case "1031":
-                {
-                    var payment = receipt.Payment;
-                    payment.Cash = ulong.Parse(value);
-                    receipt.Payment = payment;
-                }
-                    break;
-                case "1081":
-                {
-                    var payment = receipt.Payment;
-                    payment.ECash = ulong.Parse(value);
-                    receipt.Payment = payment;
-                }
-                    break;
-                case "1215":
-                {
-                    var payment = receipt.Payment;
-                    payment.Pre = ulong.Parse(value);
-                    receipt.Payment = payment;
-                }
-                    break;
-                case "1216":
-                {
-                    var payment = receipt.Payment;
-                    payment.Post = ulong.Parse(value);
-                    receipt.Payment = payment;
-                }
-                    break;
-                case "1217":
-                {
-                    var payment = receipt.Payment;
-                    payment.Provision = ulong.Parse(value);
-                    receipt.Payment = payment;
-                }
-                    break;
-                case "1059":
-                    item = new Position();
-                    break;
-                case "2108":
-                {
-                    if (item is not Position pos) continue;
-                    pos.MeasureUnit = (MeasureUnit)int.Parse(value);
-                    item = pos;
-                }
-                    break;
-                case "1030":
-                {
-                    if (item is not Position pos) continue;
-                    pos.Name = value;
-                    item = pos;
-                }
-                    break;
-                case "1079":
-                {
-                    if (item is not Position pos) continue;
-                    pos.Price = ulong.Parse(value);
-                    item = pos;
-                }
-                    break;
-                case "1023":
-                {
-                    if (item is not Position pos) continue;
-                    pos.Quantity = (ulong)(double.Parse(value.Replace('.',',')) * 1000);
-                    item = pos;
-                }
-                    break;
-                case "1043":
-                {
-                    if (item is not Position pos) continue;
-                    pos.Cost = ulong.Parse(value);
-                    item = pos;
-                }
-                    break;
-                case "1199":
-                {
-                    if (item is not Position pos) continue;
-                    pos.TaxRate = EnumUtils.ToTaxRate(byte.Parse(value));
-                    item = pos;
-                }
-                    break;
-                case "1214":
-                {
-                    if (item is not Position pos) continue;
-                    pos.PayMethod = (PayMethod)int.Parse(value);
-                    item = pos;
-                }
-                    break;
-                case "1212":
-                {
-                    if (item is not Position pos) continue;
-                    pos.Type = (PositionType)int.Parse(value);
-                    item = pos;
-                }
-                    break;
+                _propStack.Push(tag);
+                if (tag == 1059) AddPosition(ref receipt);
+                continue;
+            }
+            rawValue.Clear();
+            line[43..].TrimEnd('·').Replace(rawValue,'·', ' ');
+            var valueLength = rawValue.IndexOf('\r');
+            var value = rawValue[..valueLength];
+
+            try
+            {
+                ChangeReceipt(tag, value, ref receipt);
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex, "Не удалось обработать тег {Tag} со значением {Value}", tag, value.ToString());
+                return false;
             }
         }
-        receipt.Items = [..items];
+
+        return true;
     }
 
-    [GeneratedRegex(@"^ (\|  )*\+- \[(?<code>\d{4})\] [a-zA-Z0-9]+( +(?<value>[^ ]*))?$")]
-    private static partial Regex SyntaxRegex();
+    private void ChangeReceipt(ushort tag, ReadOnlySpan<char> value, ref Receipt receipt)
+    {
+        switch (tag)
+        {
+            // Простые реквизиты чека
+            case 1077: receipt.DocSign = uint.Parse(value); break;
+            case 1012: receipt.Created = DateTimeOffset.UnixEpoch.AddSeconds(ulong.Parse(value)).DateTime; break;
+            case 1041: receipt.StorageId = value.ToString(); break;
+            case 1037: receipt.RegId = value.ToString(); break;
+            case 1038: receipt.SessionId = uint.Parse(value); break;
+            case 1020: receipt.TotalSum = ulong.Parse(value); break;
+            case 1055: receipt.TaxationSystem = (TaxationSystem)int.Parse(value); break;
+            case 1008: receipt.BuyerContact = value.ToString(); break;
+            case 1042: receipt.DocInSession = uint.Parse(value); break;
+            case 1040: receipt.DocNumber = uint.Parse(value); break;
+            case 1054: receipt.Type = (Operation)byte.Parse(value); break;
+            // Суммы способов оплаты
+            case 1031: UpdatePayment((ref p, sum) => p.Cash = sum, value, ref receipt); break;
+            case 1081: UpdatePayment((ref p, sum) => p.ECash = sum, value, ref receipt); break;
+            case 1215: UpdatePayment((ref p, sum) => p.Pre = sum, value, ref receipt); break;
+            case 1216: UpdatePayment((ref p, sum) => p.Post = sum, value, ref receipt); break;
+            case 1217: UpdatePayment((ref p, sum) => p.Provision = sum, value, ref receipt); break;
+            // Позиции
+            case 2108: UpdatePosition((ref p, v) => p.MeasureUnit = (MeasureUnit)byte.Parse(v), value, ref receipt); break;
+            case 1079: UpdatePosition((ref p, v) => p.Price = ulong.Parse(v), value, ref receipt); break;
+            case 1043: UpdatePosition((ref p, v) => p.Cost = ulong.Parse(v), value, ref receipt); break;
+            case 1199: UpdatePosition((ref p, v) => p.TaxRate = EnumUtils.ToTaxRate(byte.Parse(v)), value, ref receipt); break;
+            case 1214: UpdatePosition((ref p, v) => p.PayMethod = (PayMethod)byte.Parse(v), value, ref receipt); break;
+            case 1212: UpdatePosition((ref p, v) => p.Type = (PositionType)byte.Parse(v), value, ref receipt); break;
+            case 1023: UpdatePosition((ref p, v) => p.Quantity = (ulong)Math.Round(double.Parse(v) * 1000, 0), value, ref receipt); break;
+            case 1030: UpdatePosition((ref p, v) => p.Name = v.ToString(), value, ref receipt); break;
+            
+            default: break;
+        }
+    }
+
+    private static void AddPosition(ref Receipt receipt)
+    {
+        var positions = receipt.Items ?? [];
+        Array.Resize(ref positions, positions.Length+1);
+        receipt.Items = positions;
+    }
+    
+    private static void UpdatePayment(UpdatePaymentDelegate setter, ReadOnlySpan<char> sum, ref Receipt receipt)
+    {
+        var payment = receipt.Payment;
+        setter(ref payment, ulong.Parse(sum));
+        receipt.Payment = payment;
+    }
+    
+    private void UpdatePosition(UpdatePositionDelegate setter, ReadOnlySpan<char> value, ref Receipt receipt)
+    {
+        if (_propStack.Count != 1 || _propStack.Peek() != 1059) return;
+        
+        var position = receipt.Items[^1];
+        setter(ref position, value);
+        receipt.Items[^1] = position;
+    }
 }

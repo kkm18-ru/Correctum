@@ -25,7 +25,8 @@ internal sealed partial class PlatformOfd : ImporterBase<PlatformOfd, PlatformOf
                 end = end > EndDate ? EndDate : end;
                 var references = await Client.FetchReceiptsAsync(d, end, Device, cancellationToken);
                 foreach (var @ref in references)
-                    yield return await Client.FetchReceiptAsync(@ref, parseInfo.Id, cancellationToken);
+                    if(await Client.FetchReceiptAsync(@ref, parseInfo.Id, cancellationToken) is {} receipt)
+                        yield return receipt;
                 progress.Report(i);
             }
         }

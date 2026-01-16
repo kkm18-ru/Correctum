@@ -91,9 +91,14 @@ namespace RetailCorrector.UI.Windows
                 ParseId = Workspace.Instance.ImportHistory[^1].Id,
                 Payment = new Payment()
             };
-            Current.Parse(Text, ref receipt);
-            Workspace.Instance.Receipts.Add(receipt);
-            ReceiptPanel.UpdateReceiptList();
+            if (Current.Parse(Text, ref receipt))
+            {
+                Workspace.Instance.Receipts.Add(receipt);
+                ReceiptPanel.UpdateReceiptList();
+            } 
+            else 
+                MessageBox.Show("Не удалось спарсить чек. Подробная запись в журнале.",
+                    "", 0, MessageBoxImage.Error);
             Close();
         }
     }
