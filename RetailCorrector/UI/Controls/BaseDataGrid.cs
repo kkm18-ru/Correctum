@@ -11,9 +11,8 @@ namespace RetailCorrector.UI.Controls
         {
             IsReadOnly = true;
             CanUserDeleteRows = CanUserReorderColumns =
-                CanUserResizeColumns = CanUserResizeRows =
-                CanUserSortColumns = CanUserAddRows = 
-                AutoGenerateColumns = false;
+                CanUserResizeRows = CanUserSortColumns =
+                CanUserAddRows = AutoGenerateColumns = false;
             EnableColumnVirtualization = EnableRowVirtualization = true;
             FontFamily = (FontFamily)Application.Current.Resources["jbmono"];
             VirtualizingPanel.SetIsVirtualizing(this, true); 
