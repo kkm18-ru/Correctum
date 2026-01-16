@@ -8,6 +8,8 @@ include:
 
 analyze-dev:
   stage: analyze:sonarcloud
+  variables:
+    GIT_DEPTH: 0
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "dev"'
       when: on_success
