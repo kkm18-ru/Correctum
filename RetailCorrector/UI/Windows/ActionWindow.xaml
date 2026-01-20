@@ -1,6 +1,7 @@
-<Window x:Class="RetailCorrector.UI.Windows.ActionWindow"
+<w:DialogWindow x:Class="RetailCorrector.UI.Windows.ActionWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:w="clr-namespace:RetailCorrector.UI.Windows.Types"
         xmlns:c="clr-namespace:RetailCorrector.UI.Controls"
         Title="Действие над чеками" Height="450" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -18,4 +19,4 @@
         </Grid.RowDefinitions>
         <c:ConditionGrid Grid.Row="2" Grid.Column="0" SubjectType="{Binding SubjectType}"/>
     </Grid>
-</Window>
+</w:DialogWindow>

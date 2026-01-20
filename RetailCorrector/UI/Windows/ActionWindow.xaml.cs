@@ -1,9 +1,9 @@
-using System.Windows;
 using RetailCorrector.UI.Controls;
+using RetailCorrector.UI.Windows.Types;
 
 namespace RetailCorrector.UI.Windows;
 
-public partial class ActionWindow : Window
+public partial class ActionWindow : DialogWindow
 {
     private readonly ActionWindowMode _mode;
     public ConditionSubjectType SubjectType => (ConditionSubjectType)((int)_mode % 2);
