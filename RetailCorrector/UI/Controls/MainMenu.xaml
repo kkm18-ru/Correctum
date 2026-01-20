@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      DataContext="{Binding RelativeSource={RelativeSource Self}}"
       mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="1000">
     <MenuItem Header="Файл">
         <MenuItem Header="Экспорт" Click="ShowExportWindow"/>
@@ -12,7 +13,16 @@
         <MenuItem Header="Настройки" Click="ShowSettingsWindow"/>
         <MenuItem Header="Выход" Click="Quit"/>
     </MenuItem>
-    <MenuItem Header="Действия" Click="ShowActionWindow"/>
+    <MenuItem Header="Действия">
+        <MenuItem Header="Изменение чеки" Command="{Binding ShowActionWindows}" CommandParameter="2"/>
+        <MenuItem Header="Изменение позиции" Command="{Binding ShowActionWindows}" CommandParameter="3"/>
+        <Separator/>
+        <MenuItem Header="Клонировать чеки" Command="{Binding ShowActionWindows}" CommandParameter="4"/>
+        <MenuItem Header="Клонировать позиции" Command="{Binding ShowActionWindows}" CommandParameter="5"/>
+        <Separator/>
+        <MenuItem Header="Удалить чеки" Command="{Binding ShowActionWindows}" CommandParameter="0"/>
+        <MenuItem Header="Удалить позиции" Command="{Binding ShowActionWindows}" CommandParameter="1"/>
+    </MenuItem>
     <MenuItem Header="Помощь">
         <MenuItem Header="Обратная связь" Click="ShowFeedbackWindow"/>
         <Separator/>
