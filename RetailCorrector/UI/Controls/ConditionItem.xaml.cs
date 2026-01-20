@@ -221,12 +221,12 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
 file static class Constants
 {
     public static readonly EnumLocale<ConditionSubject>[] ReceiptSubjects = [
-        new(ConditionSubject.Default, "Чек"),
+        new(ConditionSubject.Default, "В чеке"),
         new(ConditionSubject.AnyPosition, "В любой позиции"),
         new(ConditionSubject.AllPositions, "Во всех позициях")
     ];
     public static readonly EnumLocale<ConditionSubject>[] PositionSubjects = [
-        new(ConditionSubject.Default, "Позиция")
+        new(ConditionSubject.Default, "В позиции")
     ];
 
     public static readonly EnumLocale<ConditionProp>[] ReceiptProperties = [
