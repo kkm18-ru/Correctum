@@ -7,22 +7,22 @@
              mc:Ignorable="d" d:DesignHeight="25" d:DesignWidth="300">
     <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="125"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="140"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="240"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <tk:WatermarkComboBox Grid.Column="0" ItemsSource="{Binding LocaleSubjects}" 
-                              DisplayMemberPath="Locale" SelectedValuePath="Value"
+                              DisplayMemberPath="Locale" SelectedValuePath="Value" MinWidth="65" MaxWidth="125"
                               SelectedIndex="{Binding Subject}" Watermark="Субъект"/>
         <tk:WatermarkComboBox Grid.Column="2" ItemsSource="{Binding LocaleProps}"  
-                              DisplayMemberPath="Locale" SelectedValuePath="Value"
+                              DisplayMemberPath="Locale" SelectedValuePath="Value" MinWidth="50" MaxWidth="140"
                               SelectedIndex="{Binding Prop}" Watermark="Реквизит"/>
         <tk:WatermarkComboBox Grid.Column="4" ItemsSource="{Binding LocaleOperators}" 
-                              DisplayMemberPath="Locale" SelectedValuePath="Value"
+                              DisplayMemberPath="Locale" SelectedValuePath="Value" MinWidth="40" MaxWidth="240"
                               SelectedIndex="{Binding Operator}" Watermark="Операция"/>
         <ContentControl Grid.Column="6" Content="{Binding ValueControl}" HorizontalContentAlignment="Stretch"/>
     </Grid>
