@@ -24,5 +24,6 @@
         <tk:WatermarkComboBox Grid.Column="4" ItemsSource="{Binding LocaleOperators}" 
                               DisplayMemberPath="Locale" SelectedValuePath="Value"
                               SelectedIndex="{Binding Operator}" Watermark="Операция"/>
+        <ContentControl Grid.Column="6" Content="{Binding ValueControl}" HorizontalContentAlignment="Stretch"/>
     </Grid>
 </ListBoxItem>

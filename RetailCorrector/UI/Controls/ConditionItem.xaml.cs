@@ -1,8 +1,11 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using RetailCorrector.Data;
+using Xceed.Wpf.Toolkit;
 
 namespace RetailCorrector.UI.Controls;
 
@@ -44,6 +47,8 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, PropChangedArgs);
             Operator = ConditionOperator.None;
             UpdateLocaleOperators();
+            Value = null;
+            UpdateValueControl();
         }
     } = ConditionProp.None;
     
@@ -73,6 +78,28 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
             or ConditionProp.Cost => ConditionValueType.Float,
         _ => ConditionValueType.None
     };
+    
+    public object? Value
+    {
+        get;
+        set
+        {
+            if(field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, ValueChangedArgs);
+        }
+    }
+    
+    public FrameworkElement? ValueControl
+    {
+        get;
+        set
+        {
+            if(field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, ValueControlChangedArgs);
+        }
+    }
 
     public ObservableCollection<EnumLocale<ConditionSubject>> LocaleSubjects { get; } = [];
     public ObservableCollection<EnumLocale<ConditionProp>> LocaleProps { get; } = [];
@@ -84,6 +111,8 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
     private static readonly PropertyChangedEventArgs SubjectChangedArgs = new(nameof(Subject));
     private static readonly PropertyChangedEventArgs PropChangedArgs = new(nameof(Prop));
     private static readonly PropertyChangedEventArgs OperatorChangedArgs = new(nameof(Operator));
+    private static readonly PropertyChangedEventArgs ValueChangedArgs = new(nameof(Value));
+    private static readonly PropertyChangedEventArgs ValueControlChangedArgs = new(nameof(ValueControl));
     
     public ConditionItem()
     {
@@ -128,6 +157,59 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         };
         foreach (var locale in locales)
             LocaleOperators.Add(locale);
+    }
+
+    private void UpdateValueControl()
+    {
+        var binding = new Binding(nameof(Value))
+        {
+            Source = this,
+            UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+        };
+        switch (ValueType)
+        {
+            case ConditionValueType.Text:
+                ValueControl = new TextBox();
+                ValueControl.SetBinding(TextBox.TextProperty, binding);
+                break;
+            case ConditionValueType.Integer:
+                ValueControl = new IntegerUpDown();
+                ValueControl.SetBinding(IntegerUpDown.ValueProperty, binding);
+                break;
+            case ConditionValueType.DateTime:
+                ValueControl = new DatePicker();
+                ValueControl.SetBinding(DatePicker.SelectedDateProperty, binding);
+                break;
+            case ConditionValueType.Float:
+                ValueControl = new DoubleUpDown();
+                ValueControl.SetBinding(DoubleUpDown.ValueProperty, binding);
+                break;
+            case ConditionValueType.Flag:
+            case ConditionValueType.Enum:
+                ValueControl = new ComboBox
+                {
+                    DisplayMemberPath = nameof(EnumLocale<>.Locale),
+                    SelectedValuePath = nameof(EnumLocale<>.Value),
+                };
+                ((ComboBox)ValueControl).ItemsSource = Prop switch
+                {
+                    ConditionProp.ReceiptType => Utils.Constants.ReceiptTypeLocales,
+                    ConditionProp.Taxation => Utils.Constants.TaxationSystemLocales,
+                    ConditionProp.TaxRate => Utils.Constants.TaxRateLocales,
+                    ConditionProp.PositionType => Utils.Constants.PositionTypeLocales,
+                    ConditionProp.Unit => Utils.Constants.PositionUnitLocales,
+                    ConditionProp.PaymentMethod => Utils.Constants.PaymentMethodLocales,
+                    _ => Array.Empty<object>()
+                };
+                ValueControl.SetBinding(ComboBox.SelectedIndexProperty, binding);
+                break;
+            default:
+                ValueControl = null;
+                return;
+        }
+        
+        ValueControl?.MinWidth = 100;
+        ValueControl?.MaxWidth = 250;
     }
 
     internal Expression<Predicate<object>> ToExpression()
