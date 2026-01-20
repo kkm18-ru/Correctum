@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignHeight="25" d:DesignWidth="300">
     <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="125"/>
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="5"/>
@@ -15,5 +15,7 @@
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        <tk:WatermarkComboBox Grid.Column="0" ItemsSource="{Binding LocaleSubjects}" 
+                              SelectedIndex="{Binding Subject}" Watermark="Субъект"/>
     </Grid>
 </ListBoxItem>
