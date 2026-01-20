@@ -41,17 +41,32 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
             if (field == value) return;
             field = value;
             PropertyChanged?.Invoke(this, PropChangedArgs);
+            Operator = ConditionOperator.None;
+            UpdateLocaleOperators();
         }
     } = ConditionProp.None;
+    
+    public ConditionOperator Operator
+    {
+        get;
+        set
+        {
+            if(field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, OperatorChangedArgs);
+        }
+    } = ConditionOperator.None;
 
     public ObservableCollection<string> LocaleSubjects { get; } = [];
     public ObservableCollection<string> LocaleProps { get; } = [];
+    public ObservableCollection<string> LocaleOperators { get; } = [];
     
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private static readonly PropertyChangedEventArgs SubjectTypeChangedArgs = new(nameof(SubjectType));
     private static readonly PropertyChangedEventArgs SubjectChangedArgs = new(nameof(Subject));
     private static readonly PropertyChangedEventArgs PropChangedArgs = new(nameof(Prop));
+    private static readonly PropertyChangedEventArgs OperatorChangedArgs = new(nameof(Operator));
     
     public ConditionItem()
     {
@@ -105,6 +120,47 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
             LocaleProps.Add("сумма иной оплаты");
             LocaleProps.Add("итоговая сумма");
             LocaleProps.Add("только чтение");
+        }
+    }
+
+    private void UpdateLocaleOperators()
+    {
+        LocaleOperators.Clear();
+        
+        var isReceipt = SubjectType == ConditionSubjectType.Receipt && Subject == ConditionSubject.Default;
+        
+        var isString = Prop == 0 || isReceipt && Prop is ConditionProp.DriveId or ConditionProp.Buyer;
+        var isFlag = isReceipt && Prop == ConditionProp.Taxation;
+        var isBool = isReceipt && Prop == ConditionProp.IsReadOnly;
+
+        if (isString)
+        {
+            LocaleOperators.Add("начинается с");
+            LocaleOperators.Add("начинается с (без учета регистра)");
+            LocaleOperators.Add("содержит");
+            LocaleOperators.Add("содержит (без учета регистра)");
+            LocaleOperators.Add("заканчивается на");
+            LocaleOperators.Add("заканчивается на (без учета регистра)");
+        }
+        else if (isFlag)
+        {
+            LocaleOperators.Add("равно");
+            LocaleOperators.Add("не равно");
+            LocaleOperators.Add("содержит");
+        }
+        else if (isBool)
+        {
+            LocaleOperators.Add("является True");
+            LocaleOperators.Add("является False");
+        }
+        else
+        {
+            LocaleOperators.Add("равно");
+            LocaleOperators.Add("не равно");
+            LocaleOperators.Add("меньше");
+            LocaleOperators.Add("меньше или равно");
+            LocaleOperators.Add("больше");
+            LocaleOperators.Add("больше или равно");
         }
     }
 
@@ -194,5 +250,50 @@ public enum ConditionProp
     Cost = 7,           // Double
 
     #endregion
+    #pragma warning restore CA1069
+}
+
+public enum ConditionOperator
+{
+    /* - Строка             [04]    Операторы текстовых реквизитов
+     * - Целое число        [01]    Операторы сравнения
+     * - Дробное чимло      [09]    Операторы сравнения
+     * - Дата/время         [01]    Операторы сравнения
+     * - Булевое значение   [01]    Операторы логических реквизитов
+     * - Перечисление       [05]    Операторы сравнения
+     * - Флаги              [01]    Equal, NotEqual, Contains
+     */
+    #pragma warning disable CA1069
+    None = -1,
+
+    #region Операторы текстовых реквизитов
+
+    StartsWith = 0,
+    StartsWithIgnoreCase = 1,
+    Contains = 2,
+    ContainsIgnoreCase = 3,
+    EndsWith = 4,
+    EndsWithIgnoreCase = 5,
+
+    #endregion
+
+    #region Операторы сравнения
+    
+    Equal = 0,
+    NotEqual = 1,
+    LessThan = 2,
+    EqualOrLessThan = 3,
+    MoreThan = 4,
+    EqualOrMoreThan = 5,
+
+    #endregion
+
+    #region Операторы логических реквизитов
+
+    IsTrue = 0,
+    IsFalse = 1
+
+    #endregion
+    
     #pragma warning restore CA1069
 }

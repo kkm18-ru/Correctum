@@ -11,7 +11,7 @@
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="140"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="240"/>
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -19,5 +19,7 @@
                               SelectedIndex="{Binding Subject}" Watermark="Субъект"/>
         <tk:WatermarkComboBox Grid.Column="2" ItemsSource="{Binding LocaleProps}" 
                               SelectedIndex="{Binding Prop}" Watermark="Реквизит"/>
+        <tk:WatermarkComboBox Grid.Column="4" ItemsSource="{Binding LocaleOperators}"
+                              SelectedIndex="{Binding Operator}" Watermark="Операция"/>
     </Grid>
 </ListBoxItem>
