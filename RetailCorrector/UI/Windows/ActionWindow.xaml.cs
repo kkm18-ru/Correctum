@@ -11,6 +11,16 @@ public partial class ActionWindow : DialogWindow
     public ActionWindow(ActionWindowMode mode)
     {
         _mode = mode;
+        Title = mode switch
+        {
+            ActionWindowMode.RemoveReceipt => "Удаление чеков",
+            ActionWindowMode.RemovePosition => "Удаление позиций",
+            ActionWindowMode.EditReceipt => "Редактирование чеков",
+            ActionWindowMode.EditPosition => "Редактирование позиций",
+            ActionWindowMode.CloneReceipt => "Клонирование чеков",
+            ActionWindowMode.ClonePosition => "Клонирование позиций",
+            _ => ""
+        };
         InitializeComponent();
     }
 }
