@@ -71,7 +71,7 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         ConditionProp.Created => ConditionValueType.DateTime,
         ConditionProp.Taxation => ConditionValueType.Flag,
         ConditionProp.ReceiptType or ConditionProp.PaymentMethod or ConditionProp.Unit
-            or ConditionProp.PositionType => ConditionValueType.Enum,
+            or ConditionProp.PositionType or ConditionProp.TaxRate => ConditionValueType.Enum,
         ConditionProp.IsReadOnly => ConditionValueType.Boolean,
         ConditionProp.CashSum or ConditionProp.EcashSum or ConditionProp.PreSum or ConditionProp.PostSum
             or ConditionProp.OtherSum or ConditionProp.TotalSum or ConditionProp.Price or ConditionProp.Quantity
