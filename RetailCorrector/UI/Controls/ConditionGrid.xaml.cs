@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,8 +33,15 @@ public partial class ConditionGrid : Grid, INotifyPropertyChanged
     public ConditionGrid()
     {
         InitializeComponent();
-        Items.CollectionChanged += (_, _) => PropertyChanged?.Invoke(this, CanUserAddItemChangedEvent);
+        Items.CollectionChanged += OnItemsChanged;
     }
+
+    private void OnItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        PropertyChanged?.Invoke(this, CanUserAddItemChangedEvent);
+        for (var i = 0; i < Items.Count; i++)
+            Items[i].Id = i + 1;
+    } 
 
     private void AddItem(object sender, RoutedEventArgs e)
     {

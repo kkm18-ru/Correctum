@@ -11,6 +11,17 @@ namespace RetailCorrector.UI.Controls;
 
 public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
 {
+    public int Id
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, IdChangedArgs);
+        }
+    }
+    
     public required ConditionSubjectType SubjectType
     {
         get;
@@ -107,6 +118,7 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
     
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    private static readonly PropertyChangedEventArgs IdChangedArgs = new(nameof(Id));
     private static readonly PropertyChangedEventArgs SubjectTypeChangedArgs = new(nameof(SubjectType));
     private static readonly PropertyChangedEventArgs SubjectChangedArgs = new(nameof(Subject));
     private static readonly PropertyChangedEventArgs PropChangedArgs = new(nameof(Prop));

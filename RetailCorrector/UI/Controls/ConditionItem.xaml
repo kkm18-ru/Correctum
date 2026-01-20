@@ -14,16 +14,20 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <tk:WatermarkComboBox Grid.Column="0" ItemsSource="{Binding LocaleSubjects}" 
+        <TextBlock Grid.Column="0" Text="{Binding Id}" Width="15"
+                   VerticalAlignment="Center"/>
+        <tk:WatermarkComboBox Grid.Column="2" ItemsSource="{Binding LocaleSubjects}" 
                               DisplayMemberPath="Locale" SelectedValuePath="Value" MinWidth="65" MaxWidth="125"
                               SelectedValue="{Binding Subject}" Watermark="Субъект"/>
-        <tk:WatermarkComboBox Grid.Column="2" ItemsSource="{Binding LocaleProps}"  
+        <tk:WatermarkComboBox Grid.Column="4" ItemsSource="{Binding LocaleProps}"  
                               DisplayMemberPath="Locale" SelectedValuePath="Value" MinWidth="50" MaxWidth="140"
                               SelectedValue="{Binding Prop}" Watermark="Реквизит"/>
-        <tk:WatermarkComboBox Grid.Column="4" ItemsSource="{Binding LocaleOperators}" 
+        <tk:WatermarkComboBox Grid.Column="6" ItemsSource="{Binding LocaleOperators}" 
                               DisplayMemberPath="Locale" SelectedValuePath="Value" MinWidth="40" MaxWidth="240"
                               SelectedValue="{Binding Operator}" Watermark="Операция"/>
-        <ContentControl Grid.Column="6" Content="{Binding ValueControl}" HorizontalContentAlignment="Stretch"/>
+        <ContentControl Grid.Column="8" Content="{Binding ValueControl}" HorizontalContentAlignment="Stretch"/>
     </Grid>
 </ListBoxItem>
