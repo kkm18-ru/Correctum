@@ -12,6 +12,7 @@
         <MenuItem Header="Настройки" Click="ShowSettingsWindow"/>
         <MenuItem Header="Выход" Click="Quit"/>
     </MenuItem>
+    <MenuItem Header="Действия" Click="ShowActionWindow"/>
     <MenuItem Header="Помощь">
         <MenuItem Header="Обратная связь" Click="ShowFeedbackWindow"/>
         <Separator/>
