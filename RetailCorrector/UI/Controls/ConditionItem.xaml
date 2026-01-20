@@ -17,13 +17,13 @@
         </Grid.ColumnDefinitions>
         <tk:WatermarkComboBox Grid.Column="0" ItemsSource="{Binding LocaleSubjects}" 
                               DisplayMemberPath="Locale" SelectedValuePath="Value" MinWidth="65" MaxWidth="125"
-                              SelectedIndex="{Binding Subject}" Watermark="Субъект"/>
+                              SelectedValue="{Binding Subject}" Watermark="Субъект"/>
         <tk:WatermarkComboBox Grid.Column="2" ItemsSource="{Binding LocaleProps}"  
                               DisplayMemberPath="Locale" SelectedValuePath="Value" MinWidth="50" MaxWidth="140"
-                              SelectedIndex="{Binding Prop}" Watermark="Реквизит"/>
+                              SelectedValue="{Binding Prop}" Watermark="Реквизит"/>
         <tk:WatermarkComboBox Grid.Column="4" ItemsSource="{Binding LocaleOperators}" 
                               DisplayMemberPath="Locale" SelectedValuePath="Value" MinWidth="40" MaxWidth="240"
-                              SelectedIndex="{Binding Operator}" Watermark="Операция"/>
+                              SelectedValue="{Binding Operator}" Watermark="Операция"/>
         <ContentControl Grid.Column="6" Content="{Binding ValueControl}" HorizontalContentAlignment="Stretch"/>
     </Grid>
 </ListBoxItem>
