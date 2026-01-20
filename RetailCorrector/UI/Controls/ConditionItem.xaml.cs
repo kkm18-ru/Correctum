@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows.Controls;
+using RetailCorrector.Data;
 
 namespace RetailCorrector.UI.Controls;
 
@@ -56,10 +57,26 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, OperatorChangedArgs);
         }
     } = ConditionOperator.None;
+    
+    private ConditionValueType ValueType => Prop switch
+    {
+        ConditionProp.DeviceId or ConditionProp.DriveId or ConditionProp.Buyer or ConditionProp.Name =>
+            ConditionValueType.Text,
+        ConditionProp.Session => ConditionValueType.Integer,
+        ConditionProp.Created => ConditionValueType.DateTime,
+        ConditionProp.Taxation => ConditionValueType.Flag,
+        ConditionProp.ReceiptType or ConditionProp.PaymentMethod or ConditionProp.Unit
+            or ConditionProp.PositionType => ConditionValueType.Enum,
+        ConditionProp.IsReadOnly => ConditionValueType.Boolean,
+        ConditionProp.CashSum or ConditionProp.EcashSum or ConditionProp.PreSum or ConditionProp.PostSum
+            or ConditionProp.OtherSum or ConditionProp.TotalSum or ConditionProp.Price or ConditionProp.Quantity
+            or ConditionProp.Cost => ConditionValueType.Float,
+        _ => ConditionValueType.None
+    };
 
-    public ObservableCollection<string> LocaleSubjects { get; } = [];
-    public ObservableCollection<string> LocaleProps { get; } = [];
-    public ObservableCollection<string> LocaleOperators { get; } = [];
+    public ObservableCollection<EnumLocale<ConditionSubject>> LocaleSubjects { get; } = [];
+    public ObservableCollection<EnumLocale<ConditionProp>> LocaleProps { get; } = [];
+    public ObservableCollection<EnumLocale<ConditionOperator>> LocaleOperators { get; } = [];
     
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -77,97 +94,115 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
     private void UpdateLocaleSubjects()
     {
         LocaleSubjects.Clear();
-        switch (SubjectType)
+        var locales = SubjectType switch
         {
-            case ConditionSubjectType.Receipt:
-                LocaleSubjects.Add("В чеке");
-                LocaleSubjects.Add("В любой позиции");
-                LocaleSubjects.Add("Во всех позициях");
-                break;
-            case ConditionSubjectType.Position:
-                LocaleSubjects.Add("В позиции");
-                break;
-        }
+            ConditionSubjectType.Receipt => Constants.ReceiptSubjects,
+            ConditionSubjectType.Position => Constants.PositionSubjects,
+            _ => []
+        };
+        foreach (var locale in locales)
+            LocaleSubjects.Add(locale);
     }
 
     private void UpdateLocaleProps()
     {
         LocaleProps.Clear();
-        if (SubjectType == ConditionSubjectType.Position || Subject > 0)
-        {
-            LocaleProps.Add("наименование");
-            LocaleProps.Add("метод оплаты");
-            LocaleProps.Add("тип");
-            LocaleProps.Add("ставка НДС");
-            LocaleProps.Add("цена");
-            LocaleProps.Add("количество");
-            LocaleProps.Add("ЕИ");
-            LocaleProps.Add("стоимость");
-        }
-        else
-        {
-            LocaleProps.Add("ККТ");
-            LocaleProps.Add("ФН");
-            LocaleProps.Add("смена");
-            LocaleProps.Add("дата/время");
-            LocaleProps.Add("покупатель");
-            LocaleProps.Add("СНО");
-            LocaleProps.Add("операция");
-            LocaleProps.Add("сумма нал. оплаты");
-            LocaleProps.Add("сумма б/н оплаты");
-            LocaleProps.Add("сумма преоплаты");
-            LocaleProps.Add("сумма постоплаты");
-            LocaleProps.Add("сумма иной оплаты");
-            LocaleProps.Add("итоговая сумма");
-            LocaleProps.Add("только чтение");
-        }
+        var locales = SubjectType == ConditionSubjectType.Position || Subject > 0
+            ? Constants.PositionProperties
+            : Constants.ReceiptProperties;
+        foreach (var locale in locales)
+            LocaleProps.Add(locale);
     }
 
     private void UpdateLocaleOperators()
     {
         LocaleOperators.Clear();
-        
-        var isReceipt = SubjectType == ConditionSubjectType.Receipt && Subject == ConditionSubject.Default;
-        
-        var isString = Prop == 0 || isReceipt && Prop is ConditionProp.DriveId or ConditionProp.Buyer;
-        var isFlag = isReceipt && Prop == ConditionProp.Taxation;
-        var isBool = isReceipt && Prop == ConditionProp.IsReadOnly;
-
-        if (isString)
+        var locales = ValueType switch
         {
-            LocaleOperators.Add("начинается с");
-            LocaleOperators.Add("начинается с (без учета регистра)");
-            LocaleOperators.Add("содержит");
-            LocaleOperators.Add("содержит (без учета регистра)");
-            LocaleOperators.Add("заканчивается на");
-            LocaleOperators.Add("заканчивается на (без учета регистра)");
-        }
-        else if (isFlag)
-        {
-            LocaleOperators.Add("равно");
-            LocaleOperators.Add("не равно");
-            LocaleOperators.Add("содержит");
-        }
-        else if (isBool)
-        {
-            LocaleOperators.Add("является True");
-            LocaleOperators.Add("является False");
-        }
-        else
-        {
-            LocaleOperators.Add("равно");
-            LocaleOperators.Add("не равно");
-            LocaleOperators.Add("меньше");
-            LocaleOperators.Add("меньше или равно");
-            LocaleOperators.Add("больше");
-            LocaleOperators.Add("больше или равно");
-        }
+            ConditionValueType.Flag => Constants.FlagsOperators,
+            ConditionValueType.Enum => Constants.EnumsOperators,
+            ConditionValueType.Text => Constants.TextOperators,
+            ConditionValueType.Boolean => Constants.BooleanOperators,
+            ConditionValueType.Float or ConditionValueType.DateTime or ConditionValueType.Integer => Constants.ComparableOperators,
+            _ => []
+        };
+        foreach (var locale in locales)
+            LocaleOperators.Add(locale);
     }
 
     internal Expression<Predicate<object>> ToExpression()
     {
         throw new NotImplementedException();
     }
+}
+
+file static class Constants
+{
+    public static readonly EnumLocale<ConditionSubject>[] ReceiptSubjects = [
+        new(ConditionSubject.Default, "Чек"),
+        new(ConditionSubject.AnyPosition, "В любой позиции"),
+        new(ConditionSubject.AllPositions, "Во всех позициях")
+    ];
+    public static readonly EnumLocale<ConditionSubject>[] PositionSubjects = [
+        new(ConditionSubject.Default, "Позиция")
+    ];
+
+    public static readonly EnumLocale<ConditionProp>[] ReceiptProperties = [
+        new(ConditionProp.DeviceId, "ККТ"),
+        new(ConditionProp.DriveId, "ФН"),
+        new(ConditionProp.Session, "смена"),
+        new(ConditionProp.Created, "дата/время"),
+        new(ConditionProp.Buyer, "покупатель"),
+        new(ConditionProp.Taxation, "СНО"),
+        new(ConditionProp.ReceiptType, "операция"),
+        new(ConditionProp.CashSum, "сумма нал. оплаты"),
+        new(ConditionProp.EcashSum, "сумма б/н оплаты"),
+        new(ConditionProp.PreSum, "сумма преоплаты"),
+        new(ConditionProp.PostSum, "сумма постоплаты"),
+        new(ConditionProp.OtherSum, "сумма иной оплаты"),
+        new(ConditionProp.TotalSum, "итоговая сумма"),
+        new(ConditionProp.IsReadOnly, "только чтение"),
+    ];
+    public static readonly EnumLocale<ConditionProp>[] PositionProperties = [
+        new(ConditionProp.Name, "наименование"),
+        new(ConditionProp.PaymentMethod, "метод оплаты"),
+        new(ConditionProp.PositionType, "тип"),
+        new(ConditionProp.TaxRate, "ставка НДС"),
+        new(ConditionProp.Price, "цена"),
+        new(ConditionProp.Quantity, "количество"),
+        new(ConditionProp.Unit, "единица измерения"),
+        new(ConditionProp.Cost, "стоимость"),
+    ];
+
+    public static readonly EnumLocale<ConditionOperator>[] TextOperators = [
+        new(ConditionOperator.StartsWith, "начинается с"),
+        new(ConditionOperator.StartsWithIgnoreCase, "начинается с (без учета регистра)"),
+        new(ConditionOperator.Contains, "содержит"),
+        new(ConditionOperator.ContainsIgnoreCase, "содержит (без учета регистра)"),
+        new(ConditionOperator.EndsWith, "заканчивается на"),
+        new(ConditionOperator.EndsWithIgnoreCase, "заканчивается на (без учета регистра)"),
+    ];
+    public static readonly EnumLocale<ConditionOperator>[] ComparableOperators = [
+        new(ConditionOperator.Equal, "=="),
+        new(ConditionOperator.NotEqual, "!="),
+        new(ConditionOperator.LessThan, "<"),
+        new(ConditionOperator.EqualOrLessThan, "<="),
+        new(ConditionOperator.MoreThan, ">"),
+        new(ConditionOperator.EqualOrMoreThan, ">="),
+    ];
+    public static readonly EnumLocale<ConditionOperator>[] EnumsOperators = [
+        new(ConditionOperator.Equal, "=="),
+        new(ConditionOperator.NotEqual, "!="),
+    ];
+    public static readonly EnumLocale<ConditionOperator>[] FlagsOperators = [
+        new(ConditionOperator.Contains, "содержит"),
+        new(ConditionOperator.Equal, "=="),
+        new(ConditionOperator.NotEqual, "!="),
+    ];
+    public static readonly EnumLocale<ConditionOperator>[] BooleanOperators = [
+        new(ConditionOperator.IsTrue, "является True"),
+        new(ConditionOperator.IsFalse, "является False"),
+    ];
 }
 
 /// <summary>Тип субъекта условия</summary>
@@ -233,21 +268,21 @@ public enum ConditionProp
     #region Реквизиты позиции
 
     /// <summary>Наименование позиции</summary>
-    Name = 0,           // Text
+    Name = 14,           // Text
     /// <summary>Метод оплаты позиции</summary>
-    PaymentMethod = 1,  // Enum
+    PaymentMethod = 15,  // Enum
     /// <summary>Тип позиции</summary>
-    PositionType = 2,   // Enum
+    PositionType = 16,   // Enum
     /// <summary>Ставка НДС</summary>
-    TaxRate = 3,        // Enum
+    TaxRate = 17,        // Enum
     /// <summary>Цена</summary>
-    Price = 4,          // Double
+    Price = 18,          // Double
     /// <summary>Количество</summary>
-    Quantity = 5,       // Double
+    Quantity = 19,       // Double
     /// <summary>Единица измерения</summary>
-    Unit = 6,           // Enum
+    Unit = 20,           // Enum
     /// <summary>Стоимость</summary>
-    Cost = 7,           // Double
+    Cost = 21,           // Double
 
     #endregion
     #pragma warning restore CA1069
@@ -279,21 +314,23 @@ public enum ConditionOperator
 
     #region Операторы сравнения
     
-    Equal = 0,
-    NotEqual = 1,
-    LessThan = 2,
-    EqualOrLessThan = 3,
-    MoreThan = 4,
-    EqualOrMoreThan = 5,
+    Equal = 6,
+    NotEqual = 7,
+    LessThan = 8,
+    EqualOrLessThan = 9,
+    MoreThan = 10,
+    EqualOrMoreThan = 11,
 
     #endregion
 
     #region Операторы логических реквизитов
 
-    IsTrue = 0,
-    IsFalse = 1
+    IsTrue = 12,
+    IsFalse = 13
 
     #endregion
     
     #pragma warning restore CA1069
 }
+
+public enum ConditionValueType { None, Text, Integer, Float, DateTime, Boolean, Enum, Flag }
