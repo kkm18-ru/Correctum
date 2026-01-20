@@ -21,6 +21,15 @@ public partial class ConditionGrid : Grid, INotifyPropertyChanged
         set => SetValue(SelectedIndexProperty, value);
     }
     
+    public ConditionSubjectType SubjectType
+    {
+        get => (ConditionSubjectType)GetValue(SubjectTypeProperty);
+        set => SetValue(SubjectTypeProperty, value);
+    }
+
+    public static readonly DependencyProperty SubjectTypeProperty = DependencyProperty.Register(
+        nameof(SubjectType), typeof(ConditionSubjectType), typeof(ConditionGrid));
+    
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private static readonly PropertyChangedEventArgs CanUserAddItemChangedEvent = new(nameof(CanUserAddItem)); 
@@ -46,7 +55,7 @@ public partial class ConditionGrid : Grid, INotifyPropertyChanged
     private void AddItem(object sender, RoutedEventArgs e)
     {
         if (!CanUserAddItem) return;
-        Items.Add(new ConditionItem());
+        Items.Add(new ConditionItem { SubjectType = SubjectType });
     }
 
     private void RemoveItem(object sender, RoutedEventArgs e)
