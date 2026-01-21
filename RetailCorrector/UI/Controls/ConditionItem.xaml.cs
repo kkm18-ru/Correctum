@@ -233,6 +233,26 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         throw new NotImplementedException();
     }
 
+    private ConstantExpression? GetValueExpression()
+    {
+        var constType = this switch
+        {
+            { ValueType: ConditionValueType.Flag, Prop: ConditionProp.Taxation } => typeof(TaxationSystem),
+            { ValueType: ConditionValueType.Enum, Prop: ConditionProp.ReceiptType } => typeof(Operation),
+            { ValueType: ConditionValueType.Enum, Prop: ConditionProp.PaymentMethod } => typeof(PayMethod),
+            { ValueType: ConditionValueType.Enum, Prop: ConditionProp.PositionType } => typeof(PositionType),
+            { ValueType: ConditionValueType.Enum, Prop: ConditionProp.TaxRate } => typeof(TaxRate),
+            { ValueType: ConditionValueType.Enum, Prop: ConditionProp.Unit } => typeof(MeasureUnit),
+            { ValueType: ConditionValueType.Text } => typeof(string),
+            { ValueType: ConditionValueType.Boolean } => null,
+            { ValueType: ConditionValueType.Float } => typeof(ulong),
+            { ValueType: ConditionValueType.DateTime } => typeof(DateTime),
+            { ValueType: ConditionValueType.Integer } => typeof(uint),
+            _ => typeof(object)
+        };
+        return constType is null ? null : Expression.Constant(Value, constType);
+    }
+
     private Expression? GetOperatorExpression(Expression property, ConstantExpression value) => Operator switch
     {
         ConditionOperator.StartsWith => StringExpressions.StartsWith(property, value, false),
