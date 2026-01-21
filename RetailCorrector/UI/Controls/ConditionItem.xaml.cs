@@ -253,6 +253,17 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         return constType is null ? null : Expression.Constant(Value, constType);
     }
 
+    private ParameterExpression GetParameterExpression()
+    {
+        var type = SubjectType switch
+        {
+            ConditionSubjectType.Receipt => typeof(Receipt),
+            ConditionSubjectType.Position => typeof(Position),
+            _ => typeof(object)
+        };
+        return Expression.Parameter(type);
+    }
+
     private Expression? GetOperatorExpression(Expression property, ConstantExpression value) => Operator switch
     {
         ConditionOperator.StartsWith => StringExpressions.StartsWith(property, value, false),
