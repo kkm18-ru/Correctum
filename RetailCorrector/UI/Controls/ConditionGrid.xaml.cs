@@ -3,7 +3,10 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using RetailCorrector.Data;
 using RetailCorrector.Enums.Condition;
+using RetailCorrector.Utils;
+using Expression = System.Linq.Expressions.Expression;
 
 namespace RetailCorrector.UI.Controls;
 
@@ -64,5 +67,41 @@ public partial class ConditionGrid : Grid, INotifyPropertyChanged
         if (!CanUserRemoveItem) return;
         Items.RemoveAt(SelectedIndex);
         SelectedIndex = -1;
+    }
+
+    public Func<IUnionReceiptPosition, bool>? Compile()
+    {
+        if (Items.Count == 0) return _ => true;
+        var input = SubjectType switch
+        {
+            ConditionSubjectType.Receipt => Expression.Parameter(typeof(Receipt)),
+            ConditionSubjectType.Position => Expression.Parameter(typeof(Position)),
+            _ => null
+        };
+        if (input is null)
+        {
+            MessageBox.Show("Некорректный режим таблицы", "", 0, MessageBoxImage.Error);
+            return null;
+        }
+        var firstExpression = Items[0].ToExpression(input);
+        if (firstExpression is null)
+        {
+            MessageBox.Show("Найдено некорректное условие №1", "", 0, MessageBoxImage.Error);
+            return null;
+        }
+        var expression = firstExpression;
+
+        for (var i = 1; i < Items.Count; i++)
+        {
+            var tempExpression = Items[i].ToExpression(input);
+            if (tempExpression is null)
+            {
+                MessageBox.Show($"Найдено некорректное условие №{i + 1}", "", 0, MessageBoxImage.Error);
+                return null;
+            }
+            expression = Expression.And(expression, tempExpression);
+        }
+        var lambda = Expression.Lambda<Func<IUnionReceiptPosition, bool>>(expression, input); 
+        return lambda.Compile();
     }
 }
