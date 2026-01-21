@@ -14,9 +14,9 @@ public enum ConditionOperator
     Equal = 6,
     NotEqual = 7,
     LessThan = 8,
-    EqualOrLessThan = 9,
-    MoreThan = 10,
-    EqualOrMoreThan = 11,
+    LessThanOrEqual = 9,
+    GreaterThan = 10,
+    GreaterThanOrEqual = 11,
     
     IsTrue = 12,
     IsFalse = 13

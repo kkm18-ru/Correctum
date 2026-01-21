@@ -165,9 +165,9 @@ public static class Constants
         new(ConditionOperator.Equal, "=="),
         new(ConditionOperator.NotEqual, "!="),
         new(ConditionOperator.LessThan, "<"),
-        new(ConditionOperator.EqualOrLessThan, "<="),
-        new(ConditionOperator.MoreThan, ">"),
-        new(ConditionOperator.EqualOrMoreThan, ">="),
+        new(ConditionOperator.LessThanOrEqual, "<="),
+        new(ConditionOperator.GreaterThan, ">"),
+        new(ConditionOperator.GreaterThanOrEqual, ">="),
     ];
     public static readonly EnumLocale<ConditionOperator>[] ConditionEnumsOperators = [
         new(ConditionOperator.Equal, "=="),
