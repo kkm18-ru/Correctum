@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using RetailCorrector.Enums.Condition;
 
 namespace RetailCorrector.UI.Controls;
 

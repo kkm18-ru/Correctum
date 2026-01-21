@@ -1,6 +1,7 @@
 using System.Globalization;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using RetailCorrector.Enums.Condition;
 
 namespace RetailCorrector.Utils;
 
@@ -114,5 +115,71 @@ public static class Constants
         new(PayMethod.PartPayment, "ЧАСТИЧНЫЙ РАСЧЕТ И КРЕДИТ"),
         new(PayMethod.ToCredit, "ПЕРЕДАЧА В КРЕДИТ"),
         new(PayMethod.Postpaid, "ОПЛАТА КРЕДИТА"),
+    ];
+    
+    public static readonly EnumLocale<ConditionSubject>[] ConditionReceiptSubjects = [
+        new(ConditionSubject.Default, "В чеке"),
+        new(ConditionSubject.AnyPosition, "В любой позиции"),
+        new(ConditionSubject.AllPositions, "Во всех позициях")
+    ];
+    public static readonly EnumLocale<ConditionSubject>[] ConditionPositionSubjects = [
+        new(ConditionSubject.Default, "В позиции")
+    ];
+
+    public static readonly EnumLocale<ConditionProp>[] ConditionReceiptProperties = [
+        new(ConditionProp.DeviceId, "ККТ"),
+        new(ConditionProp.DriveId, "ФН"),
+        new(ConditionProp.Session, "смена"),
+        new(ConditionProp.Created, "дата/время"),
+        new(ConditionProp.Buyer, "покупатель"),
+        new(ConditionProp.Taxation, "СНО"),
+        new(ConditionProp.ReceiptType, "операция"),
+        new(ConditionProp.CashSum, "сумма нал. оплаты"),
+        new(ConditionProp.EcashSum, "сумма б/н оплаты"),
+        new(ConditionProp.PreSum, "сумма преоплаты"),
+        new(ConditionProp.PostSum, "сумма постоплаты"),
+        new(ConditionProp.OtherSum, "сумма иной оплаты"),
+        new(ConditionProp.TotalSum, "итоговая сумма"),
+        new(ConditionProp.IsReadOnly, "только чтение"),
+    ];
+    public static readonly EnumLocale<ConditionProp>[] ConditionPositionProperties = [
+        new(ConditionProp.Name, "наименование"),
+        new(ConditionProp.PaymentMethod, "метод оплаты"),
+        new(ConditionProp.PositionType, "тип"),
+        new(ConditionProp.TaxRate, "ставка НДС"),
+        new(ConditionProp.Price, "цена"),
+        new(ConditionProp.Quantity, "количество"),
+        new(ConditionProp.Unit, "единица измерения"),
+        new(ConditionProp.Cost, "стоимость"),
+    ];
+
+    public static readonly EnumLocale<ConditionOperator>[] ConditionTextOperators = [
+        new(ConditionOperator.StartsWith, "начинается с"),
+        new(ConditionOperator.StartsWithIgnoreCase, "начинается с (без учета регистра)"),
+        new(ConditionOperator.Contains, "содержит"),
+        new(ConditionOperator.ContainsIgnoreCase, "содержит (без учета регистра)"),
+        new(ConditionOperator.EndsWith, "заканчивается на"),
+        new(ConditionOperator.EndsWithIgnoreCase, "заканчивается на (без учета регистра)"),
+    ];
+    public static readonly EnumLocale<ConditionOperator>[] ConditionComparableOperators = [
+        new(ConditionOperator.Equal, "=="),
+        new(ConditionOperator.NotEqual, "!="),
+        new(ConditionOperator.LessThan, "<"),
+        new(ConditionOperator.EqualOrLessThan, "<="),
+        new(ConditionOperator.MoreThan, ">"),
+        new(ConditionOperator.EqualOrMoreThan, ">="),
+    ];
+    public static readonly EnumLocale<ConditionOperator>[] ConditionEnumsOperators = [
+        new(ConditionOperator.Equal, "=="),
+        new(ConditionOperator.NotEqual, "!="),
+    ];
+    public static readonly EnumLocale<ConditionOperator>[] ConditionFlagsOperators = [
+        new(ConditionOperator.Contains, "содержит"),
+        new(ConditionOperator.Equal, "=="),
+        new(ConditionOperator.NotEqual, "!="),
+    ];
+    public static readonly EnumLocale<ConditionOperator>[] ConditionBooleanOperators = [
+        new(ConditionOperator.IsTrue, "является True"),
+        new(ConditionOperator.IsFalse, "является False"),
     ];
 }

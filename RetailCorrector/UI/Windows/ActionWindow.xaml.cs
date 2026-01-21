@@ -1,4 +1,4 @@
-using RetailCorrector.UI.Controls;
+using RetailCorrector.Enums.Condition;
 using RetailCorrector.UI.Windows.Types;
 
 namespace RetailCorrector.UI.Windows;
