@@ -226,7 +226,7 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
                     ConditionProp.PaymentMethod => Constants.PaymentMethodLocales,
                     _ => Array.Empty<object>()
                 };
-                ValueControl.SetBinding(ComboBox.SelectedIndexProperty, binding);
+                ValueControl.SetBinding(ComboBox.SelectedValueProperty, binding);
                 break;
             default:
                 ValueControl = null;
