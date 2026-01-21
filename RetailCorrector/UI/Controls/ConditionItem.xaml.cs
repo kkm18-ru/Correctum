@@ -62,7 +62,6 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, PropChangedArgs);
             Operator = ConditionOperator.None;
             UpdateLocaleOperators();
-            Value = null;
             UpdateValueControl();
         }
     } = ConditionProp.None;
@@ -186,18 +185,22 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         switch (ValueType)
         {
             case ConditionValueType.Text:
+                Value = "";
                 ValueControl = new TextBox();
                 ValueControl.SetBinding(TextBox.TextProperty, binding);
                 break;
             case ConditionValueType.Integer:
+                Value = 0;
                 ValueControl = new IntegerUpDown();
                 ValueControl.SetBinding(IntegerUpDown.ValueProperty, binding);
                 break;
             case ConditionValueType.DateTime:
+                Value = DateTime.Today;
                 ValueControl = new DatePicker();
                 ValueControl.SetBinding(DatePicker.SelectedDateProperty, binding);
                 break;
             case ConditionValueType.Float:
+                Value = 0UL;
                 ValueControl = new DoubleUpDown();
                 binding.Converter = new IntegerAsDoubleConverter();
                 binding.ConverterParameter = Prop switch
@@ -211,6 +214,7 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
                 break;
             case ConditionValueType.Flag:
             case ConditionValueType.Enum:
+                Value = 0;
                 ValueControl = new ComboBox
                 {
                     DisplayMemberPath = nameof(EnumLocale<>.Locale),
@@ -229,6 +233,7 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
                 ValueControl.SetBinding(ComboBox.SelectedValueProperty, binding);
                 break;
             default:
+                Value = null;
                 ValueControl = null;
                 return;
         }
