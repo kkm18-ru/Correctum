@@ -264,6 +264,38 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         return Expression.Parameter(type);
     }
 
+    private static MemberExpression GetPayment(Expression @object) =>
+        Expression.Property(@object, typeof(Payment), nameof(Receipt.Payment));
+    
+    private Expression? GetPropertyExpression(Expression @object) => Prop switch
+    {
+        ConditionProp.DeviceId => Expression.Property(@object, typeof(string), nameof(Receipt.RegId)),
+        ConditionProp.DriveId => Expression.Property(@object, typeof(string), nameof(Receipt.StorageId)),
+        ConditionProp.Session => Expression.Property(@object, typeof(uint), nameof(Receipt.SessionId)),
+        ConditionProp.Created => Expression.Property(@object, typeof(DateTime), nameof(Receipt.Created)),
+        ConditionProp.Buyer => Expression.Property(@object, typeof(string), nameof(Receipt.BuyerContact)),
+        ConditionProp.Taxation => Expression.Property(@object, typeof(TaxationSystem), nameof(Receipt.TaxationSystem)),
+        ConditionProp.ReceiptType => Expression.Property(@object, typeof(Operation), nameof(Receipt.Type)),
+        ConditionProp.TotalSum => Expression.Property(@object, typeof(ulong), nameof(Receipt.TotalSum)),
+        ConditionProp.CashSum => Expression.Property(GetPayment(@object), typeof(ulong), nameof(Payment.Cash)),
+        ConditionProp.EcashSum => Expression.Property(GetPayment(@object), typeof(ulong), nameof(Payment.ECash)),
+        ConditionProp.PreSum => Expression.Property(GetPayment(@object), typeof(ulong), nameof(Payment.Pre)),
+        ConditionProp.PostSum => Expression.Property(GetPayment(@object), typeof(ulong), nameof(Payment.Post)),
+        ConditionProp.OtherSum => Expression.Property(GetPayment(@object), typeof(ulong), nameof(Payment.Provision)),
+        ConditionProp.IsReadOnly => Expression.Property(@object, typeof(bool), nameof(Receipt.IsReadOnly)),
+        
+        ConditionProp.Name => Expression.Property(@object, typeof(string), nameof(Position.Name)),
+        ConditionProp.PositionType => Expression.Property(@object, typeof(PositionType), nameof(Position.Type)),
+        ConditionProp.PaymentMethod => Expression.Property(@object, typeof(PayMethod), nameof(Position.PayMethod)),
+        ConditionProp.TaxRate => Expression.Property(@object, typeof(TaxRate), nameof(Position.TaxRate)),
+        ConditionProp.Price => Expression.Property(@object, typeof(ulong), nameof(Position.Price)),
+        ConditionProp.Quantity => Expression.Property(@object, typeof(ulong), nameof(Position.Quantity)),
+        ConditionProp.Unit => Expression.Property(@object, typeof(MeasureUnit), nameof(Position.MeasureUnit)),
+        ConditionProp.Cost => Expression.Property(@object, typeof(ulong), nameof(Position.Cost)),
+        
+        _ => null
+    };
+
     private Expression? GetOperatorExpression(Expression property, ConstantExpression value) => Operator switch
     {
         ConditionOperator.StartsWith => StringExpressions.StartsWith(property, value, false),
