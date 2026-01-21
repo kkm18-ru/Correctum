@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows.Controls;
 using System.Windows.Data;
+using RetailCorrector.Converters;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using Xceed.Wpf.Toolkit;
@@ -198,6 +199,14 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
                 break;
             case ConditionValueType.Float:
                 ValueControl = new DoubleUpDown();
+                binding.Converter = new IntegerAsDoubleConverter();
+                binding.ConverterParameter = Prop switch
+                {
+                    ConditionProp.Quantity => 3,
+                    ConditionProp.TotalSum or ConditionProp.CashSum or ConditionProp.EcashSum 
+                        or ConditionProp.Price or ConditionProp.OtherSum or ConditionProp.Cost 
+                        or ConditionProp.PreSum or ConditionProp.PostSum => 2 
+                };
                 ValueControl.SetBinding(DoubleUpDown.ValueProperty, binding);
                 break;
             case ConditionValueType.Flag:
