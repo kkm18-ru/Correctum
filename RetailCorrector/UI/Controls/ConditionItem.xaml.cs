@@ -1,10 +1,10 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using RetailCorrector.Data;
+using RetailCorrector.Enums;
 using Xceed.Wpf.Toolkit;
 using RetailCorrector.Enums.Condition;
 using RetailCorrector.Utils;
@@ -103,7 +103,7 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         }
     }
     
-    public FrameworkElement? ValueControl
+    public System.Windows.FrameworkElement? ValueControl
     {
         get;
         set
