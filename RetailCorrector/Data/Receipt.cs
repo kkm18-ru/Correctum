@@ -1,9 +1,10 @@
 ﻿using RetailCorrector.Enums;
 using RetailCorrector.Exceptions;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Data
 {
-    internal struct Receipt(bool @readonly = false)
+    internal struct Receipt(bool @readonly = false) : IUnionReceiptPosition
     {
         public required Guid ParseId { get; init; }
         public uint DocNumber { get; set; }

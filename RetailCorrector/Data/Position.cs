@@ -1,8 +1,9 @@
 ﻿using RetailCorrector.Enums;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Data
 {
-    internal struct Position(string name, ulong price, ulong quantity)
+    internal struct Position(string name, ulong price, ulong quantity) : IUnionReceiptPosition
     {
         public string Name { get; set; } = name;
         public PayMethod PayMethod { get; set; }
