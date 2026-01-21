@@ -3,7 +3,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using RetailCorrector.Data;
 using RetailCorrector.Enums.Condition;
 using RetailCorrector.Utils;
 using Expression = System.Linq.Expressions.Expression;
@@ -72,17 +71,7 @@ public partial class ConditionGrid : Grid, INotifyPropertyChanged
     public Func<IUnionReceiptPosition, bool>? Compile()
     {
         if (Items.Count == 0) return _ => true;
-        var input = SubjectType switch
-        {
-            ConditionSubjectType.Receipt => Expression.Parameter(typeof(Receipt)),
-            ConditionSubjectType.Position => Expression.Parameter(typeof(Position)),
-            _ => null
-        };
-        if (input is null)
-        {
-            MessageBox.Show("Некорректный режим таблицы", "", 0, MessageBoxImage.Error);
-            return null;
-        }
+        var input = Expression.Parameter(typeof(IUnionReceiptPosition));
         var firstExpression = Items[0].ToExpression(input);
         if (firstExpression is null)
         {
