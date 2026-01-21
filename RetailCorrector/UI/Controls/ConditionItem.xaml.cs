@@ -228,9 +228,48 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         ValueControl?.MaxWidth = 250;
     }
 
-    internal Expression<Predicate<object>> ToExpression()
+    internal Expression? ToExpression(ParameterExpression @object)
     {
-        throw new NotImplementedException();
+        var value = GetValueExpression();
+        if (value is null) return null;
+        Expression? action;
+        switch (Subject)
+        {
+            case ConditionSubject.Default:
+            {
+                var prop = GetPropertyExpression(@object);
+                if (prop is null) return null;
+                action = GetOperatorExpression(prop, value);
+                break;
+            }
+            case ConditionSubject.AllPositions:
+            {
+                var items = Expression.Property(@object, typeof(Position[]), nameof(Receipt.Items));
+                var param = Expression.Parameter(typeof(Position), "item");
+                var prop = GetPropertyExpression(param);
+                if (prop is null) return null;
+                var @operator = GetOperatorExpression(prop, value);
+                if (@operator is null) return null;
+                var lambda = Expression.Lambda(@operator, param);
+                action = EnumerableExpression.All<Position>(items, lambda);
+                break;
+            }
+            case ConditionSubject.AnyPosition:
+            {
+                var items = Expression.Property(@object, typeof(Position[]), nameof(Receipt.Items));
+                var param = Expression.Parameter(typeof(Position), "item");
+                var prop = GetPropertyExpression(param);
+                if (prop is null) return null;
+                var @operator = GetOperatorExpression(prop, value);
+                if (@operator is null) return null;
+                var lambda = Expression.Lambda(@operator, param);
+                action = EnumerableExpression.Any<Position>(items, lambda);
+                break;
+            }
+            default: return null;
+        }
+
+        return action is null ? null : Expression.Lambda(action, GetParameterExpression());
     }
 
     private ConstantExpression? GetValueExpression()
