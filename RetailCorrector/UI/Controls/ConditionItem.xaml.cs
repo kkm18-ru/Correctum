@@ -8,6 +8,7 @@ using RetailCorrector.Enums;
 using Xceed.Wpf.Toolkit;
 using RetailCorrector.Enums.Condition;
 using RetailCorrector.Utils;
+using RetailCorrector.Utils.Expressions;
 
 namespace RetailCorrector.UI.Controls;
 
@@ -231,4 +232,26 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
     {
         throw new NotImplementedException();
     }
+
+    private Expression? GetOperatorExpression(Expression property, ConstantExpression value) => Operator switch
+    {
+        ConditionOperator.StartsWith => StringExpressions.StartsWith(property, value, false),
+        ConditionOperator.StartsWithIgnoreCase => StringExpressions.StartsWith(property, value, true),
+        ConditionOperator.Contains => StringExpressions.Contains(property, value, false),
+        ConditionOperator.ContainsIgnoreCase => StringExpressions.Contains(property, value, true),
+        ConditionOperator.EndsWith => StringExpressions.EndsWith(property, value, false),
+        ConditionOperator.EndsWithIgnoreCase => StringExpressions.EndsWith(property, value, true),
+        
+        ConditionOperator.Equal => Expression.Equal(property, value),
+        ConditionOperator.NotEqual => Expression.NotEqual(property, value),
+        ConditionOperator.LessThan => Expression.LessThan(property, value),
+        ConditionOperator.LessThanOrEqual => Expression.LessThanOrEqual(property, value),
+        ConditionOperator.GreaterThan => Expression.GreaterThan(property, value),
+        ConditionOperator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(property, value),
+        
+        ConditionOperator.IsTrue => Expression.IsTrue(property),
+        ConditionOperator.IsFalse => Expression.IsFalse(property),
+        
+        _ => null
+    };
 }
