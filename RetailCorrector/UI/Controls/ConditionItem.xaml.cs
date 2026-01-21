@@ -237,53 +237,53 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         ValueControl?.MaxWidth = 250;
     }
 
-    internal Expression? ToExpression(ParameterExpression @object)
+    internal BinaryExpression? ToExpression(ParameterExpression @object)
     {
         var value = GetValueExpression();
         if (value is null) return null;
-        Expression? action;
         switch (Subject)
         {
             case ConditionSubject.Default:
             {
-                var prop = GetPropertyExpression(@object);
-                if (prop is null) return null;
-                action = GetOperatorExpression(prop, value);
-                break;
+                var data = Expression.Convert(@object, SubjectType switch
+                {
+                    ConditionSubjectType.Receipt => typeof(Receipt),
+                    ConditionSubjectType.Position => typeof(Position),
+                });
+                var prop = GetPropertyExpression(data);
+                return prop is null ? null : GetOperatorExpression(prop, value);
             }
             case ConditionSubject.AllPositions:
             {
+                var data = Expression.Convert(@object, typeof(Receipt));
                 var items = Expression.Property(@object, typeof(Position[]), nameof(Receipt.Items));
                 var param = Expression.Parameter(typeof(Position), "item");
-                var prop = GetPropertyExpression(param);
+                var prop = GetPropertyExpression(data);
                 if (prop is null) return null;
                 var @operator = GetOperatorExpression(prop, value);
                 if (@operator is null) return null;
                 var lambda = Expression.Lambda(@operator, param);
-                action = EnumerableExpression.All<Position>(items, lambda);
-                break;
+                return EnumerableExpressions.All<Position>(items, lambda);
             }
             case ConditionSubject.AnyPosition:
             {
+                var data = Expression.Convert(@object, typeof(Receipt));
                 var items = Expression.Property(@object, typeof(Position[]), nameof(Receipt.Items));
                 var param = Expression.Parameter(typeof(Position), "item");
-                var prop = GetPropertyExpression(param);
+                var prop = GetPropertyExpression(data);
                 if (prop is null) return null;
                 var @operator = GetOperatorExpression(prop, value);
                 if (@operator is null) return null;
                 var lambda = Expression.Lambda(@operator, param);
-                action = EnumerableExpression.Any<Position>(items, lambda);
-                break;
+                return EnumerableExpressions.Any<Position>(items, lambda);
             }
             default: return null;
         }
-
-        return action is null ? null : Expression.Lambda(action, GetParameterExpression());
     }
 
     private ConstantExpression? GetValueExpression()
     {
-        var constType = this switch
+        var type  = this switch
         {
             { ValueType: ConditionValueType.Flag, Prop: ConditionProp.Taxation } => typeof(TaxationSystem),
             { ValueType: ConditionValueType.Enum, Prop: ConditionProp.ReceiptType } => typeof(Operation),
@@ -298,18 +298,7 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
             { ValueType: ConditionValueType.Integer } => typeof(uint),
             _ => typeof(object)
         };
-        return constType is null ? null : Expression.Constant(Value, constType);
-    }
-
-    private ParameterExpression GetParameterExpression()
-    {
-        var type = SubjectType switch
-        {
-            ConditionSubjectType.Receipt => typeof(Receipt),
-            ConditionSubjectType.Position => typeof(Position),
-            _ => typeof(object)
-        };
-        return Expression.Parameter(type);
+        return Value is null || type is null ? null : Expression.Constant(Value, type);
     }
 
     private static MemberExpression GetPayment(Expression @object) =>
@@ -344,7 +333,7 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         _ => null
     };
 
-    private Expression? GetOperatorExpression(Expression property, ConstantExpression value) => Operator switch
+    private BinaryExpression? GetOperatorExpression(Expression property, ConstantExpression value) => Operator switch
     {
         ConditionOperator.StartsWith => StringExpressions.StartsWith(property, value, false),
         ConditionOperator.StartsWithIgnoreCase => StringExpressions.StartsWith(property, value, true),
@@ -360,8 +349,8 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         ConditionOperator.GreaterThan => Expression.GreaterThan(property, value),
         ConditionOperator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(property, value),
         
-        ConditionOperator.IsTrue => Expression.IsTrue(property),
-        ConditionOperator.IsFalse => Expression.IsFalse(property),
+        ConditionOperator.IsTrue => Expression.Equal(property, Expression.Constant(true)),
+        ConditionOperator.IsFalse => Expression.Equal(property, Expression.Constant(false)),
         
         _ => null
     };
