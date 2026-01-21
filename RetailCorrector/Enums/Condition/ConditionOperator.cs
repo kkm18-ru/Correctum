@@ -19,5 +19,7 @@ public enum ConditionOperator
     GreaterThanOrEqual = 11,
     
     IsTrue = 12,
-    IsFalse = 13
+    IsFalse = 13,
+    
+    HasFlag = 14,
 }

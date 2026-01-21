@@ -352,6 +352,8 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
         ConditionOperator.IsTrue => Expression.Equal(property, Expression.Constant(true)),
         ConditionOperator.IsFalse => Expression.Equal(property, Expression.Constant(false)),
         
+        ConditionOperator.HasFlag => EnumExpressions.HasFlag(property, value),
+        
         _ => null
     };
 }

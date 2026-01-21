@@ -174,9 +174,9 @@ public static class Constants
         new(ConditionOperator.NotEqual, "!="),
     ];
     public static readonly EnumLocale<ConditionOperator>[] ConditionFlagsOperators = [
-        new(ConditionOperator.Contains, "содержит"),
         new(ConditionOperator.Equal, "=="),
         new(ConditionOperator.NotEqual, "!="),
+        new(ConditionOperator.HasFlag, "содержит"),
     ];
     public static readonly EnumLocale<ConditionOperator>[] ConditionBooleanOperators = [
         new(ConditionOperator.IsTrue, "является True"),
