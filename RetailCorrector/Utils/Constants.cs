@@ -123,7 +123,8 @@ public static class Constants
         new(ConditionSubject.AllPositions, "Во всех позициях")
     ];
     public static readonly EnumLocale<ConditionSubject>[] ConditionPositionSubjects = [
-        new(ConditionSubject.Default, "В позиции")
+        new(ConditionSubject.Default, "В позиции"),
+        new(ConditionSubject.ParentReceipt, "В чеке позиции"),
     ];
 
     public static readonly EnumLocale<ConditionProp>[] ConditionReceiptProperties = [

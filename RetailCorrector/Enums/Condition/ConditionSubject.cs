@@ -9,5 +9,7 @@ public enum ConditionSubject
     /// <summary>Реквизит хотя бы одного из позиций</summary>
     AnyPosition,
     /// <summary>Реквизит всех позиций</summary>
-    AllPositions
+    AllPositions,
+    /// <summary>Реквизит чека позиций</summary>
+    ParentReceipt
 }

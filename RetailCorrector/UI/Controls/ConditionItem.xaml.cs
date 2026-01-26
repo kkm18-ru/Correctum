@@ -157,6 +157,7 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
                 ? Constants.ConditionPositionProperties
                 : Constants.ConditionReceiptProperties,
             ConditionSubject.AllPositions or ConditionSubject.AnyPosition => Constants.ConditionPositionProperties,
+            ConditionSubject.ParentReceipt => Constants.ConditionReceiptProperties,
             _ => []
         };
         foreach (var locale in locales)
@@ -280,6 +281,13 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
                 if (prop is null) return null;
                 var @operator = GetOperatorExpression(prop, value);
                 return @operator is null ? null : EnumerableExpressions.Any<Position>(items, @operator);
+            }
+            case ConditionSubject.ParentReceipt:
+            {
+                var data = Expression.Convert(@object, typeof(Position));
+                var receipt = Expression.Property(data, nameof(Position.Receipt));
+                var prop = GetPropertyExpression(receipt);
+                return prop is null ? null : GetOperatorExpression(prop, value);
             }
             default: return null;
         }
