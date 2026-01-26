@@ -27,11 +27,9 @@ internal partial class FxPOS : ImporterBase<FxPOS, FxPOS.View>
                 for (var j = 0; j < docs.Length; j++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-
-                    yield return new()
+                    var receipt = new Receipt
                     {
                         ParseId = parseInfo.Id,
-                        Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => (Position)i)],
                         Created = docs[j].Date,
                         DocSign = docs[j].Sign,
                         TotalSum = docs[j].Total,
@@ -44,6 +42,12 @@ internal partial class FxPOS : ImporterBase<FxPOS, FxPOS.View>
                             26 => Enums.Operation.RefundOutcome
                         }
                     };
+                    receipt.Items =
+                    [
+                        .. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j])))
+                            .Select(i => i.ToPosition(receipt))
+                    ];
+                    yield return receipt;
                 }
             }
         }

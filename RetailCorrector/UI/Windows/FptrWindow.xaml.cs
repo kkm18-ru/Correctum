@@ -272,19 +272,17 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
             for (uint i = 0; i < count; i++)
             {
                 var info = _handle.GetReceiptInfo(docNumb + i);
-                var receipt = slice[i] with
+                var receipt = slice[i].Clone();
+                receipt.DocSign = uint.Parse(info.Item1); 
+                receipt.Created = info.Item2; 
+                receipt.Type = slice[i].Type switch
                 {
-                    DocSign = uint.Parse(info.Item1),
-                    Created = info.Item2,
-                    Type = slice[i].Type switch
-                    {
-                        Operation.Income => Operation.RefundIncome,
-                        Operation.RefundIncome => Operation.Income,
-                        Operation.Outcome => Operation.RefundOutcome,
-                        Operation.RefundOutcome => Operation.Outcome,
-                        _ => throw new NotImplementedException()
-                    }
-                };
+                    Operation.Income => Operation.RefundIncome,
+                    Operation.RefundIncome => Operation.Income,
+                    Operation.Outcome => Operation.RefundOutcome,
+                    Operation.RefundOutcome => Operation.Outcome,
+                    _ => throw new NotImplementedException()
+                }; 
                 _handle.ProcessSession(true);
                 if (!ConductingReceipt(receipt))
                 {

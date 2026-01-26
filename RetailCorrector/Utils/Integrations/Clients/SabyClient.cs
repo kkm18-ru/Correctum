@@ -243,42 +243,34 @@ file struct ReceiptResponse
     [JsonPropertyName("fiscalDocumentNumber")]
     public uint Number { get; set; }
 
-    public Receipt ToReceipt(Guid parseId) => new()
+    public Receipt ToReceipt(Guid parseId)
     {
-        ParseId = parseId,
-        RegId = RegId,
-        StorageId = StorageId,
-        DocInSession = DocInSession,
-        SessionId = SessionId,
-        Items = Items.Select(ToPosition).ToArray(),
-        Payment = new Payment
+        var receipt = new Receipt
         {
-            Cash = Cash,
-            ECash = Ecash,
-            Pre = Prepaid,
-            Post = Credit,
-            Provision = Provision
-        },
-        Type = Operation,
-        BuyerContact = Buyer,
-        DocSign = Sign,
-        TotalSum = Total,
-        TaxationSystem = Taxation,
-        DocNumber = Number,
-        Created = DateTimeOffset.FromUnixTimeSeconds(DateTimeUnix).DateTime
-    };
-    
-    private static Position ToPosition(ItemResponse item) => new()
-    {
-        Name = item.Name,
-        Cost = item.Sum,
-        Price = item.Price,
-        Quantity = (ulong)item.Quantity * 1000,
-        MeasureUnit = item.Measure,
-        TaxRate = EnumUtils.ToTaxRate(item.Vat ?? 0),
-        Type = item.Type ?? 0,
-        PayMethod = item.Payment ?? 0
-    };
+            ParseId = parseId,
+            RegId = RegId,
+            StorageId = StorageId,
+            DocInSession = DocInSession,
+            SessionId = SessionId,
+            Payment = new Payment
+            {
+                Cash = Cash,
+                ECash = Ecash,
+                Pre = Prepaid,
+                Post = Credit,
+                Provision = Provision
+            },
+            Type = Operation,
+            BuyerContact = Buyer,
+            DocSign = Sign,
+            TotalSum = Total,
+            TaxationSystem = Taxation,
+            DocNumber = Number,
+            Created = DateTimeOffset.FromUnixTimeSeconds(DateTimeUnix).DateTime
+        };
+        receipt.Items = [..Items.Select(i => i.ToPosition(receipt))];
+        return receipt;
+    }
 }
 
 file struct ItemResponse
@@ -306,6 +298,18 @@ file struct ItemResponse
 
     [JsonPropertyName("paymentType")]
     public PayMethod? Payment { get; set; }
-
+    
+    public Position ToPosition(Receipt receipt) => new()
+    {
+        Receipt = receipt,
+        Name = Name,
+        Cost = Sum,
+        Price = Price,
+        Quantity = (ulong)Quantity * 1000,
+        MeasureUnit = Measure,
+        TaxRate = EnumUtils.ToTaxRate(Vat ?? 0),
+        Type = Type ?? 0,
+        PayMethod = Payment ?? 0
+    };
 }
 

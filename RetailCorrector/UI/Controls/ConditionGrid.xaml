@@ -1,0 +1,61 @@
+<Grid x:Class="RetailCorrector.UI.Controls.ConditionGrid"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d" d:DesignHeight="291" d:DesignWidth="300">
+      <Grid.RowDefinitions>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="22"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="22"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Button Click="AddItem" Grid.Column="0" Grid.Row="0" 
+              IsEnabled="{Binding CanUserAddItem, RelativeSource={RelativeSource AncestorType=Grid}}">
+            <Button.Content>
+                  <Path Stroke="Black" StrokeThickness="1" Data="m0 5l5 0l0-5l5 0l0 5l5 0l0 5l-5 0l0 5l-5 0l0-5l-5 0l0-5"
+                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+            </Button.Content>
+            <Button.Style>
+                  <Style TargetType="Button">
+                        <Style.Triggers>
+                              <Trigger Property="IsEnabled" Value="True">
+                                    <Setter Property="Foreground" Value="Green"/>
+                              </Trigger>
+                              <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Foreground" Value="Gray"/>
+                              </Trigger>
+                        </Style.Triggers>
+                  </Style>
+            </Button.Style>
+      </Button>
+      <Button Click="RemoveItem" Grid.Column="2" Grid.Row="0" 
+              IsEnabled="{Binding CanUserRemoveItem, RelativeSource={RelativeSource AncestorType=Grid}}">
+            <Button.Content>
+                  <Path Stroke="Black" StrokeThickness="1" Data="m0 0l15 0l0 5l-15 0l0-5"
+                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+            </Button.Content>
+            <Button.Style>
+                  <Style TargetType="Button">
+                        <Style.Triggers>
+                              <Trigger Property="IsEnabled" Value="True">
+                                    <Setter Property="Foreground" Value="Red"/>
+                              </Trigger>
+                              <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Foreground" Value="Gray"/>
+                              </Trigger>
+                        </Style.Triggers>
+                  </Style>
+            </Button.Style>
+      </Button>
+      <TextBox Grid.Column="4" Grid.Row="0"/>
+      <ListBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" SelectionMode="Single"
+               DataContext="{Binding RelativeSource={RelativeSource AncestorType=Grid}}"
+               SelectedIndex="{Binding SelectedIndex}" ItemsSource="{Binding Items}"/>
+</Grid>

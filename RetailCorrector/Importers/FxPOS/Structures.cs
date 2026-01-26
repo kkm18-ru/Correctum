@@ -26,13 +26,14 @@ internal partial class FxPOS
         public ulong Cost { get; set; }
         public bool HasMark { get; set; }
 
-        public static explicit operator Position(InnerPosition raw) => new()
+        public Position ToPosition(Receipt receipt) => new()
         {
-            Name = raw.Name,
-            Price = raw.Price,
-            Quantity = raw.Quantity,
-            Cost = raw.Cost,
-            MeasureUnit = raw.MeasureUnit switch
+            Name = Name,
+            Receipt = receipt,
+            Price = Price,
+            Quantity = Quantity,
+            Cost = Cost,
+            MeasureUnit = MeasureUnit switch
             {
                 0 => Enums.MeasureUnit.Default,
                 1 => Enums.MeasureUnit.g,
@@ -59,8 +60,8 @@ internal partial class FxPOS
                 22 => Enums.MeasureUnit.TByte,
                 23 => Enums.MeasureUnit.Other,
             },
-            PayMethod = (PayMethod)raw.PayMethod,
-            Type = (raw.Type, raw.HasMark) switch
+            PayMethod = (PayMethod)PayMethod,
+            Type = (Type, HasMark) switch
             {
                 (1, false) => PositionType.Product,
                 (1, true) => PositionType.Mark,
@@ -77,7 +78,7 @@ internal partial class FxPOS
                 (17, _) => PositionType.ResortFee,
                 (18, _) => PositionType.FromBankAgent,
             },
-            TaxRate = raw.TaxRate switch
+            TaxRate = TaxRate switch
             {
                 0 => Enums.TaxRate.Without,
                 5 => Enums.TaxRate.Tax5,

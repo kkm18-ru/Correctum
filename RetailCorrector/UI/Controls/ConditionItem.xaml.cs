@@ -1,0 +1,371 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Windows.Controls;
+using System.Windows.Data;
+using RetailCorrector.Converters;
+using RetailCorrector.Data;
+using RetailCorrector.Enums;
+using Xceed.Wpf.Toolkit;
+using RetailCorrector.Enums.Condition;
+using RetailCorrector.Utils;
+using RetailCorrector.Utils.Expressions;
+
+namespace RetailCorrector.UI.Controls;
+
+public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
+{
+    public int Id
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, IdChangedArgs);
+        }
+    }
+    
+    public required ConditionSubjectType SubjectType
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, SubjectTypeChangedArgs);
+            Subject = ConditionSubject.None;
+            UpdateLocaleSubjects();
+        }
+    }
+
+    public ConditionSubject Subject
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, SubjectChangedArgs);
+            Prop = ConditionProp.None;
+            UpdateLocaleProps();
+        }
+    } = ConditionSubject.None;
+    
+    public ConditionProp Prop
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, PropChangedArgs);
+            Operator = ConditionOperator.None;
+            UpdateLocaleOperators();
+            UpdateValueControl();
+        }
+    } = ConditionProp.None;
+    
+    public ConditionOperator Operator
+    {
+        get;
+        set
+        {
+            if(field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, OperatorChangedArgs);
+        }
+    } = ConditionOperator.None;
+    
+    private ConditionValueType ValueType => Prop switch
+    {
+        ConditionProp.DeviceId or ConditionProp.DriveId or ConditionProp.Buyer or ConditionProp.Name =>
+            ConditionValueType.Text,
+        ConditionProp.Session => ConditionValueType.Integer,
+        ConditionProp.Created => ConditionValueType.DateTime,
+        ConditionProp.Taxation => ConditionValueType.Flag,
+        ConditionProp.ReceiptType or ConditionProp.PaymentMethod or ConditionProp.Unit
+            or ConditionProp.PositionType or ConditionProp.TaxRate => ConditionValueType.Enum,
+        ConditionProp.IsReadOnly => ConditionValueType.Boolean,
+        ConditionProp.CashSum or ConditionProp.EcashSum or ConditionProp.PreSum or ConditionProp.PostSum
+            or ConditionProp.OtherSum or ConditionProp.TotalSum or ConditionProp.Price or ConditionProp.Quantity
+            or ConditionProp.Cost => ConditionValueType.Float,
+        _ => ConditionValueType.None
+    };
+    
+    public object? Value
+    {
+        get;
+        set
+        {
+            if(field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, ValueChangedArgs);
+        }
+    }
+    
+    public System.Windows.FrameworkElement? ValueControl
+    {
+        get;
+        set
+        {
+            if(field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, ValueControlChangedArgs);
+        }
+    }
+
+    public ObservableCollection<EnumLocale<ConditionSubject>> LocaleSubjects { get; } = [];
+    public ObservableCollection<EnumLocale<ConditionProp>> LocaleProps { get; } = [];
+    public ObservableCollection<EnumLocale<ConditionOperator>> LocaleOperators { get; } = [];
+    
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private static readonly PropertyChangedEventArgs IdChangedArgs = new(nameof(Id));
+    private static readonly PropertyChangedEventArgs SubjectTypeChangedArgs = new(nameof(SubjectType));
+    private static readonly PropertyChangedEventArgs SubjectChangedArgs = new(nameof(Subject));
+    private static readonly PropertyChangedEventArgs PropChangedArgs = new(nameof(Prop));
+    private static readonly PropertyChangedEventArgs OperatorChangedArgs = new(nameof(Operator));
+    private static readonly PropertyChangedEventArgs ValueChangedArgs = new(nameof(Value));
+    private static readonly PropertyChangedEventArgs ValueControlChangedArgs = new(nameof(ValueControl));
+    
+    public ConditionItem()
+    {
+        InitializeComponent();
+        UpdateLocaleSubjects();
+    }
+
+    private void UpdateLocaleSubjects()
+    {
+        LocaleSubjects.Clear();
+        var locales = SubjectType switch
+        {
+            ConditionSubjectType.Receipt => Constants.ConditionReceiptSubjects,
+            ConditionSubjectType.Position => Constants.ConditionPositionSubjects,
+            _ => []
+        };
+        foreach (var locale in locales)
+            LocaleSubjects.Add(locale);
+    }
+
+    private void UpdateLocaleProps()
+    {
+        LocaleProps.Clear();
+        var locales = Subject switch
+        {
+            ConditionSubject.Default => SubjectType == ConditionSubjectType.Position
+                ? Constants.ConditionPositionProperties
+                : Constants.ConditionReceiptProperties,
+            ConditionSubject.AllPositions or ConditionSubject.AnyPosition => Constants.ConditionPositionProperties,
+            ConditionSubject.ParentReceipt => Constants.ConditionReceiptProperties,
+            _ => []
+        };
+        foreach (var locale in locales)
+            LocaleProps.Add(locale);
+    }
+
+    private void UpdateLocaleOperators()
+    {
+        LocaleOperators.Clear();
+        var locales = ValueType switch
+        {
+            ConditionValueType.Flag => Constants.ConditionFlagsOperators,
+            ConditionValueType.Enum => Constants.ConditionEnumsOperators,
+            ConditionValueType.Text => Constants.ConditionTextOperators,
+            ConditionValueType.Boolean => Constants.ConditionBooleanOperators,
+            ConditionValueType.Float or ConditionValueType.DateTime or ConditionValueType.Integer 
+                => Constants.ConditionComparableOperators,
+            _ => []
+        };
+        foreach (var locale in locales)
+            LocaleOperators.Add(locale);
+    }
+
+    private void UpdateValueControl()
+    {
+        var binding = new Binding(nameof(Value))
+        {
+            Source = this,
+            UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+        };
+        switch (ValueType)
+        {
+            case ConditionValueType.Text:
+                Value = "";
+                ValueControl = new TextBox();
+                ValueControl.SetBinding(TextBox.TextProperty, binding);
+                break;
+            case ConditionValueType.Integer:
+                Value = 0;
+                ValueControl = new IntegerUpDown();
+                ValueControl.SetBinding(IntegerUpDown.ValueProperty, binding);
+                break;
+            case ConditionValueType.DateTime:
+                Value = DateTime.Today;
+                ValueControl = new DatePicker();
+                ValueControl.SetBinding(DatePicker.SelectedDateProperty, binding);
+                break;
+            case ConditionValueType.Float:
+                Value = 0UL;
+                ValueControl = new DoubleUpDown();
+                binding.Converter = new IntegerAsDoubleConverter();
+                binding.ConverterParameter = Prop switch
+                {
+                    ConditionProp.Quantity => 3,
+                    ConditionProp.TotalSum or ConditionProp.CashSum or ConditionProp.EcashSum 
+                        or ConditionProp.Price or ConditionProp.OtherSum or ConditionProp.Cost 
+                        or ConditionProp.PreSum or ConditionProp.PostSum => 2 
+                };
+                ValueControl.SetBinding(DoubleUpDown.ValueProperty, binding);
+                break;
+            case ConditionValueType.Flag:
+            case ConditionValueType.Enum:
+                Value = 0;
+                ValueControl = new ComboBox
+                {
+                    DisplayMemberPath = nameof(EnumLocale<>.Locale),
+                    SelectedValuePath = nameof(EnumLocale<>.Value),
+                };
+                ((ComboBox)ValueControl).ItemsSource = Prop switch
+                {
+                    ConditionProp.ReceiptType => Constants.ReceiptTypeLocales,
+                    ConditionProp.Taxation => Constants.TaxationSystemLocales,
+                    ConditionProp.TaxRate => Constants.TaxRateLocales,
+                    ConditionProp.PositionType => Constants.PositionTypeLocales,
+                    ConditionProp.Unit => Constants.PositionUnitLocales,
+                    ConditionProp.PaymentMethod => Constants.PaymentMethodLocales,
+                    _ => Array.Empty<object>()
+                };
+                ValueControl.SetBinding(ComboBox.SelectedValueProperty, binding);
+                break;
+            default:
+                Value = null;
+                ValueControl = null;
+                return;
+        }
+        
+        ValueControl?.MinWidth = 100;
+        ValueControl?.MaxWidth = 250;
+    }
+
+    internal BinaryExpression? ToExpression(ParameterExpression @object)
+    {
+        var value = GetValueExpression();
+        if (value is null) return null;
+        switch (Subject)
+        {
+            case ConditionSubject.Default:
+            {
+                var data = Expression.Convert(@object, SubjectType switch
+                {
+                    ConditionSubjectType.Receipt => typeof(Receipt),
+                    ConditionSubjectType.Position => typeof(Position),
+                });
+                var prop = GetPropertyExpression(data);
+                return prop is null ? null : GetOperatorExpression(prop, value);
+            }
+            case ConditionSubject.AllPositions:
+            {
+                var data = Expression.Convert(@object, typeof(Receipt));
+                var items = Expression.Property(@object, typeof(Position[]), nameof(Receipt.Items));
+                var prop = GetPropertyExpression(data);
+                if (prop is null) return null;
+                var @operator = GetOperatorExpression(prop, value);
+                return @operator is null ? null : EnumerableExpressions.All<Position>(items, @operator);
+            }
+            case ConditionSubject.AnyPosition:
+            {
+                var data = Expression.Convert(@object, typeof(Receipt));
+                var items = Expression.Property(@object, typeof(Position[]), nameof(Receipt.Items));
+                var prop = GetPropertyExpression(data);
+                if (prop is null) return null;
+                var @operator = GetOperatorExpression(prop, value);
+                return @operator is null ? null : EnumerableExpressions.Any<Position>(items, @operator);
+            }
+            case ConditionSubject.ParentReceipt:
+            {
+                var data = Expression.Convert(@object, typeof(Position));
+                var receipt = Expression.Property(data, nameof(Position.Receipt));
+                var prop = GetPropertyExpression(receipt);
+                return prop is null ? null : GetOperatorExpression(prop, value);
+            }
+            default: return null;
+        }
+    }
+
+    private ConstantExpression? GetValueExpression()
+    {
+        var type  = this switch
+        {
+            { ValueType: ConditionValueType.Flag, Prop: ConditionProp.Taxation } => typeof(TaxationSystem),
+            { ValueType: ConditionValueType.Enum, Prop: ConditionProp.ReceiptType } => typeof(Operation),
+            { ValueType: ConditionValueType.Enum, Prop: ConditionProp.PaymentMethod } => typeof(PayMethod),
+            { ValueType: ConditionValueType.Enum, Prop: ConditionProp.PositionType } => typeof(PositionType),
+            { ValueType: ConditionValueType.Enum, Prop: ConditionProp.TaxRate } => typeof(TaxRate),
+            { ValueType: ConditionValueType.Enum, Prop: ConditionProp.Unit } => typeof(MeasureUnit),
+            { ValueType: ConditionValueType.Text } => typeof(string),
+            { ValueType: ConditionValueType.Boolean } => null,
+            { ValueType: ConditionValueType.Float } => typeof(ulong),
+            { ValueType: ConditionValueType.DateTime } => typeof(DateTime),
+            { ValueType: ConditionValueType.Integer } => typeof(uint),
+            _ => typeof(object)
+        };
+        return Value is null || type is null ? null : Expression.Constant(Value, type);
+    }
+
+    private static MemberExpression GetPayment(Expression @object) =>
+        Expression.Property(@object, typeof(Payment), nameof(Receipt.Payment));
+    
+    private Expression? GetPropertyExpression(Expression @object) => Prop switch
+    {
+        ConditionProp.DeviceId => Expression.Property(@object, nameof(Receipt.RegId)),
+        ConditionProp.DriveId => Expression.Property(@object, nameof(Receipt.StorageId)),
+        ConditionProp.Session => Expression.Property(@object, nameof(Receipt.SessionId)),
+        ConditionProp.Created => Expression.Property(@object, nameof(Receipt.Created)),
+        ConditionProp.Buyer => Expression.Property(@object, nameof(Receipt.BuyerContact)),
+        ConditionProp.Taxation => Expression.Property(@object, nameof(Receipt.TaxationSystem)),
+        ConditionProp.ReceiptType => Expression.Property(@object, nameof(Receipt.Type)),
+        ConditionProp.TotalSum => Expression.Property(@object, nameof(Receipt.TotalSum)),
+        ConditionProp.CashSum => Expression.Property(GetPayment(@object), nameof(Payment.Cash)),
+        ConditionProp.EcashSum => Expression.Property(GetPayment(@object), nameof(Payment.ECash)),
+        ConditionProp.PreSum => Expression.Property(GetPayment(@object), nameof(Payment.Pre)),
+        ConditionProp.PostSum => Expression.Property(GetPayment(@object), nameof(Payment.Post)),
+        ConditionProp.OtherSum => Expression.Property(GetPayment(@object), nameof(Payment.Provision)),
+        ConditionProp.IsReadOnly => Expression.Property(@object, nameof(Receipt.IsReadOnly)),
+        
+        ConditionProp.Name => Expression.Property(@object, nameof(Position.Name)),
+        ConditionProp.PositionType => Expression.Property(@object, nameof(Position.Type)),
+        ConditionProp.PaymentMethod => Expression.Property(@object, nameof(Position.PayMethod)),
+        ConditionProp.TaxRate => Expression.Property(@object, nameof(Position.TaxRate)),
+        ConditionProp.Price => Expression.Property(@object, nameof(Position.Price)),
+        ConditionProp.Quantity => Expression.Property(@object, nameof(Position.Quantity)),
+        ConditionProp.Unit => Expression.Property(@object, nameof(Position.MeasureUnit)),
+        ConditionProp.Cost => Expression.Property(@object, nameof(Position.Cost)),
+        
+        _ => null
+    };
+
+    private BinaryExpression? GetOperatorExpression(Expression property, ConstantExpression value) => Operator switch
+    {
+        ConditionOperator.StartsWith => StringExpressions.StartsWith(property, value, false),
+        ConditionOperator.StartsWithIgnoreCase => StringExpressions.StartsWith(property, value, true),
+        ConditionOperator.Contains => StringExpressions.Contains(property, value, false),
+        ConditionOperator.ContainsIgnoreCase => StringExpressions.Contains(property, value, true),
+        ConditionOperator.EndsWith => StringExpressions.EndsWith(property, value, false),
+        ConditionOperator.EndsWithIgnoreCase => StringExpressions.EndsWith(property, value, true),
+        
+        ConditionOperator.Equal => Expression.Equal(property, value),
+        ConditionOperator.NotEqual => Expression.NotEqual(property, value),
+        ConditionOperator.LessThan => Expression.LessThan(property, value),
+        ConditionOperator.LessThanOrEqual => Expression.LessThanOrEqual(property, value),
+        ConditionOperator.GreaterThan => Expression.GreaterThan(property, value),
+        ConditionOperator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(property, value),
+        
+        ConditionOperator.IsTrue => Expression.Equal(property, Expression.Constant(true)),
+        ConditionOperator.IsFalse => Expression.Equal(property, Expression.Constant(false)),
+        
+        ConditionOperator.HasFlag => EnumExpressions.HasFlag(property, value),
+        
+        _ => null
+    };
+}

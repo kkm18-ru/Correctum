@@ -97,7 +97,8 @@ internal sealed class PlatformOfd : IParser
     private static void AddPosition(ref Receipt receipt)
     {
         var positions = receipt.Items ?? [];
-        Array.Resize(ref positions, positions.Length+1);
+        Array.Resize(ref positions, positions.Length + 1);
+        positions[^1] = new Position { Receipt = receipt };
         receipt.Items = positions;
     }
     

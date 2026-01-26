@@ -13,6 +13,13 @@ public partial class MainMenu : Menu
         InitializeComponent();
     }
 
+    public RelayCommand ShowActionWindows { get; } = new(arg =>
+    {
+        if (!int.TryParse((string?)arg ?? "", out var mode)) 
+            throw new FormatException();
+        new ActionWindow((ActionWindowMode)mode).ShowDialog();
+    });
+
     private void ShowExportWindow(object s, RoutedEventArgs e) => new ExportWindow().ShowDialog();
     private void ShowFptrWindow(object s, RoutedEventArgs e) => new FptrWindow().ShowDialog();
     private void ShowSettingsWindow(object s, RoutedEventArgs e) => new SettingsWindow().ShowDialog();

@@ -27,19 +27,9 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    yield return new()
+                    var receipt = new Receipt
                     {
                         ParseId = parseInfo.Id,
-                        Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => new Position {
-                            Name = i.name,
-                            Cost = i.total,
-                            MeasureUnit = i.unit,
-                            PayMethod = i.payment,
-                            Price = i.price,
-                            Quantity = i.quantity,
-                            TaxRate = EnumUtils.ToTaxRate(i.tax),
-                            Type = i.type
-                        })],
                         Created = docs[j].date,
                         RegId = docs[j].devid,
                         StorageId = docs[j].drive,
@@ -59,6 +49,23 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                         Type = docs[j].type,
                         BuyerContact = docs[j].buyer
                     };
+                    receipt.Items =
+                    [
+                        .. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i =>
+                            new Position
+                            {
+                                Receipt = receipt,
+                                Name = i.name,
+                                Cost = i.total,
+                                MeasureUnit = i.unit,
+                                PayMethod = i.payment,
+                                Price = i.price,
+                                Quantity = i.quantity,
+                                TaxRate = EnumUtils.ToTaxRate(i.tax),
+                                Type = i.type
+                            })
+                    ];
+                    yield return receipt;
                     progress.Report(i + j);
                 }
             }
