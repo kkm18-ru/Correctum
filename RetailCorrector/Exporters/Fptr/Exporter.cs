@@ -77,7 +77,13 @@ namespace RetailCorrector.Exporters
                 tf.WriteUseCorrData(CorrType);
                 tf.WriteLine("Fptr.openReceipt();");
                 tf.WriteSeparator();
-                tf.WritePosition(new Position("Товар", total, 1000), true, 2);
+                tf.WritePosition(new Position
+                {
+                    Name = "Товар",
+                    Price = total,
+                    Quantity = 1000,
+                    Cost = total
+                }, true, 2);
                 tf.WriteSeparator(2);
                 tf.WriteTotalSum(total);
                 tf.WritePayment(new Payment(cash, ecash, pre, post, other));

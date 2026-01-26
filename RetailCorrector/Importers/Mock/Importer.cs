@@ -20,46 +20,9 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
         var count = faker.Random.Int(MinCountDocs, MaxCountDocs);
         for(var i = 0; i < count; i++)
         {
-            var posCount = faker.Random.UInt(1, 10);
-            var pos = new Position[posCount];
-            ulong sum = 0;
-            for(var j = 0; j < pos.Length; j++)
+            var receipt = new Receipt
             {
-                pos[j] = new()
-                {
-                    Name = faker.Commerce.ProductName(),
-                    Price = faker.Random.ULong(100,9999999),
-                    Quantity = 1000 * faker.Random.UInt(1,10),
-                    MeasureUnit = faker.Random.Enum<MeasureUnit>(),
-                    PayMethod = faker.Random.Enum<PayMethod>(),
-                    TaxRate = faker.Random.Enum<TaxRate>(),
-                    Type = faker.Random.Enum<PositionType>(),
-                };
-                pos[j].Cost = pos[j].Price * (pos[j].Quantity / 1000);
-                sum += pos[j].Cost;
-            }
-            var payment = new Payment();
-            switch(faker.Random.Byte(0, 4))
-            {
-                case 0:
-                    payment.Cash = sum;
-                    break;
-                case 1:
-                    payment.ECash = sum;
-                    break;
-                case 2:
-                    payment.Pre = sum;
-                    break;
-                case 3:
-                    payment.Post = sum;
-                    break;
-                case 4:
-                    payment.Provision = sum;
-                    break;
-            }
-            yield return new()
-            {
-                Items = pos,
+                Items = new Position[faker.Random.UInt(1, 10)],
                 RegId = faker.Random.ULong(0, 9999_9999_9999_9999).ToString("D16"),
                 StorageId = faker.Random.ULong(0, 9999_9999_9999_9999).ToString("D16"),
                 DocNumber = faker.Random.UInt(1,100000),
@@ -68,11 +31,47 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
                 Created = faker.Date.Past(),
                 DocSign = faker.Random.UInt(),
                 Type = faker.Random.Enum<Operation>(),
-                Payment = payment,
-                TotalSum = sum,
                 ParseId = parseInfo.Id,
                 TaxationSystem = faker.Random.Enum<TaxationSystem>()
             };
+            for(var j = 0; j < receipt.Items.Length; j++)
+            {
+                var price = faker.Random.ULong(100, 9999999);
+                var quantity = 1000 * faker.Random.UInt(1, 10);
+                receipt.Items[j] = new Position
+                {
+                    Receipt = receipt,
+                    Name = faker.Commerce.ProductName(),
+                    Price = price,
+                    Quantity = quantity,
+                    Cost = price * quantity / 1000,
+                    MeasureUnit = faker.Random.Enum<MeasureUnit>(),
+                    PayMethod = faker.Random.Enum<PayMethod>(),
+                    TaxRate = faker.Random.Enum<TaxRate>(),
+                    Type = faker.Random.Enum<PositionType>(),
+                };
+                receipt.TotalSum += price * quantity / 1000;
+            }
+            var payment = new Payment();
+            switch(faker.Random.Byte(0, 4))
+            {
+                case 0:
+                    payment.Cash = receipt.TotalSum;
+                    break;
+                case 1:
+                    payment.ECash = receipt.TotalSum;
+                    break;
+                case 2:
+                    payment.Pre = receipt.TotalSum;
+                    break;
+                case 3:
+                    payment.Post = receipt.TotalSum;
+                    break;
+                case 4:
+                    payment.Provision = receipt.TotalSum;
+                    break;
+            }
+            yield return receipt;
         }
     }
 }

@@ -112,36 +112,40 @@ file struct Document
     public ulong CreditSumm { get; set; }
     public ulong ProvisionSumm { get; set; }
 
-    public Receipt ToReceipt(Guid ParseId) => new()
+    public Receipt ToReceipt(Guid ParseId)
     {
-        ParseId = ParseId,
-        RegId = KktRegNumber,
-        StorageId = FnNumber,
-        DocNumber = DocNumber,
-        SessionId = DocShiftNumber,
-        DocInSession = uint.Parse(ReceiptNumber),
-        Created = DocDateTime,
-        DocSign = uint.Parse(DecimalFiscalSign),
-        Type = OperationType.ToLowerInvariant() switch
+        var receipt = new Receipt
         {
-            "income" => Operation.Income,
-            "outcome" => Operation.Outcome,
-            "refund income" => Operation.RefundIncome,
-            "refund outcome" => Operation.RefundOutcome,
-            _ => throw new NotSupportedException($"Тип операции '{OperationType}' не поддерживается.")
-        },
-        Items = [.. Items.Select(i => i.ToPosition())],
-        Payment = new Payment
-        {
-            Cash = CashSumm,
-            ECash = ECashSumm,
-            Pre = PrepaidSumm,
-            Post = CreditSumm,
-            Provision = ProvisionSumm
-        },
-        TotalSum = TotalSumm,
-        TaxationSystem = TaxationType
-    };
+            ParseId = ParseId,
+            RegId = KktRegNumber,
+            StorageId = FnNumber,
+            DocNumber = DocNumber,
+            SessionId = DocShiftNumber,
+            DocInSession = uint.Parse(ReceiptNumber),
+            Created = DocDateTime,
+            DocSign = uint.Parse(DecimalFiscalSign),
+            Type = OperationType.ToLowerInvariant() switch
+            {
+                "income" => Operation.Income,
+                "outcome" => Operation.Outcome,
+                "refund income" => Operation.RefundIncome,
+                "refund outcome" => Operation.RefundOutcome,
+                _ => throw new NotSupportedException($"Тип операции '{OperationType}' не поддерживается.")
+            },
+            Payment = new Payment
+            {
+                Cash = CashSumm,
+                ECash = ECashSumm,
+                Pre = PrepaidSumm,
+                Post = CreditSumm,
+                Provision = ProvisionSumm
+            },
+            TotalSum = TotalSumm,
+            TaxationSystem = TaxationType
+        };
+        receipt.Items = [.. Items.Select(i => i.ToPosition(receipt))];
+        return receipt;
+    }
 }
 file struct DocumentItem
 {
@@ -154,7 +158,7 @@ file struct DocumentItem
     public byte NDS_Rate { get; set; }
     public PositionType SubjectType { get; set; }
 
-    public Position ToPosition()
+    public Position ToPosition(Receipt receipt)
     {
         MeasureUnit? mu = null;
         if (ProductUnitOfMeasure is not null)
@@ -162,6 +166,7 @@ file struct DocumentItem
 
         return new Position
         {
+            Receipt = receipt,
             Name = Name,
             Price = Price,
             Quantity = (ulong)(Quantity * 1000),

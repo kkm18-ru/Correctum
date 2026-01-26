@@ -21,7 +21,7 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
             var columns = lines[i].Split(Separator);
             var sum = (ulong)(double.Parse(columns[TotalReceipt]) * 100);
             var operation = columns[OperationReceipt].Trim('"');
-            yield return new Receipt
+            var receipt = new Receipt
             {
                 ParseId = parseInfo.Id,
                 DocInSession = 0,
@@ -33,24 +33,28 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
                 Created = DateTime.ParseExact(columns[DateReceipt].Trim('"'), DateFormat, null),
                 TotalSum = sum,
                 BuyerContact = columns[3],
-                Type = operation == IncomePattern ? Operation.Income : operation == RefundPattern ? Operation.RefundIncome : 0,
-                Items = [
-                    new Position
-                    {
-                        Name = ItemName,
-                        Price = sum,
-                        Quantity = 1000,
-                        Cost = sum,
-                        TaxRate = ItemVat,
-                        MeasureUnit = MeasureUnit.Default,
-                        PayMethod = PayMethod.FullPayment,
-                        Type = PositionType.Product
-                    }
-                ],
+                Type = operation == IncomePattern ? Operation.Income :
+                    operation == RefundPattern ? Operation.RefundIncome : 0,
                 Payment = new Payment { ECash = sum },
                 TaxationSystem = 0,
                 DocSign = 0
             };
+            receipt.Items =
+            [
+                new Position
+                {
+                    Name = ItemName,
+                    Price = sum,
+                    Quantity = 1000,
+                    Cost = sum,
+                    TaxRate = ItemVat,
+                    MeasureUnit = MeasureUnit.Default,
+                    PayMethod = PayMethod.FullPayment,
+                    Type = PositionType.Product,
+                    Receipt = receipt 
+                }
+            ];
+            yield return receipt;
         }
         yield break;
     }

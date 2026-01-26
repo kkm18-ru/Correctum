@@ -3,15 +3,16 @@ using RetailCorrector.Utils;
 
 namespace RetailCorrector.Data
 {
-    internal struct Position(string name, ulong price, ulong quantity) : IUnionReceiptPosition
+    internal struct Position : IUnionReceiptPosition
     {
-        public string Name { get; set; } = name;
+        public string Name { get; set; }
         public PayMethod PayMethod { get; set; }
         public PositionType Type { get; set; }
         public TaxRate TaxRate { get; set; }
-        public ulong Price { get; set; } = price;
-        public ulong Quantity { get; set; } = quantity;
+        public ulong Price { get; set; }
+        public ulong Quantity { get; set; }
         public MeasureUnit? MeasureUnit { get; set; }
-        public ulong Cost { get; set; } = price * quantity / 1000;
+        public ulong Cost { get; set; }
+        public Receipt Receipt { get; init; }
     }
 }

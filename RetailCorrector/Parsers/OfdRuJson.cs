@@ -37,7 +37,7 @@ internal sealed class OfdRuJson : IParser
             };
             receipt.Items = new Position[json.Document.Items.Length];
             for (var i = 0; i < receipt.Items.Length; i++)
-                receipt.Items[i] = json.Document.Items[i];
+                receipt.Items[i] = json.Document.Items[i].ToPosition(receipt);
             return true;
         }
         catch
@@ -84,15 +84,16 @@ file readonly struct OfdRuJsonPosition
     public int NDS_Rate { get; init; }
     public int SubjectType { get; init; }
 
-    public static implicit operator Position(OfdRuJsonPosition json) => new()
+    public Position ToPosition(Receipt receipt) => new()
     {
-        Name = json.Name,
-        Price = json.Price,
-        Quantity = (ulong)(json.Quantity * 1000),
-        Cost = json.Total,
-        MeasureUnit = (MeasureUnit)json.ProductUnitOfMeasure,
-        PayMethod = (PayMethod)json.CalculationMethod,
-        TaxRate = (TaxRate)json.NDS_Rate,
-        Type = (PositionType)json.SubjectType,
+        Receipt = receipt,
+        Name = Name,
+        Price = Price,
+        Quantity = (ulong)(Quantity * 1000),
+        Cost = Total,
+        MeasureUnit = (MeasureUnit)ProductUnitOfMeasure,
+        PayMethod = (PayMethod)CalculationMethod,
+        TaxRate = (TaxRate)NDS_Rate,
+        Type = (PositionType)SubjectType,
     };
 }
