@@ -151,9 +151,14 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
     private void UpdateLocaleProps()
     {
         LocaleProps.Clear();
-        var locales = SubjectType == ConditionSubjectType.Position || Subject > 0
-            ? Constants.ConditionPositionProperties
-            : Constants.ConditionReceiptProperties;
+        var locales = Subject switch
+        {
+            ConditionSubject.Default => SubjectType == ConditionSubjectType.Position
+                ? Constants.ConditionPositionProperties
+                : Constants.ConditionReceiptProperties,
+            ConditionSubject.AllPositions or ConditionSubject.AnyPosition => Constants.ConditionPositionProperties,
+            _ => []
+        };
         foreach (var locale in locales)
             LocaleProps.Add(locale);
     }
@@ -262,25 +267,19 @@ public partial class ConditionItem : ListBoxItem, INotifyPropertyChanged
             {
                 var data = Expression.Convert(@object, typeof(Receipt));
                 var items = Expression.Property(@object, typeof(Position[]), nameof(Receipt.Items));
-                var param = Expression.Parameter(typeof(Position), "item");
                 var prop = GetPropertyExpression(data);
                 if (prop is null) return null;
                 var @operator = GetOperatorExpression(prop, value);
-                if (@operator is null) return null;
-                var lambda = Expression.Lambda(@operator, param);
-                return EnumerableExpressions.All<Position>(items, lambda);
+                return @operator is null ? null : EnumerableExpressions.All<Position>(items, @operator);
             }
             case ConditionSubject.AnyPosition:
             {
                 var data = Expression.Convert(@object, typeof(Receipt));
                 var items = Expression.Property(@object, typeof(Position[]), nameof(Receipt.Items));
-                var param = Expression.Parameter(typeof(Position), "item");
                 var prop = GetPropertyExpression(data);
                 if (prop is null) return null;
                 var @operator = GetOperatorExpression(prop, value);
-                if (@operator is null) return null;
-                var lambda = Expression.Lambda(@operator, param);
-                return EnumerableExpressions.Any<Position>(items, lambda);
+                return @operator is null ? null : EnumerableExpressions.Any<Position>(items, @operator);
             }
             default: return null;
         }
