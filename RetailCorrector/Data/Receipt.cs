@@ -4,7 +4,7 @@ using RetailCorrector.Utils;
 
 namespace RetailCorrector.Data
 {
-    internal struct Receipt(bool @readonly = false) : IUnionReceiptPosition
+    internal class Receipt(bool @readonly = false) : IUnionReceiptPosition
     {
         public required Guid ParseId { get; init; }
         public uint DocNumber { get; set; }
@@ -48,5 +48,29 @@ namespace RetailCorrector.Data
 
         public bool IsReadOnly { get; } = @readonly;
         #endregion
+
+        public Receipt Clone()
+        {
+            var receipt = new Receipt
+            {
+                ParseId = ParseId,
+                BuyerContact = $"{BuyerContact}",
+                DocNumber = DocNumber,
+                DocInSession = DocInSession,
+                DocSign = DocSign,
+                TotalSum = TotalSum,
+                Created = Created,
+                EditsCount = EditsCount,
+                Payment = Payment,
+                RegId = $"{RegId}",
+                Type = Type,
+                SessionId = SessionId,
+                TaxationSystem = TaxationSystem,
+                Items = new Position[Items.Length],
+                StorageId = $"{StorageId}"
+            };
+            Array.Copy(Items, receipt.Items, Items.Length);
+            return receipt;
+        }
     }
 }
