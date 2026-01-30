@@ -1,0 +1,31 @@
+site_name: RetailCorrector
+site_url: https://ornaras.gitlab.io/retailcorrector
+site_author: ornaras
+
+repo_name: ornaras/retailcorrector
+repo_url: https://gitlab.com/ornaras/retailcorrector
+edit_uri: edit/dev/docs/
+
+theme:
+  name: material
+  features:
+    - content.action.edit
+    - content.action.view
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - search.suggest
+
+plugins:
+  - glightbox:
+      touchNavigation: true
+      effect: zoom
+      slide_effect: slide
+      width: 100%
+      height: auto
+
+nav:
+  - Импортеры:
+    - OFD.ru: importers/ofdru.md
+  - Документация разработчика ⇗: https://gitlab.com/ornaras/retailcorrector/-/wikis/home
