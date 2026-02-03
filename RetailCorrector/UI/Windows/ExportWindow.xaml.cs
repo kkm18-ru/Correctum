@@ -5,36 +5,21 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using RetailCorrector.Exporters;
 using RetailCorrector.UI.Windows.Types;
-using RetailCorrector.Utils;
 
 namespace RetailCorrector.UI.Windows;
 
 public partial class ExportWindow : DialogWindow, INotifyPropertyChanged
 {
     public string Path { get; set => SetField(ref field, value); } = "";
-    public IExporter Exporter
-    {
-        get;
-        set
-        {
-            if (!SetField(ref field, value)) return;
-            var grid = (Grid)Content;
-            if (grid.RowDefinitions.Count > 5)
-            {
-                grid.RowDefinitions.RemoveRange(5, grid.RowDefinitions.Count - 5);
-                grid.Children.RemoveRange(6, grid.Children.Count - 6);
-            }
-            Path = "";
-            Exporter.InitVisual(grid);
-        }
-    }
+    private readonly IExporter _exporter;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ExportWindow()
+    public ExportWindow(IExporter exporter)
     {
+        _exporter = exporter;
         InitializeComponent();
-        Exporter = ModuleRegistry.Exporters[0];
+        _exporter.InitVisual((Grid)Content);
     }
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
@@ -47,7 +32,7 @@ public partial class ExportWindow : DialogWindow, INotifyPropertyChanged
 
     private void BrowsePath(object sender, RoutedEventArgs e)
     {
-        if (Exporter.FileFilter is null)
+        if (_exporter.FileFilter is null)
         {
             var dialog = new OpenFolderDialog();
             if(dialog.ShowDialog() ?? false)
@@ -57,7 +42,7 @@ public partial class ExportWindow : DialogWindow, INotifyPropertyChanged
         {
             var dialog = new SaveFileDialog() 
             { 
-                Filter = Exporter.FileFilter,
+                Filter = _exporter.FileFilter,
                 AddExtension = true,
                 OverwritePrompt = true,
             };
@@ -70,7 +55,7 @@ public partial class ExportWindow : DialogWindow, INotifyPropertyChanged
     {
         try
         {
-            await Exporter.Export(Path);
+            await _exporter.Export(Path);
             MessageBox.Show("Чеки сохранены");
         }
         catch (Exception ex)
