@@ -15,9 +15,9 @@ internal static class ModuleRegistry
         RetailCorrector.Exporters.Sqlite.Instance,
     ];
 
-    public static readonly ImmutableArray<Actions.IAction> Actions = [
-        RetailCorrector.Actions.CancelReceipt.Instance,
-        RetailCorrector.Actions.RemoveReceipt.Instance,
+    public static readonly ImmutableArray<ActionMenuItem> Actions = [
+        new(RetailCorrector.Actions.CancelReceipt.Instance),
+        new(RetailCorrector.Actions.RemoveReceipt.Instance),
     ];
 
     public static readonly ImmutableArray<ImportMenuItem> Importers = [

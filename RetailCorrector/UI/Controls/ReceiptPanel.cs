@@ -157,13 +157,6 @@ namespace RetailCorrector.UI.Controls
             };
             cb.SetBinding(ComboBox.SelectedValueProperty, nameof(MaxCountReceipts));
             toolPanel.Children.Add(cb);
-
-            var btnActions = new ActionMenuButton
-            {
-                Height = 22,
-                Margin = new(0, 5, 5, 5),
-            };
-            toolPanel.Children.Add(btnActions);
         }
 
         private void Grid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
