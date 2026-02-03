@@ -1,34 +1,35 @@
 using System.Collections.Immutable;
+using RetailCorrector.UI.Controls;
 
 namespace RetailCorrector.Utils;
 
 internal static class ModuleRegistry
 {
-    public readonly static ImmutableArray<Parsers.IParser> Parsers = [
+    public static readonly ImmutableArray<Parsers.IParser> Parsers = [
         RetailCorrector.Parsers.PlatformOfd.Instance,
         RetailCorrector.Parsers.OfdRuJson.Instance,
     ];
 
-    public readonly static ImmutableArray<Exporters.IExporter> Exporters = [
+    public static readonly ImmutableArray<Exporters.IExporter> Exporters = [
         RetailCorrector.Exporters.Fptr.Instance,
         RetailCorrector.Exporters.Sqlite.Instance,
     ];
 
-    public readonly static ImmutableArray<Actions.IAction> Actions = [
-        RetailCorrector.Actions.CancelReceipt.Instance,
-        RetailCorrector.Actions.RemoveReceipt.Instance,
+    public static readonly ImmutableArray<ActionMenuItem> Actions = [
+        new(RetailCorrector.Actions.CancelReceipt.Instance),
+        new(RetailCorrector.Actions.RemoveReceipt.Instance),
     ];
 
-    public readonly static ImmutableArray<Importers.IImporter> Importers = [
-        RetailCorrector.Importers.Saby.Instance,
-        RetailCorrector.Importers.Sqlite.Instance,
-        RetailCorrector.Importers.OfdRu.Instance,
-        RetailCorrector.Importers.PlatformOfd.Instance,
-        RetailCorrector.Importers.FxPOS.Instance,
-        RetailCorrector.Importers.Acquirer.Instance,
+    public static readonly ImmutableArray<ImportMenuItem> Importers = [
+        new(RetailCorrector.Importers.Saby.Instance),
+        new(RetailCorrector.Importers.Sqlite.Instance),
+        new(RetailCorrector.Importers.OfdRu.Instance),
+        new(RetailCorrector.Importers.PlatformOfd.Instance),
+        new(RetailCorrector.Importers.FxPOS.Instance),
+        new(RetailCorrector.Importers.Acquirer.Instance),
         
         #if DEBUG
-        RetailCorrector.Importers.Mock.Instance,
+        new(RetailCorrector.Importers.Mock.Instance),
         #endif
     ];
 }
