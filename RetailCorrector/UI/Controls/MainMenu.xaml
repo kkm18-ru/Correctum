@@ -3,8 +3,10 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:u="clr-namespace:RetailCorrector.Utils"
       mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="1000">
     <MenuItem Header="Файл">
+        <MenuItem Header="Импорт" ItemsSource="{x:Static u:ModuleRegistry.Importers}"/>
         <MenuItem Header="Экспорт" Click="ShowExportWindow"/>
         <Separator/>
         <MenuItem Header="Провести чеки" Click="ShowFptrWindow"/>
@@ -12,6 +14,7 @@
         <MenuItem Header="Настройки" Click="ShowSettingsWindow"/>
         <MenuItem Header="Выход" Click="Quit"/>
     </MenuItem>
+    <MenuItem Header="Действия" ItemsSource="{x:Static u:ModuleRegistry.Actions}"/>
     <MenuItem Header="Помощь">
         <MenuItem Header="Обратная связь" Click="ShowFeedbackWindow"/>
         <Separator/>
