@@ -16,8 +16,6 @@
     </MenuItem>
     <MenuItem Header="Действия" ItemsSource="{x:Static u:ModuleRegistry.Actions}"/>
     <MenuItem Header="Помощь">
-        <MenuItem Header="Обратная связь" Click="ShowFeedbackWindow"/>
-        <Separator/>
         <MenuItem Header="Документация" Click="OpenDocs"/>
         <MenuItem Header="Дорожная карта" Click="OpenRoadmap"/>
         <MenuItem Header="Список изменений" Click="OpenChangelog"/>

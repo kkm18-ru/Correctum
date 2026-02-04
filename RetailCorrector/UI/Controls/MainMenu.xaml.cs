@@ -17,7 +17,6 @@ public partial class MainMenu : Menu
     private void ShowSettingsWindow(object s, RoutedEventArgs e) => new SettingsWindow().ShowDialog();
     private void Quit(object s, RoutedEventArgs e) => Application.Current.Shutdown();
 
-    private void ShowFeedbackWindow(object s, RoutedEventArgs e) => new FeedbackWindow().ShowDialog();
     private void OpenDocs(object s, RoutedEventArgs e) => Process.Start("explorer", Constants.DocsUrl);
     private void OpenRoadmap(object s, RoutedEventArgs e) => Process.Start("explorer", Constants.RoadmapUrl);
     private void OpenChangelog(object s, RoutedEventArgs e) => Process.Start("explorer", Constants.ChangelogUrl);
