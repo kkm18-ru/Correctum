@@ -13,7 +13,6 @@ public partial class MainMenu : Menu
         InitializeComponent();
     }
 
-    private void ShowExportWindow(object s, RoutedEventArgs e) => new ExportWindow().ShowDialog();
     private void ShowFptrWindow(object s, RoutedEventArgs e) => new FptrWindow().ShowDialog();
     private void ShowSettingsWindow(object s, RoutedEventArgs e) => new SettingsWindow().ShowDialog();
     private void Quit(object s, RoutedEventArgs e) => Application.Current.Shutdown();
