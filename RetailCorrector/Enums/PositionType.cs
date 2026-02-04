@@ -72,7 +72,7 @@
         /// <summary>
         /// Торговый сбор
         /// </summary>
-        TraceFee = 17,
+        TradeFee = 17,
         /// <summary>
         /// Курортный сбор
         /// </summary>

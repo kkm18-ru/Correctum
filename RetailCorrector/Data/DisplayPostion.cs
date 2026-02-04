@@ -26,7 +26,7 @@ namespace RetailCorrector.Data
             PositionType.PropertyLaw            => "ИМУЩЕСТВЕННОЕ ПРАВО",
             PositionType.NonOperatingIncome     => "ВНЕРЕАЛИЗАЦИОННЫЙ ДОХОД",
             PositionType.OtherPayment           => "ИНЫЕ ПЛАТЕЖИ И ВЗНОСЫ",
-            PositionType.TraceFee               => "ТОРГОВЫЙ СБОР",
+            PositionType.TradeFee               => "ТОРГОВЫЙ СБОР",
             PositionType.ResortFee              => "КУРОРТНЫЙ СБОР",
             PositionType.Deposit                => "ЗАЛОГ",
             PositionType.Outcome                => "РАСХОД",
