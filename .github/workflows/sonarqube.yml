@@ -1,0 +1,57 @@
+name: SonarQube
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [dev]
+    paths: ['RetailCorrector/**','RetailCorrector.Tests/**']
+jobs:
+  build:
+    name: Сборка и анализ
+    if: ${{ github.event.pull_request.draft == false }}
+    runs-on: windows-latest
+    steps:
+      - name: Установка JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Кеширование SonarQube-пакетов
+        uses: actions/cache@v4
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Кеширование SonarQube-сканера
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+      - name: Установка сканера SonarQube
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: powershell
+        run: |
+          New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
+      - name: Установка dotnet-coverage
+        shell: powershell
+        run: dotnet tool install --global dotnet-coverage
+      - name: Сборка и анализ
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_ID: ${{ vars.SONAR_PROJECT_ID }}
+          SONAR_HOST: ${{ vars.SONAR_HOST }}
+          SONAR_ORGANISATION: ${{ vars.SONAR_ORGANISATION }}
+        shell: cmd
+        run: |
+          "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin /k:"%SONAR_PROJECT_ID%" /o:"%SONAR_ORGANISATION%" ^
+            /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.host.url="%SONAR_HOST%" /d:sonar.token="%SONAR_TOKEN%"
+          dotnet build --no-incremental
+          dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
+          "${{ runner.temp }}\scanner\dotnet-sonarscanner" end /d:sonar.token="%SONAR_TOKEN%"
