@@ -32,7 +32,7 @@ namespace RetailCorrector.Data
             Enums.TaxationSystem.USNIncome => "УСН доход",
             Enums.TaxationSystem.USNIncomeExpenditure => "УСН доход-расход",
             Enums.TaxationSystem.ENVD => "ЕНВД",
-            Enums.TaxationSystem.ESN => "ЕСН",
+            Enums.TaxationSystem.ESHN => "ЕСХН",
             Enums.TaxationSystem.Patent => "Патент",
             _ => "???"
         };
