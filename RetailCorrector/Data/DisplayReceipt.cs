@@ -1,4 +1,5 @@
 ﻿using System.Windows.Media;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Data
 {
@@ -12,30 +13,14 @@ namespace RetailCorrector.Data
         public string DocInSession { get; } = origin.DocInSession.ToString();
         public string Date { get; } = $"{origin.Created:yyyy'-'MM'-'dd' 'HH':'mm}";
         public string Sign { get; } = $"{origin.DocSign}";
-        public string Type { get; } = origin.Type switch
-        {
-            Enums.Operation.Income => "Приход",
-            Enums.Operation.Outcome => "Расход",
-            Enums.Operation.RefundIncome => "Возврат прихода",
-            Enums.Operation.RefundOutcome => "Возврат расхода",
-            _ => "???"
-        }; 
+        public string Type { get; } = EnumLocales.ReceiptTypes.GetLocale(origin.Type); 
         public string Cash { get; } = $"{(origin.Payment.Cash * 0.01):F2}";
         public string eCash { get; } = $"{(origin.Payment.ECash * 0.01):F2}";
         public string PrePay { get; } = $"{(origin.Payment.Pre * 0.01):F2}";
         public string PostPay { get; } = $"{(origin.Payment.Post * 0.01):F2}";
         public string OtherPay { get; } = $"{(origin.Payment.Provision * 0.01):F2}";
         public string Total { get; } = $"{(origin.TotalSum * 0.01):F2}";
-        public string TaxationSystem { get; } = origin.TaxationSystem switch
-        {
-            Enums.TaxationSystem.OSN => "ОСН",
-            Enums.TaxationSystem.USNIncome => "УСН доход",
-            Enums.TaxationSystem.USNIncomeExpenditure => "УСН доход-расход",
-            Enums.TaxationSystem.ENVD => "ЕНВД",
-            Enums.TaxationSystem.ESHN => "ЕСХН",
-            Enums.TaxationSystem.Patent => "Патент",
-            _ => "???"
-        };
+        public string TaxationSystem { get; } = EnumLocales.TaxationSystems.GetLocale(origin.TaxationSystem);
 
         public Brush Background { get; } = origin.IsReadOnly switch
         {
