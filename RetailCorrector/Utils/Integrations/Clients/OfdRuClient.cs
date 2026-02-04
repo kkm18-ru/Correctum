@@ -156,9 +156,9 @@ file struct DocumentItem
 
     public Position ToPosition()
     {
-        MeasureUnit? mu = null;
+        PositionUnit? mu = null;
         if (ProductUnitOfMeasure is not null)
-            mu = (MeasureUnit)int.Parse(ProductUnitOfMeasure);
+            mu = (PositionUnit)int.Parse(ProductUnitOfMeasure);
 
         return new Position
         {
@@ -167,7 +167,7 @@ file struct DocumentItem
             Quantity = (ulong)(Quantity * 1000),
             Cost = Total,
             PayMethod = CalculationMethod,
-            MeasureUnit = mu,
+            Unit = mu,
             TaxRate = EnumUtils.ToTaxRate(NDS_Rate),
             Type = SubjectType
         };

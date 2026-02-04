@@ -10,7 +10,7 @@ namespace RetailCorrector.Data
         public TaxRate TaxRate { get; set; }
         public ulong Price { get; set; } = price;
         public ulong Quantity { get; set; } = quantity;
-        public MeasureUnit? MeasureUnit { get; set; }
+        public PositionUnit? Unit { get; set; }
         public ulong Cost { get; set; } = price * quantity / 1000;
     }
 }

@@ -51,7 +51,7 @@ namespace RetailCorrector.Exporters
                             payment = (int)pos.PayMethod,
                             type = (int)pos.Type,
                             tax = pos.TaxRate.ToFns(),
-                            unit = (int?)pos.MeasureUnit,
+                            unit = (int?)pos.Unit,
                             price = pos.Price,
                             quantity = pos.Quantity,
                             total = pos.Cost,

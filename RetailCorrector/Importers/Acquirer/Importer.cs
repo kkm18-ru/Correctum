@@ -42,7 +42,7 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
                         Quantity = 1000,
                         Cost = sum,
                         TaxRate = ItemVat,
-                        MeasureUnit = MeasureUnit.Default,
+                        Unit = PositionUnit.Piece,
                         PayMethod = PayMethod.FullPayment,
                         Type = PositionType.Product
                     }

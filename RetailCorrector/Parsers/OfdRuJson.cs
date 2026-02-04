@@ -90,7 +90,7 @@ file readonly struct OfdRuJsonPosition
         Price = json.Price,
         Quantity = (ulong)(json.Quantity * 1000),
         Cost = json.Total,
-        MeasureUnit = (MeasureUnit)json.ProductUnitOfMeasure,
+        Unit = (PositionUnit)json.ProductUnitOfMeasure,
         PayMethod = (PayMethod)json.CalculationMethod,
         TaxRate = (TaxRate)json.NDS_Rate,
         Type = (PositionType)json.SubjectType,

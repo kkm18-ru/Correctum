@@ -73,33 +73,34 @@ namespace RetailCorrector.Data
             _                       => "???",
         };
         public string Price { get; } = $"{(origin.Price * 0.01):F2}";
-        public string Quantity { get; } = $"{(origin.Quantity * 0.001):F3}{origin.MeasureUnit switch
+
+        public string Quantity { get; } = $"{(origin.Quantity * 0.001):F3}{origin.Unit switch
         {
-            null                => "",
-            MeasureUnit.Default => " шт.",
-            MeasureUnit.g       => " г",
-            MeasureUnit.kg      => " кг",
-            MeasureUnit.t       => " т",
-            MeasureUnit.cm      => " см",
-            MeasureUnit.dm      => " дм",
-            MeasureUnit.m       => " м",
-            MeasureUnit.cm2     => " кв. см",
-            MeasureUnit.dm2     => " кв. дм",
-            MeasureUnit.m2      => " кв. м",
-            MeasureUnit.mL      => " мл",
-            MeasureUnit.L       => " л",
-            MeasureUnit.m3      => " куб. м",
-            MeasureUnit.kW_h    => " кВт * ч",
-            MeasureUnit.GCal    => " Гкал",
-            MeasureUnit.Day     => " д",
-            MeasureUnit.h       => " ч",
-            MeasureUnit.min     => " мин",
-            MeasureUnit.sec     => " с",
-            MeasureUnit.kByte   => " Кбайт",
-            MeasureUnit.MByte   => " Мбайт",
-            MeasureUnit.GByte   => " Гбайт",
-            MeasureUnit.TByte   => " Тбайт",
-            _                   => " ???"
+            null => "",
+            PositionUnit.Piece => " шт.",
+            PositionUnit.Gram => " г",
+            PositionUnit.Kilogram => " кг",
+            PositionUnit.Ton => " т",
+            PositionUnit.Centimeter => " см",
+            PositionUnit.Decimeter => " дм",
+            PositionUnit.Meter => " м",
+            PositionUnit.SquareCentimeter => " кв. см",
+            PositionUnit.SquareDecimeter => " кв. дм",
+            PositionUnit.SquareMeter => " кв. м",
+            PositionUnit.Milliliter => " мл",
+            PositionUnit.Liter => " л",
+            PositionUnit.CubicMeter => " куб. м",
+            PositionUnit.KilowattHour => " кВт * ч",
+            PositionUnit.Gigacalories => " Гкал",
+            PositionUnit.Days => " д",
+            PositionUnit.Hours => " ч",
+            PositionUnit.Minutes => " мин",
+            PositionUnit.Seconds => " с",
+            PositionUnit.Kilobyte => " Кбайт",
+            PositionUnit.Megabyte => " Мбайт",
+            PositionUnit.Gigabyte => " Гбайт",
+            PositionUnit.Terabyte => " Тбайт",
+            _ => " ???"
         }}";
         public string Cost { get; } = $"{(origin.Cost * 0.01):F2}";
     }

@@ -33,7 +33,7 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                         Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => new Position {
                             Name = i.name,
                             Cost = i.total,
-                            MeasureUnit = i.unit,
+                            Unit = i.unit,
                             PayMethod = i.payment,
                             Price = i.price,
                             Quantity = i.quantity,

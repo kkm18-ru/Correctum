@@ -22,7 +22,7 @@ internal partial class FxPOS
         public int TaxRate { get; set; }
         public ulong Price { get; set; }
         public ulong Quantity { get; set; }
-        public int MeasureUnit { get; set; }
+        public int Unit { get; set; }
         public ulong Cost { get; set; }
         public bool HasMark { get; set; }
 
@@ -32,32 +32,32 @@ internal partial class FxPOS
             Price = raw.Price,
             Quantity = raw.Quantity,
             Cost = raw.Cost,
-            MeasureUnit = raw.MeasureUnit switch
+            Unit = raw.Unit switch
             {
-                0 => Enums.MeasureUnit.Default,
-                1 => Enums.MeasureUnit.g,
-                2 => Enums.MeasureUnit.kg,
-                3 => Enums.MeasureUnit.t,
-                4 => Enums.MeasureUnit.cm,
-                5 => Enums.MeasureUnit.dm,
-                6 => Enums.MeasureUnit.m,
-                7 => Enums.MeasureUnit.cm2,
-                8 => Enums.MeasureUnit.dm2,
-                9 => Enums.MeasureUnit.m2,
-                10 => Enums.MeasureUnit.mL,
-                11 => Enums.MeasureUnit.L,
-                12 => Enums.MeasureUnit.m3,
-                13 => Enums.MeasureUnit.kW_h,
-                14 => Enums.MeasureUnit.GCal,
-                15 => Enums.MeasureUnit.Day,
-                16 => Enums.MeasureUnit.h,
-                17 => Enums.MeasureUnit.min,
-                18 => Enums.MeasureUnit.sec,
-                19 => Enums.MeasureUnit.kByte,
-                20 => Enums.MeasureUnit.MByte,
-                21 => Enums.MeasureUnit.GByte,
-                22 => Enums.MeasureUnit.TByte,
-                23 => Enums.MeasureUnit.Other,
+                0 => PositionUnit.Piece,
+                1 => PositionUnit.Gram,
+                2 => PositionUnit.Kilogram,
+                3 => PositionUnit.Ton,
+                4 => PositionUnit.Centimeter,
+                5 => PositionUnit.Decimeter,
+                6 => PositionUnit.Meter,
+                7 => PositionUnit.SquareCentimeter,
+                8 => PositionUnit.SquareDecimeter,
+                9 => PositionUnit.SquareMeter,
+                10 => PositionUnit.Milliliter,
+                11 => PositionUnit.Liter,
+                12 => PositionUnit.CubicMeter,
+                13 => PositionUnit.KilowattHour,
+                14 => PositionUnit.Gigacalories,
+                15 => PositionUnit.Days,
+                16 => PositionUnit.Hours,
+                17 => PositionUnit.Minutes,
+                18 => PositionUnit.Seconds,
+                19 => PositionUnit.Kilobyte,
+                20 => PositionUnit.Megabyte,
+                21 => PositionUnit.Gigabyte,
+                22 => PositionUnit.Terabyte,
+                23 => PositionUnit.Other,
             },
             PayMethod = (PayMethod)raw.PayMethod,
             Type = (raw.Type, raw.HasMark) switch

@@ -160,7 +160,7 @@ namespace RetailCorrector.Exporters
                 tf.WriteLine($"Fptr.setParam(1212, {(int)pos.Type});");
                 tf.WriteLine($"Fptr.setParam(1214, {(int)pos.PayMethod});");
                 if (fiscalFormat == 0)
-                    tf.WriteLine($"Fptr.setParam(2108, {(int)pos.MeasureUnit!});");
+                    tf.WriteLine($"Fptr.setParam(2108, {(int)pos.Unit!});");
             }
             tf.WriteLine("Fptr.registration();");
         }

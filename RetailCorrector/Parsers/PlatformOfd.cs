@@ -81,7 +81,7 @@ internal sealed class PlatformOfd : IParser
             case 1216: UpdatePayment((ref p, sum) => p.Post = sum, value, ref receipt); break;
             case 1217: UpdatePayment((ref p, sum) => p.Provision = sum, value, ref receipt); break;
             // Позиции
-            case 2108: UpdatePosition((ref p, v) => p.MeasureUnit = (MeasureUnit)byte.Parse(v), value, ref receipt); break;
+            case 2108: UpdatePosition((ref p, v) => p.Unit = (PositionUnit)byte.Parse(v), value, ref receipt); break;
             case 1079: UpdatePosition((ref p, v) => p.Price = ulong.Parse(v), value, ref receipt); break;
             case 1043: UpdatePosition((ref p, v) => p.Cost = ulong.Parse(v), value, ref receipt); break;
             case 1199: UpdatePosition((ref p, v) => p.TaxRate = EnumUtils.ToTaxRate(byte.Parse(v)), value, ref receipt); break;

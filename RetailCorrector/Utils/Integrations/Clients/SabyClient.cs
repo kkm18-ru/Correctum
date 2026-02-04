@@ -274,7 +274,7 @@ file struct ReceiptResponse
         Cost = item.Sum,
         Price = item.Price,
         Quantity = (ulong)item.Quantity * 1000,
-        MeasureUnit = item.Measure,
+        Unit = item.Measure,
         TaxRate = EnumUtils.ToTaxRate(item.Vat ?? 0),
         Type = item.Type ?? 0,
         PayMethod = item.Payment ?? 0
@@ -296,7 +296,7 @@ file struct ItemResponse
     public ulong Price { get; set; }
     
     [JsonPropertyName("itemsQuantityMeasure")]
-    public MeasureUnit? Measure { get; set; }
+    public PositionUnit? Measure { get; set; }
     
     [JsonPropertyName("nds")]
     public byte? Vat { get; set; }

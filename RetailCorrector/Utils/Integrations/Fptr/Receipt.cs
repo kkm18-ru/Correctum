@@ -76,7 +76,7 @@ namespace RetailCorrector.Utils.Integrations
             SetInteger(1212, (uint)pos.Type);
             SetInteger(1214, (uint)pos.PayMethod);
             if (DocFormat == 120)
-                SetInteger(2108, (uint)pos.MeasureUnit!);
+                SetInteger(2108, (uint)pos.Unit!);
             return registration(handle) == 0;
         }
 

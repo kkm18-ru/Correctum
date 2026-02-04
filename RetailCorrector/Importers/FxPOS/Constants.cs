@@ -23,7 +23,7 @@ internal partial class FxPOS
             (select cast(VALUE/1000000 as INTEGER) from TAXRATE where tr.TAXRATE_CODE = CODE) as TaxRate,
             cast(tr.PRICE/100 as INTEGER) as Price,
             cast(tr.QUANTITY/1000 as INTEGER) as Quantity,    
-            cast(w.MEASURE as INTEGER) as MeasureUnit,
+            cast(w.MEASURE as INTEGER) as Unit,
             cast(tr.TOTAL/100 as INTEGER) as Cost,
             cast(w.MARKING as BOOLEAN) as HasMark
         from TRANSACTIONS as tr inner join WARE as w on w.CODE = tr.WARECODE

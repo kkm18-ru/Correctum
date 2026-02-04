@@ -85,7 +85,7 @@ namespace RetailCorrector.UI.Controls
                         object src = cond.PartId switch
                         {
                             0 => pos.Name,
-                            1 => ((int?)pos.MeasureUnit) ?? -1,
+                            1 => ((int?)pos.Unit) ?? -1,
                             2 => pos.Type,
                             3 => pos.PayMethod,
                             4 => pos.TaxRate,

@@ -30,7 +30,7 @@ internal partial class Sqlite
         public PayMethod payment { get; init; }
         public PositionType type { get; init; }
         public byte tax { get; init; }
-        public MeasureUnit unit { get; init; }
+        public PositionUnit unit { get; init; }
         public ulong price { get; init; }
         public ulong quantity { get; init; }
         public ulong total { get; init; }

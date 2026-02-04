@@ -3,100 +3,100 @@
     /// <summary>
     /// Единица измерения
     /// </summary>
-    public enum MeasureUnit : byte
+    public enum PositionUnit : byte
     {
         /// <summary>
         /// Штук/Единиц
         /// </summary>
-        Default = 0,
+        Piece = 0,
         /// <summary>
         /// Грам
         /// </summary>
-        g = 10,
+        Gram = 10,
         /// <summary>
         /// Килограм
         /// </summary>
-        kg = 11,
+        Kilogram = 11,
         /// <summary>
         /// Тонна
         /// </summary>
-        t = 12,
+        Ton = 12,
         /// <summary>
         /// Сентиметр
         /// </summary>
-        cm = 20,
+        Centimeter = 20,
         /// <summary>
         /// Дециметр
         /// </summary>
-        dm = 21,
+        Decimeter = 21,
         /// <summary>
         /// Метр
         /// </summary>
-        m = 22,
+        Meter = 22,
         /// <summary>
         /// Квадратный Сентиметр
         /// </summary>
-        cm2 = 30,
+        SquareCentimeter = 30,
         /// <summary>
         /// Квадратный Дециметр
         /// </summary>
-        dm2 = 31,
+        SquareDecimeter = 31,
         /// <summary>
         /// Квадратный Метр
         /// </summary>
-        m2 = 32,
+        SquareMeter = 32,
         /// <summary>
         /// Миллилитр
         /// </summary>
-        mL = 40,
+        Milliliter = 40,
         /// <summary>
         /// Литр
         /// </summary>
-        L = 41,
+        Liter = 41,
         /// <summary>
         /// Кубический Метр
         /// </summary>
-        m3 = 42,
+        CubicMeter = 42,
         /// <summary>
         /// Киловатт * час
         /// </summary>
-        kW_h = 50,
+        KilowattHour = 50,
         /// <summary>
         /// Гигакалорий
         /// </summary>
-        GCal = 51,
+        Gigacalories = 51,
         /// <summary>
         /// Дней
         /// </summary>
-        Day = 70,
+        Days = 70,
         /// <summary>
         /// Часов
         /// </summary>
-        h = 71,
+        Hours = 71,
         /// <summary>
         /// Минут
         /// </summary>
-        min = 72,
+        Minutes = 72,
         /// <summary>
         /// Секунд
         /// </summary>
-        sec = 73,
+        Seconds = 73,
         /// <summary>
         /// Килобайт
         /// </summary>
-        kByte = 80,
+        Kilobyte = 80,
         /// <summary>
         /// Мегабайт
         /// </summary>        
-        MByte = 81,
+        Megabyte = 81,
         /// <summary>
         /// Гигабайт
         /// </summary>
-        GByte = 82,
+        Gigabyte = 82,
         /// <summary>
         /// Терабайт
         /// </summary>
-        TByte = 83,
+        Terabyte = 83,
         /// <summary>
         /// Другое
         /// </summary>

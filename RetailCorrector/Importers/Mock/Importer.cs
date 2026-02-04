@@ -30,7 +30,7 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
                     Name = faker.Commerce.ProductName(),
                     Price = faker.Random.ULong(100,9999999),
                     Quantity = 1000 * faker.Random.UInt(1,10),
-                    MeasureUnit = faker.Random.Enum<MeasureUnit>(),
+                    Unit = faker.Random.Enum<PositionUnit>(),
                     PayMethod = faker.Random.Enum<PayMethod>(),
                     TaxRate = faker.Random.Enum<TaxRate>(),
                     Type = faker.Random.Enum<PositionType>(),
