@@ -7,7 +7,7 @@
       mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="1000">
     <MenuItem Header="Файл">
         <MenuItem Header="Импорт" ItemsSource="{x:Static u:ModuleRegistry.Importers}"/>
-        <MenuItem Header="Экспорт" Click="ShowExportWindow"/>
+        <MenuItem Header="Экспорт" ItemsSource="{x:Static u:ModuleRegistry.Exporters}"/>
         <Separator/>
         <MenuItem Header="Провести чеки" Click="ShowFptrWindow"/>
         <Separator/>
