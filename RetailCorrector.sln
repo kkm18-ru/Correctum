@@ -10,18 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		RetailCorrector.iss = RetailCorrector.iss
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitLab CI", "GitLab CI", "{B48C368F-0477-4531-BEAA-710E9AD91BDB}"
-	ProjectSection(SolutionItems) = preProject
-		.gitlab-ci.yml = .gitlab-ci.yml
-		.gitlab\ci\dev.gitlab-ci.yml = .gitlab\ci\dev.gitlab-ci.yml
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailCorrector.Tests", "RetailCorrector.Tests\RetailCorrector.Tests.csproj", "{7D8B0977-A0B7-4D50-826E-DE182554B58E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{9B03634E-259D-4303-803B-3B1C393D1039}"
-	ProjectSection(SolutionItems) = preProject
-		.gitlab\scripts\release.ps1 = .gitlab\scripts\release.ps1
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
