@@ -1,0 +1,21 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "changelog-sections": [
+        { "type": "feat", "hidden": false, "section": "✨ Нововведения" },
+        { "type": "fix", "hidden": false, "section": "🐞 Исправления" },
+        { "type": "perf", "hidden": false, "section": "⚡ Улучшение производительности" },
+        { "type": "revert", "hidden": false, "section": "⏪ Отмена изменений" },
+        { "type": "chore", "hidden": true, "section": "🔧 Прочее" },
+        { "type": "test", "hidden": true, "section": "✅ Тесты" },
+        { "type": "ci", "hidden": true, "section": "🤖 CI" },
+        { "type": "typo", "hidden": true, "section": "✒ Опечатка" },
+        { "type": "docs", "hidden": true, "section": "📖 Документация" }
+      ],
+      "pull-request-title-pattern": "chore(release): v${version}",
+      "pull-request-header": "🤖 Автоматический релиз, созданный Release Please",
+      "pull-request-footer": "Релиз сформируется после объединения с главной веткой."
+    }
+  }
+}
