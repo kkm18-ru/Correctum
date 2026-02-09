@@ -22,7 +22,7 @@ public sealed class OfdRuClient(string baseAddress = "https://ofd.ru") : RestCli
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/api/integration/v2/kktgroup/list?AuthToken={token}");
         using var resp = await Client.SendAsync(req, cancel).ConfigureAwait(false);
         if (!resp.IsSuccessStatusCode)
-            throw new ArgumentException("Некорректный аутентификационный токен."); 
+            throw new HttpRequestException("Некорректный аутентификационный токен.", null, resp.StatusCode); 
         _token = token;
     }
 
