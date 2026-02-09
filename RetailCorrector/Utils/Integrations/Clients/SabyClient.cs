@@ -12,12 +12,8 @@ using RetailCorrector.Enums;
 namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>Обертка API-клиента SabyOFD.</summary>
-internal sealed class SabyClient : APIClient
+public sealed class SabyClient(string baseAddress = "https://api.sbis.ru") : RestClient(baseAddress)
 {
-    private const string BaseHost = "https://api.sbis.ru";
-
-    private readonly HttpClient _client = new(Handler, disposeHandler: false) { BaseAddress = new Uri(BaseHost) };
-
     /// <summary>Аутентификация в API SabyOFD.</summary>
     /// <param name="login">Логин пользователя от личного кабинета Saby.</param>
     /// <param name="password">Пароль пользователя от личного кабинета Saby.</param>
@@ -25,11 +21,11 @@ internal sealed class SabyClient : APIClient
     /// <param name="cancel">Токен, позволяющий отменить аутентификацию.</param>
     public async Task AuthAsync(string login, string password, bool asFranchise = false, CancellationToken cancel = default)
     {
-        _client.DefaultRequestHeaders.Remove("Cookie");
+        Client.DefaultRequestHeaders.Remove("Cookie");
         var body = new AuthRequest(login, password, asFranchise);
         using var req = new HttpRequestMessage(HttpMethod.Post, "/oauth/service/");
         req.Content = JsonContent.Create(body);
-        using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
+        using var resp = await Client.SendAsync(req, cancel).ConfigureAwait(false);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
         if(!resp.IsSuccessStatusCode)
         {
@@ -37,7 +33,7 @@ internal sealed class SabyClient : APIClient
             throw new SabyAuthException(node?["error"]?.GetValue<string>() ?? "");
         }
         var json = await JsonSerializer.DeserializeAsync<AuthResponse>(stream, cancellationToken: cancel).ConfigureAwait(false);
-        _client.DefaultRequestHeaders.Add("Cookie", $"sid={json.SessionId}");
+        Client.DefaultRequestHeaders.Add("Cookie", $"sid={json.SessionId}");
     }
     
     /// <summary>Получение списка зарегистрированных ККТ.</summary>
@@ -48,7 +44,7 @@ internal sealed class SabyClient : APIClient
         (string inn, [EnumeratorCancellation] CancellationToken cancel = default)
     {
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/ofd/v1/orgs/{inn}/kkts");
-        using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
+        using var resp = await Client.SendAsync(req, cancel).ConfigureAwait(false);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
         if (!resp.IsSuccessStatusCode) throw new SabyException(stream);
         var enumerable = JsonSerializer.DeserializeAsyncEnumerable<KktResponse>(stream, cancellationToken: cancel)
@@ -68,7 +64,7 @@ internal sealed class SabyClient : APIClient
         (string inn, string regId, DateTime dateFrom, DateTime dateTo, CancellationToken cancel = default)
     {
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/ofd/v1/orgs/{inn}/kkts/{regId}/storages");
-        using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
+        using var resp = await Client.SendAsync(req, cancel).ConfigureAwait(false);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
         if (!resp.IsSuccessStatusCode) throw new SabyException(stream);
         var json = await JsonSerializer.DeserializeAsync<SabyDriveResponse[]>(stream, cancellationToken: cancel) ?? [];
@@ -85,7 +81,7 @@ internal sealed class SabyClient : APIClient
     {
         var builder = new StringBuilder(args.ToUri());
         builder.Append($"&startId={offset}&limit={Configuration.Instance.HttpClient.PageSize}");
-        using var resp = await _client.GetAsync(builder.ToString(), cancel);
+        using var resp = await Client.GetAsync(builder.ToString(), cancel);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancel);
         if (!resp.IsSuccessStatusCode) throw new SabyException(stream);
         var json = await JsonSerializer.DeserializeAsync<DocumentResponse[]>(stream, cancellationToken: cancel) ?? [];
@@ -94,10 +90,6 @@ internal sealed class SabyClient : APIClient
                 .Select(i => i.GenericReceipt!.Value.ToReceipt(args.ParseId))];
     }
 
-    ~SabyClient()
-    {
-        _client.Dispose();
-    }
 }
 
 /// <summary>
@@ -136,7 +128,7 @@ public readonly struct SabyReceiptsRequest (Guid parseId, string inn, string reg
 
 file readonly struct AuthRequest(string login,string password,bool asFranchise)
 {
-    [JsonPropertyName("app_client_id")]
+    [JsonPropertyName("appClient_id")]
     public string AppClientId { get; } = asFranchise ? "2248309793600149" : "1025293145607151";
     
     [JsonPropertyName("login")]

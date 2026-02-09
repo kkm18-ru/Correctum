@@ -5,20 +5,12 @@ using System.Text.RegularExpressions;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
 
-internal sealed partial class KktOnlineClient : APIClient
+public sealed partial class KktOnlineClient(string url = "https://kkt-online.nalog.ru/lkip.html") : RestClient(url)
 {
-    private readonly HttpClient _client = new(Handler, false);
-    private const string Host = "https://kkt-online.nalog.ru/lkip.html";
-
-    public KktOnlineClient()
-    {
-        _client.BaseAddress = new Uri(Host);
-    }
-
     private KktOnlineResponse Check(string query, string serial, int model)
     {
         var uri = $"?query={query}&factory_number={serial}&model_code={model:D4}";
-        var resp = _client.Send(new HttpRequestMessage(HttpMethod.Get, uri));
+        var resp = Client.Send(new HttpRequestMessage(HttpMethod.Get, uri));
         using var stream = resp.Content.ReadAsStream();
         return JsonSerializer.Deserialize<KktOnlineResponse>(stream);
     }

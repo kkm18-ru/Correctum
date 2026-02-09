@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
 
-internal class FeedbackClient : APIClient
+public class FeedbackClient : RestClient
 {
     private readonly HttpClient _client = new(Handler, false);
     private const string project = "retailcorrector";
@@ -20,8 +20,6 @@ internal class FeedbackClient : APIClient
         if (resp.IsSuccessStatusCode) return;
         var body = await resp.Content.ReadAsStreamAsync().ConfigureAwait(false);
         var json = await JsonNode.ParseAsync(body).ConfigureAwait(false);
-        throw new Exception(json?["message"]?.GetValue<string>() ?? UnknownError);
+        throw new HttpRequestException(json?["message"]?.GetValue<string>() ?? UnknownError);
     }
-
-    ~FeedbackClient() { _client.Dispose(); }
 }
