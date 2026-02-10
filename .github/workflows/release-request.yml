@@ -1,0 +1,18 @@
+name: Создание запроса на релиз
+on:
+  schedule:
+    - cron: "0 11 1,15 * *"
+  workflow_dispatch:
+
+jobs:
+  release-please:
+    name: Работа Release-Please
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GHTOKEN }}
+          skip-github-release: true
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
