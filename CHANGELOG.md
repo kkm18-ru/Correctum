@@ -1,5 +1,72 @@
 # Changelog
 
+## [0.8.0](https://github.com/ornaras/RetailCorrector/compare/v0.7.0...v0.8.0) (2026-02-10)
+
+
+### ✨ Нововведения
+
+* **settings:** Добавлена настройка EoU-порта (!44) ([4a841ad](https://github.com/ornaras/RetailCorrector/commit/4a841ad473efa0d1e2324c875bb45c1cd25c8035))
+* Добавлен выбор нескольких ККТ для парсинга (!69) ([ce165ff](https://github.com/ornaras/RetailCorrector/commit/ce165ff4e87ba79788c0f49a96acbb9fe7e84699))
+* Добавлен генератор чеков по истории операций эквайринга (!59) ([f85d50f](https://github.com/ornaras/RetailCorrector/commit/f85d50fd520ef97ac7822d293c899aa4529a24ae))
+* Добавлен десериализатор чека с ОФД.ру формата JSON (!49) ([ea3dfc3](https://github.com/ornaras/RetailCorrector/commit/ea3dfc3a035ea3dab016e56404fc4f437d299e86))
+* Добавлен конвертер ставок НДС для Atol (!47) ([471aef7](https://github.com/ornaras/RetailCorrector/commit/471aef7336fcbd7d71bb9958cf0d3d943aa70cb0))
+* Добавлен параметр refresh-токена (!77) ([1e8116b](https://github.com/ornaras/RetailCorrector/commit/1e8116beb73dc4056b2a7cd178c97340937957c9))
+* Добавлен парсер Платформа ОФД (!60) ([cc8f453](https://github.com/ornaras/RetailCorrector/commit/cc8f453e73cbf4394679bfa07db8feeaac2c82aa))
+* Добавлен период ожидания выгрузки ФД в ОФД (!63) ([2cb2ddc](https://github.com/ornaras/RetailCorrector/commit/2cb2ddcb55c4d41f6a273e2121e905115a8123c6))
+* Добавлена интеграция с "ККТ Онлайн" (!80) ([4930c33](https://github.com/ornaras/RetailCorrector/commit/4930c33c012ba059ffb2029f564b36a101f8ae0d))
+* Добавлена настройка режима печати отчетов ККТ Atol ([39ca85d](https://github.com/ornaras/RetailCorrector/commit/39ca85d9c26f731ab509a561829b79f7bdaeb270))
+* Добавлена поддержка расчетов в сети "Интернет" (!41) ([a4f8fc4](https://github.com/ornaras/RetailCorrector/commit/a4f8fc4c8534e820de9cc239b95c3f20013a2d56)), closes [#32](https://github.com/ornaras/RetailCorrector/issues/32)
+* Добавлена проверка подключения к ККТ ([db92730](https://github.com/ornaras/RetailCorrector/commit/db927301f880329907efabdd9bbb8d32acf0158c))
+* Добавлена форма обратной связи (!57) ([b5de4b3](https://github.com/ornaras/RetailCorrector/commit/b5de4b310197c400f8ad2e0b84fb29ff42c56aef))
+* Добавлено автоматическое пере-открытие смены по переполнению 30-дневного хранилища (!40) ([9d047d6](https://github.com/ornaras/RetailCorrector/commit/9d047d6968124be9101825f7c16d3955c19d706f))
+* Добавлено оповещение о невозможности проведения ЧК без печати (!81) ([e4cd852](https://github.com/ornaras/RetailCorrector/commit/e4cd8520adc6c2d180fbb665b929cb43fb5bb021))
+* Добавлено оповещение об авто-определении ККТ (!84) ([50cd016](https://github.com/ornaras/RetailCorrector/commit/50cd0160db8620becc5bb6c3f19c6057150eea47))
+* Добавлено свойство "СНО" в структуру чека (!50) ([f048bde](https://github.com/ornaras/RetailCorrector/commit/f048bde1597ca2878c6570de85567041c0255f09))
+* Добавлены оригинальные идентификаторы ФД (!68) ([7e61e13](https://github.com/ornaras/RetailCorrector/commit/7e61e139e9e3e83a8756a1985d51007f9b718210))
+* Добавлены ставки НДС 18%, 18/118, 22%, 22/122 (!87) ([4ad54ae](https://github.com/ornaras/RetailCorrector/commit/4ad54ae221f3811b776ea9ef9dd97405e3b48abe))
+* Обновлен формат заголовка группы позиций ([af2ab00](https://github.com/ornaras/RetailCorrector/commit/af2ab007346c38f73f860bcd1e624146aa739ffb)), closes [#69](https://github.com/ornaras/RetailCorrector/issues/69)
+* Открытие смены и документ производятся только в "тихом" режиме (!79) ([c5ad3b9](https://github.com/ornaras/RetailCorrector/commit/c5ad3b96ba4e0521d68ab3d0c786b45a7d21012c))
+* Переработано окно проведения ЧК (!86) ([0dae620](https://github.com/ornaras/RetailCorrector/commit/0dae62091c7bcec12e79e9175445c7363d276d64))
+* Реализована обертка API-клиента OFD.ru (!58) ([b292bbc](https://github.com/ornaras/RetailCorrector/commit/b292bbc9ea7d3965cb43ba1f8f7e7eb1bc3b1ba2))
+* Реализована обертка API-клиента SabyOFD (!56) ([5d61950](https://github.com/ornaras/RetailCorrector/commit/5d619502daa006cbd1c2aa4640be1e13d37896de))
+* Реализовано меню для главного окна (!83) ([8f3dca4](https://github.com/ornaras/RetailCorrector/commit/8f3dca41b3433f9932f759bbf14bd81fed73d4ae))
+* Реализовано отдельное окно для экспорта чеков (!82) ([9bf672f](https://github.com/ornaras/RetailCorrector/commit/9bf672f8ff7dc0d6e7eab4ecc08220818416a1ff))
+* Удален проект анализаторов (!42) ([8e53e6f](https://github.com/ornaras/RetailCorrector/commit/8e53e6f8a10a2be9127ea2674a25fcdbd6bdeff7))
+* Удален проект анализаторов (!42) ([c60283e](https://github.com/ornaras/RetailCorrector/commit/c60283e8658a944ad26b883c8bce1b4626c4c9ae))
+* Файл решения мигрирован в SLN-формат (!43) ([b2ea32d](https://github.com/ornaras/RetailCorrector/commit/b2ea32df5930b6ea080e34d77f3f2a4bb0dd059d))
+
+
+### 🐞 Исправления
+
+* **sqlite-export:** Исправлены SQLite-запросы с использованием столбца buyer (!45) ([1fc1d1f](https://github.com/ornaras/RetailCorrector/commit/1fc1d1fea735babae5f65c950ef6cfbc6c1f9c73))
+* Восстановлена работа конфигурации (!52) ([0f99c8f](https://github.com/ornaras/RetailCorrector/commit/0f99c8fe286d5885c1121dcbd64cc30d7dec5954))
+* Добавлена проверка успешности авторизации в API SabyOFD ([9b5e0bb](https://github.com/ornaras/RetailCorrector/commit/9b5e0bbdc6b001e24a7c5dbd18b27b1a0ec65907))
+* Исправлен SQLite-запрос для создания таблицы чеков (!75) ([6750c1d](https://github.com/ornaras/RetailCorrector/commit/6750c1da6af9d6c5d8cb238bd4e4e13daa27a4c5))
+* Исправлен UI Fptr-экспорта ([88c5c28](https://github.com/ornaras/RetailCorrector/commit/88c5c284c38449d775aa860d48414597bf640b4d))
+* Исправлен фильтр чеков по ККТ в интеграции "Платформа ОФД" (!78) ([f5bc3a9](https://github.com/ornaras/RetailCorrector/commit/f5bc3a9cf6ce0e7dabcdf5293220eb49a7b5abec))
+* Исправлена работа импорта с включенным VPN (!73) ([355096c](https://github.com/ornaras/RetailCorrector/commit/355096c359e72e3b51f994b4a2eb6adcc6bc022d))
+* Исправлена работа исправления ошибок ККТ (!74) ([7523afe](https://github.com/ornaras/RetailCorrector/commit/7523afe33025930f9499a50ff147e47f315b86be))
+* Исправлено время жизни дескриптора SQLite-файла (!65) ([111b880](https://github.com/ornaras/RetailCorrector/commit/111b880bc8c4065d41aeb416d697a536f602b79a))
+* Исправлено действие при неудачной проверке пробития эл. чеков ([2000782](https://github.com/ornaras/RetailCorrector/commit/20007823eaefd2f1d4994ac6cb54c331401b5ab7))
+* Исправлено использование конфигурации интеграцией Atol ([f2b63ee](https://github.com/ornaras/RetailCorrector/commit/f2b63eec882448b0520149b297b9d28939c18e84))
+* Исправлено отображение прогресса пробития чеков в Fptr-интеграции (!72) ([2472f25](https://github.com/ornaras/RetailCorrector/commit/2472f2549228bf9abcc81eec6eb7bec67516c621))
+* Исправлено получения пути драйвера Fptr ([6fe47d4](https://github.com/ornaras/RetailCorrector/commit/6fe47d40347333013059aa9dc0fa9fedd1116104))
+* Исправлено проведение электронных чеков при версии конфигурации 5.17.0 и выше (!85) ([e731155](https://github.com/ornaras/RetailCorrector/commit/e7311557d2dde1ddc7079f6abbd78b71c6a2a8ea))
+* Исправлены координаты элементов Fptr-окна ([f946b72](https://github.com/ornaras/RetailCorrector/commit/f946b7241101c661320b90566f4029dc1b0c5e48))
+* Переработана интеграция с ККТ Atol (!51) ([1600c4f](https://github.com/ornaras/RetailCorrector/commit/1600c4f6394075dec1d66e30ac16972b8eb12390))
+* Удалена зависимость от Kraig.Roslyn (!46) ([b370b42](https://github.com/ornaras/RetailCorrector/commit/b370b42896b287a5cf184ec88a45f89da9265c58))
+* Ширина столбцов таблиц изменяемая ([a8ec190](https://github.com/ornaras/RetailCorrector/commit/a8ec190601fb8ed8914b6bc12748ebe7a8e3717f)), closes [#70](https://github.com/ornaras/RetailCorrector/issues/70)
+
+
+### ⚡ Улучшение производительности
+
+* Оптимизирован парсер Платформа ОФД (!88) ([69b27ec](https://github.com/ornaras/RetailCorrector/commit/69b27ecaff5caa5a2e1ec28c9de329375135e36b))
+
+
+### ⏪ Отмена изменений
+
+* Удалено окно обратной связи ([f61ba8a](https://github.com/ornaras/RetailCorrector/commit/f61ba8a7181a35aff879dce9a76d54ac89b5b0ce))
+
 ## [0.7.0](https://github.com/ornaras/retailcorrector/compare/0.6.0...0.7.0) (2026-01-20)
 
 
