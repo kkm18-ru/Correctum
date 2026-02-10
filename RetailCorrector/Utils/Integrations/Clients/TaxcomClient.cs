@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -19,7 +20,31 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     // todo 3.5.1. Список ККТ по торговой точке (ИД торговой точки)
     // todo 3.5.2. Список фискальных накопителей по ККТ (Регистрационный номер ККТ)
     // todo 3.6.1. Список смен за период по ККТ (Номер фискального накопителя; Период; Номер страницы результатов; Кол-во результатов на странице)
-    // todo 3.7.1. Список документов по смене (Номер фискального накопителя; Номер смены; Номер страницы результатов; Кол-во результатов на странице)
+    
+    /// <summary>Перечисление номер ФД чеков по смене</summary>
+    /// <param name="fn">Номер фискального накопителя</param>
+    /// <param name="shift">Номер смены</param>
+    /// <param name="pn">Номер страницы результатов</param>
+    /// <param name="ps">Кол-во результатов на странице</param>
+    /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
+    /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров ФД.</returns>
+    /// <exception cref="HttpRequestException">Вызывается, если статус-код является успешным (200-299)</exception>
+    public async IAsyncEnumerable<int> FetchDocumentNumbersBySessionAsync
+        (string fn, uint shift, uint pn, uint ps, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var uri = new Uri($"/API/v2/DocumentList?fn={fn}&shift={shift}&pn={pn}&ps={ps}&type=3&type=31");
+        using var response = await _http.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+        if (!response.IsSuccessStatusCode)
+        {
+            var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        var responseContent = await JsonSerializer.DeserializeAsync<TaxcomDocumentListResponse>
+            (stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+        foreach (var document in responseContent.Items)yield return document.Number;
+    }
 
     /// <summary>Получение чека по реквизитам</summary>
     /// <param name="fn">Номер фискального накопителя</param>
@@ -86,6 +111,36 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     }
 
     ~TaxcomClient() => _http.Dispose();
+}
+
+file struct TaxcomCount
+{
+    [JsonPropertyName("recordCount")]
+    public DateTime TotalCount { get; init; }
+    
+    [JsonPropertyName("recordFilteredCount")]
+    public DateTime FilteredCount { get; init; }
+    
+    [JsonPropertyName("recordInResponceCount")]
+    public DateTime Count { get; init; }
+}
+
+file struct TaxcomDocumentListResponse
+{
+    [JsonPropertyName("reportDate")]
+    public DateTime ReportDate { get; init; }
+    
+    [JsonPropertyName("counts")]
+    public TaxcomCount Counts { get; init; }
+    
+    [JsonPropertyName("records")]
+    public TaxcomDocument[] Items { get; init; }
+}
+
+file struct TaxcomDocument
+{
+    [JsonPropertyName("fdNumber")]
+    public int Number { get; init; }
 }
 
 file struct TaxcomDocumentResponse
