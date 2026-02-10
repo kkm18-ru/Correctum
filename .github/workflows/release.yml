@@ -5,11 +5,9 @@ on:
     paths: 
       - CHANGELOG.md
       - .release-please-manifest.json
-
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+        
+env: 
+  GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
 jobs:
   release-please:
@@ -23,7 +21,6 @@ jobs:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
-          token: ${{ secrets.GHTOKEN }}
           skip-github-pull-request: true
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
