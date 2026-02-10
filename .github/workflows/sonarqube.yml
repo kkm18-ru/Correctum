@@ -43,15 +43,9 @@ jobs:
         shell: powershell
         run: dotnet tool install --global dotnet-coverage
       - name: Сборка и анализ
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_ID: ${{ vars.SONAR_PROJECT_ID }}
-          SONAR_HOST: ${{ vars.SONAR_HOST }}
-          SONAR_ORGANISATION: ${{ vars.SONAR_ORGANISATION }}
         shell: cmd
         run: |
-          "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin /k:"%SONAR_PROJECT_ID%" /o:"%SONAR_ORGANISATION%" ^
-            /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.host.url="%SONAR_HOST%" /d:sonar.token="%SONAR_TOKEN%"
+          "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin /k:"ornaras_RetailCorrector" /o:"ornaras" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.host.url="https://sonarcloud.io/" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           dotnet build --no-incremental
           dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
-          "${{ runner.temp }}\scanner\dotnet-sonarscanner" end /d:sonar.token="%SONAR_TOKEN%"
+          "${{ runner.temp }}\scanner\dotnet-sonarscanner" end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
