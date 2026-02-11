@@ -30,7 +30,21 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     }
 
     // todo 3.1. Аутентификация и авторизация 
-    // todo 3.4.1. Список торговых точек (Номер страницы результатов; Кол-во результатов на странице)
+    
+    /// <summary>Перечисление номеров торговых точек</summary>
+    /// <param name="pn">Номер страницы результатов</param>
+    /// <param name="ps">Кол-во результатов на странице</param>
+    /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
+    /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров торговых точек.</returns>
+    /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
+    public async IAsyncEnumerable<string> FetchOutletIdsAsync(uint pn, uint ps,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var uri = new Uri($"/API/v2/OutletList?&pn={pn}&ps={ps}");
+        var responseContent =
+            await GetAsync<TaxcomResponse<TaxcomOutlet>>(uri, cancellationToken).ConfigureAwait(false);
+        foreach (var document in responseContent.Items) yield return document.Number;
+    }
 
     /// <summary>Перечисление ККТ по торговой точке</summary>
     /// <param name="id">ИД торговой точки</param>
@@ -187,6 +201,11 @@ file struct TaxcomSession
 file struct TaxcomDrive
 {
     [JsonPropertyName("fn")] public string Number { get; init; }
+}
+
+file struct TaxcomOutlet
+{
+    [JsonPropertyName("id")] public string Number { get; init; }
 }
 
 public struct TaxcomDevice
