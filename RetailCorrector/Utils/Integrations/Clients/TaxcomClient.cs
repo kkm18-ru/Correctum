@@ -32,7 +32,19 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     // todo 3.1. Аутентификация и авторизация 
     // todo 3.4.1. Список торговых точек (Номер страницы результатов; Кол-во результатов на странице)
     // todo 3.5.1. Список ККТ по торговой точке (ИД торговой точки)
-    // todo 3.5.2. Список фискальных накопителей по ККТ (Регистрационный номер ККТ)
+    
+    /// <summary>Перечисление номер ФН по ККТ</summary>
+    /// <param name="kktRegNumber">Регистрационный номер ККТ</param>
+    /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
+    /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров ФН.</returns>
+    /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
+    public async IAsyncEnumerable<string> FetchDriveIdAsync(string kktRegNumber,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var uri = new Uri($"/API/v2/FnHistory?kktRegNumber={kktRegNumber}");
+        var responseContent = await GetAsync<TaxcomResponse<TaxcomDrive>>(uri, cancellationToken).ConfigureAwait(false);
+        foreach (var document in responseContent.Items) yield return document.Number;
+    }
     
     /// <summary>Перечисление номер смен по дате</summary>
     /// <param name="fn">Номер фискального накопителя</param>
@@ -158,6 +170,12 @@ file struct TaxcomSession
 {
     [JsonPropertyName("shiftNumber")]
     public uint Number { get; init; }
+}
+
+file struct TaxcomDrive
+{
+    [JsonPropertyName("fn")]
+    public string Number { get; init; }
 }
 
 file struct TaxcomDocumentResponse
