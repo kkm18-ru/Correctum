@@ -31,8 +31,23 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
 
     // todo 3.1. Аутентификация и авторизация 
     // todo 3.4.1. Список торговых точек (Номер страницы результатов; Кол-во результатов на странице)
-    // todo 3.5.1. Список ККТ по торговой точке (ИД торговой точки)
-    
+
+    /// <summary>Перечисление ККТ по торговой точке</summary>
+    /// <param name="id">ИД торговой точки</param>
+    /// <param name="pn">Номер страницы результатов</param>
+    /// <param name="ps">Кол-во результатов на странице</param>
+    /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
+    /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив ККТ.</returns>
+    /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
+    public async IAsyncEnumerable<TaxcomDevice> FetchDevicesAsync(string id, uint pn, uint ps,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var uri = new Uri($"/API/v2/KKTList?id={id}&pn={pn}&ps={ps}");
+        var responseContent =
+            await GetAsync<TaxcomResponse<TaxcomDevice>>(uri, cancellationToken).ConfigureAwait(false);
+        foreach (var document in responseContent.Items) yield return document;
+    }
+
     /// <summary>Перечисление номеров ФН по ККТ</summary>
     /// <param name="kktRegNumber">Регистрационный номер ККТ</param>
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
@@ -156,33 +171,32 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
 
 file struct TaxcomResponse<T>
 {
-    [JsonPropertyName("records")]
-    public T[] Items { get; init; }
+    [JsonPropertyName("records")] public T[] Items { get; init; }
 }
 
 file struct TaxcomDocument
 {
-    [JsonPropertyName("fdNumber")]
-    public uint Number { get; init; }
+    [JsonPropertyName("fdNumber")] public uint Number { get; init; }
 }
 
 file struct TaxcomSession
 {
-    [JsonPropertyName("shiftNumber")]
-    public uint Number { get; init; }
+    [JsonPropertyName("shiftNumber")] public uint Number { get; init; }
 }
 
 file struct TaxcomDrive
 {
-    [JsonPropertyName("fn")]
-    public string Number { get; init; }
+    [JsonPropertyName("fn")] public string Number { get; init; }
+}
+
+public struct TaxcomDevice
+{
+    [JsonPropertyName("name")] public string Name { get; init; }
+    [JsonPropertyName("kktRegNumber")] public string Number { get; init; }
 }
 
 file struct TaxcomDocumentResponse
 {
-    [JsonPropertyName("documentType")]
-    public string DocType { get; init; }
-    
-    [JsonPropertyName("document")]
-    public JsonNode Details { get; init; }
+    [JsonPropertyName("documentType")] public string DocType { get; init; }
+    [JsonPropertyName("document")] public JsonNode Details { get; init; }
 }
