@@ -41,7 +41,7 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         CancellationToken cancellationToken = default)
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, "/API/v2/Login");
-        request.Headers.Add("Integrator-ID", ""); // todo
+        request.Headers.Add("Integrator-ID", Configuration.Instance.Importers.TaxcomIntegratorId);
         request.Content = JsonContent.Create(new TaxcomAuthRequest(login, password, agreement));
         using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
