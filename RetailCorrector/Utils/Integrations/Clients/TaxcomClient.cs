@@ -14,7 +14,21 @@ namespace RetailCorrector.Utils.Integrations.Clients;
 internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIClient
 {
     private readonly HttpClient _http = new(Handler, false) { BaseAddress = new Uri(host) };
-    
+
+    private async Task<T> GetAsync<T>(Uri uri, CancellationToken cancellationToken)
+    {
+        using var response = await _http.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+        if (!response.IsSuccessStatusCode)
+        {
+            var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        return (await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken)
+            .ConfigureAwait(false))!;
+    }
+
     // todo 3.1. Аутентификация и авторизация 
     // todo 3.4.1. Список торговых точек (Номер страницы результатов; Кол-во результатов на странице)
     // todo 3.5.1. Список ККТ по торговой точке (ИД торговой точки)
@@ -29,21 +43,13 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
     /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров ФД.</returns>
     /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
-    public async IAsyncEnumerable<int> FetchDocumentNumbersBySessionAsync
-        (string fn, uint shift, uint pn, uint ps, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<uint> FetchDocumentNumbersBySessionAsync(string fn, uint shift, uint pn, uint ps,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var uri = new Uri($"/API/v2/DocumentList?fn={fn}&shift={shift}&pn={pn}&ps={ps}&type=3&type=31");
-        using var response = await _http.GetAsync(uri, cancellationToken).ConfigureAwait(false);
-        if (!response.IsSuccessStatusCode)
-        {
-            var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-            throw new HttpRequestException(message, null, response.StatusCode);
-        }
-
-        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var responseContent = await JsonSerializer.DeserializeAsync<TaxcomDocumentListResponse>
-            (stream, cancellationToken: cancellationToken).ConfigureAwait(false);
-        foreach (var document in responseContent.Items)yield return document.Number;
+        var responseContent =
+            await GetAsync<TaxcomResponse<TaxcomDocument>>(uri, cancellationToken).ConfigureAwait(false);
+        foreach (var document in responseContent.Items) yield return document.Number;
     }
 
     /// <summary>Получение чека по реквизитам</summary>
@@ -55,15 +61,7 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     public async Task<Receipt?> FetchReceiptAsync(string fn, uint fd, CancellationToken cancellationToken = default)
     {
         var uri = new Uri($"/API/v2/DocumentInfo?fn={fn}&fd={fd}");
-        using var response = await _http.GetAsync(uri, cancellationToken).ConfigureAwait(false);
-        if (!response.IsSuccessStatusCode)
-        {
-            var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-            throw new HttpRequestException(message, null, response.StatusCode);
-        }
-        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var document = await JsonSerializer.DeserializeAsync<TaxcomDocumentResponse>
-            (stream, cancellationToken:cancellationToken).ConfigureAwait(false);
+        var document = await GetAsync<TaxcomDocumentResponse>(uri, cancellationToken).ConfigureAwait(false);
         if (!document.DocType.Contains('3')) return null;
         var receipt = new Receipt
         {
@@ -94,7 +92,7 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         for (var i = 0; i < receipt.Items.Length; i++)
         {
             var position = document.Details["1008"]?[i];
-            if(position is null) continue;
+            if (position is null) continue;
             receipt.Items[i] = new Position
             {
                 Name = position["1030"]?.GetValue<string>() ?? "",
@@ -107,53 +105,27 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
                 Unit = (PositionUnit?)position["2108"]?.GetValue<int>()
             };
         }
+
         return receipt;
     }
 
     ~TaxcomClient() => _http.Dispose();
 }
 
-file struct TaxcomCount
+file struct TaxcomResponse<T>
 {
-    [JsonPropertyName("recordCount")]
-    public DateTime TotalCount { get; init; }
-    
-    [JsonPropertyName("recordFilteredCount")]
-    public DateTime FilteredCount { get; init; }
-    
-    [JsonPropertyName("recordInResponceCount")]
-    public DateTime Count { get; init; }
-}
-
-file struct TaxcomDocumentListResponse
-{
-    [JsonPropertyName("reportDate")]
-    public DateTime ReportDate { get; init; }
-    
-    [JsonPropertyName("counts")]
-    public TaxcomCount Counts { get; init; }
-    
     [JsonPropertyName("records")]
-    public TaxcomDocument[] Items { get; init; }
+    public T[] Items { get; init; }
 }
 
 file struct TaxcomDocument
 {
     [JsonPropertyName("fdNumber")]
-    public int Number { get; init; }
+    public uint Number { get; init; }
 }
 
 file struct TaxcomDocumentResponse
 {
-    [JsonPropertyName("reportDate")]
-    public DateTime ReportDate { get; init; }
-    
-    [JsonPropertyName("documentFormatDate")]
-    public string DocFormatDate { get; init; }
-    
-    [JsonPropertyName("documentFormatVersion")]
-    public string DocFormat { get; init; }
-    
     [JsonPropertyName("documentType")]
     public string DocType { get; init; }
     
