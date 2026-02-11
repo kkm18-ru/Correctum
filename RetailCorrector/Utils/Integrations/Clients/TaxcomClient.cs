@@ -33,12 +33,12 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     // todo 3.4.1. Список торговых точек (Номер страницы результатов; Кол-во результатов на странице)
     // todo 3.5.1. Список ККТ по торговой точке (ИД торговой точки)
     
-    /// <summary>Перечисление номер ФН по ККТ</summary>
+    /// <summary>Перечисление номеров ФН по ККТ</summary>
     /// <param name="kktRegNumber">Регистрационный номер ККТ</param>
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
     /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров ФН.</returns>
     /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
-    public async IAsyncEnumerable<string> FetchDriveIdAsync(string kktRegNumber,
+    public async IAsyncEnumerable<string> FetchDriveIdsAsync(string kktRegNumber,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var uri = new Uri($"/API/v2/FnHistory?kktRegNumber={kktRegNumber}");
@@ -46,7 +46,7 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         foreach (var document in responseContent.Items) yield return document.Number;
     }
     
-    /// <summary>Перечисление номер смен по дате</summary>
+    /// <summary>Перечисление номеров смен по дате</summary>
     /// <param name="fn">Номер фискального накопителя</param>
     /// <param name="date">Дата</param>
     /// <param name="pn">Номер страницы результатов</param>
@@ -58,7 +58,7 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         CancellationToken cancellationToken = default) =>
         FetchSessionIdsByPeriodAsync(fn, date, date, pn, ps, cancellationToken);
 
-    /// <summary>Перечисление номер смен по периоду</summary>
+    /// <summary>Перечисление номеров смен по периоду</summary>
     /// <param name="fn">Номер фискального накопителя</param>
     /// <param name="begin">Начало периода</param>
     /// <param name="end">Окончание периода</param>
@@ -77,7 +77,7 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         foreach (var document in responseContent.Items) yield return document.Number;
     }
     
-    /// <summary>Перечисление номер ФД чеков по смене</summary>
+    /// <summary>Перечисление номеров ФД чеков по смене</summary>
     /// <param name="fn">Номер фискального накопителя</param>
     /// <param name="shift">Номер смены</param>
     /// <param name="pn">Номер страницы результатов</param>
