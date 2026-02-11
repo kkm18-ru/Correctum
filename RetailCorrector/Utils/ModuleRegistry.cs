@@ -27,6 +27,7 @@ internal static class ModuleRegistry
         new(RetailCorrector.Importers.PlatformOfd.Instance),
         new(RetailCorrector.Importers.FxPOS.Instance),
         new(RetailCorrector.Importers.Acquirer.Instance),
+        new(RetailCorrector.Importers.Taxcom.Instance),
         
         #if DEBUG
         new(RetailCorrector.Importers.Mock.Instance),
