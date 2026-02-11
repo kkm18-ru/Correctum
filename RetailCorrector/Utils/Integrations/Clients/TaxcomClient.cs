@@ -28,7 +28,7 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     /// <param name="ps">Кол-во результатов на странице</param>
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
     /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров ФД.</returns>
-    /// <exception cref="HttpRequestException">Вызывается, если статус-код является успешным (200-299)</exception>
+    /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
     public async IAsyncEnumerable<int> FetchDocumentNumbersBySessionAsync
         (string fn, uint shift, uint pn, uint ps, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
@@ -51,7 +51,7 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     /// <param name="fd">Номер фискального документа</param>
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
     /// <returns>Объект задачи, представляющий асинхронную операцию.</returns>
-    /// <exception cref="HttpRequestException">Вызывается, если статус-код является успешным (200-299)</exception>
+    /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
     public async Task<Receipt?> FetchReceiptAsync(string fn, uint fd, CancellationToken cancellationToken = default)
     {
         var uri = new Uri($"/API/v2/DocumentInfo?fn={fn}&fd={fd}");
