@@ -17,12 +17,12 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
 {
     private readonly HttpClient _http = new(Handler, false) { BaseAddress = new Uri(host) };
 
-    private async Task<T> GetAsync<T>(Uri uri, CancellationToken cancellationToken)
+    private async Task<T> GetAsync<T>(string uri, CancellationToken cancellationToken)
     {
         using var response = await _http.GetAsync(uri, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
-            var message = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             throw JsonSerializer.Deserialize<TaxcomError>(message) is { Message: not null } error ? error.ToException()
                 : new HttpRequestException(message, null, response.StatusCode);
         }
@@ -48,7 +48,7 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
-            var message = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             throw JsonSerializer.Deserialize<TaxcomError>(message) is { Message: not null } error ? error.ToException()
                 : new HttpRequestException(message, null, response.StatusCode);
         }
@@ -61,34 +61,36 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     }
     
     /// <summary>Перечисление номеров торговых точек</summary>
-    /// <param name="pn">Номер страницы результатов</param>
-    /// <param name="ps">Кол-во результатов на странице</param>
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
     /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров торговых точек.</returns>
     /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
-    public async IAsyncEnumerable<string> FetchOutletIdsAsync(uint pn, uint ps,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<string> FetchOutletIdsAsync
+        ([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var uri = new Uri($"/API/v2/OutletList?&pn={pn}&ps={ps}");
-        var responseContent =
-            await GetAsync<TaxcomResponse<TaxcomOutlet>>(uri, cancellationToken).ConfigureAwait(false);
-        foreach (var document in responseContent.Items) yield return document.Number;
+        for (var i = 1U; i < uint.MaxValue; i++)
+        {
+            var uri = $"/API/v2/OutletList?&pn={i}&ps=100";
+            var response = await GetAsync<TaxcomResponse>(uri, cancellationToken).ConfigureAwait(false);
+            if(response.Items.Length == 0) break;
+            foreach (var outlet in response.Items) yield return outlet.Outlet;
+        }
     }
 
     /// <summary>Перечисление ККТ по торговой точке</summary>
     /// <param name="id">ИД торговой точки</param>
-    /// <param name="pn">Номер страницы результатов</param>
-    /// <param name="ps">Кол-во результатов на странице</param>
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
     /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив ККТ.</returns>
     /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
-    public async IAsyncEnumerable<TaxcomDevice> FetchDevicesAsync(string id, uint pn, uint ps,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<string> FetchDevicesAsync
+        (string id, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var uri = new Uri($"/API/v2/KKTList?id={id}&pn={pn}&ps={ps}");
-        var responseContent =
-            await GetAsync<TaxcomResponse<TaxcomDevice>>(uri, cancellationToken).ConfigureAwait(false);
-        foreach (var document in responseContent.Items) yield return document;
+        for (var i = 1U; i < uint.MaxValue; i++)
+        {
+            var uri = $"/API/v2/KKTList?id={id}&pn={i}&ps=100";
+            var response = await GetAsync<TaxcomResponse>(uri, cancellationToken).ConfigureAwait(false);
+            if(response.Items.Length == 0) break;
+            foreach (var device in response.Items) yield return device.Device;
+        }
     }
 
     /// <summary>Перечисление номеров ФН по ККТ</summary>
@@ -96,157 +98,141 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
     /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров ФН.</returns>
     /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
-    public async IAsyncEnumerable<string> FetchDriveIdsAsync(string kktRegNumber,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<string> FetchDriveIdsAsync
+        (string kktRegNumber, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var uri = new Uri($"/API/v2/FnHistory?kktRegNumber={kktRegNumber}");
-        var responseContent = await GetAsync<TaxcomResponse<TaxcomDrive>>(uri, cancellationToken).ConfigureAwait(false);
-        foreach (var document in responseContent.Items) yield return document.Number;
+        var uri = $"/API/v2/FnHistory?kktRegNumber={kktRegNumber}";
+        var response = await GetAsync<TaxcomResponse>(uri, cancellationToken).ConfigureAwait(false);
+        foreach (var drive in response.Items) yield return drive.Drive;
     }
-    
-    /// <summary>Перечисление номеров смен по дате</summary>
-    /// <param name="fn">Номер фискального накопителя</param>
-    /// <param name="date">Дата</param>
-    /// <param name="pn">Номер страницы результатов</param>
-    /// <param name="ps">Кол-во результатов на странице</param>
-    /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
-    /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров смен.</returns>
-    /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
-    public IAsyncEnumerable<uint> FetchSessionIdsByDateAsync(string fn, DateOnly date, uint pn, uint ps,
-        CancellationToken cancellationToken = default) =>
-        FetchSessionIdsByPeriodAsync(fn, date, date, pn, ps, cancellationToken);
 
     /// <summary>Перечисление номеров смен по периоду</summary>
     /// <param name="fn">Номер фискального накопителя</param>
     /// <param name="begin">Начало периода</param>
     /// <param name="end">Окончание периода</param>
-    /// <param name="pn">Номер страницы результатов</param>
-    /// <param name="ps">Кол-во результатов на странице</param>
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
-    /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров смен.</returns>
+    /// <returns>Объект задачи, представляющий асинхронную операцию.</returns>
     /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
-    public async IAsyncEnumerable<uint> FetchSessionIdsByPeriodAsync(string fn, DateOnly begin, DateOnly end, uint pn,
-        uint ps, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async Task<List<uint>> FetchSessionIdsByPeriodAsync
+        (string fn, DateTime begin, DateTime end, CancellationToken cancellationToken = default)
     {
-        var uri = new Uri(
-            $"/API/v2/ShiftList?fn={fn}&begin={begin:yyyy-MM-dd}T00:00:00&end={end:yyyy-MM-dd}T23:59:59&pn={pn}&ps={ps}");
-        var responseContent =
-            await GetAsync<TaxcomResponse<TaxcomSession>>(uri, cancellationToken).ConfigureAwait(false);
-        foreach (var document in responseContent.Items) yield return document.Number;
+        var textBegin = $"begin={begin:yyyy-MM-dd}T00:00:00";
+        var textEnd = $"end={end:yyyy-MM-dd}T23:59:59";
+        var sessionIds = new List<uint>();
+        for (var i = 1U; i < uint.MaxValue; i++)
+        {
+            var uri = $"/API/v2/ShiftList?fn={fn}&{textBegin}&{textEnd}&pn={i}&ps=100";
+            var response = await GetAsync<TaxcomResponse>(uri, cancellationToken).ConfigureAwait(false);
+            if(response.Items.Length == 0) break;
+            sessionIds.AddRange(response.Items.Select(number => number.Session.GetUInt32()));
+        }
+
+        return sessionIds;
     }
-    
+
     /// <summary>Перечисление номеров ФД чеков по смене</summary>
     /// <param name="fn">Номер фискального накопителя</param>
     /// <param name="shift">Номер смены</param>
-    /// <param name="pn">Номер страницы результатов</param>
-    /// <param name="ps">Кол-во результатов на странице</param>
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
-    /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров ФД.</returns>
+    /// <returns>Объект задачи, представляющий асинхронную операцию.</returns>
     /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
-    public async IAsyncEnumerable<uint> FetchDocumentNumbersBySessionAsync(string fn, uint shift, uint pn, uint ps,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async Task<List<uint>> FetchDocumentNumbersBySessionAsync
+        (string fn, uint shift, CancellationToken cancellationToken = default)
     {
-        var uri = new Uri($"/API/v2/DocumentList?fn={fn}&shift={shift}&pn={pn}&ps={ps}&type=3&type=31");
-        var responseContent =
-            await GetAsync<TaxcomResponse<TaxcomDocument>>(uri, cancellationToken).ConfigureAwait(false);
-        foreach (var document in responseContent.Items) yield return document.Number;
+        var documentIds = new List<uint>();
+        for (var i = 1U; i < uint.MaxValue; i++)
+        {
+            var uri = $"/API/v2/DocumentList?fn={fn}&shift={shift}&pn={i}&ps=100";
+            var response = await GetAsync<TaxcomResponse>(uri, cancellationToken).ConfigureAwait(false);
+            if(response.Items.Length == 0) break;
+            documentIds.AddRange(response.Items.Select(number => number.Document));
+        }
+        return documentIds;
     }
 
     /// <summary>Получение чека по реквизитам</summary>
     /// <param name="fn">Номер фискального накопителя</param>
     /// <param name="fd">Номер фискального документа</param>
+    /// <param name="importId">Идентификатор сессии импорта</param>
     /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
     /// <returns>Объект задачи, представляющий асинхронную операцию.</returns>
     /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
-    public async Task<Receipt?> FetchReceiptAsync(string fn, uint fd, CancellationToken cancellationToken = default)
+    public async Task<Receipt?> FetchReceiptAsync
+        (string fn, uint fd, Guid importId, CancellationToken cancellationToken = default)
     {
-        var uri = new Uri($"/API/v2/DocumentInfo?fn={fn}&fd={fd}");
+        var uri = $"/API/v2/DocumentInfo?fn={fn}&fd={fd}";
         var document = await GetAsync<TaxcomDocumentResponse>(uri, cancellationToken).ConfigureAwait(false);
-        if (!document.DocType.Contains('3')) return null;
-        var receipt = new Receipt
-        {
-            BuyerContact = document.Details["1008"]?.GetValue<string>() ?? "",
-            ParseId = Guid.Empty,
-            StorageId = document.Details["1041"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
-            RegId = document.Details["1037"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
-            DocNumber = document.Details["1040"]?.GetValue<uint>() ?? 0,
-            SessionId = document.Details["1038"]?.GetValue<uint>() ?? 0,
-            DocInSession = document.Details["1042"]?.GetValue<uint>() ?? 0,
-            Items = new Position[document.Details["1059"]?.AsArray().Count ?? 0],
-            Type = (Operation?)document.Details["1054"]?.GetValue<int>() ?? 0,
-            DocSign = FiscalHelper.ToDecimalSign(document.Details["1077"]?.GetValue<string>()),
-            Payment = new Payment
-            {
-                Cash = document.Details["1031"]?.GetValue<ulong>() ?? 0,
-                ECash = document.Details["1081"]?.GetValue<ulong>() ?? 0,
-                Pre = document.Details["1215"]?.GetValue<ulong>() ?? 0,
-                Post = document.Details["1216"]?.GetValue<ulong>() ?? 0,
-                Provision = document.Details["1217"]?.GetValue<ulong>() ?? 0,
-            },
-            TotalSum = document.Details["1020"]?.GetValue<ulong>() ?? 0,
-            TaxationSystem = (TaxationSystem?)document.Details["1020"]?.AsArray().Sum
-                (node => node?.GetValue<int>() ?? 0) ?? 0
-        };
-        if (document.Details["1012"]?.GetValue<string>() is { Length: 19 } rawDate)
-            receipt.Created = DateTime.ParseExact(rawDate, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, 0);
-        for (var i = 0; i < receipt.Items.Length; i++)
-        {
-            var position = document.Details["1008"]?[i];
-            if (position is null) continue;
-            receipt.Items[i] = new Position
-            {
-                Name = position["1030"]?.GetValue<string>() ?? "",
-                Quantity = (ulong)Math.Round(double.Parse(position["1023"]?.GetValue<string>() ?? "0") * 1000),
-                Price = position["1079"]?.GetValue<ulong>() ?? 0,
-                Cost = position["1043"]?.GetValue<ulong>() ?? 0,
-                Type = (PositionType?)position["1212"]?.GetValue<int>() ?? 0,
-                PayMethod = (PayMethod?)position["1214"]?.GetValue<int>() ?? 0,
-                TaxRate = (TaxRate?)position["1199"]?.GetValue<int>() ?? 0,
-                Unit = (PositionUnit?)position["2108"]?.GetValue<int>()
-            };
-        }
-
-        return receipt;
+        return document.ParseReceipt(importId);
     }
 
     ~TaxcomClient() => _http.Dispose();
 }
 
-file struct TaxcomResponse<T>
+file readonly struct TaxcomResponse
 {
-    [JsonPropertyName("records")] public T[] Items { get; init; }
+    [JsonPropertyName("records")] public TaxcomNumber[] Items { get; init; }
 }
 
-file struct TaxcomDocument
+file struct TaxcomNumber
 {
-    [JsonPropertyName("fdNumber")] public uint Number { get; init; }
+    [JsonPropertyName("id")] public string Outlet { get; init; }
+    [JsonPropertyName("kktRegNumber")] public string Device { get; init; }
+    [JsonPropertyName("fn")] public string Drive { get; init; }
+    [JsonPropertyName("shiftNumber")] public JsonElement Session { get; init; }
+    [JsonPropertyName("fdNumber")] public uint Document { get; init; }
 }
 
-file struct TaxcomSession
-{
-    [JsonPropertyName("shiftNumber")] public uint Number { get; init; }
-}
-
-file struct TaxcomDrive
-{
-    [JsonPropertyName("fn")] public string Number { get; init; }
-}
-
-file struct TaxcomOutlet
-{
-    [JsonPropertyName("id")] public string Number { get; init; }
-}
-
-public struct TaxcomDevice
-{
-    [JsonPropertyName("name")] public string Name { get; init; }
-    [JsonPropertyName("kktRegNumber")] public string Number { get; init; }
-}
-
-file struct TaxcomDocumentResponse
+file readonly struct TaxcomDocumentResponse
 {
     [JsonPropertyName("documentType")] public string DocType { get; init; }
     [JsonPropertyName("document")] public JsonNode Details { get; init; }
+
+    public Receipt? ParseReceipt(Guid importId)
+    {
+        if (DocType is not ("3" or "31")) return null;
+        var receipt = new Receipt
+        {
+            BuyerContact = Details["1008"]?.GetValue<string>() ?? "",
+            ParseId = importId,
+            StorageId = Details["1041"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
+            RegId = Details["1037"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
+            DocNumber = Details["1040"]?.GetValue<uint>() ?? 0,
+            SessionId = Details["1038"]?.GetValue<uint>() ?? 0,
+            DocInSession = Details["1042"]?.GetValue<uint>() ?? 0,
+            Items = new Position[Details["1059"]?.AsArray().Count ?? 0],
+            Type = (Operation?)Details["1054"]?.GetValue<int>() ?? 0,
+            DocSign = FiscalHelper.ToDecimalSign(Details["1077"]?.GetValue<string>()),
+            Payment = ParsePayment(),
+            TotalSum = Details["1020"]?.GetValue<ulong>() ?? 0,
+            TaxationSystem = (TaxationSystem?)Details["1055"]?.GetValue<int>()?? 0
+        };
+        if (Details["1012"]?.GetValue<string>() is { Length: 19 } s)
+            receipt.Created = DateTime.Parse(s, CultureInfo.InvariantCulture, 0);
+        for (var i = 0; i < receipt.Items.Length; i++) receipt.Items[i] = ParsePosition(i);
+        return receipt;
+    }
+
+    private Position ParsePosition(int index) => new()
+    {
+        Name = Details["1059"]?[index]?["1030"]?.GetValue<string>() ?? "",
+        Quantity = (ulong)Math.Round(double.Parse(Details["1059"]?[index]?["1023"]?.GetValue<string>() ?? "0",
+            NumberStyles.Float, CultureInfo.InvariantCulture) * 1000),
+        Price = Details["1059"]?[index]?["1079"]?.GetValue<ulong>() ?? 0,
+        Cost = Details["1059"]?[index]?["1043"]?.GetValue<ulong>() ?? 0,
+        Type = (PositionType?)Details["1059"]?[index]?["1212"]?.GetValue<int>() ?? 0,
+        PayMethod = (PayMethod?)Details["1059"]?[index]?["1214"]?.GetValue<int>() ?? 0,
+        TaxRate = (TaxRate?)Details["1059"]?[index]?["1199"]?.GetValue<int>() ?? 0,
+        Unit = (PositionUnit?)Details["1059"]?[index]?["2108"]?.GetValue<int>()
+    };
+
+    private Payment ParsePayment() => new()
+    {
+        Cash = Details["1031"]?.GetValue<ulong>() ?? 0,
+        ECash = Details["1081"]?.GetValue<ulong>() ?? 0,
+        Pre = Details["1215"]?.GetValue<ulong>() ?? 0,
+        Post = Details["1216"]?.GetValue<ulong>() ?? 0,
+        Provision = Details["1217"]?.GetValue<ulong>() ?? 0,
+    };
 }
 
 file readonly struct TaxcomAuthRequest(string login, string password, string? agreement = null)
