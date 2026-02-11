@@ -33,7 +33,37 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     // todo 3.4.1. Список торговых точек (Номер страницы результатов; Кол-во результатов на странице)
     // todo 3.5.1. Список ККТ по торговой точке (ИД торговой точки)
     // todo 3.5.2. Список фискальных накопителей по ККТ (Регистрационный номер ККТ)
-    // todo 3.6.1. Список смен за период по ККТ (Номер фискального накопителя; Период; Номер страницы результатов; Кол-во результатов на странице)
+    
+    /// <summary>Перечисление номер смен по дате</summary>
+    /// <param name="fn">Номер фискального накопителя</param>
+    /// <param name="date">Дата</param>
+    /// <param name="pn">Номер страницы результатов</param>
+    /// <param name="ps">Кол-во результатов на странице</param>
+    /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
+    /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров смен.</returns>
+    /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
+    public IAsyncEnumerable<uint> FetchSessionIdsByDateAsync(string fn, DateOnly date, uint pn, uint ps,
+        CancellationToken cancellationToken = default) =>
+        FetchSessionIdsByPeriodAsync(fn, date, date, pn, ps, cancellationToken);
+
+    /// <summary>Перечисление номер смен по периоду</summary>
+    /// <param name="fn">Номер фискального накопителя</param>
+    /// <param name="begin">Начало периода</param>
+    /// <param name="end">Окончание периода</param>
+    /// <param name="pn">Номер страницы результатов</param>
+    /// <param name="ps">Кол-во результатов на странице</param>
+    /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
+    /// <returns><see cref="T:System.Collections.Generic.IAsyncEnumerable`1" />, представляющий массив номеров смен.</returns>
+    /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
+    public async IAsyncEnumerable<uint> FetchSessionIdsByPeriodAsync(string fn, DateOnly begin, DateOnly end, uint pn,
+        uint ps, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var uri = new Uri(
+            $"/API/v2/ShiftList?fn={fn}&begin={begin:yyyy-MM-dd}T00:00:00&end={end:yyyy-MM-dd}T23:59:59&pn={pn}&ps={ps}");
+        var responseContent =
+            await GetAsync<TaxcomResponse<TaxcomSession>>(uri, cancellationToken).ConfigureAwait(false);
+        foreach (var document in responseContent.Items) yield return document.Number;
+    }
     
     /// <summary>Перечисление номер ФД чеков по смене</summary>
     /// <param name="fn">Номер фискального накопителя</param>
@@ -121,6 +151,12 @@ file struct TaxcomResponse<T>
 file struct TaxcomDocument
 {
     [JsonPropertyName("fdNumber")]
+    public uint Number { get; init; }
+}
+
+file struct TaxcomSession
+{
+    [JsonPropertyName("shiftNumber")]
     public uint Number { get; init; }
 }
 
