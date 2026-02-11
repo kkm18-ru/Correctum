@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -29,7 +30,31 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
             .ConfigureAwait(false))!;
     }
 
-    // todo 3.1. Аутентификация и авторизация 
+    /// <summary>Аутентификация и авторизация по логину и паролю</summary>
+    /// <param name="login">Электронная почта сотрудника</param>
+    /// <param name="password">Пароль сотрудника</param>
+    /// <param name="agreement">Номер договора</param>
+    /// <param name="cancellationToken">Токен, позволяющий отменить выполнение операции</param>
+    /// <returns>Объект задачи, представляющий асинхронную операцию.</returns>
+    /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
+    public async Task AuthAsync(string login, string password, string? agreement = null, 
+        CancellationToken cancellationToken = default)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/API/v2/Login");
+        request.Headers.Add("Integrator-ID", ""); // todo
+        request.Content = JsonContent.Create(new TaxcomAuthRequest(login, password, agreement));
+        using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        if (!response.IsSuccessStatusCode)
+        {
+            var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        var tar = await JsonSerializer.DeserializeAsync<TaxcomAuthResponse>(stream, cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        _http.DefaultRequestHeaders.Remove("Session-Token");
+        _http.DefaultRequestHeaders.Add("Session-Token", tar.Token);
+    }
     
     /// <summary>Перечисление номеров торговых точек</summary>
     /// <param name="pn">Номер страницы результатов</param>
@@ -218,4 +243,16 @@ file struct TaxcomDocumentResponse
 {
     [JsonPropertyName("documentType")] public string DocType { get; init; }
     [JsonPropertyName("document")] public JsonNode Details { get; init; }
+}
+
+file readonly struct TaxcomAuthRequest(string login, string password, string? agreement = null)
+{
+    [JsonPropertyName("login")] public string Login { get; init; } = login;
+    [JsonPropertyName("password")] public string Password { get; init; } = password;
+    [JsonPropertyName("agreementNumber")] public string? Agreement { get; init; } = agreement;
+}
+
+file struct TaxcomAuthResponse
+{
+    [JsonPropertyName("sessionToken")] public string Token { get; init; }
 }
