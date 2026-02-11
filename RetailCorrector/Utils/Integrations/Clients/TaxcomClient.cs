@@ -7,6 +7,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using RetailCorrector.Exceptions;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
 
@@ -21,8 +22,9 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         using var response = await _http.GetAsync(uri, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
-            var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-            throw new HttpRequestException(message, null, response.StatusCode);
+            var message = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            throw JsonSerializer.Deserialize<TaxcomError>(message) is { Message: not null } error ? error.ToException()
+                : new HttpRequestException(message, null, response.StatusCode);
         }
 
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
@@ -46,9 +48,11 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
-            var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-            throw new HttpRequestException(message, null, response.StatusCode);
+            var message = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            throw JsonSerializer.Deserialize<TaxcomError>(message) is { Message: not null } error ? error.ToException()
+                : new HttpRequestException(message, null, response.StatusCode);
         }
+
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         var tar = await JsonSerializer.DeserializeAsync<TaxcomAuthResponse>(stream, cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -255,4 +259,14 @@ file readonly struct TaxcomAuthRequest(string login, string password, string? ag
 file struct TaxcomAuthResponse
 {
     [JsonPropertyName("sessionToken")] public string Token { get; init; }
+}
+
+file struct TaxcomError
+{
+    [JsonPropertyName("details")] public string? Message { get; init; }
+    [JsonPropertyName("apiErrorCode")] public ushort ApiCode { get; init; }
+    [JsonPropertyName("commonDescription")] public string Summary { get; init; }
+    [JsonPropertyName("httpErrorCode")] public ushort StatusCode { get; init; }
+
+    public TaxcomException ToException() => new(Message, ApiCode, Summary, StatusCode);
 }
