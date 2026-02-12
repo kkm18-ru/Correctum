@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.1](https://github.com/ornaras/RetailCorrector/compare/v0.7.0...v0.7.1) (2026-02-12)
+
+
+### 🐞 Исправления
+
+* Восстановлен импорт из Такском-Касса ([#19](https://github.com/ornaras/RetailCorrector/issues/19)) ([b00dd19](https://github.com/ornaras/RetailCorrector/commit/b00dd19cf992668d09f68bf8709430abe78b03f5))
+
+
+### ⏪ Отмена изменений
+
+* Удалено окно обратной связи ([f61ba8a](https://github.com/ornaras/RetailCorrector/commit/f61ba8a7181a35aff879dce9a76d54ac89b5b0ce))
+
 ## [0.7.0](https://github.com/ornaras/retailcorrector/compare/0.6.0...0.7.0) (2026-01-20)
 
 
