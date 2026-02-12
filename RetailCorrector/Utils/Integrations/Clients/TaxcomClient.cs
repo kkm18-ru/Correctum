@@ -147,6 +147,7 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
             if(response.Items.Length == 0) break;
             documentIds.AddRange(response.Items.Select(number => number.Document));
         }
+        documentIds.Sort();
         return documentIds;
     }
 
