@@ -8,4 +8,6 @@ public sealed class TaxcomException(string? message, int apiCode, string summary
 {
     public int ApiCode { get; } = apiCode;
     public string Summary { get; } = summary;
+
+    public override string ToString() => $"{Summary}{(string.IsNullOrWhiteSpace(Message) ? "" : ": " + Message)}";
 }
