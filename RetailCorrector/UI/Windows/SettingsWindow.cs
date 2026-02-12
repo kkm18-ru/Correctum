@@ -20,6 +20,7 @@ internal class SettingsWindow : Types.DialogWindow
         tab.Items.Add(CreateFptr());
         tab.Items.Add(CreateSqlTab());
         tab.Items.Add(CreateExportTab());
+        tab.Items.Add(CreateImportersTab());
         tab.Items.Add(CreateFptrTab());
         
         Content = tab;
@@ -151,6 +152,26 @@ internal class SettingsWindow : Types.DialogWindow
 
         return tab;
     }
+    
+    private static TabItem CreateImportersTab()
+    {
+        var tab = new TabItem { Header = "Импорт" };
+        var grid = new Grid();
+        tab.Content = grid;
+
+        grid.AddColumn(GridUnitType.Star);
+        grid.AddColumn(GridUnitType.Pixel, 5);
+        grid.AddColumn(GridUnitType.Star);
+
+        grid.AddRow(GridUnitType.Auto);
+
+        grid.AddChild(CreateText("ID интегратора Taxcom"), y: 2);
+        var tb = new TextBox();
+        tb.SetBinding(TextBox.TextProperty, Bindings.ImportTaxcomIntegratorId);
+        grid.AddChild(tb, 2, 2);
+
+        return tab;
+    }
 
     private static TextBlock CreateText(string text) => new()
     {
@@ -161,31 +182,35 @@ internal class SettingsWindow : Types.DialogWindow
 
 file static class Bindings
 {
-    public readonly static Binding FptrDelay =
+    public static readonly Binding FptrDelay =
         new(nameof(Configuration.Fptr.Delay))
         { Source = Configuration.Instance.Fptr };
 
-    public readonly static Binding FptrCountReceiptsBeforeDelay =
+    public static readonly Binding FptrCountReceiptsBeforeDelay =
         new(nameof(Configuration.Fptr.CountReceiptsBeforeDelay))
         { Source = Configuration.Instance.Fptr };
 
-    public readonly static Binding SqliteLimit =
+    public static readonly Binding SqliteLimit =
         new(nameof(Configuration.Sqlite.Limit))
         { Source = Configuration.Instance.Sqlite };
 
-    public readonly static Binding HttpTriesCount =
+    public static readonly Binding HttpTriesCount =
         new(nameof(Configuration.HttpClient.TriesCount))
         { Source = Configuration.Instance.HttpClient };
 
-    public readonly static Binding HttpPageSize =
+    public static readonly Binding HttpPageSize =
         new(nameof(Configuration.HttpClient.PageSize))
         { Source = Configuration.Instance.HttpClient };
 
-    public readonly static Binding HttpDelay =
+    public static readonly Binding HttpDelay =
         new(nameof(Configuration.HttpClient.RequestDelay))
         { Source = Configuration.Instance.HttpClient };
 
-    public readonly static Binding ExportFptrFileSize =
+    public static readonly Binding ExportFptrFileSize =
         new(nameof(Configuration.Exporters.Fptr.DocsPerFile))
         { Source = Configuration.Instance.Exporters.Fptr };
+
+    public static readonly Binding ImportTaxcomIntegratorId =
+        new(nameof(Configuration.Importers.TaxcomIntegratorId))
+        { Source = Configuration.Instance.Importers };
 }
