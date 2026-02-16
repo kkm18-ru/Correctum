@@ -4,7 +4,7 @@ using System.Net.Http;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
 
-internal abstract class APIClient
+public abstract class APIClient
 {
     protected static readonly HttpMessageHandler Handler = InitHandler();
 

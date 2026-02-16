@@ -1,6 +1,6 @@
 ﻿namespace RetailCorrector.Data
 {
-    internal struct Payment(ulong cash, ulong ecash, ulong pre, ulong post, ulong other)
+    public struct Payment(ulong cash, ulong ecash, ulong pre, ulong post, ulong other)
     {
         public ulong Cash { get; set; } = cash;
         public ulong ECash { get; set; } = ecash;

@@ -2,7 +2,7 @@
 
 namespace RetailCorrector.Data
 {
-    internal struct Position(string name, ulong price, ulong quantity)
+    public struct Position(string name, ulong price, ulong quantity)
     {
         public string Name { get; set; } = name;
         public PayMethod PayMethod { get; set; }

@@ -3,7 +3,7 @@ using RetailCorrector.Exceptions;
 
 namespace RetailCorrector.Data
 {
-    internal struct Receipt(bool @readonly = false)
+    public struct Receipt(bool @readonly = false)
     {
         public required Guid ParseId { get; init; }
         public uint DocNumber { get; set; }

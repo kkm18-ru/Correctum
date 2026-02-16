@@ -13,7 +13,7 @@ namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>API-клиент ОФД Такском-Касса</summary>
 /// <seealso href="https://lk-ofd.taxcom.ru/ApiHelp/">Документация интегратора</seealso>
-internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIClient
+public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIClient
 {
     private readonly HttpClient _http = new(Handler, false) { BaseAddress = new Uri(host) };
 
