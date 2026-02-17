@@ -13,13 +13,33 @@ namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>API-клиент ОФД Такском-Касса</summary>
 /// <seealso href="https://lk-ofd.taxcom.ru/ApiHelp/">Документация интегратора</seealso>
-internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIClient
+public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIClient
 {
     private readonly HttpClient _http = new(Handler, false) { BaseAddress = new Uri(host) };
-
-    private async Task<T> GetAsync<T>(string uri, CancellationToken cancellationToken)
+    
+    #if DEBUG
+    private const string SessionHeaderName = "Session-Token";
+    public string SessionToken
     {
-        using var response = await _http.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+        get => _http.DefaultRequestHeaders.GetValues(SessionHeaderName).FirstOrDefault("");
+        set
+        {
+            _http.DefaultRequestHeaders.Remove(SessionHeaderName);
+            if(!string.IsNullOrWhiteSpace(value))
+                _http.DefaultRequestHeaders.Add(SessionHeaderName, value);
+        }
+    }
+
+    public static string IntegratorId
+    {
+        get => Configuration.Instance.Importers.TaxcomIntegratorId;
+        set => Configuration.Instance.Importers.TaxcomIntegratorId = value;
+    }
+    #endif
+
+    private async Task<T> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
             var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
@@ -45,19 +65,8 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         using var request = new HttpRequestMessage(HttpMethod.Post, "/API/v2/Login");
         request.Headers.Add("Integrator-ID", Configuration.Instance.Importers.TaxcomIntegratorId);
         request.Content = JsonContent.Create(new TaxcomAuthRequest(login, password, agreement));
-        using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        if (!response.IsSuccessStatusCode)
-        {
-            var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-            throw JsonSerializer.Deserialize<TaxcomError>(message) is { Message: not null } error ? error.ToException()
-                : new HttpRequestException(message, null, response.StatusCode);
-        }
-
-        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var tar = await JsonSerializer.DeserializeAsync<TaxcomAuthResponse>(stream, cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        _http.DefaultRequestHeaders.Remove("Session-Token");
-        _http.DefaultRequestHeaders.Add("Session-Token", tar.Token);
+        var response = await SendAsync<TaxcomAuthResponse>(request, cancellationToken).ConfigureAwait(false);
+        SessionToken = response.Token;
     }
     
     /// <summary>Перечисление номеров торговых точек</summary>
@@ -69,8 +78,8 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     {
         for (var i = 1U; i < uint.MaxValue; i++)
         {
-            var uri = $"/API/v2/OutletList?&pn={i}&ps=100";
-            var response = await GetAsync<TaxcomResponse>(uri, cancellationToken).ConfigureAwait(false);
+            using var request = new HttpRequestMessage(HttpMethod.Get, $"/API/v2/OutletList?&pn={i}&ps=100");
+            var response = await SendAsync<TaxcomResponse>(request, cancellationToken).ConfigureAwait(false);
             if(response.Items.Length == 0) break;
             foreach (var outlet in response.Items) yield return outlet.Outlet;
         }
@@ -86,8 +95,8 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     {
         for (var i = 1U; i < uint.MaxValue; i++)
         {
-            var uri = $"/API/v2/KKTList?id={id}&pn={i}&ps=100";
-            var response = await GetAsync<TaxcomResponse>(uri, cancellationToken).ConfigureAwait(false);
+            using var request = new HttpRequestMessage(HttpMethod.Get, $"/API/v2/KKTList?id={id}&pn={i}&ps=100");
+            var response = await SendAsync<TaxcomResponse>(request, cancellationToken).ConfigureAwait(false);
             if(response.Items.Length == 0) break;
             foreach (var device in response.Items) yield return device.Device;
         }
@@ -101,8 +110,9 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     public async IAsyncEnumerable<string> FetchDriveIdsAsync
         (string kktRegNumber, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var uri = $"/API/v2/FnHistory?kktRegNumber={kktRegNumber}";
-        var response = await GetAsync<TaxcomResponse>(uri, cancellationToken).ConfigureAwait(false);
+        using var request = new HttpRequestMessage(HttpMethod.Get, 
+            $"/API/v2/FnHistory?kktRegNumber={kktRegNumber}");
+        var response = await SendAsync<TaxcomResponse>(request, cancellationToken).ConfigureAwait(false);
         foreach (var drive in response.Items) yield return drive.Drive;
     }
 
@@ -121,8 +131,9 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         var sessionIds = new List<uint>();
         for (var i = 1U; i < uint.MaxValue; i++)
         {
-            var uri = $"/API/v2/ShiftList?fn={fn}&{textBegin}&{textEnd}&pn={i}&ps=100";
-            var response = await GetAsync<TaxcomResponse>(uri, cancellationToken).ConfigureAwait(false);
+            using var request = new HttpRequestMessage(HttpMethod.Get, 
+                $"/API/v2/ShiftList?fn={fn}&{textBegin}&{textEnd}&pn={i}&ps=100");
+            var response = await SendAsync<TaxcomResponse>(request, cancellationToken).ConfigureAwait(false);
             if(response.Items.Length == 0) break;
             sessionIds.AddRange(response.Items.Select(number => number.Session.GetUInt32()));
         }
@@ -142,11 +153,13 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
         var documentIds = new List<uint>();
         for (var i = 1U; i < uint.MaxValue; i++)
         {
-            var uri = $"/API/v2/DocumentList?fn={fn}&shift={shift}&pn={i}&ps=100";
-            var response = await GetAsync<TaxcomResponse>(uri, cancellationToken).ConfigureAwait(false);
+            using var request = new HttpRequestMessage(HttpMethod.Get,
+                $"/API/v2/DocumentList?fn={fn}&shift={shift}&pn={i}&ps=100");
+            var response = await SendAsync<TaxcomResponse>(request, cancellationToken).ConfigureAwait(false);
             if(response.Items.Length == 0) break;
             documentIds.AddRange(response.Items.Select(number => number.Document));
         }
+        documentIds.Sort();
         return documentIds;
     }
 
@@ -160,8 +173,8 @@ internal class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIC
     public async Task<Receipt?> FetchReceiptAsync
         (string fn, uint fd, Guid importId, CancellationToken cancellationToken = default)
     {
-        var uri = $"/API/v2/DocumentInfo?fn={fn}&fd={fd}";
-        var document = await GetAsync<TaxcomDocumentResponse>(uri, cancellationToken).ConfigureAwait(false);
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"/API/v2/DocumentInfo?fn={fn}&fd={fd}");
+        var document = await SendAsync<TaxcomDocumentResponse>(request, cancellationToken).ConfigureAwait(false);
         return document.ParseReceipt(importId);
     }
 

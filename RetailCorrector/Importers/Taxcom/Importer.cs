@@ -43,21 +43,13 @@ internal partial class Taxcom : ImporterBase<Taxcom, Taxcom.View>
                     (drive, BeginDate, EndDate, cancellationToken);
                 if(sessionIds.Count == 0) continue;
                 sessionIds.Sort();
-                try
-                {
-                    var docIds = await _client.FetchDocumentNumbersBySessionAsync
-                        (drive, sessionIds[0], cancellationToken);
-                    docIds.Sort();
-                    var minDocId = docIds[0];
-                    if (sessionIds.Count > 1)
-                    {
-                        docIds = await _client.FetchDocumentNumbersBySessionAsync(drive, sessionIds[^1], cancellationToken);
-                        docIds.Sort();
-                    }
-                    var maxDocId = docIds[^1];
-                    ranges.Add((drive, minDocId, maxDocId));
-                    progress.Report(-ranges.Sum(r => r.Item3 - r.Item2 + 1));
-                }catch(TaxcomException) { }
+                var docIds = await _client.FetchDocumentNumbersBySessionAsync(drive, sessionIds[0], cancellationToken);
+                var minDocId = docIds[0];
+                if (sessionIds.Count > 1)
+                    docIds = await _client.FetchDocumentNumbersBySessionAsync(drive, sessionIds[^1], cancellationToken);
+                var maxDocId = docIds[^1];
+                ranges.Add((drive, minDocId, maxDocId));
+                progress.Report(-ranges.Sum(r => r.Item3 - r.Item2 + 1));
             }
         }
     }
