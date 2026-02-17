@@ -16,6 +16,26 @@ namespace RetailCorrector.Utils.Integrations.Clients;
 public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIClient
 {
     private readonly HttpClient _http = new(Handler, false) { BaseAddress = new Uri(host) };
+    
+    #if DEBUG
+    private const string SessionHeaderName = "Session-Token";
+    public string SessionToken
+    {
+        get => _http.DefaultRequestHeaders.GetValues(SessionHeaderName).FirstOrDefault("");
+        set
+        {
+            _http.DefaultRequestHeaders.Remove(SessionHeaderName);
+            if(!string.IsNullOrWhiteSpace(value))
+                _http.DefaultRequestHeaders.Add(SessionHeaderName, value);
+        }
+    }
+
+    public string IntegratorId
+    {
+        get => Configuration.Instance.Importers.TaxcomIntegratorId;
+        set => Configuration.Instance.Importers.TaxcomIntegratorId = value;
+    }
+    #endif
 
     private async Task<T> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
     {
@@ -46,8 +66,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
         request.Headers.Add("Integrator-ID", Configuration.Instance.Importers.TaxcomIntegratorId);
         request.Content = JsonContent.Create(new TaxcomAuthRequest(login, password, agreement));
         var response = await SendAsync<TaxcomAuthResponse>(request, cancellationToken).ConfigureAwait(false);
-        _http.DefaultRequestHeaders.Remove("Session-Token");
-        _http.DefaultRequestHeaders.Add("Session-Token", response.Token);
+        SessionToken = response.Token;
     }
     
     /// <summary>Перечисление номеров торговых точек</summary>
