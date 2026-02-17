@@ -20,6 +20,7 @@ internal sealed partial class Taxcom
         InitValuesAuth(faker);
         InitValuesOutlet(faker);
         InitValuesDevice(faker);
+        InitValuesDrive(faker);
         
         _server = WireMockServer.Start();
         _client = new TaxcomClient(_server.Urls[0]);
