@@ -13,6 +13,7 @@ internal sealed partial class Taxcom
     [OneTimeSetUp] public static void SetUp()
     {
         var faker = new Faker("ru");
+        InitValuesAuth(faker);
         
         _server = WireMockServer.Start();
         _client = new TaxcomClient(_server.Urls[0]);
