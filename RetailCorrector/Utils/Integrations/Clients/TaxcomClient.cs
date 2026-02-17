@@ -30,7 +30,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
         }
     }
 
-    public string IntegratorId
+    public static string IntegratorId
     {
         get => Configuration.Instance.Importers.TaxcomIntegratorId;
         set => Configuration.Instance.Importers.TaxcomIntegratorId = value;

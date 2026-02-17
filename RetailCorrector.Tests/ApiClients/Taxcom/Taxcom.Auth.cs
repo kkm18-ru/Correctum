@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.Text;
 using Bogus;
+using RetailCorrector.Utils.Integrations.Clients;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -28,7 +28,7 @@ partial class Taxcom
         _server.Given(Request.Create().UsingPost().WithBodyAsJson(new RequestBody(login, password))
                 .WithHeader("Integrator-ID", integratorId).WithPath("/API/v2/Login"))
             .RespondWith(Response.Create().WithBodyAsJson(new ResponseBody(token), Encoding.UTF8));
-        _client.IntegratorId = integratorId;
+        TaxcomClient.IntegratorId = integratorId;
         Assert.DoesNotThrowAsync(async () => await _client.AuthAsync(login, password));
         Assert.That(_client.SessionToken, Is.EqualTo(token));
     }
@@ -38,11 +38,11 @@ partial class Taxcom
         _server.Given(Request.Create().UsingPost().WithBodyAsJson(new RequestBody(login, password, agreementNumber))
                 .WithHeader("Integrator-ID", integratorId).WithPath("/API/v2/Login"))
             .RespondWith(Response.Create().WithBodyAsJson(new ResponseBody(token), Encoding.UTF8));
-        _client.IntegratorId = integratorId;
+        TaxcomClient.IntegratorId = integratorId;
         Assert.DoesNotThrowAsync(async () => await _client.AuthAsync(login, password, agreementNumber));
         Assert.That(_client.SessionToken, Is.EqualTo(token));
     }
 }
 
-file readonly record struct RequestBody(string login, string password, [MaxLength(50)] string? agreementNumber = null);
+file readonly record struct RequestBody(string login, string password, string? agreementNumber = null);
 file readonly record struct ResponseBody(string sessionToken);
