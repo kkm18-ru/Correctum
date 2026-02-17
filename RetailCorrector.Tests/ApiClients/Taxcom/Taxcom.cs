@@ -13,6 +13,7 @@ internal sealed partial class Taxcom
 
     private static RegexMatcher pnRegex = new(@"^(-\d+|0|1)$");
     private static RegexMatcher psRegex = new(@"^([1-9]\d{0,2}|1000)$");
+    private static RegexMatcher dtRegex = new(@"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})$");
 
     [OneTimeSetUp] public static void SetUp()
     {
@@ -21,6 +22,7 @@ internal sealed partial class Taxcom
         InitValuesOutlet(faker);
         InitValuesDevice(faker);
         InitValuesDrive(faker);
+        InitValuesSession(faker);
         
         _server = WireMockServer.Start();
         _client = new TaxcomClient(_server.Urls[0]);
