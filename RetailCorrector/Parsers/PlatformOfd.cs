@@ -1,8 +1,6 @@
-using System.Windows;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
-using Serilog;
 
 namespace RetailCorrector.Parsers;
 
@@ -10,6 +8,7 @@ internal sealed class PlatformOfd : IParser
 {
     public string Name => "Платформа ОФД (Реквизиты)";
     public static PlatformOfd Instance => field ??= new PlatformOfd();
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     private readonly Stack<ushort> _propStack = new(5);
     
@@ -50,7 +49,7 @@ internal sealed class PlatformOfd : IParser
             }
             catch(Exception ex)
             {
-                Log.Error(ex, "Не удалось обработать тег {Tag} со значением {Value}", tag, value.ToString());
+                Logger.Error(ex, "Не удалось обработать тег {Tag} со значением {Value}", tag, value.ToString());
                 return false;
             }
         }

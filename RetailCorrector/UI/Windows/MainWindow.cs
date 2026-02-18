@@ -71,8 +71,7 @@ public partial class MainWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
-        base.OnClosed(e);
         FptrHandle.FreeLibrary();
-        Configuration.Instance.Save();
+        base.OnClosed(e);
     }
 }

@@ -8,14 +8,18 @@ namespace RetailCorrector.Utils;
 internal static class CheckDevice
 {
     private static readonly KktOnlineClient KktOnline = new();
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public static AtolKktProblems SearchProblemsInKkt(FptrHandle fptr) =>
         CheckFnsKkt(fptr) | CheckFnsFn(fptr) | CheckLicenses(fptr);
 
     private static AtolKktProblems CheckFnsKkt(FptrHandle fptr)
     {
+        Logger.Trace("Получение модели ККТ...");
         var model = KktOnlineConverters.FromAtolKktModel(fptr.Model);
+        Logger.Debug("Модель ККТ: {AtolModel} > {KktOnlineModel}", fptr.Model, model.ToString("G"));
         if (model == 0) return AtolKktProblems.ModelKktUnknown;
+        Logger.Trace("Проверка статуса регистрации ККТ...");
         return KktOnline.CheckKkt(fptr.SerialNumber, model) switch
         {
             KktOnlineClient.StatusCode.Ok => AtolKktProblems.None,
@@ -28,8 +32,11 @@ internal static class CheckDevice
 
     private static AtolKktProblems CheckFnsFn(FptrHandle fptr)
     {
+        Logger.Trace("Получение исполнения ФН...");
         var model = KktOnlineConverters.FromAtolFnModel(fptr.FnModel);
+        Logger.Debug("Исполнение ФН: {AtolModel} > {KktOnlineModel}", fptr.FnModel, model.ToString("G"));
         if (model == 0) return AtolKktProblems.ModelFnUnknown;
+        Logger.Trace("Проверка статуса регистрации ФН...");
         return KktOnline.CheckDrive(fptr.FnSerialNumber, model) switch
         {
             KktOnlineClient.StatusCode.Ok => AtolKktProblems.None,
@@ -45,17 +52,27 @@ internal static class CheckDevice
     {
         const uint printLicenseNumber = 17;
         var problems = AtolKktProblems.None;
-        
-        if (fptr.ConfigurationVersion < new Version(5, 12)) 
+
+        if (fptr.ConfigurationVersion < new Version(5, 12))
+        {
+            Logger.Warn("Конфигурационный модуль устарел: {Version} (Минимальная версия: 5.12.0)", fptr.ConfigurationVersion);
             problems |= AtolKktProblems.ConfigurationOutdated; 
+        }
         
         var license = fptr.GetLicenseInfo(printLicenseNumber);
-        
+
         if (!(license?.Entered ?? false))
+        {
+            Logger.Warn("Лицензия №{LicenseNumber} не введена", printLicenseNumber);
             problems |= AtolKktProblems.AdditionalPrintNoFound;
-        
-        if ((license?.ValidUntil ?? DateTime.MinValue) <= DateTime.Today)
+        }
+
+        var expiredDate = license?.ValidUntil ?? DateTime.MinValue;
+        if (expiredDate <= DateTime.Today)
+        {
+            Logger.Warn("Срок действия лицензии №{LicenseNumber} истек: {ExpiredDate}", printLicenseNumber, expiredDate);
             problems |= AtolKktProblems.AdditionalPrintExpired;
+        }
         
         return problems;
     }

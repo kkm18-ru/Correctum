@@ -1,5 +1,4 @@
-﻿using Serilog;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
@@ -9,6 +8,7 @@ namespace RetailCorrector;
 public partial class App : Application
 {
     public static App Instance => field ??= new App();
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     private App()
     {
@@ -25,7 +25,7 @@ public partial class App : Application
     private void LoadFont(string id, string familyName, string path)
     {
         Resources.Add(id, new FontFamily(new(path), familyName));
-        Log.Information("Загружен шрифт {FamilyName}", familyName);
+        Logger.Info("Загружен шрифт {FamilyName}", familyName);
     }
 }
 

@@ -10,16 +10,23 @@ namespace RetailCorrector.Utils
         {
             get
             {
-                if(field is null)
+                if(field is not null) return field;
+                if (!File.Exists(FileName))
                 {
-                    if(File.Exists(FileName) && Toml.TryToModel<Configuration>(File.ReadAllText(FileName), out var x, out _))
-                        field = x;
-                    else field = new Configuration();
+                    Logger.Warn("Файл конфигурации отсутствует!");
+                    return field = new Configuration(); 
                 }
-                return field;
+                if (!Toml.TryToModel<Configuration>(File.ReadAllText(FileName), out var conf, out var errors))
+                {
+                    Logger.Error("Не удалось выполнить загрузку конфигурации: {Errors}", errors);
+                    return field = new Configuration(); 
+                }
+                Logger.Warn("Файл конфигурации отсутствует!");
+                return field = conf;
             }
         }
 
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private const string FileName = "config.toml";
 
         public SqliteSection Sqlite { get; init; } = new();
@@ -27,7 +34,12 @@ namespace RetailCorrector.Utils
         public HttpClientSection HttpClient { get; init; } = new();
         public ExportersSection Exporters { get; init; } = new();
         public ImportersSection Importers { get; init; } = new();
+        public LogSection Logging { get; init; } = new();
 
-        public void Save() => File.WriteAllText(FileName, Toml.FromModel(this));
+        public void Save()
+        {
+            File.WriteAllText(FileName, Toml.FromModel(this));
+            Logger.Info("Конфигурация сохранена!");
+        }
     }
 }

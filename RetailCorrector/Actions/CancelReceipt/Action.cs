@@ -1,6 +1,4 @@
-﻿using RetailCorrector.Data;
-using RetailCorrector.UI.Controls;
-using Serilog;
+﻿using RetailCorrector.UI.Controls;
 using System.Windows;
 
 namespace RetailCorrector.Actions
@@ -8,12 +6,13 @@ namespace RetailCorrector.Actions
     internal partial class CancelReceipt : ActionBase<CancelReceipt>
     {
         public override string Name => "Генерация аннулирующих чеков";
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public override void Start()
         {
             if(Workspace.Instance.Receipts.Any(r => r.EditsCount != 0))
             {
-                Log.Error("Генерация аннулирующих чеков, используя не перноначальные данные, запрещена!");
+                Logger.Error("Генерация аннулирующих чеков, используя не перноначальные данные, запрещена!");
                 MessageBox.Show("Генерация аннулирующих чеков, используя не перноначальные данные, запрещена!");
                 return;
             }
@@ -32,7 +31,7 @@ namespace RetailCorrector.Actions
                     }
                 });
             }
-            Log.Information($"{string.Conjugate(count, "Был сгенерирован", "Было сгенерировано")} {{Count}} {string.Conjugate(count, "чек", "чека", "чеков")}", count);
+            Logger.Info($"{string.Conjugate(count, "Был сгенерирован", "Было сгенерировано")} {{Count}} {string.Conjugate(count, "чек", "чека", "чеков")}", count);
             ReceiptPanel.UpdateReceiptList();            
             MessageBox.Show($"{string.Conjugate(count, "Был сгенерирован", "Было сгенерировано")} {count} {string.Conjugate(count, "чек", "чека", "чеков")}");
         }
