@@ -2,13 +2,20 @@ namespace RetailCorrector.Utils;
 
 public static class FiscalHelper
 {
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+    
     public static uint ToDecimalSign(string? sign)
     {
-        if (sign?.Length != 8) return 0;
-        Span<byte> bytes = stackalloc byte[6];
-        Convert.TryFromBase64String(sign, bytes, out _);
-        bytes.Reverse();
-        return BitConverter.ToUInt32(bytes);
+        var digitSign = 0U;
+        if (sign?.Length == 8)
+        {
+            Span<byte> bytes = stackalloc byte[6];
+            Convert.TryFromBase64String(sign, bytes, out _);
+            bytes.Reverse();
+            digitSign = BitConverter.ToUInt32(bytes);
+        }
+        Logger.Debug("{TextValue} преобразовано в {DigitValue}", sign, digitSign);
+        return digitSign;
     }
 
     public static string ToStringSign(uint sign)
@@ -22,6 +29,8 @@ public static class FiscalHelper
         Span<char> chars = stackalloc char[8];
         Convert.TryToBase64Chars(bytes, chars, out _);
 
-        return new string(chars);
+        var textSign = new string(chars);
+        Logger.Debug("{DigitValue} преобразовано в {TextValue}", sign, textSign);
+        return textSign;
     }
 }
