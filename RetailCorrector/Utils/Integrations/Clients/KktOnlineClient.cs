@@ -9,6 +9,7 @@ internal sealed partial class KktOnlineClient : APIClient
 {
     private readonly HttpClient _client = new(Handler, false);
     private const string Host = "https://kkt-online.nalog.ru/lkip.html";
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public KktOnlineClient()
     {
@@ -18,8 +19,11 @@ internal sealed partial class KktOnlineClient : APIClient
     private KktOnlineResponse Check(string query, string serial, int model)
     {
         var uri = $"?query={query}&factory_number={serial}&model_code={model:D4}";
+        Logger.Trace("Отправка запроса: {Path} {SerialNumber} {Model}", query, serial, model);
         var resp = _client.Send(new HttpRequestMessage(HttpMethod.Get, uri));
+        Logger.Trace("Прочтение контента ответа в режиме потока");
         using var stream = resp.Content.ReadAsStream();
+        Logger.Trace("Десериализация контента...");
         return JsonSerializer.Deserialize<KktOnlineResponse>(stream);
     }
 
