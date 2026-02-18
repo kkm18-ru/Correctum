@@ -9,6 +9,7 @@ namespace RetailCorrector.Utils.Configurations;
 internal sealed class LogSection
 {
     public string FilePath { get; set; } = "./logs/current.log";
+    public int MinLevel { get; set; } = LogLevel.Info.Ordinal;
     public bool LokiEnabled { get; set; }
     public string LokiEndpoint { get; set; } = "http://localhost:3100";
     public string LokiHostName { get; set; } = "MainHost";
@@ -21,13 +22,14 @@ internal sealed class LogSection
         var stopwatch = new Stopwatch();
         if (notify) stopwatch.Start();
         var config = new NLog.Config.LoggingConfiguration();
+        var minLevel = LogLevel.FromOrdinal(Configuration.Instance.Logging.MinLevel);
 
         var logFile = new FileTarget("log_file")
         {
             ArchiveEvery = FileArchivePeriod.Monday,
             FileName = Configuration.Instance.Logging.FilePath
         };
-        config.AddRule(LogLevel.Info, LogLevel.Fatal, logFile);
+        config.AddRule(minLevel, LogLevel.Fatal, logFile);
 
         if (Configuration.Instance.Logging.LokiEnabled)
         {
@@ -64,7 +66,7 @@ internal sealed class LogSection
                 logLoki.Username = Configuration.Instance.Logging.LokiUsername;
                 logLoki.Password = Configuration.Instance.Logging.LokiPassword;
             }
-            config.AddRule(LogLevel.Info, LogLevel.Fatal, logLoki);
+            config.AddRule(minLevel, LogLevel.Fatal, logLoki);
         }
         
         LogManager.Configuration = config;

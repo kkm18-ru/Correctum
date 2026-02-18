@@ -6,15 +6,14 @@
         xmlns:conv="clr-namespace:RetailCorrector.Converters"
         xmlns:addons="clr-namespace:RetailCorrector.Utils.Integrations"
         xmlns:wintypes="clr-namespace:RetailCorrector.UI.Windows.Types"
+        xmlns:nlog="clr-namespace:NLog;assembly=NLog"
         DataContext="{Binding Source={x:Static utils:Configuration.Instance}}"
         Title="Настройки" Height="300" Width="450">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-        <ObjectDataProvider x:Key="GetEoUPorts"
-                            ObjectType="{x:Type addons:EoU}"
-                            MethodName="GetAvailablePorts" />
+        <ObjectDataProvider x:Key="GetEoUPorts" ObjectType="{x:Type addons:EoU}" MethodName="GetAvailablePorts" />
         <conv:MultiBooleanConverter x:Key="convMultiBoolean"/>
     </Window.Resources>
     <TabControl>
@@ -139,29 +138,35 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="5"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
-                <CheckBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Content="Передавать логи в центрилизированое хранилище Loki?"
+                <CheckBox Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Content="Передавать логи в центрилизированое хранилище Loki?"
                           IsChecked="{Binding Logging.LokiEnabled}"/>
-                <CheckBox Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="3" Content="Loki-сервер использует Basic-авторизацию?"
+                <CheckBox Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="3" Content="Loki-сервер использует Basic-авторизацию?"
                           IsEnabled="{Binding Logging.LokiEnabled}"
                           IsChecked="{Binding Logging.LokiAuthEnabled}"/>
                 
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Путь к журнал-файлу:"/>
-                <TextBlock Grid.Column="0" Grid.Row="4" Text="Адрес Loki-сервера:"/>
-                <TextBlock Grid.Column="0" Grid.Row="6" Text="Идентификатор устройства в Loki:"/>
-                <TextBlock Grid.Column="0" Grid.Row="10" Text="Логин:"/>
-                <TextBlock Grid.Column="0" Grid.Row="12" Text="Пароль:"/>
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Минимальный уровень логирования:"/>
+                <TextBlock Grid.Column="0" Grid.Row="6" Text="Адрес Loki-сервера:"/>
+                <TextBlock Grid.Column="0" Grid.Row="8" Text="Идентификатор устройства в Loki:"/>
+                <TextBlock Grid.Column="0" Grid.Row="12" Text="Логин:"/>
+                <TextBlock Grid.Column="0" Grid.Row="14" Text="Пароль:"/>
                 
                 <TextBox Grid.Column="2" Grid.Row="0" 
                          Text="{Binding Logging.FilePath, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Column="2" Grid.Row="4" 
-                         IsEnabled="{Binding Logging.LokiEnabled}"
-                         Text="{Binding Logging.LokiEndpoint, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox Grid.Column="2" Grid.Row="2" SelectedValuePath="Ordinal" DisplayMemberPath="Name"
+                         ItemsSource="{Binding Source={x:Static nlog:LogLevel.AllLoggingLevels}}"
+                         SelectedValue="{Binding Logging.MinLevel}"/>
                 <TextBox Grid.Column="2" Grid.Row="6" 
                          IsEnabled="{Binding Logging.LokiEnabled}"
+                         Text="{Binding Logging.LokiEndpoint, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Column="2" Grid.Row="8" 
+                         IsEnabled="{Binding Logging.LokiEnabled}"
                          Text="{Binding Logging.LokiHostName, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Column="2" Grid.Row="10" 
+                <TextBox Grid.Column="2" Grid.Row="12" 
                          Text="{Binding Logging.LokiUsername, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.IsEnabled>
                         <MultiBinding Converter="{StaticResource convMultiBoolean}">
@@ -170,7 +175,7 @@
                         </MultiBinding>
                     </TextBox.IsEnabled>
                 </TextBox>
-                <TextBox Grid.Column="2" Grid.Row="12" 
+                <TextBox Grid.Column="2" Grid.Row="14" 
                          Text="{Binding Logging.LokiPassword, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.IsEnabled>
                         <MultiBinding Converter="{StaticResource convMultiBoolean}">
