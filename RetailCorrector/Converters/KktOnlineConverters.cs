@@ -40,6 +40,22 @@ internal static class KktOnlineConverters
 
     public static DriveModel FromAtolFnModel(string model) => model switch
     {
+        "ФН-1.2 исполнение Ин36-4" => DriveModel.In36_4, //0032
+        "ФН-1.2 исполнение Ин15-4" => DriveModel.In15_4, //0031
+        "ФН-1.2 исполнение Ин36-3" => DriveModel.In36_3, //0027
+        "ФН-1.2 исполнение Ин15-3" => DriveModel.In15_3, //0026
+        "ФН-1.1М исполнение Ин15-1М" => DriveModel.In15_1M, //0021
+        "ФН-1.2 исполнение Ав15-3" => DriveModel.Av15_3, //0029
+        "ФН-1.2 исполнение Ав36-3" => DriveModel.Av36_3, //0028
+        "ФН-1.1М исполнение Ин36-1М" => DriveModel.In36_1M, //0022
+        "ФН-1.2 исполнение Из15-4" => DriveModel.Iz15_4, //0033
+        "ФН-1.2 исполнение Ав36-4" => DriveModel.Av36_4, //0037
+        "ФН-1.2 исполнение Ав15-4" => DriveModel.Av15_4, //0036
+        "ФН-1.2 исполнение Пр15-4" => DriveModel.Pr15_4, //0030
+        "ФН-1.2 исполнение Эв36-4" => DriveModel.Ev36_4, //0035
+        "ФН-1.2 исполнение Эв15-4" => DriveModel.Ev15_4, //0034
+        "ФН-1.2 исполнение Эв36-3" => DriveModel.Ev36_3, //0024
+        "ФН-1.2 исполнение Эв15-3" => DriveModel.Ev15_3, //0023
         _ => DriveModel.Unknown
     };
 }
