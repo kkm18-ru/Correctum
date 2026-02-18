@@ -31,4 +31,8 @@ internal sealed partial class PlatformOfd : ImporterBase<PlatformOfd, PlatformOf
             }
         }
     }
+    public override void OnClosing()
+    {
+        Client.Dispose();
+    }
 }

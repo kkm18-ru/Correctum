@@ -53,6 +53,9 @@ internal partial class Taxcom : ImporterBase<Taxcom, Taxcom.View>
             }
         }
     }
-    
-    
+
+    public override void OnClosing()
+    {
+        _client.Dispose();
+    }
 }

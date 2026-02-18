@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Importers;
+﻿using System.ComponentModel;
+using RetailCorrector.Importers;
 using RetailCorrector.UI.Controls;
 using System.Windows;
 using System.Windows.Controls;
@@ -84,6 +85,12 @@ namespace RetailCorrector.UI.Windows
             }
             else barProgress.Value = value;
             txtProgress.Text = $"{barProgress.Value} / {barProgress.Maximum}";
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            importer.OnClosing();
+            base.OnClosing(e);
         }
 
         private async void StartParse(object? s, RoutedEventArgs e)
