@@ -1,3 +1,9 @@
+using System.Diagnostics;
+using NLog;
+using NLog.Layouts;
+using NLog.Loki;
+using NLog.Targets;
+
 namespace RetailCorrector.Utils.Configurations;
 
 internal sealed class LogSection
@@ -9,4 +15,56 @@ internal sealed class LogSection
     public bool LokiAuthEnabled { get; set; }
     public string LokiUsername { get; set; } = "admin";
     public string LokiPassword { get; set; } = "1234567890";
+
+    public static void ReloadLoggingConfiguration()
+    {
+        var config = new NLog.Config.LoggingConfiguration();
+
+        var logFile = new FileTarget("log_file")
+        {
+            ArchiveEvery = FileArchivePeriod.Monday,
+            FileName = Configuration.Instance.Logging.FilePath
+        };
+        config.AddRule(LogLevel.Info, LogLevel.Fatal, logFile);
+
+        if (Configuration.Instance.Logging.LokiEnabled)
+        {
+            var logLoki = new LokiTarget
+            {
+                Name = "log_loki", 
+                Endpoint = new SimpleLayout(Configuration.Instance.Logging.LokiEndpoint),
+                Labels = {
+                    new LokiTargetLabel { Name = "app", Layout = "RetailCorrector" }, 
+                    new LokiTargetLabel { Name = "host", Layout = Configuration.Instance.Logging.LokiHostName }, 
+                },
+                Layout = new JsonLayout
+                {
+                    IncludeEventProperties = true,
+                    Attributes =
+                    {
+                        new JsonAttribute("level", "${level}"),
+                        new JsonAttribute("source", "${logger}"),
+                        new JsonAttribute("message", "${message}"),
+                        new JsonAttribute("exception", new JsonLayout
+                        {
+                            Attributes =
+                            {
+                                new JsonAttribute("type", "${exception:format=type}"),
+                                new JsonAttribute("message", "${exception:format=message}"),
+                                new JsonAttribute("stacktrace", "${exception:format=tostring}")
+                            }
+                        }) { Encode = false },
+                    }
+                }
+            };
+            if (Configuration.Instance.Logging.LokiAuthEnabled)
+            {
+                logLoki.Username = Configuration.Instance.Logging.LokiUsername;
+                logLoki.Password = Configuration.Instance.Logging.LokiPassword;
+            }
+            config.AddRule(LogLevel.Info, LogLevel.Fatal, logLoki);
+        }
+        
+        LogManager.Configuration = config;
+    }
 }
