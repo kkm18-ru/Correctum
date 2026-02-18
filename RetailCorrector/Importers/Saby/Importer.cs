@@ -71,4 +71,10 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
         var start = drive.DateStart > FromDate ? drive.DateStart : FromDate;
         return (start.Date, end.Date);
     }
+
+    
+    public override void OnClosing()
+    {
+        _client.Dispose();
+    }
 }

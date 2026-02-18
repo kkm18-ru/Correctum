@@ -8,4 +8,5 @@ internal interface IImporter
     void Show();
     ImportSession GenerateInfo();
     IAsyncEnumerable<Receipt> Import(IProgress<long> progress, CancellationToken cancellationToken);
+    void OnClosing();
 }

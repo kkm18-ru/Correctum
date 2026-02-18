@@ -13,21 +13,20 @@ namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>API-клиент ОФД Такском-Касса</summary>
 /// <seealso href="https://lk-ofd.taxcom.ru/ApiHelp/">Документация интегратора</seealso>
-public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIClient
+public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : ApiClient<TaxcomClient>(host: host)
 {
-    private readonly HttpClient _http = new(Handler, false) { BaseAddress = new Uri(host) };
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     
     #if DEBUG
     private const string SessionHeaderName = "Session-Token";
     public string SessionToken
     {
-        get => _http.DefaultRequestHeaders.GetValues(SessionHeaderName).FirstOrDefault("");
+        get => Client.DefaultRequestHeaders.GetValues(SessionHeaderName).FirstOrDefault("");
         set
         {
-            _http.DefaultRequestHeaders.Remove(SessionHeaderName);
+            Client.DefaultRequestHeaders.Remove(SessionHeaderName);
             if(!string.IsNullOrWhiteSpace(value))
-                _http.DefaultRequestHeaders.Add(SessionHeaderName, value);
+                Client.DefaultRequestHeaders.Add(SessionHeaderName, value);
         }
     }
 
@@ -41,7 +40,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
     private async Task<T> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         Logger.Trace("Отправка запроса: {Method} {Uri}", request.Method, request.RequestUri);
-        using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
             Logger.Trace("Прочтение контента ответа в режиме текста");
@@ -68,6 +67,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
     public async Task AuthAsync(string login, string password, string? agreement = null, 
         CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
         using var request = new HttpRequestMessage(HttpMethod.Post, "/API/v2/Login");
         request.Headers.Add("Integrator-ID", Configuration.Instance.Importers.TaxcomIntegratorId);
         request.Content = JsonContent.Create(new TaxcomAuthRequest(login, password, agreement));
@@ -82,6 +82,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
     public async IAsyncEnumerable<string> FetchOutletIdsAsync
         ([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
         for (var i = 1U; i < uint.MaxValue; i++)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, $"/API/v2/OutletList?&pn={i}&ps=100");
@@ -99,6 +100,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
     public async IAsyncEnumerable<string> FetchDevicesAsync
         (string id, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
         for (var i = 1U; i < uint.MaxValue; i++)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, $"/API/v2/KKTList?id={id}&pn={i}&ps=100");
@@ -116,6 +118,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
     public async IAsyncEnumerable<string> FetchDriveIdsAsync
         (string kktRegNumber, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
         using var request = new HttpRequestMessage(HttpMethod.Get, 
             $"/API/v2/FnHistory?kktRegNumber={kktRegNumber}");
         var response = await SendAsync<TaxcomResponse>(request, cancellationToken).ConfigureAwait(false);
@@ -132,6 +135,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
     public async Task<List<uint>> FetchSessionIdsByPeriodAsync
         (string fn, DateTime begin, DateTime end, CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
         var textBegin = $"begin={begin:yyyy-MM-dd}T00:00:00";
         var textEnd = $"end={end:yyyy-MM-dd}T23:59:59";
         var sessionIds = new List<uint>();
@@ -156,6 +160,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
     public async Task<List<uint>> FetchDocumentNumbersBySessionAsync
         (string fn, uint shift, CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
         var documentIds = new List<uint>();
         for (var i = 1U; i < uint.MaxValue; i++)
         {
@@ -179,12 +184,11 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
     public async Task<Receipt?> FetchReceiptAsync
         (string fn, uint fd, Guid importId, CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
         using var request = new HttpRequestMessage(HttpMethod.Get, $"/API/v2/DocumentInfo?fn={fn}&fd={fd}");
         var document = await SendAsync<TaxcomDocumentResponse>(request, cancellationToken).ConfigureAwait(false);
         return document.ParseReceipt(importId);
     }
-
-    ~TaxcomClient() => _http.Dispose();
 }
 
 file readonly struct TaxcomResponse

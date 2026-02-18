@@ -16,4 +16,5 @@ internal abstract class ImporterBase<TP, TV> : IImporter, ISingleton<TP>
 
     public void Show() => new ImportWindow(new TV()).ShowDialog();
     public abstract IAsyncEnumerable<Receipt> Import(IProgress<long> progress, CancellationToken cancellationToken);
+    public virtual void OnClosing() { }
 }

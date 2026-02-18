@@ -31,4 +31,8 @@ internal partial class OfdRu: ImporterBase<OfdRu, OfdRu.View>
             }
         }
     }
+    public override void OnClosing()
+    {
+        Client.Dispose();
+    }
 }

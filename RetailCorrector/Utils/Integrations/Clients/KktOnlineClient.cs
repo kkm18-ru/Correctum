@@ -5,22 +5,16 @@ using System.Text.RegularExpressions;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
 
-internal sealed partial class KktOnlineClient : APIClient
+internal sealed partial class KktOnlineClient() : ApiClient<KktOnlineClient>("https://kkt-online.nalog.ru/lkip.html")
 {
-    private readonly HttpClient _client = new(Handler, false);
-    private const string Host = "https://kkt-online.nalog.ru/lkip.html";
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-    public KktOnlineClient()
-    {
-        _client.BaseAddress = new Uri(Host);
-    }
 
     private KktOnlineResponse Check(string query, string serial, int model)
     {
+        ThrowIfDisposed();
         var uri = $"?query={query}&factory_number={serial}&model_code={model:D4}";
         Logger.Trace("Отправка запроса: {Path} {SerialNumber} {Model}", query, serial, model);
-        var resp = _client.Send(new HttpRequestMessage(HttpMethod.Get, uri));
+        var resp = Client.Send(new HttpRequestMessage(HttpMethod.Get, uri));
         Logger.Trace("Прочтение контента ответа в режиме потока");
         using var stream = resp.Content.ReadAsStream();
         Logger.Trace("Десериализация контента...");
