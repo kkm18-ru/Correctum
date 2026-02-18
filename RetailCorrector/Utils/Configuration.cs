@@ -27,6 +27,7 @@ namespace RetailCorrector.Utils
         public HttpClientSection HttpClient { get; init; } = new();
         public ExportersSection Exporters { get; init; } = new();
         public ImportersSection Importers { get; init; } = new();
+        public LogSection Logging { get; init; } = new();
 
         public void Save() => File.WriteAllText(FileName, Toml.FromModel(this));
     }
