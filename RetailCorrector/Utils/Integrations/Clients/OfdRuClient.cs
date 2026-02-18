@@ -8,10 +8,9 @@ using System.Text.Json.Serialization;
 namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>Обертка API-клиента OfdRu.</summary>
-internal sealed class OfdRuClient : APIClient
+internal sealed class OfdRuClient() : ApiClient(Host)
 {
     private const string Host = "https://ofd.ru/api/integration/v2/";
-    private readonly HttpClient _client = new(Handler, false) { BaseAddress = new Uri(Host) };
     private string _token = "";
 
     /// <summary>Установка аутентификационного токена.</summary>
@@ -22,7 +21,7 @@ internal sealed class OfdRuClient : APIClient
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
         using var req = new HttpRequestMessage(HttpMethod.Get, $"kktgroup/list?AuthToken={token}");
-        using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
+        using var resp = await Client.SendAsync(req, cancel).ConfigureAwait(false);
         if (!resp.IsSuccessStatusCode)
             throw new ArgumentException("Некорректный аутентификационный токен."); 
         _token = token;
@@ -34,7 +33,7 @@ internal sealed class OfdRuClient : APIClient
     public async Task<OfdRuDevice[]> FetchDevicesAsync(CancellationToken cancel = default)
     {
         using var req = new HttpRequestMessage(HttpMethod.Get, $"kkts?AuthToken={_token}");
-        using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
+        using var resp = await Client.SendAsync(req, cancel).ConfigureAwait(false);
         var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
         var json = await JsonSerializer.DeserializeAsync<Response<OfdRuDevice>>(stream, cancellationToken: cancel).ConfigureAwait(false);
         if (json.Status != 0) throw json.ToException();
@@ -55,16 +54,11 @@ internal sealed class OfdRuClient : APIClient
             $"&dateFrom={fromDate:yyyy-MM-ddTHH:mm:ss}" +
             $"&dateTo={toDate:yyyy-MM-ddTHH:mm:ss}";
         using var req = new HttpRequestMessage(HttpMethod.Get, uri);
-        using var resp = await _client.SendAsync(req, cancel).ConfigureAwait(false);
+        using var resp = await Client.SendAsync(req, cancel).ConfigureAwait(false);
         var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
         var json = await JsonSerializer.DeserializeAsync<Response<Document>>(stream, cancellationToken: cancel).ConfigureAwait(false);
         if (json.Status != 0) throw json.ToException();
         return [.. json.Data.Select(d => d.ToReceipt(parseId))];
-    }
-
-    ~OfdRuClient()
-    {
-        _client.Dispose();
     }
 }
 

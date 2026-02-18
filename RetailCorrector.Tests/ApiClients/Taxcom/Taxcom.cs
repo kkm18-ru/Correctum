@@ -32,6 +32,7 @@ internal sealed partial class Taxcom
 
     [OneTimeTearDown] public static void TearDown()
     {
+        _client.Dispose();
         _server.Dispose();
     }
 }

@@ -13,21 +13,20 @@ namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>API-клиент ОФД Такском-Касса</summary>
 /// <seealso href="https://lk-ofd.taxcom.ru/ApiHelp/">Документация интегратора</seealso>
-public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIClient
+public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : ApiClient(host: host)
 {
-    private readonly HttpClient _http = new(Handler, false) { BaseAddress = new Uri(host) };
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     
     #if DEBUG
     private const string SessionHeaderName = "Session-Token";
     public string SessionToken
     {
-        get => _http.DefaultRequestHeaders.GetValues(SessionHeaderName).FirstOrDefault("");
+        get => Client.DefaultRequestHeaders.GetValues(SessionHeaderName).FirstOrDefault("");
         set
         {
-            _http.DefaultRequestHeaders.Remove(SessionHeaderName);
+            Client.DefaultRequestHeaders.Remove(SessionHeaderName);
             if(!string.IsNullOrWhiteSpace(value))
-                _http.DefaultRequestHeaders.Add(SessionHeaderName, value);
+                Client.DefaultRequestHeaders.Add(SessionHeaderName, value);
         }
     }
 
@@ -41,7 +40,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
     private async Task<T> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         Logger.Trace("Отправка запроса: {Method} {Uri}", request.Method, request.RequestUri);
-        using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
             Logger.Trace("Прочтение контента ответа в режиме текста");
@@ -183,8 +182,6 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
         var document = await SendAsync<TaxcomDocumentResponse>(request, cancellationToken).ConfigureAwait(false);
         return document.ParseReceipt(importId);
     }
-
-    ~TaxcomClient() => _http.Dispose();
 }
 
 file readonly struct TaxcomResponse

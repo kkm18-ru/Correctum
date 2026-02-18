@@ -9,10 +9,9 @@ using System.Web;
 namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>Обертка API-клиента ПлатформаОФД.</summary>
-internal sealed class PlatformaOfdClient : APIClient
+internal sealed class PlatformaOfdClient() : ApiClient(Host)
 {
     private const string Host = "https://lk.platformaofd.ru";
-    private readonly HttpClient _client = new() { BaseAddress = new Uri(Host) };
     private string JSessionId = "";
 
     /// <summary>Установка аутентификационных данных.</summary>
@@ -27,8 +26,8 @@ internal sealed class PlatformaOfdClient : APIClient
 
     private void Auth(string accessToken, string refreshToken)
     {
-        _client.DefaultRequestHeaders.Remove("Cookie");
-        _client.DefaultRequestHeaders.Add("Cookie", $"JSESSIONID={JSessionId}; access_token={accessToken}; refresh_token={refreshToken}");
+        Client.DefaultRequestHeaders.Remove("Cookie");
+        Client.DefaultRequestHeaders.Add("Cookie", $"JSESSIONID={JSessionId}; access_token={accessToken}; refresh_token={refreshToken}");
     }
 
     private void Auth(HttpResponseHeaders headers)
@@ -57,7 +56,7 @@ internal sealed class PlatformaOfdClient : APIClient
         const string NumberPattern = @"<td>(?<numb>\d{16})</td>";
 
         using var req = new HttpRequestMessage(HttpMethod.Get, "/web/auth/terminals/monitoring");
-        using var resp = await _client.SendAsync(req, cancel);
+        using var resp = await Client.SendAsync(req, cancel);
         Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
 
@@ -90,7 +89,7 @@ internal sealed class PlatformaOfdClient : APIClient
         url.Append("&shiftNumber=&requestNumber=&sumFrom=&sumTo=&cashiers=%5B%5D&tag=&tagSearchField=&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_operTypes=on&_operTypes=on&_operTypes=on&_operTypes=on&fragments=cheques-search-content%2Ccheques-search-common-content-block%2Ccom-messages&ajaxSource=cheques_filter_form_id");
 
         using var req = new HttpRequestMessage(HttpMethod.Get, url.ToString());
-        using var resp = await _client.SendAsync(req, cancel);
+        using var resp = await Client.SendAsync(req, cancel);
         Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
         var matches = Regex.Matches(html, UrlPattern);
@@ -108,17 +107,12 @@ internal sealed class PlatformaOfdClient : APIClient
     public async Task<Receipt?> FetchReceiptAsync(PlatformaOfdReceiptReference reference, Guid parseId = default, CancellationToken cancel = default)
     {
         using var req = new HttpRequestMessage(HttpMethod.Get, reference.ToString());
-        using var resp = await _client.SendAsync(req, cancel);
+        using var resp = await Client.SendAsync(req, cancel);
         Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
         var raw = HttpUtility.HtmlDecode(html.Split(@"<pre>")[1].Split(@"</pre>")[0]);
         var receipt = new Receipt { ParseId = parseId };
         return PlatformOfd.Instance.Parse(raw, ref receipt) ? receipt : null;
-    }
-
-    ~PlatformaOfdClient()
-    {
-        _client.Dispose();
     }
 }
 
