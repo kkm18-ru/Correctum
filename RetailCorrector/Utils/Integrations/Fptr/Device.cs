@@ -98,7 +98,7 @@ namespace RetailCorrector.Utils.Integrations
         private FnInfo GetFnInfo()
         {
             SetInteger(65622, 2); // FNDataType: Info
-            return QueryFN() ? (GetString(65874),GetString(65559)) : ("","");
+            return QueryFN() ? (GetString(65874).TrimEnd('\0', ' '), GetString(65559)) : ("", "");
         }
         
         private uint GetFormatVersion()
