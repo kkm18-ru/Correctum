@@ -181,7 +181,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
         State = ConductingReceiptState.Idle;
     }
 
-    private void UpdateState(object sender, RoutedEventArgs e)
+    private async void UpdateState(object sender, RoutedEventArgs e)
     {
         switch (State)
         {
@@ -191,34 +191,45 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                 if (State == ConductingReceiptState.Idle) CurrentIndex = 0;
                 State = ConductingReceiptState.Running;
 
-                void Function()
-                {
-                    try
-                    {
-                        while (CurrentIndex < Workspace.Instance.Receipts.Count)
-                        {
-                            _cancelSource.Token.ThrowIfCancellationRequested();
-                            _handle.ProcessSession(true);
-                            if (ConductingReceipt(Workspace.Instance.Receipts[CurrentIndex], _cancelSource.Token))
-                                CurrentIndex++;
-                            else _handle.CancelReceipt();
-                            if (CurrentIndex > 0 && CurrentIndex % Configuration.Instance.Fptr.CountReceiptsBeforeDelay == 0)
-                                Thread.Sleep(60000 * Configuration.Instance.Fptr.Delay);
-                        }
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        MessageBox.Show("Проведение чеков отменено пользователем!");
-                    }
-                    Finish();
-                }
-                
-                new Thread(Function) { IsBackground = true }.Start();
+                await ConductingReceiptsAsync(_cancelSource.Token);
                 break;
             case ConductingReceiptState.Running:
                 _cancelSource.Cancel();
                 break;
             default: break;
+        }
+    }
+
+    private async Task ConductingReceiptsAsync(CancellationToken token)
+    {
+        try
+        {
+            await Task.Run(async () =>
+            {
+                while (CurrentIndex < Workspace.Instance.Receipts.Count)
+                {
+                    token.ThrowIfCancellationRequested();
+                    _handle.ProcessSession(true);
+                    if (ConductingReceipt(Workspace.Instance.Receipts[CurrentIndex], token))
+                        CurrentIndex++;
+                    else _handle.CancelReceipt();
+
+                    if (CurrentIndex > 0 &&
+                        CurrentIndex % Configuration.Instance.Fptr.CountReceiptsBeforeDelay == 0)
+                    {
+                        var delay = TimeSpan.FromMinutes(Configuration.Instance.Fptr.Delay);
+                        await Task.Delay(delay, token);
+                    }
+                }
+            }, token);
+        }
+        catch (OperationCanceledException)
+        {
+            MessageBox.Show("Проведение чеков отменено пользователем!");
+        }
+        finally
+        {
+            Finish();
         }
     }
 
