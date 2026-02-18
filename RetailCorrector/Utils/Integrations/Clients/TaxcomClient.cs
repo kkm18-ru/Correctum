@@ -16,6 +16,7 @@ namespace RetailCorrector.Utils.Integrations.Clients;
 public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APIClient
 {
     private readonly HttpClient _http = new(Handler, false) { BaseAddress = new Uri(host) };
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     
     #if DEBUG
     private const string SessionHeaderName = "Session-Token";
@@ -39,15 +40,20 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : APICli
 
     private async Task<T> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
     {
+        Logger.Trace("Отправка запроса: {Method} {Uri}", request.Method, request.RequestUri);
         using var response = await _http.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
+            Logger.Trace("Прочтение контента ответа в режиме текста");
             var message = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            Logger.Trace("Десериализация ошибки...");
             throw JsonSerializer.Deserialize<TaxcomError>(message) is { Message: not null } error ? error.ToException()
                 : new HttpRequestException(message, null, response.StatusCode);
         }
 
+        Logger.Trace("Прочтение контента ответа в режиме потока");
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        Logger.Trace("Десериализация контента...");
         return (await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken)
             .ConfigureAwait(false))!;
     }
