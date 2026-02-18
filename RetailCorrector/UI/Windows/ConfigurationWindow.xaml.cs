@@ -25,7 +25,7 @@ public sealed partial class ConfigurationWindow : DialogWindow, INotifyPropertyC
     protected override void OnClosing(CancelEventArgs e)
     {
         Configuration.Instance.Save();
-        Utils.Configurations.LogSection.ReloadLoggingConfiguration();
+        Utils.Configurations.LogSection.ReloadLoggingConfiguration(true);
         base.OnClosing(e);
     }
 

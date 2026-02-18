@@ -16,8 +16,10 @@ internal sealed class LogSection
     public string LokiUsername { get; set; } = "admin";
     public string LokiPassword { get; set; } = "1234567890";
 
-    public static void ReloadLoggingConfiguration()
+    public static void ReloadLoggingConfiguration(bool notify)
     {
+        var stopwatch = new Stopwatch();
+        if (notify) stopwatch.Start();
         var config = new NLog.Config.LoggingConfiguration();
 
         var logFile = new FileTarget("log_file")
@@ -66,5 +68,9 @@ internal sealed class LogSection
         }
         
         LogManager.Configuration = config;
+        if (!notify) return;
+        stopwatch.Stop();
+        LogManager.GetCurrentClassLogger()
+            .Info("Конфигурация журнала обновлена за {Duration} мс.", stopwatch.ElapsedMilliseconds);
     }
 }
