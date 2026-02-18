@@ -113,7 +113,8 @@
                 
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="ID интегратора Taxcom:"/>
                 
-                <TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Importers.TaxcomIntegratorId}"/>
+                <TextBox Grid.Column="2" Grid.Row="0" 
+                         Text="{Binding Importers.TaxcomIntegratorId, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </TabItem>
         <TabItem Header="Логирование">
@@ -153,14 +154,15 @@
                 <TextBlock Grid.Column="0" Grid.Row="12" Text="Пароль:"/>
                 
                 <TextBox Grid.Column="2" Grid.Row="0" 
-                         Text="{Binding Logging.FilePath}"/>
+                         Text="{Binding Logging.FilePath, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox Grid.Column="2" Grid.Row="4" 
                          IsEnabled="{Binding Logging.LokiEnabled}"
-                         Text="{Binding Logging.LokiEndpoint}"/>
+                         Text="{Binding Logging.LokiEndpoint, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox Grid.Column="2" Grid.Row="6" 
                          IsEnabled="{Binding Logging.LokiEnabled}"
-                         Text="{Binding Logging.LokiHostName}"/>
-                <TextBox Grid.Column="2" Grid.Row="10" Text="{Binding Logging.LokiUsername}">
+                         Text="{Binding Logging.LokiHostName, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Column="2" Grid.Row="10" 
+                         Text="{Binding Logging.LokiUsername, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.IsEnabled>
                         <MultiBinding Converter="{StaticResource convMultiBoolean}">
                             <Binding Path="Logging.LokiEnabled"/>
@@ -168,7 +170,8 @@
                         </MultiBinding>
                     </TextBox.IsEnabled>
                 </TextBox>
-                <TextBox Grid.Column="2" Grid.Row="12" Text="{Binding Logging.LokiPassword}">
+                <TextBox Grid.Column="2" Grid.Row="12" 
+                         Text="{Binding Logging.LokiPassword, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.IsEnabled>
                         <MultiBinding Converter="{StaticResource convMultiBoolean}">
                             <Binding Path="Logging.LokiEnabled"/>
