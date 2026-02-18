@@ -14,7 +14,7 @@ public partial class MainMenu : Menu
     }
 
     private void ShowFptrWindow(object s, RoutedEventArgs e) => new FptrWindow().ShowDialog();
-    private void ShowSettingsWindow(object s, RoutedEventArgs e) => new SettingsWindow().ShowDialog();
+    private void ShowConfigurationWindow(object s, RoutedEventArgs e) => new ConfigurationWindow().ShowDialog();
     private void Quit(object s, RoutedEventArgs e) => Application.Current.Shutdown();
 
     private void OpenDocs(object s, RoutedEventArgs e) => Process.Start("explorer", Constants.DocsUrl);
