@@ -21,7 +21,7 @@ namespace RetailCorrector.Utils
                     Logger.Error("Не удалось выполнить загрузку конфигурации: {Errors}", errors);
                     return field = new Configuration(); 
                 }
-                Logger.Warn("Файл конфигурации отсутствует!");
+                Logger.Info("Файл конфигурации загружен!");
                 return field = conf;
             }
         }
