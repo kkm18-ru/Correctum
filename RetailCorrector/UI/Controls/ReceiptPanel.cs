@@ -1,5 +1,4 @@
 ﻿using RetailCorrector.Data;
-using Serilog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
@@ -60,6 +59,7 @@ namespace RetailCorrector.UI.Controls
             PropertyChanged?.Invoke(this, new(property));
 
         public static ReceiptPanel Instance => field ??= new ReceiptPanel();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private ReceiptPanel()
         {
@@ -199,7 +199,7 @@ namespace RetailCorrector.UI.Controls
         {
             Instance.CachedCountPages = Workspace.Instance.Receipts.Chunk(Instance.MaxCountReceipts).Count();
             Instance.Refresh(); 
-            Log.Information("Список чеков обновлен");
+            Logger.Info("Список чеков обновлен");
         }
     }
 }

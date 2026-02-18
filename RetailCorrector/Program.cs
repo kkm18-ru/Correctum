@@ -1,5 +1,4 @@
-﻿using Serilog;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows;
 
 [assembly: ThemeInfo(ResourceDictionaryLocation.None,
@@ -9,23 +8,16 @@ namespace RetailCorrector
 {
     static class Program
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         [STAThread]
         public static void Main()
         {
             AppContext.SetSwitch("System.Net.DisableIPv6", true);
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .Enrich.FromLogContext()
-                .WriteTo.File(
-                    path: ".\\logs\\.log",
-                    rollingInterval: RollingInterval.Day,
-                    flushToDiskInterval: TimeSpan.FromMilliseconds(100))
-                .CreateLogger();
 
             var info = Assembly.GetExecutingAssembly().GetName();
-            Log.Information("Запуск {Name} {Version}", info.Name, info.Version);
+            Logger.Info("Запуск {Name} {Version}", info.Name, info.Version);
 
             App.Instance.Run(UI.Windows.MainWindow.Instance);
-        }            
+        }
     }
 }

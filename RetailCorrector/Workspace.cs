@@ -1,5 +1,4 @@
 ﻿using RetailCorrector.Data;
-using Serilog;
 using System.Collections.ObjectModel;
 
 namespace RetailCorrector
@@ -11,13 +10,14 @@ namespace RetailCorrector
         public Guid Id { get; }
         public ObservableCollection<ImportSession> ImportHistory { get; }
         public ObservableCollection<Receipt> Receipts { get; }
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private Workspace()
         {
             Id = Guid.CreateVersion7();
             ImportHistory = [];
             Receipts = [];
-            Log.Information("Создано новое рабочее место \"{Id:D}\"", Id);
+            Logger.Info("Создано новое рабочее место \"{Id:D}\"", Id);
         }
     }
 }
