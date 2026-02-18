@@ -9,7 +9,7 @@ using System.Web;
 namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>Обертка API-клиента ПлатформаОФД.</summary>
-internal sealed class PlatformaOfdClient() : ApiClient(Host)
+internal sealed class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>(Host)
 {
     private const string Host = "https://lk.platformaofd.ru";
     private string JSessionId = "";
@@ -20,6 +20,7 @@ internal sealed class PlatformaOfdClient() : ApiClient(Host)
     /// <param name="refreshToken">Обновляющий токен</param>
     public void Auth(string sessionId, string accessToken, string refreshToken)
     {
+        ThrowIfDisposed();
         JSessionId = sessionId;
         Auth(accessToken, refreshToken);
     }
@@ -52,6 +53,7 @@ internal sealed class PlatformaOfdClient() : ApiClient(Host)
     /// <returns>Список идентификаторов ККТ.</returns>
     public async Task<PlatformaOfdDevice[]> FetchDevicesAsync(CancellationToken cancel = default)
     {
+        ThrowIfDisposed();
         const string DevicePattern = @"terminal_(?<id>\d+)_id";
         const string NumberPattern = @"<td>(?<numb>\d{16})</td>";
 
@@ -77,6 +79,7 @@ internal sealed class PlatformaOfdClient() : ApiClient(Host)
     /// <returns>Список ссылок на чеки.</returns>
     public async Task<PlatformaOfdReceiptReference[]> FetchReceiptsAsync(DateTime fromDate, DateTime toDate, PlatformaOfdDevice device, CancellationToken cancel = default)
     {
+        ThrowIfDisposed();
         const string DateFormat = "dd.MM.yyyy'%20'HH'%3A'mm";
         const string UrlPattern = @"(?<id>\d+)\/(?<ts>\d+)\/(?<sign>\d+)";
 
@@ -106,6 +109,7 @@ internal sealed class PlatformaOfdClient() : ApiClient(Host)
     /// <returns>Информация о чеке.</returns>
     public async Task<Receipt?> FetchReceiptAsync(PlatformaOfdReceiptReference reference, Guid parseId = default, CancellationToken cancel = default)
     {
+        ThrowIfDisposed();
         using var req = new HttpRequestMessage(HttpMethod.Get, reference.ToString());
         using var resp = await Client.SendAsync(req, cancel);
         Auth(resp.Headers);

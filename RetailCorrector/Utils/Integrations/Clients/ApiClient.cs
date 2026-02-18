@@ -24,7 +24,8 @@ public abstract class ResilienceApiClient
     }
 }
 
-public abstract class ApiClient(string host): ResilienceApiClient, IDisposable
+public abstract class ApiClient<TClient>(string host): ResilienceApiClient, IDisposable
+    where TClient: ApiClient<TClient>
 {
     protected readonly HttpClient Client = new(Handler, disposeHandler: false) { BaseAddress = new Uri(host) };
     private bool _disposed;
@@ -42,5 +43,11 @@ public abstract class ApiClient(string host): ResilienceApiClient, IDisposable
         Client.Dispose();
         if(disposing)
             _disposed = true;
+    }
+
+    protected void ThrowIfDisposed()
+    {
+        if (!_disposed) return;
+        throw new ObjectDisposedException(typeof(TClient).Name);
     }
 }

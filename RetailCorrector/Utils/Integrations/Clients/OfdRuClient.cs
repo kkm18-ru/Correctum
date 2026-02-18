@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>Обертка API-клиента OfdRu.</summary>
-internal sealed class OfdRuClient() : ApiClient(Host)
+internal sealed class OfdRuClient() : ApiClient<OfdRuClient>(Host)
 {
     private const string Host = "https://ofd.ru/api/integration/v2/";
     private string _token = "";
@@ -19,6 +19,7 @@ internal sealed class OfdRuClient() : ApiClient(Host)
     /// <exception cref="ArgumentException">Вызывается, если токен не валиден.</exception>
     public async Task SetAuthTokenAsync(string token, CancellationToken cancel = default)
     {
+        ThrowIfDisposed();
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
         using var req = new HttpRequestMessage(HttpMethod.Get, $"kktgroup/list?AuthToken={token}");
         using var resp = await Client.SendAsync(req, cancel).ConfigureAwait(false);
@@ -32,6 +33,7 @@ internal sealed class OfdRuClient() : ApiClient(Host)
     /// <returns>Список регистрационных номеров ККТ.</returns>
     public async Task<OfdRuDevice[]> FetchDevicesAsync(CancellationToken cancel = default)
     {
+        ThrowIfDisposed();
         using var req = new HttpRequestMessage(HttpMethod.Get, $"kkts?AuthToken={_token}");
         using var resp = await Client.SendAsync(req, cancel).ConfigureAwait(false);
         var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
@@ -50,6 +52,7 @@ internal sealed class OfdRuClient() : ApiClient(Host)
     public async Task<Receipt[]> FetchReceiptsAsync
         (Guid parseId, OfdRuDevice device, DateTime fromDate, DateTime toDate, CancellationToken cancel = default)
     {
+        ThrowIfDisposed();
         var uri = $"inn/{device.INN}/kkt/{device.KktRegId}/receipts-info?AuthToken={_token}" +
             $"&dateFrom={fromDate:yyyy-MM-ddTHH:mm:ss}" +
             $"&dateTo={toDate:yyyy-MM-ddTHH:mm:ss}";

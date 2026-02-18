@@ -5,13 +5,13 @@ using System.Text.RegularExpressions;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
 
-internal sealed partial class KktOnlineClient() : ApiClient(Host)
+internal sealed partial class KktOnlineClient() : ApiClient<KktOnlineClient>("https://kkt-online.nalog.ru/lkip.html")
 {
-    private const string Host = "https://kkt-online.nalog.ru/lkip.html";
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     private KktOnlineResponse Check(string query, string serial, int model)
     {
+        ThrowIfDisposed();
         var uri = $"?query={query}&factory_number={serial}&model_code={model:D4}";
         Logger.Trace("Отправка запроса: {Path} {SerialNumber} {Model}", query, serial, model);
         var resp = Client.Send(new HttpRequestMessage(HttpMethod.Get, uri));
