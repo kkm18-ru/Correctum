@@ -43,9 +43,9 @@ internal partial class Saby
             grid.AddChild(tb, 2);
 
             grid.AddChild(CreateLabel("Пароль"), y: 2);
-            tb = new TextBox();
-            tb.SetBinding(TextBox.TextProperty, nameof(Password));
-            grid.AddChild(tb, 2, 2);
+            var pb = new PasswordBox();
+            pb.PasswordChanged += (s, _) => Presenter.Password = ((PasswordBox)s).Password;
+            grid.AddChild(pb, 2, 2);
 
             var btn = new Button
             {

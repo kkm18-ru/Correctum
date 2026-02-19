@@ -175,15 +175,14 @@
                         </MultiBinding>
                     </TextBox.IsEnabled>
                 </TextBox>
-                <TextBox Grid.Column="2" Grid.Row="14" 
-                         Text="{Binding Logging.LokiPassword, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBox.IsEnabled>
+                <PasswordBox Grid.Column="2" Grid.Row="14" Loaded="OnLokiPasswordLoaded" PasswordChanged="OnLokiPasswordChanged">
+                    <PasswordBox.IsEnabled>
                         <MultiBinding Converter="{StaticResource convMultiBoolean}">
                             <Binding Path="Logging.LokiEnabled"/>
                             <Binding Path="Logging.LokiAuthEnabled"/>
                         </MultiBinding>
-                    </TextBox.IsEnabled>
-                </TextBox>
+                    </PasswordBox.IsEnabled>
+                </PasswordBox>
             </Grid>
         </TabItem>
     </TabControl>

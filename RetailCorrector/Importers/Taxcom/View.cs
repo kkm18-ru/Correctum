@@ -44,10 +44,10 @@ partial class Taxcom
             tb.SetBinding(IsEnabledProperty, nameof(CanAuthorized));
             grid.AddChild(tb, 2, 0);
 
-            tb = new TextBox();
-            tb.SetBinding(TextBox.TextProperty, nameof(Password));
-            tb.SetBinding(IsEnabledProperty, nameof(CanAuthorized));
-            grid.AddChild(tb, 2, 2);
+            var pb = new PasswordBox();
+            pb.PasswordChanged += (s, _) => Presenter.Password = ((PasswordBox)s).Password;
+            pb.SetBinding(IsEnabledProperty, nameof(CanAuthorized));
+            grid.AddChild(pb, 2, 2);
 
             tb = new TextBox();
             tb.SetBinding(TextBox.TextProperty, nameof(Agreement));

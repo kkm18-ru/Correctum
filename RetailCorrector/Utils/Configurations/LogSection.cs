@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using NLog;
 using NLog.Layouts;
 using NLog.Loki;
@@ -15,7 +16,11 @@ internal sealed class LogSection
     public string LokiHostName { get; set; } = "MainHost";
     public bool LokiAuthEnabled { get; set; }
     public string LokiUsername { get; set; } = "admin";
-    public string LokiPassword { get; set; } = "1234567890";
+    public string LokiPassword
+    {
+        get => field.StartsWith("enc\0") ? SecretHelper.DecodeSecret(field[4..], Encoding.Unicode) : field;
+        set => field = $"enc\0{SecretHelper.EncodeSecret(value, Encoding.Unicode)}";
+    } = string.Empty;
 
     public static void ReloadLoggingConfiguration(bool notify)
     {

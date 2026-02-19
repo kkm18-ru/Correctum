@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Importers;
 
@@ -17,9 +18,10 @@ internal partial class Saby : INotifyPropertyChanged
     } = "";
     public string Password
     {
-        get;
+        get => SecretHelper.DecodeSecret(field);
         set
         {
+            value = SecretHelper.EncodeSecret(value);
             if(field == value) return;
             field = value;
             PropertyChanged?.Invoke(this, PasswordNotifier);
