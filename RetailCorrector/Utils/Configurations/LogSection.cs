@@ -15,7 +15,7 @@ internal sealed class LogSection
     public string LokiHostName { get; set; } = "MainHost";
     public bool LokiAuthEnabled { get; set; }
     public string LokiUsername { get; set; } = "admin";
-    public string LokiPassword { get; set; } = "1234567890";
+    public string LokiPassword = string.Empty;
 
     public static void ReloadLoggingConfiguration(bool notify)
     {
