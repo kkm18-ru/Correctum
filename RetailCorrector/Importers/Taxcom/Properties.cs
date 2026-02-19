@@ -1,16 +1,41 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Importers;
 
 partial class Taxcom : INotifyPropertyChanged
 {
-    public string Login { get; set => SetField(ref field, value); } = "";
-    public string Password { get; set => SetField(ref field, value); } = "";
-    public string Agreement { get; set => SetField(ref field, value); } = "";
-    public DateTime BeginDate { get; set => SetField(ref field, value); } = DateTime.Today;
-    public DateTime EndDate { get; set => SetField(ref field, value); } = DateTime.Today;
+    public string Login
+    {
+        get;
+        set => SetField(ref field, value);
+    } = "";
+
+    public string Password
+    {
+        get => SecretHelper.DecodeSecret(field);
+        set => SetField(ref field, SecretHelper.EncodeSecret(value));
+    } = "";
+
+    public string Agreement
+    {
+        get;
+        set => SetField(ref field, value);
+    } = "";
+
+    public DateTime BeginDate
+    {
+        get;
+        set => SetField(ref field, value);
+    } = DateTime.Today;
+
+    public DateTime EndDate
+    {
+        get;
+        set => SetField(ref field, value);
+    } = DateTime.Today;
 
     public bool Authorizing
     {
@@ -22,12 +47,17 @@ partial class Taxcom : INotifyPropertyChanged
         }
     } = false;
 
-    public bool Authorized { get; set => SetField(ref field, value);} = false;
+    public bool Authorized
+    {
+        get;
+        set => SetField(ref field, value);
+    } = false;
+
     public bool CanAuthorized => !Authorizing;
-    
+
     public ObservableCollection<string> Devices { get; } = [];
     public ObservableCollection<string> SelectedDevices { get; } = [];
-    
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
