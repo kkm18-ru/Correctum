@@ -1,5 +1,6 @@
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
 using RetailCorrector.UI.Windows.Types;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations;
@@ -25,4 +26,10 @@ public sealed partial class ConfigurationWindow : DialogWindow
         Utils.Configurations.LogSection.ReloadLoggingConfiguration(true);
         base.OnClosing(e);
     }
+
+    private void OnLokiPasswordLoaded(object sender, RoutedEventArgs e) => 
+        ((PasswordBox)sender).Password = Configuration.Instance.Logging.LokiPassword;
+
+    private void OnLokiPasswordChanged(object sender, RoutedEventArgs e) =>
+        Configuration.Instance.Logging.LokiPassword = ((PasswordBox)sender).Password;
 }
