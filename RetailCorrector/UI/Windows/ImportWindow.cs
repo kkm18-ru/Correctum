@@ -104,10 +104,10 @@ namespace RetailCorrector.UI.Windows
                 Close();
                 ReceiptPanel.UpdateReceiptList();
             }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            catch (OperationCanceledException ex) when (cancellationToken.IsCancellationRequested)
             {
                 RemoveReceiptsOfCurrentSession();
-                Logger.Info("Выгрузка чеков была отменена пользователем");
+                Logger.Info(ex, "Выгрузка чеков была отменена пользователем");
                 MessageBox.Show("Выгрузка чеков была отменена пользователем", "", 0, MessageBoxImage.Hand);
             }
             catch (Exception ex)
