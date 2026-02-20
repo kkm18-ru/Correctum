@@ -11,7 +11,7 @@ namespace RetailCorrector.UI.Controls;
 public abstract class FormGrid : Grid, INotifyPropertyChanged
 {
     public static string FormName { get; }
-    public Collection<string> Labels { get; } = [];
+    public Collection<string?> Labels { get; } = [];
     public Collection<UIElement> Elements { get; } = [];
     
     public event PropertyChangedEventHandler? PropertyChanged;
