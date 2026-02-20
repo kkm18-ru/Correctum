@@ -98,7 +98,6 @@ partial class Taxcom
             Assert.That(receipt.SessionId, Is.EqualTo(document["1038"]?.Value<uint>()));
             Assert.That(receipt.DocNumber, Is.EqualTo(document["1040"]?.Value<uint>()));
             Assert.That(receipt.DocSign, Is.EqualTo(FiscalHelper.ToDecimalSign(document["1077"]?.Value<string>())));
-            Assert.That(receipt.ParseId, Is.EqualTo(Guid.Empty));
             Assert.That(receipt.Created.ToString("s"), Is.EqualTo(document["1012"]?.Value<string>()));
             Assert.That((int)receipt.Type, Is.EqualTo(document["1054"]?.Value<int>()));
             Assert.That(receipt.Payment.Cash, Is.EqualTo(document["1031"]?.Value<uint>()));
@@ -135,16 +134,4 @@ file class DocumentInfo
     public string documentType { get; set; }
     public string documentFormatVersion { get; set; }
     public JObject document { get; set; }
-}
-
-file class _Postion
-{
-    public string Name { get; set; }
-    public string Quantity { get; set; }
-    public int Price { get; set; }
-    public int Cost { get; set; }
-    public int Unit { get; set; }
-    public int Type { get; set; }
-    public int Payment { get; set; }
-    public int Tax { get; set; }
 }

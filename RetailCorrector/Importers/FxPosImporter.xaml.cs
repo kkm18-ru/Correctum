@@ -1,16 +1,17 @@
 using System.Runtime.CompilerServices;
 using Dapper;
 using Microsoft.Data.Sqlite;
+using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
 
 namespace RetailCorrector.Importers;
 
+[ImporterName("FxPOS")]
 public sealed partial class FxPosImporter : ImporterBase
-{
-    public new static string FormName { get; } = "FxPOS";
-    
+{   
+    [ImporterProperty("Путь к файлу")]
     public string FilePath { get; set => SetField(ref field, value); } = "";
 
     public FxPosImporter()
@@ -18,7 +19,7 @@ public sealed partial class FxPosImporter : ImporterBase
         InitializeComponent();
     }
 
-    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, 
+    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, Guid sessionId,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await using (var conn = new SqliteConnection($"Data Source={FilePath};Mode=ReadOnly"))
@@ -36,7 +37,7 @@ public sealed partial class FxPosImporter : ImporterBase
 
                     yield return new Receipt
                     {
-                        ParseId = Guid.Empty, // todo
+                        ImportSessionId = sessionId,
                         Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, doc), cancellationToken)).Select(i => (Position)i)],
                         Created = doc.Date,
                         DocSign = doc.Sign,

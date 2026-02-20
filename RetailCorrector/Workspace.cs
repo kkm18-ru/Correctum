@@ -8,7 +8,7 @@ namespace RetailCorrector
         public static Workspace Instance => field ??= new Workspace();
 
         public Guid Id { get; }
-        public ObservableCollection<ImportSession> ImportHistory { get; }
+        public ObservableCollection<ImportSessionInfo> ImportHistory { get; }
         public ObservableCollection<Receipt> Receipts { get; }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 

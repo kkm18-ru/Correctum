@@ -85,10 +85,10 @@ namespace RetailCorrector.UI.Windows
 
         private void Submit(object? sender, RoutedEventArgs args)
         {
-            Workspace.Instance.ImportHistory.Add(new ImportSession($"Вставка из {Current.Name}"));
+            Workspace.Instance.ImportHistory.Add(new ImportSessionInfo($"Вставка из {Current.Name}"));
             var receipt = new Receipt
             {
-                ParseId = Workspace.Instance.ImportHistory[^1].Id,
+                ImportSessionId = Workspace.Instance.ImportHistory[^1].Id,
                 Payment = new Payment()
             };
             if (Current.Parse(Text, ref receipt))

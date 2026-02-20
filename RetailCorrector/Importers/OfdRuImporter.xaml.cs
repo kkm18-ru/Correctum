@@ -1,33 +1,35 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
 
 namespace RetailCorrector.Importers;
 
+[ImporterName("OFD.ru")]
 public sealed partial class OfdRuImporter : ImporterBase
 {
-    public new static string FormName { get; } = "OFD.ru";
-    
-    public string Storage { get; set => SetField(ref field, value); } = "";
-    
+    [ImporterProperty("Начало периода")]
     public DateTime BeginDate { get; set => SetField(ref field, value); } = DateTime.Today;
+    [ImporterProperty("Конец периода")]
     public DateTime EndDate { get; set => SetField(ref field, value); } = DateTime.Today;
     
     public bool Authorizing { get; set => SetField(ref field, value); } = false;
     public bool Authorized { get; set => SetField(ref field, value); } = false;
     
     public ObservableCollection<OfdRuDevice> Devices { get; } = [];
+    [ImporterProperty("ККТ")]
     public ObservableCollection<OfdRuDevice> SelectedDevices { get; } = [];
 
     private OfdRuClient _client = new();
     private string Token
     {
         get => SecretHelper.DecodeSecret(field);
-        set => SetField(ref field, SecretHelper.EncodeSecret(field));
+        set => SetField(ref field, SecretHelper.EncodeSecret(value));
     } = "";
 
     public OfdRuImporter()
@@ -41,7 +43,8 @@ public sealed partial class OfdRuImporter : ImporterBase
         base.OnClosing(e);
     }
 
-    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, CancellationToken cancellationToken = default)
+    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, Guid sessionId,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         progress.ReportMaxValue(((int)(EndDate - BeginDate).TotalDays + 1) * SelectedDevices.Count);
         var i = 0;
@@ -50,8 +53,8 @@ public sealed partial class OfdRuImporter : ImporterBase
             foreach(var device in SelectedDevices)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var arr = await _client.FetchReceiptsAsync(Guid.Empty, device, 
-                    day, day.AddSeconds(86399), cancellationToken); // todo
+                var arr = await _client.FetchReceiptsAsync(sessionId, device, 
+                    day, day.AddSeconds(86399), cancellationToken);
                 foreach (var receipt in arr) yield return receipt;
                 progress.ReportCurrValue(++i);
             }

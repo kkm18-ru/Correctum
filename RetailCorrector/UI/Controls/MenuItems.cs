@@ -1,5 +1,7 @@
+using System.Reflection;
 using System.Windows.Controls;
 using RetailCorrector.Actions;
+using RetailCorrector.Attributes;
 using RetailCorrector.Exporters;
 using RetailCorrector.Importers;
 using RetailCorrector.UI.Windows;
@@ -11,7 +13,7 @@ internal class ImportMenuItem : MenuItem
 {
     public ImportMenuItem(Type type)
     {
-        Header = type.GetProperty(nameof(FormGrid.FormName))?.GetValue(null, null) ?? "Безымянный";
+        Header = type.GetCustomAttribute<ImporterNameAttribute>()?.Name ?? "Безымянный";
         Command = new RelayCommand(_ =>
         {
             var form = (ImporterBase)Activator.CreateInstance(type)!;

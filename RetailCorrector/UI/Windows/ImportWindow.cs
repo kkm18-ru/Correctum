@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using RetailCorrector.Importers;
 using RetailCorrector.UI.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using RetailCorrector.Attributes;
 using RetailCorrector.Converters;
+using RetailCorrector.Data;
 using RetailCorrector.Utils;
 
 namespace RetailCorrector.UI.Windows
@@ -42,7 +45,7 @@ namespace RetailCorrector.UI.Windows
             
             SizeToContent = SizeToContent.WidthAndHeight;
             MaxWidth = 361;
-            SetBinding(TitleProperty, new Binding(nameof(FormGrid.FormName)) 
+            SetBinding(TitleProperty, new Binding(nameof(ImporterBase.DisplayName)) 
             { 
                 StringFormat = "Импортер чеков \"{0}\"",
                 Source = importer 
@@ -97,24 +100,31 @@ namespace RetailCorrector.UI.Windows
 
         private async Task ImportAsync(ImporterBase importer, CancellationToken cancellationToken)
         {
+            ImportSessionInfo? sessionInfo = null;
             try
             {
-                await foreach (var receipt in importer.ImportAsync(_progress, cancellationToken))
+                sessionInfo = new ImportSessionInfo(importer);
+                Workspace.Instance.ImportHistory.Add(sessionInfo.Value);
+                await foreach (var receipt in importer.ImportAsync(_progress, sessionInfo.Value.Id, cancellationToken))
                     Workspace.Instance.Receipts.Add(receipt);
                 Close();
                 ReceiptPanel.UpdateReceiptList();
             }
             catch (OperationCanceledException ex) when (cancellationToken.IsCancellationRequested)
             {
-                RemoveReceiptsOfCurrentSession();
+                RemoveReceiptsOfCurrentSession(sessionInfo!.Value);
                 Logger.Info(ex, "Выгрузка чеков была отменена пользователем");
                 MessageBox.Show("Выгрузка чеков была отменена пользователем", "", 0, MessageBoxImage.Hand);
             }
             catch (Exception ex)
             {
-                RemoveReceiptsOfCurrentSession();
+                RemoveReceiptsOfCurrentSession(sessionInfo!.Value);
                 Logger.Error(ex, "Необработаное исключение");
+                #if DEBUG
+                MessageBox.Show(ex.ToString(), "Ошибка выгрузки чеков", 0, MessageBoxImage.Error);
+                #else
                 MessageBox.Show(ex.Message, "Ошибка выгрузки чеков", 0, MessageBoxImage.Error);
+                #endif
             }
             finally
             {
@@ -122,11 +132,12 @@ namespace RetailCorrector.UI.Windows
             }
         }
 
-        private void RemoveReceiptsOfCurrentSession()
+        private static void RemoveReceiptsOfCurrentSession(ImportSessionInfo sessionInfo)
         {
-            // todo Добавить определение сессии чеков
+            if (!Workspace.Instance.ImportHistory.Remove(sessionInfo)) return;            
             for (var i = Workspace.Instance.Receipts.Count - 1; i >= 0; i--)
-                Workspace.Instance.Receipts.RemoveAt(i);
+                if(sessionInfo.Id == Workspace.Instance.Receipts[i].ImportSessionId)
+                    Workspace.Instance.Receipts.RemoveAt(i);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -5,7 +5,7 @@ namespace RetailCorrector.Data
 {
     public struct Receipt(bool @readonly = false)
     {
-        public required Guid ParseId { get; init; }
+        public required Guid ImportSessionId { get; init; }
         public uint DocNumber { get; set; }
         public string RegId { get; set; }
         public string StorageId { get; set; }

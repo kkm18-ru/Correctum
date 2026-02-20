@@ -242,7 +242,7 @@ file struct ReceiptResponse
 
     public Receipt ToReceipt(Guid parseId) => new()
     {
-        ParseId = parseId,
+        ImportSessionId = parseId,
         RegId = RegId,
         StorageId = StorageId,
         DocInSession = DocInSession,

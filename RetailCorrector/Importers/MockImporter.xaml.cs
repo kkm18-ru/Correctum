@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Bogus;
+using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.UI.Controls;
@@ -7,10 +8,9 @@ using RetailCorrector.Utils;
 
 namespace RetailCorrector.Importers;
 
+[ImporterName("Mock")]
 public sealed partial class MockImporter : ImporterBase
 {
-    public new static string FormName { get; } = "Mock";
-    
     public int Minimum { get; set => SetField(ref field, value); } = 1;
     public int Maximum { get; set => SetField(ref field, value); } = 1000;
 
@@ -19,7 +19,7 @@ public sealed partial class MockImporter : ImporterBase
         InitializeComponent();
     }
 
-    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress,
+    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, Guid sessionId,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var faker = new Faker();
@@ -50,7 +50,7 @@ public sealed partial class MockImporter : ImporterBase
                 Type = faker.Random.Enum<Operation>(),
                 Payment = GeneratePayment(faker, sum),
                 TotalSum = sum,
-                ParseId = Guid.Empty,
+                ImportSessionId = sessionId,
                 TaxationSystem = faker.Random.Enum<TaxationSystem>()
             };
             progress.ReportCurrValue(++i);

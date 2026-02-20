@@ -3,25 +3,28 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
 
 namespace RetailCorrector.Importers;
 
+[ImporterName("Платформа ОФД")]
 public sealed partial class PlatformOfdImporter : ImporterBase
 {
-    public new static string FormName { get; } = "Платформа ОФД";
-    
     public string SessionId { get; set => SetField(ref field, value); } = "";
     
     public bool Authorizing { get; set => SetField(ref field, value); } = false;
     public bool Authorized { get; set => SetField(ref field, value); } = false;
     
+    [ImporterProperty("Начало периода")]
     public DateTime BeginDate { get; set => SetField(ref field, value); } = DateTime.Now;
+    [ImporterProperty("Конец периода")]
     public DateTime EndDate { get; set => SetField(ref field, value); } = DateTime.Now;
     
     public ObservableCollection<PlatformaOfdDevice> Devices { get; } = [];
+    [ImporterProperty("ККТ")]
     public ObservableCollection<PlatformaOfdDevice> SelectedDevices { get; } = [];
 
     private readonly PlatformaOfdClient _client = new();
@@ -49,7 +52,7 @@ public sealed partial class PlatformOfdImporter : ImporterBase
         base.OnClosing(e);
     }
 
-    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, 
+    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, Guid sessionId,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         progress.ReportMaxValue((int)Math.Ceiling((EndDate - BeginDate).TotalDays / 7) * SelectedDevices.Count);
@@ -61,7 +64,7 @@ public sealed partial class PlatformOfdImporter : ImporterBase
                 end = end > EndDate ? EndDate : end;
                 var references = await _client.FetchReceiptsAsync(d, end, Device, cancellationToken);
                 foreach (var @ref in references)
-                    if(await _client.FetchReceiptAsync(@ref, Guid.Empty, cancellationToken) is {} receipt) // todo
+                    if(await _client.FetchReceiptAsync(@ref, sessionId, cancellationToken) is {} receipt)
                         yield return receipt;
                 progress.ReportCurrValue(i);
             }

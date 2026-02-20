@@ -3,16 +3,17 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
+using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
 
 namespace RetailCorrector.Importers;
 
+[ImporterName("Отчет эквайринга")]
 public sealed partial class AcquirerImporter : ImporterBase
 {
-    public new static string FormName { get; } = "Отчет эквайринга";
-    
+    [ImporterProperty("Путь к файлу")]
     public string FilePath { get; set => SetField(ref field, value); } = "";
     public char Separator { get; set => SetField(ref field, value); } = ';';
     public bool HasHeaders { get; set => SetField(ref field, value); } = true;
@@ -31,7 +32,7 @@ public sealed partial class AcquirerImporter : ImporterBase
         InitializeComponent();
     }
 
-    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, 
+    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, Guid sessionId,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var lines = await File.ReadAllLinesAsync(FilePath, cancellationToken);
@@ -42,7 +43,7 @@ public sealed partial class AcquirerImporter : ImporterBase
             var operation = columns[OperationReceipt].Trim('"');
             yield return new Receipt
             {
-                ParseId = Guid.Empty, // todo
+                ImportSessionId = sessionId,
                 DocInSession = 0,
                 RegId = 0.ToString("D16"),
                 StorageId = 0.ToString("D16"),

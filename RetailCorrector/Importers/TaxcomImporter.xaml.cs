@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Exceptions;
 using RetailCorrector.Utils;
@@ -11,18 +12,20 @@ using Range = (string drive, uint min, uint max);
 
 namespace RetailCorrector.Importers;
 
+[ImporterName("Такском-Касса")]
 public sealed partial class TaxcomImporter : ImporterBase
 {
-    public new static string FormName { get; } = "Такском-Касса";
-
     public string Login { get; set => SetField(ref field, value); } = string.Empty;
     public string Agreement { get; set => SetField(ref field, value); } = string.Empty;
+    [ImporterProperty("Начало периода")]
     public DateTime BeginDate { get; set => SetField(ref field, value); } = DateTime.Now;
+    [ImporterProperty("Конец периода")]
     public DateTime EndDate { get; set => SetField(ref field, value); } = DateTime.Now;
     public bool Authorizing { get; private set => SetField(ref field, value); } = false;
     public bool Authorized { get; private set => SetField(ref field, value); } = false;
 
     public ObservableCollection<string> Devices { get; } = [];
+    [ImporterProperty("ККТ")]
     public ObservableCollection<string> SelectedDevices { get; } = [];
 
     private string _password
@@ -66,7 +69,7 @@ public sealed partial class TaxcomImporter : ImporterBase
         }
     }
 
-    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, 
+    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, Guid sessionId,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var ranges = new List<Range>(SelectedDevices.Count);
@@ -94,7 +97,7 @@ public sealed partial class TaxcomImporter : ImporterBase
         {
             for (var j = range.min; j <= range.max; j++)
             {
-                if (await _client.FetchReceiptAsync(range.drive, j, Guid.Empty, cancellationToken) is { } receipt) // todo change importID
+                if (await _client.FetchReceiptAsync(range.drive, j, sessionId, cancellationToken) is { } receipt)
                     yield return receipt;
                 progress.ReportCurrValue(++i);
             }

@@ -216,7 +216,7 @@ file readonly struct TaxcomDocumentResponse
         var receipt = new Receipt
         {
             BuyerContact = Details["1008"]?.GetValue<string>() ?? "",
-            ParseId = importId,
+            ImportSessionId = importId,
             StorageId = Details["1041"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
             RegId = Details["1037"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
             DocNumber = Details["1040"]?.GetValue<uint>() ?? 0,

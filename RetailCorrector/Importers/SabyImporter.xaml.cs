@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using RetailCorrector.Attributes;
 using RetailCorrector.Data;
 using RetailCorrector.Exceptions.Saby;
 using RetailCorrector.Utils;
@@ -10,20 +11,23 @@ using RetailCorrector.Utils.Integrations.Clients;
 
 namespace RetailCorrector.Importers;
 
+[ImporterName("SabyOFD")]
 public sealed partial class SabyImporter : ImporterBase
-{
-    public new static string FormName { get; } = "SabyOFD";  
+{ 
     
     public string Login { get; set => SetField(ref field, value); } = "";
     public string Inn { get; set => SetField(ref field, value); } = "";
     
+    [ImporterProperty("Начало периода")]
     public DateTime FromDate { get; set => SetField(ref field, value); } = DateTime.Now;
+    [ImporterProperty("Конец периода")]
     public DateTime ToDate { get; set => SetField(ref field, value); } = DateTime.Now;
     
     public bool Authorizing { get; private set => SetField(ref field, value); } = false;
     public bool Authorized { get; private set => SetField(ref field, value); } = false;
     
     public ObservableCollection<string> Devices { get; set; } = [];
+    [ImporterProperty("ККТ")]
     public ObservableCollection<string> SelectedDevices { get; set; } = [];
 
     private string Password
@@ -39,7 +43,7 @@ public sealed partial class SabyImporter : ImporterBase
         InitializeComponent();
     }
 
-    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, 
+    public override async IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress, Guid sessionId,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var drives = new Dictionary<string, SabyDriveResponse[]>();
@@ -55,17 +59,17 @@ public sealed partial class SabyImporter : ImporterBase
         {
             foreach (var drive in drives[device])
             {
-                await foreach (var receipt in ParseByStorage(device, drive, progress, cancellationToken))
+                await foreach (var receipt in ParseByStorage(device, sessionId, drive, progress, cancellationToken))
                     yield return receipt;
             }
         }
     }
     
-    private async IAsyncEnumerable<Receipt> ParseByStorage(string regId, SabyDriveResponse drive, 
+    private async IAsyncEnumerable<Receipt> ParseByStorage(string regId, Guid sessionId, SabyDriveResponse drive, 
         VisualProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var i = 0;
-        var baseRequest = new SabyReceiptsRequest(Guid.Empty, Inn, regId, drive.Id); // todo
+        var baseRequest = new SabyReceiptsRequest(sessionId, Inn, regId, drive.Id);
         var (start, end) = GetAvailablePeriod(drive);
         for(var day = start; day <= end; day = day.AddDays(1))
         {

@@ -111,7 +111,7 @@ file struct Document
 
     public Receipt ToReceipt(Guid ParseId) => new()
     {
-        ParseId = ParseId,
+        ImportSessionId = ParseId,
         RegId = KktRegNumber,
         StorageId = FnNumber,
         DocNumber = DocNumber,
