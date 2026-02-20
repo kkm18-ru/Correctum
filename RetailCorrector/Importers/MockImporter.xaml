@@ -1,0 +1,16 @@
+<local:ImporterBase x:Class="RetailCorrector.Importers.MockImporter"
+                DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:s="clr-namespace:System;assembly=mscorlib"
+                xmlns:control="clr-namespace:RetailCorrector.UI.Controls"
+                xmlns:local="clr-namespace:RetailCorrector.Importers"
+                mc:Ignorable="d"
+                d:DesignHeight="300" d:DesignWidth="300">
+    <local:ImporterBase.Labels>
+        <s:String>Количество чеков</s:String>
+    </local:ImporterBase.Labels>
+    <control:IntegerRange Minimum="{Binding Minimum}" Maximum="{Binding Maximum}"/>
+</local:ImporterBase>

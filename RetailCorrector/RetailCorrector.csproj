@@ -18,8 +18,8 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<Compile Remove="Importers\Taxcom*.cs" />
-		<Compile Remove="Importers\Mock*.cs" />
+		<Compile Remove="Importers\MockImporter.xaml.cs" />
+		<Page Remove="Importers\MockImporter.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
