@@ -1,20 +1,11 @@
-﻿using RetailCorrector.Data;
-using RetailCorrector.UI.Windows;
+using RetailCorrector.Data;
+using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 
 namespace RetailCorrector.Importers;
 
-internal abstract class ImporterBase<TP, TV> : IImporter, ISingleton<TP>
-    where TP : ImporterBase<TP, TV>, ISingleton<TP>, new()
-    where TV : ImporterView<TV, TP>, new()
+public abstract class ImporterBase: FormGrid
 {
-    public static TP Instance => field ??= new TP();
-
-    public abstract string Name { get; }
-    protected ImportSession parseInfo;
-    public abstract ImportSession GenerateInfo();
-
-    public void Show() => new ImportWindow(new TV()).ShowDialog();
-    public abstract IAsyncEnumerable<Receipt> Import(IProgress<long> progress, CancellationToken cancellationToken);
-    public virtual void OnClosing() { }
+    public abstract IAsyncEnumerable<Receipt> ImportAsync(VisualProgress progress,
+        CancellationToken cancellationToken = default);
 }
