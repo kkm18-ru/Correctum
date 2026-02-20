@@ -1,0 +1,41 @@
+<local:ImporterBase x:Class="RetailCorrector.Importers.OfdRuImporter"
+                DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:s="clr-namespace:System;assembly=mscorlib"
+                xmlns:control="clr-namespace:RetailCorrector.UI.Controls"
+                xmlns:conv="clr-namespace:RetailCorrector.Converters"
+                xmlns:local="clr-namespace:RetailCorrector.Importers"
+                xmlns:utils="clr-namespace:RetailCorrector.Utils"
+                xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                mc:Ignorable="d"
+                d:DesignHeight="300" d:DesignWidth="300">
+    <local:ImporterBase.Labels>
+        <s:String>Аутентификационный токен</s:String>
+        <x:Null/>
+        <s:String>Регистрационный номер</s:String>
+        <s:String>Начало сканирования</s:String>
+        <s:String>Конец сканирования</s:String>
+    </local:ImporterBase.Labels>
+    
+    <PasswordBox PasswordChanged="OnTokenChanged"
+                 IsEnabled="{Binding Authorizing, Mode=OneWay, 
+                 Converter={x:Static conv:InvertBooleanConverter.Instance}}"/>
+    <Button Click="Auth"
+            IsEnabled="{Binding Authorizing, Mode=OneWay, 
+            Converter={x:Static conv:InvertBooleanConverter.Instance}}"/>
+    <xctk:CheckComboBox IsEditable="True" DisplayMemberPath="KktRegId"
+                        IsEnabled="{Binding Authorized, Mode=OneWay}"
+                        ItemsSource="{Binding Devices, Mode=OneWay}"
+                        SelectedItemsOverride="{Binding SelectedDevices, Mode=TwoWay}"/>
+    <DatePicker SelectedDateFormat="Short" DisplayDateStart="{x:Static utils:Constants.OfdBeginDate}"
+                SelectedDate="{Binding BeginDate, Mode=TwoWay}"
+                DisplayDateEnd="{Binding EndDate, Mode=OneWay}"
+                IsEnabled="{Binding Authorized, Mode=OneWay}"/>
+    <DatePicker SelectedDateFormat="Short" DisplayDateEnd="{x:Static s:DateTime.Now}"
+                SelectedDate="{Binding EndDate, Mode=TwoWay}"
+                DisplayDateStart="{Binding BeginDate, Mode=OneWay}"
+                IsEnabled="{Binding Authorized, Mode=OneWay}"/>
+</local:ImporterBase>
