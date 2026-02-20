@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using RetailCorrector.Importers;
 using RetailCorrector.UI.Controls;
 
 namespace RetailCorrector.Utils;
@@ -20,17 +21,10 @@ internal static class ModuleRegistry
         new(RetailCorrector.Actions.RemoveReceipt.Instance),
     ];
 
-    public static readonly ImmutableArray<ImportMenuItem> Importers = [
-        new(RetailCorrector.Importers.Saby.Instance),
-        new(RetailCorrector.Importers.Sqlite.Instance),
-        new(RetailCorrector.Importers.OfdRu.Instance),
-        new(RetailCorrector.Importers.PlatformOfd.Instance),
-        new(RetailCorrector.Importers.FxPOS.Instance),
-        new(RetailCorrector.Importers.Acquirer.Instance),
-        new(RetailCorrector.Importers.Taxcom.Instance),
-        
-        #if DEBUG
-        new(RetailCorrector.Importers.Mock.Instance),
-        #endif
-    ];
+    public static readonly ImmutableArray<ImportMenuItem> Importers = [..SearchImporters()];
+
+    private static IEnumerable<ImportMenuItem> SearchImporters() =>
+        from type in typeof(Program).Assembly.GetTypes() 
+        where type.BaseType == typeof(ImporterBase) 
+        select new ImportMenuItem(type);
 }

@@ -9,10 +9,15 @@ namespace RetailCorrector.UI.Controls;
 
 internal class ImportMenuItem : MenuItem
 {
-    public ImportMenuItem(IImporter importer)
+    public ImportMenuItem(Type type)
     {
-        Header = importer.Name;
-        Command = new RelayCommand(_ => importer.Show());
+        Header = type.GetProperty(nameof(FormGrid.FormName))?.GetValue(null, null) ?? "Безымянный";
+        Command = new RelayCommand(_ =>
+        {
+            var form = (ImporterBase)Activator.CreateInstance(type)!;
+            var window = new ImportWindow(form);
+            window.ShowDialog();
+        });
     }
 }
 
