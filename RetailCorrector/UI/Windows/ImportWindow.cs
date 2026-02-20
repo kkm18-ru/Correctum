@@ -52,6 +52,8 @@ namespace RetailCorrector.UI.Windows
             var panel = new StackPanel { Margin = new Thickness(5) };
             Content = panel;
             
+            importer.SetBinding(IsEnabledProperty,
+                new Binding(nameof(Running)) { Source = this, Converter = InvertBooleanConverter.Instance });
             panel.Children.Add(importer);
             
             panel.Children.Add(new Separator { Height = 5, Width = 0});
