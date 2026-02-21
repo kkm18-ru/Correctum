@@ -106,6 +106,7 @@ namespace RetailCorrector.UI.Windows
             ImportSessionInfo? sessionInfo = null;
             try
             {
+                
                 sessionInfo = new ImportSessionInfo(importer);
                 Workspace.Instance.ImportHistory.Add(sessionInfo.Value);
                 await foreach (var receipt in importer.ImportAsync(_progress, sessionInfo.Value.Id, cancellationToken))
