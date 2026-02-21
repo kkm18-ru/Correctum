@@ -32,6 +32,9 @@ public sealed partial class OfdRuImporter : ImporterBase
         set => SetField(ref field, SecretHelper.EncodeSecret(value));
     } = "";
 
+    public override bool CanStartClick =>
+        !string.IsNullOrEmpty(Token) && Authorized && SelectedDevices.Count > 0;
+
     public OfdRuImporter()
     {
         InitializeComponent();

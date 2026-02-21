@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using RetailCorrector.Importers;
 using RetailCorrector.UI.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using RetailCorrector.Attributes;
 using RetailCorrector.Converters;
 using RetailCorrector.Data;
 using RetailCorrector.Utils;
@@ -20,6 +18,7 @@ namespace RetailCorrector.UI.Windows
 
         public int ProgressValue { get; set => SetField(ref field, value); } = 0;
         public int ProgressMaximum { get; set => SetField(ref field, value); } = 0;
+
         public bool Running
         {
             private get;
@@ -33,7 +32,7 @@ namespace RetailCorrector.UI.Windows
                 }
                 else _cancellationTokenSource = new CancellationTokenSource();
             }
-        }
+        } = false;
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -74,8 +73,12 @@ namespace RetailCorrector.UI.Windows
             controlPanel.Children.Add(new Separator { Width = 5, Height = 0 });
             
             var btnStart = new Button { Content = "Запустить", Width = 100 };
-            btnStart.SetBinding(IsEnabledProperty, new Binding(nameof(Running))
+            var btnStartEnabled = new MultiBinding{Converter = new MultiBooleanConverter()};
+            btnStartEnabled.Bindings.Add(new Binding(nameof(Running))
                 { Mode = BindingMode.OneWay, Source = this, Converter = InvertBooleanConverter.Instance });
+            btnStartEnabled.Bindings.Add(new Binding(nameof(ImporterBase.CanStartClick))
+                { Mode = BindingMode.OneWay, Source = importer });
+            btnStart.SetBinding(IsEnabledProperty, btnStartEnabled);
             btnStart.Click += async (_, _) =>
             {
                 Running = true;

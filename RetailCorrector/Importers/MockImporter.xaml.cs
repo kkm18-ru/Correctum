@@ -14,6 +14,8 @@ public sealed partial class MockImporter : ImporterBase
     public int Minimum { get; set => SetField(ref field, value); } = 1;
     public int Maximum { get; set => SetField(ref field, value); } = 1000;
 
+    public override bool CanStartClick => true;
+    
     public MockImporter()
     {
         InitializeComponent();

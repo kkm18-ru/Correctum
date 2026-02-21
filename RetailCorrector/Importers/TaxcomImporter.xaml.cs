@@ -17,10 +17,12 @@ public sealed partial class TaxcomImporter : ImporterBase
 {
     public string Login { get; set => SetField(ref field, value); } = string.Empty;
     public string Agreement { get; set => SetField(ref field, value); } = string.Empty;
+    
     [ImporterProperty("Начало периода")]
     public DateTime BeginDate { get; set => SetField(ref field, value); } = DateTime.Now;
     [ImporterProperty("Конец периода")]
     public DateTime EndDate { get; set => SetField(ref field, value); } = DateTime.Now;
+    
     public bool Authorizing { get; private set => SetField(ref field, value); } = false;
     public bool Authorized { get; private set => SetField(ref field, value); } = false;
 
@@ -28,13 +30,17 @@ public sealed partial class TaxcomImporter : ImporterBase
     [ImporterProperty("ККТ")]
     public ObservableCollection<string> SelectedDevices { get; } = [];
 
-    private string _password
+    private string Password
     {
         get => SecretHelper.DecodeSecret(field);
         set => SetField(ref field, SecretHelper.EncodeSecret(value));
     } = "";
     private readonly TaxcomClient _client = new();
-    
+
+    public override bool CanStartClick =>
+        !string.IsNullOrWhiteSpace(Login) && !string.IsNullOrWhiteSpace(Password) &&
+        Authorized && SelectedDevices.Count > 0;
+
     public TaxcomImporter()
     {
         InitializeComponent();
@@ -48,7 +54,7 @@ public sealed partial class TaxcomImporter : ImporterBase
             await Dispatcher.InvokeAsync(() => Devices.Clear());
                 
             await Dispatcher.InvokeAsync(() => Authorizing = true);
-            await _client.AuthAsync(Login, _password, Agreement);
+            await _client.AuthAsync(Login, Password, Agreement);
             await foreach (var outlet in _client.FetchOutletIdsAsync())
             {
                 await foreach (var device in _client.FetchDevicesAsync(outlet))
@@ -111,5 +117,5 @@ public sealed partial class TaxcomImporter : ImporterBase
     }
 
     private void OnPasswordChanged(object sender, RoutedEventArgs e) => 
-        _password = ((PasswordBox)sender).Password;
+        Password = ((PasswordBox)sender).Password;
 }

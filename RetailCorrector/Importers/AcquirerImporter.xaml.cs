@@ -26,7 +26,13 @@ public sealed partial class AcquirerImporter : ImporterBase
     public string RefundPattern { get; set => SetField(ref field, value); } = "Возврат";
     public TaxRate ItemVat { get; set => SetField(ref field, value); } = TaxRate.Without;
     public ObservableCollection<string> Headers { get; } = [];
-    
+
+    public override bool CanStartClick =>
+        !string.IsNullOrWhiteSpace(FilePath) && Path.Exists(FilePath) &&
+        !string.IsNullOrWhiteSpace(ItemName) && !string.IsNullOrWhiteSpace(DateFormat) &&
+        !string.IsNullOrWhiteSpace(IncomePattern) && !string.IsNullOrWhiteSpace(RefundPattern) &&  
+        DateReceipt > -1 && TotalReceipt > -1 && OperationReceipt > -1;
+
     public AcquirerImporter()
     {
         InitializeComponent();

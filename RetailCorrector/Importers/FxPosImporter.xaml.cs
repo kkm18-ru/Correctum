@@ -1,3 +1,4 @@
+using System.IO;
 using System.Runtime.CompilerServices;
 using Dapper;
 using Microsoft.Data.Sqlite;
@@ -13,6 +14,8 @@ public sealed partial class FxPosImporter : ImporterBase
 {   
     [ImporterProperty("Путь к файлу")]
     public string FilePath { get; set => SetField(ref field, value); } = "";
+    
+    public override bool CanStartClick => !string.IsNullOrWhiteSpace(FilePath) &&  Path.Exists(FilePath);
 
     public FxPosImporter()
     {

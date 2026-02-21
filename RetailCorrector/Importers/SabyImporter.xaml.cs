@@ -37,7 +37,11 @@ public sealed partial class SabyImporter : ImporterBase
     }
 
     private readonly SabyClient _client = new();
-    
+
+    public override bool CanStartClick =>
+        !string.IsNullOrWhiteSpace(Login) && !string.IsNullOrWhiteSpace(Password) &&
+        Authorized && !string.IsNullOrWhiteSpace(Inn) && SelectedDevices.Count > 0;
+
     public SabyImporter()
     {
         InitializeComponent();

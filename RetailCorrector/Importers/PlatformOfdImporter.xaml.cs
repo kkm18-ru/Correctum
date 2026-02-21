@@ -29,6 +29,10 @@ public sealed partial class PlatformOfdImporter : ImporterBase
 
     private readonly PlatformaOfdClient _client = new();
 
+    public override bool CanStartClick =>
+        !string.IsNullOrWhiteSpace(AccessToken) && !string.IsNullOrWhiteSpace(RefreshToken) &&
+        !string.IsNullOrWhiteSpace(SessionId) && Authorized && SelectedDevices.Count > 0;
+
     private string AccessToken
     {
         get => SecretHelper.DecodeSecret(field); 
