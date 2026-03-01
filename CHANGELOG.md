@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.8.0](https://github.com/ornaras/RetailCorrector/compare/v0.7.1...v0.8.0) (2026-03-01)
+
+
+### ✨ Нововведения
+
+* Добавлено централизированное логирование ([#22](https://github.com/ornaras/RetailCorrector/issues/22)) ([611d1e6](https://github.com/ornaras/RetailCorrector/commit/611d1e678f3dcf9b563056079571755400684ccd))
+* Улучшена безопасность чувствительных данных ([#29](https://github.com/ornaras/RetailCorrector/issues/29)) ([e450a82](https://github.com/ornaras/RetailCorrector/commit/e450a821b6c9eff376a6a17f72df93bcb5c0bcff))
+
+
+### 🐞 Исправления
+
+* Добавлены исполнении ФН в конвертер ([e8ec72a](https://github.com/ornaras/RetailCorrector/commit/e8ec72af5f812ae4a0ba194f50a039d846fef9e6))
+* Исправлены жизненные циклы API-клиентов ([#25](https://github.com/ornaras/RetailCorrector/issues/25)) ([08f1005](https://github.com/ornaras/RetailCorrector/commit/08f10056cbb8d244a24511978a90903f3266a536))
+* Удалены лишние пустые символы в исполнении ФН ([b586bb2](https://github.com/ornaras/RetailCorrector/commit/b586bb217162a09bda2282e570126ae7e3645f4c))
+
 ## [0.7.1](https://github.com/ornaras/RetailCorrector/compare/v0.7.0...v0.7.1) (2026-02-12)
 
 
