@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Correctum.Core\Correctum.Core.csproj" />
+  </ItemGroup>
+
+</Project>

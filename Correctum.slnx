@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Sources/">
+    <Project Path="src/Correctum.Core/Correctum.Core.csproj" />
+    <Project Path="src/Correctum.Infrastructure/Correctum.Infrastructure.csproj" />
+    <Project Path="src/Correctum.Presentation/Correctum.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/Correctum.Tests.Core/Correctum.Tests.Core.csproj" />
+    <Project Path="tests/Correctum.Tests.Infrastructure/Correctum.Tests.Infrastructure.csproj" />
+    <Project Path="tests/Correctum.Tests.Presentation/Correctum.Tests.Presentation.csproj" />
+  </Folder>
+  <Project Path="build/Build.csproj" />
+</Solution>
