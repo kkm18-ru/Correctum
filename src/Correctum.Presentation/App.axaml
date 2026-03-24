@@ -1,8 +1,53 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmImport="using:Correctum.ViewModels.Importers"
+             xmlns:vImport="using:Correctum.Views.Importers"
+             xmlns:semi="https://irihi.tech/semi"
+             xmlns:u-semi="https://irihi.tech/ursa/themes/semi"
+             xmlns:conv="using:Correctum.Converters.Bindings"
              x:Class="Correctum.App"
              RequestedThemeVariant="Default">  
+    <Application.Resources>
+		<conv:InvertBooleanValueConverter x:Key="invertBoolean"/>
+		<conv:UnionBooleansConverter x:Key="unionBooleans"/>
+		<conv:CBSelectedIndexAsBooleanConverter x:Key="cb2bool"/>
+    </Application.Resources>
     <Application.Styles>
         <FluentTheme />
+        <semi:SemiTheme Locale="ru-RU" />
+        <u-semi:SemiTheme Locale="ru-RU"/>
+        <Style Selector="ProgressBar">
+			<Setter Property="ShowProgressText" Value="True"/>
+			<Setter Property="ProgressTextFormat" Value="{}{0} / {3}"/> <!--{Value} / {Maximum}-->
+        </Style>
+		<Style Selector="Button">
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+		<Style Selector="Separator">
+			<Setter Property="Background" Value="{x:Null}"/>
+			<Setter Property="Foreground" Value="{x:Null}"/>
+			<Setter Property="Width" Value="5"/>
+			<Setter Property="Height" Value="5"/>
+        </Style>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
     </Application.Styles>
+    <Application.DataTemplates>
+        <DataTemplate DataType="vmImport:OfdRuTokenImporterViewModel">
+			<vImport:OfdRuTokenImporter/>
+        </DataTemplate>
+        <DataTemplate DataType="vmImport:PlatformImporterViewModel">
+			<vImport:PlatformImporter/>
+        </DataTemplate>
+        <DataTemplate DataType="vmImport:TaxcomImporterViewModel">
+			<vImport:TaxcomImporter/>
+        </DataTemplate>
+        <DataTemplate DataType="vmImport:OfdRuImporterViewModel">
+			<vImport:OfdRuImporter/>
+        </DataTemplate>
+        <DataTemplate DataType="vmImport:SabyImporterViewModel">
+			<vImport:SabyImporter/>
+        </DataTemplate>
+    </Application.DataTemplates>
 </Application>

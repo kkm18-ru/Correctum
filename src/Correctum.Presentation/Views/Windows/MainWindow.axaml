@@ -1,9 +1,9 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Correctum.ViewModels"
-        x:Class="Correctum.Views.MainWindow"
+        xmlns:vm="using:Correctum.ViewModels.Windows"
+        x:Class="Correctum.Views.Windows.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/logo.ico"
         Title="Correctum">
 
     <Design.DataContext>

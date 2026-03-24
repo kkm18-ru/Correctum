@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Sources/">
+    <Project Path="src/Correctum.Application/Correctum.Application.csproj" Id="ecca5f22-ccea-4086-8790-d27d555a3c5d" />
     <Project Path="src/Correctum.Core/Correctum.Core.csproj" />
     <Project Path="src/Correctum.Infrastructure/Correctum.Infrastructure.csproj" />
     <Project Path="src/Correctum.Presentation/Correctum.Presentation.csproj" />

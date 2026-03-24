@@ -29,11 +29,11 @@ public struct Position
     /// <summary>
     /// Возвращает единицу измерения позиции
     /// </summary>
-    public PositionUnit Unit { get; set; }
+    public PositionUnit? Unit { get; set; }
     /// <summary>
     /// Возвращает тип позиции
     /// </summary>
-    public PositionType Type { get; set; }
+    public PositionType SubjectType { get; set; }
     /// <summary>
     /// Возвращает ставку НДС позиции
     /// </summary>
@@ -41,5 +41,5 @@ public struct Position
     /// <summary>
     /// Возвращает способ оплаты позиции
     /// </summary>
-    public PositionPayment PaymentMethod { get; set; }
+    public PositionCalculationMethod CalculationMethod { get; set; }
 }

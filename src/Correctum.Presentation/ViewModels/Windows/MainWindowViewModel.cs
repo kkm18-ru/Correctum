@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Correctum.ViewModels
+namespace Correctum.ViewModels.Windows
 {
     public partial class MainWindowViewModel : ObservableObject
     {

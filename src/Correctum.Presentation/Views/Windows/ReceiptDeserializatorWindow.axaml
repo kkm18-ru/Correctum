@@ -1,0 +1,17 @@
+<r:DialogWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:r="using:Correctum.Views.Windows"
+        xmlns:vm="using:Correctum.ViewModels.Windows"
+        x:Class="Correctum.Views.Windows.ReceiptDeserializatorWindow"
+        x:DataType="vm:ReceiptDeserializatorWindowViewModel"
+        Height="550" Width="400"
+        Title="Преобразование текста в кассовый чек">
+    <r:DialogWindow.DataContext>
+		<vm:ReceiptDeserializatorWindowViewModel/>
+    </r:DialogWindow.DataContext>
+    <Grid ColumnDefinitions="*,5,85" RowDefinitions="Auto,5,*" Margin="5">
+        <ComboBox SelectedItem="{Binding ReceiptDeserializator}"/>
+		<Button Content="Обработать" Grid.Column="2" Command="{Binding Submit}"/>
+        <TextBox AcceptsReturn="True" AcceptsTab="True" Grid.ColumnSpan="3" Grid.Row="2" Text="{Binding Text}"/>
+    </Grid>
+</r:DialogWindow>

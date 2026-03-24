@@ -1,10 +1,11 @@
 ﻿namespace Correctum.Enums
 {
     /// <summary>
-    /// Указывает метод оплаты позиции
+    /// Указывает метод расчета позиции
     /// </summary>
-    public enum PositionPayment : byte
+    public enum PositionCalculationMethod : byte
     {
+        Unknown = 0,
         /// <summary>
         /// Полная предварительная оплата
         /// </summary>

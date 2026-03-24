@@ -1,0 +1,30 @@
+<wind:DialogWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Correctum.ViewModels.Windows"
+        xmlns:wind="using:Correctum.Views.Windows"
+        xmlns:conv="using:Correctum.Converters.Bindings"
+        x:Class="Correctum.Views.Windows.ImportWindow"
+        SizeToContent="WidthAndHeight"
+        x:DataType="vm:ImportWindowViewModel"
+        Title="{Binding Importer.Name, StringFormat={}Импортер: {0}}">
+    <wind:DialogWindow.Resources>
+		<conv:InvertBooleanValueConverter x:Key="invertBoolean"/>
+    </wind:DialogWindow.Resources>
+    <WrapPanel Margin="5" Orientation="Vertical">
+        <ContentControl Content="{Binding Importer}" Margin="0,0,0,5"/>
+        <Grid ColumnDefinitions="*,5,Auto,5,Auto">
+			<ProgressBar ShowProgressText="true" ProgressTextFormat="{}{0} / {3}" Grid.Column="0"
+                         Value="{Binding CurrentProgress}" Maximum="{Binding MaximumProgress}"/>
+            <Button Content="Запуск" Command="{Binding Start}" Grid.Column="2"
+                    CommandParameter="{RelativeSource AncestorType=Window}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource unionBooleans}">
+                        <Binding Path="Running" Converter="{StaticResource invertBoolean}"/>
+                        <Binding Path="Importer.CanStart"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+            <Button Content="Отмена" Command="{Binding Cancel}" Grid.Column="4" IsEnabled="{Binding Running}"/>
+        </Grid>
+    </WrapPanel>
+</wind:DialogWindow>

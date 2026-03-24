@@ -1,0 +1,63 @@
+<local:DialogWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:Correctum.Views.Windows"
+        xmlns:vm="using:Correctum.ViewModels.Windows"
+        xmlns:conv="using:Correctum.Converters.Bindings"
+        x:Class="Correctum.Views.Windows.FptrWindow"
+        x:DataType="vm:FptrWindowViewModel"
+        SizeToContent="Height"
+        Width="349"
+        Title="Проведение чеков">
+    <local:DialogWindow.DataContext>
+		<vm:FptrWindowViewModel/>
+    </local:DialogWindow.DataContext>
+    <local:DialogWindow.Styles>
+		<Style Selector="Button">
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+		<Style Selector="ComboBox">
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>		
+    </local:DialogWindow.Styles>
+    <local:DialogWindow.Resources>
+		<conv:CBSelectedIndexAsBooleanConverter x:Key="cb2bool"/>
+    </local:DialogWindow.Resources>
+    <StackPanel Orientation="Vertical" Margin="5">
+		<UniformGrid Columns="2" Rows="7" RowSpacing="5" ColumnSpacing="5">
+            <Button Content="Настройка драйвера" Command="{Binding OpenSettings}"/>
+            <Button Content="Подключиться" Command="{Binding SwitchConnection}"/>
+            <TextBlock Text="Вид коррекции:"/>
+            <ComboBox SelectedIndex="{Binding ByYourself, Converter={StaticResource cb2bool}}">
+                <ComboBox.Items>
+					<x:String>По предписанию</x:String>
+					<x:String>Самостоятельная</x:String>
+                </ComboBox.Items>
+            </ComboBox>
+            <TextBlock Text="Номер акта:"/>
+            <TextBox Text="{Binding NumbAct}"/>
+            <TextBlock Text="ФИО оператора:"/>
+            <TextBox Text="{Binding CashierName}"/>
+            <TextBlock Text="ИНН оператора:"/>
+            <TextBox Text="{Binding CashierInn}"/>
+            <TextBlock Text="Среда расчета:"/>
+            <ComboBox SelectedIndex="{Binding IsInternet, Converter={StaticResource cb2bool}}">
+                <ComboBox.Items>
+					<x:String>Розничная точка</x:String>
+					<x:String>Интернет</x:String>
+                </ComboBox.Items>
+            </ComboBox>
+            <TextBlock Text="Адрес сайта:"/>
+            <TextBox Text="{Binding WebAddress}"/>
+        </UniformGrid>
+        <ProgressBar Margin="0,5,0,0" Value="{Binding CurrentIndex}"/>
+        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+			<Button Content="Запуск" Margin="0,0,5,0" Command="{Binding Run}"/>
+			<Button Content="Тест" Margin="0,0,5,0" Command="{Binding RunTest}"/>
+			<Button Content="Перейти" Margin="0,0,5,0" Command="{Binding GoToIndex}"/>
+			<NumericUpDown Value="{Binding ToIndex}" Width="131"/>
+        </StackPanel>
+    </StackPanel>
+</local:DialogWindow>

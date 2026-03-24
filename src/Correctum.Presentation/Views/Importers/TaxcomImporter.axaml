@@ -1,0 +1,53 @@
+<local:ImporterView xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Correctum.ViewModels.Importers"
+             xmlns:local="using:Correctum.Views.Importers"
+             xmlns:coll="using:System.Collections"
+             xmlns:ursa="https://irihi.tech/ursa"
+             x:DataType="vm:TaxcomImporterViewModel"
+             x:Class="Correctum.Views.Importers.TaxcomImporter"
+			 ColumnSpacing="5" ColumnDefinitions="Auto, *"
+			 RowSpacing="5" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+	<TextBlock Grid.Column="0" Grid.Row="0" Text="Логин:"/>
+	<TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Login}">
+		<TextBox.IsEnabled>
+			<MultiBinding Converter="{StaticResource unionBooleans}">
+				<Binding Path="Authorizing" Converter="{StaticResource invertBoolean}"/>
+				<Binding Path="Authorized" Converter="{StaticResource invertBoolean}"/>
+			</MultiBinding>
+		</TextBox.IsEnabled>
+	</TextBox>
+	<TextBlock Grid.Column="0" Grid.Row="1" Text="Пароль:"/>
+	<TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Password}" PasswordChar="*">
+		<TextBox.IsEnabled>
+			<MultiBinding Converter="{StaticResource unionBooleans}">
+				<Binding Path="Authorizing" Converter="{StaticResource invertBoolean}"/>
+				<Binding Path="Authorized" Converter="{StaticResource invertBoolean}"/>
+			</MultiBinding>
+		</TextBox.IsEnabled>
+	</TextBox>
+	<TextBlock Grid.Column="0" Grid.Row="2" Text="Номер договора:"/>
+	<TextBox Grid.Column="1" Grid.Row="2" Text="{Binding AgreementNumber}">
+		<TextBox.IsEnabled>
+			<MultiBinding Converter="{StaticResource unionBooleans}">
+				<Binding Path="Authorizing" Converter="{StaticResource invertBoolean}"/>
+				<Binding Path="Authorized" Converter="{StaticResource invertBoolean}"/>
+			</MultiBinding>
+		</TextBox.IsEnabled>
+	</TextBox>
+	<Button Grid.Column="1" Grid.Row="3"
+			IsEnabled="{Binding Authorizing, Converter={StaticResource invertBoolean}}"
+			Content="Авторизоваться" Command="{Binding Auth}"
+			HorizontalAlignment="Stretch"/>
+	<TextBlock Grid.Column="0" Grid.Row="4" Text="Регистрационные номера:"/>
+	<ursa:MultiComboBox ItemsSource="{Binding AvailableDevices}" 
+						IsEnabled="{Binding Authorized}"
+						SelectedItems="{Binding SelectedDevices}"
+						HorizontalAlignment="Stretch"
+						MaxHeight="100" MaxWidth="258"
+						Grid.Column="1" Grid.Row="4"/>
+	<TextBlock Text="Период сканирования:" Grid.Column="0" Grid.Row="5"/>
+	<ursa:DateRangePicker SelectedStartDate="{Binding BeginPeriod}" Grid.Row="5"
+						  IsEnabled="{Binding Authorized}"
+						  SelectedEndDate="{Binding EndPeriod}" Grid.Column="1"/>
+</local:ImporterView>
