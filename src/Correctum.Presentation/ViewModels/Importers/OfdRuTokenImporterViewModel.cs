@@ -30,12 +30,15 @@ public sealed partial class OfdRuTokenImporterViewModel : AuthorizableImporterVi
     {
         SelectedDevices.Clear();
         AvailableDevices.Clear();
-        await foreach (var kkt in m_client.EnumerateKktsAsync(AuthToken))
+        foreach (var kkt in await m_client.GetKktsAsync(AuthToken))
             AvailableDevices.Add(kkt);
     }
 
     public override async IAsyncEnumerable<Receipt> ImportAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        yield break;
+        foreach(var kkt in SelectedDevices)
+            for (var date = BeginPeriod.Date; date <= EndPeriod; date = date.AddDays(1))
+                foreach (var receipt in await m_client.GetReceiptsAsync(kkt, AuthToken, date, date.AddSeconds(86_399), cancellationToken))
+                    yield return receipt;
     }
 }

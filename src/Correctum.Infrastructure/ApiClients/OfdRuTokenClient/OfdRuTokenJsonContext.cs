@@ -5,4 +5,5 @@ namespace Correctum.ApiClients.OfdRuTokenClient;
 
 [JsonSerializable(typeof(OfdRuTokenResponse<OfdRuTokenKkt>))]
 [JsonSerializable(typeof(OfdRuTokenResponse<OfdRuTokenReceipt>))]
+[JsonSerializable(typeof(OfdRuTokenException))]
 internal partial class OfdRuTokenJsonContext : JsonSerializerContext { }
