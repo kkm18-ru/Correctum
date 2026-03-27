@@ -1,7 +1,7 @@
 ﻿using Correctum.Enums;
 using Correctum.Models;
 
-namespace Correctum.ApiClients.OfdRuTokenClient;
+namespace Correctum.ApiClients.OfdRuTokenClient.Models;
 
 internal readonly struct OfdRuTokenReceiptItem
 {

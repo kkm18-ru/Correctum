@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Correctum.ApiClients.TaxcomClient;
 using Correctum.Models;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
@@ -20,7 +21,7 @@ public sealed partial class TaxcomImporterViewModel : ImporterViewModel
     public override string Name => "Такском";
     public override bool CanStart => Authorized && SelectedDevices.Count > 0;
 
-    //private readonly OfdRuClient m_client = new();
+    private readonly TaxcomClient m_client = new();
 
     public TaxcomImporterViewModel()
     {

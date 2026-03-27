@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Correctum.ApiClients.KktOnlineClient.Enums;
 using Correctum.Enums;
 
 namespace Correctum.ApiClients.KktOnlineClient;

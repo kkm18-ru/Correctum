@@ -5,7 +5,7 @@ using Correctum.Enums;
 namespace Correctum.ApiClients.KktOnlineClient;
 
 [method: JsonConstructor]
-internal readonly partial struct KktOnlineResponse(int status, string? checkResult)
+public readonly partial struct KktOnlineResponse(int status, string? checkResult)
 {
     public int Status { get; } = status;
     public string? Details { get; } = checkResult;

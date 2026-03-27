@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Correctum.ApiClients.OfdRuTokenClient;
+using Correctum.ApiClients.OfdRuTokenClient.Models;
 using Correctum.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;

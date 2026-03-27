@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Correctum.ApiClients.FirstOfdClient;
+namespace Correctum.ApiClients.FirstOfdClient.Models;
 
 internal readonly struct FirstOfdAuthRequest(string login, string password)
 {

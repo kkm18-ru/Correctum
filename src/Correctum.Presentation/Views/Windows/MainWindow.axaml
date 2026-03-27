@@ -1,15 +1,39 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Correctum.ViewModels.Windows"
+        xmlns:vm="using:Correctum.ViewModels"
+        xmlns:vmw="using:Correctum.ViewModels.Windows"
         x:Class="Correctum.Views.Windows.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+        x:DataType="vmw:MainWindowViewModel"
+        xmlns:lc="using:Correctum.Controls"
         Icon="/Assets/logo.ico"
         Title="Correctum">
 
     <Design.DataContext>
-        <vm:MainWindowViewModel/>
+        <vmw:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" x:DataType="vm:MenuViewModel">
+            <Menu.DataContext>
+				<vm:MenuViewModel/>
+            </Menu.DataContext>
+            <MenuItem Header="Пространство">
+                <MenuItem Header="Импорт">
+                    <MenuItem Header="Локальный файл" Command="{Binding ShowLocalImporter}"/>
+                    <Separator/>
+                    <MenuItem Header="Saby OFD" Command="{Binding ShowSabyOfdImporter}"/>
+                    <MenuItem Header="OFD.ru (Токен)" Command="{Binding ShowOfdRuTokenImporter}"/>
+                    <MenuItem Header="OFD.ru (Логин-пароль)" Command="{Binding ShowOfdRuImporter}"/>
+                    <MenuItem Header="Платформа ОФД" Command="{Binding ShowPlatformOfdImporter}"/>
+                    <MenuItem Header="Первый ОФД" Command="{Binding ShowFirstOfdImporter}"/>
+                    <MenuItem Header="Такском-Касса" Command="{Binding ShowTaxcomKassImporter}"/>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <TextBlock Text="{Binding Greeting}" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"/>
+    </DockPanel>
+
 
 </Window>

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Correctum.ApiClients.OfdRuTokenClient;
+namespace Correctum.ApiClients.OfdRuTokenClient.Models;
 
 [JsonConverter(typeof(JsonStringEnumConverter))] internal enum ResponseStatus { Success, Failed }
 internal interface IOfdRuTokenModel;

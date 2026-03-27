@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Correctum.ApiClients.OfdRuTokenClient.Models;
+using System.Text.Json.Serialization;
 
 namespace Correctum.ApiClients.OfdRuTokenClient;
 

@@ -1,4 +1,5 @@
-﻿using Correctum.Models;
+﻿using Correctum.ApiClients.OfdRuTokenClient.Models;
+using Correctum.Models;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 

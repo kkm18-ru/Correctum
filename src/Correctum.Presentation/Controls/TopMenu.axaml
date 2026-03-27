@@ -1,0 +1,16 @@
+<Menu xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Correctum.Controls.TopMenu">
+    <MenuItem Header="Пространство">
+        <MenuItem Header="Импорт">
+            <MenuItem Header="Локальный файл" Click="ShowLocalImporter"/>
+            <Separator/>
+            <MenuItem Header="Saby OFD" Click="ShowSabyOfdImporter"/>
+            <MenuItem Header="OFD.ru (Токен)" Click="ShowOfdRuTokenImporter"/>
+            <MenuItem Header="OFD.ru (Логин-пароль)" Click="ShowOfdRuImporter"/>
+            <MenuItem Header="Платформа ОФД" Click="ShowPlatformOfdImporter"/>
+            <MenuItem Header="Первый ОФД" Click="ShowFirstOfdImporter"/>
+            <MenuItem Header="Такском-Касса" Click="ShowTaxcomKassImporter"/>
+        </MenuItem>
+    </MenuItem>
+</Menu>

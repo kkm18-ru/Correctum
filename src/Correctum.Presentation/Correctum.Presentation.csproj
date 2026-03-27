@@ -14,13 +14,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AvaloniaXaml Remove="Views\Controls\**" />
-	  <Compile Remove="Views\Controls\**" />
-	  <EmbeddedResource Remove="Views\Controls\**" />
-	  <None Remove="Views\Controls\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Avalonia" Version="11.3.11" />
 		<PackageReference Include="Avalonia.Desktop" Version="11.3.11" />
 		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11" />
@@ -34,6 +27,7 @@
 		<PackageReference Include="Irihi.Ursa" Version="1.15.0" />
 		<PackageReference Include="Irihi.Ursa.Themes.Semi" Version="1.15.0" />
 		<PackageReference Include="MessageBox.Avalonia" Version="3.3.1.1" />
+		<PackageReference Include="MvvmDialogs" Version="9.1.2" />
 		<PackageReference Include="Semi.Avalonia" Version="11.3.7.3" />
 	</ItemGroup>
 
@@ -43,6 +37,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Controls\TopMenu.axaml.cs">
+	    <DependentUpon>TopMenu.axaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\Importers\PlatformImporter.axaml.cs">
 	    <DependentUpon>PlatformImporter.axaml</DependentUpon>
 	  </Compile>

@@ -1,4 +1,4 @@
-﻿namespace Correctum.ApiClients.OfdRuTokenClient;
+﻿namespace Correctum.ApiClients.OfdRuTokenClient.Models;
 
 public readonly struct OfdRuTokenKkt : IOfdRuTokenModel
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Correctum.ApiClients.FirstOfdClient;
+namespace Correctum.ApiClients.FirstOfdClient.Models;
 
 public readonly struct FirstOfdTransaction
 {
