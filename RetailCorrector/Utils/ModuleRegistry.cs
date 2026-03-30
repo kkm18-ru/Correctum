@@ -21,6 +21,7 @@ internal static class ModuleRegistry
     ];
 
     public static readonly ImmutableArray<ImportMenuItem> Importers = [
+        new(RetailCorrector.Importers.OfdYaSheet.Instance),
         new(RetailCorrector.Importers.Saby.Instance),
         new(RetailCorrector.Importers.Sqlite.Instance),
         new(RetailCorrector.Importers.OfdRu.Instance),
