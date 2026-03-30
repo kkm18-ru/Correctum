@@ -2,8 +2,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Correctum.Extensions;
-using Correctum.ViewModels.Importers;
 using Correctum.ViewModels.Windows;
 using Correctum.Views.Windows;
 
@@ -21,6 +19,7 @@ namespace Correctum
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 DisableAvaloniaDataAnnotationValidation();
+                
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = new MainWindowViewModel()

@@ -4,7 +4,6 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Correctum.ViewModels.Importers;
 using Correctum.Views.Windows;
-using MvvmDialogs;
 using Ursa.Controls;
 
 namespace Correctum.ViewModels;
@@ -55,4 +54,7 @@ public class MenuViewModel : ObservableObject
 
     public void ShowTaxcomKassImporter() =>
         new ImportWindow(new TaxcomImporterViewModel()).ShowDialog(MainWindow.Instance);
+
+    public void ShowFptrWindow() =>
+        new FptrWindow().ShowDialog(MainWindow.Instance);
 }

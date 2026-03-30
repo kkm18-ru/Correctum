@@ -8,10 +8,6 @@
         Icon="/Assets/logo.ico"
         Title="Correctum">
 
-    <Design.DataContext>
-        <vmw:MainWindowViewModel/>
-    </Design.DataContext>
-
     <DockPanel>
         <Menu DockPanel.Dock="Top" x:DataType="vm:MenuViewModel">
             <Menu.DataContext>
@@ -28,6 +24,7 @@
                     <MenuItem Header="Первый ОФД" Command="{Binding ShowFirstOfdImporter}"/>
                     <MenuItem Header="Такском-Касса" Command="{Binding ShowTaxcomKassImporter}"/>
                 </MenuItem>
+                <MenuItem Header="Проведение чеков" Command="{Binding ShowFptrWindow}"/>
             </MenuItem>
         </Menu>
         <TextBlock Text="{Binding Greeting}" 

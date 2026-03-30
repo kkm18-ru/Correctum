@@ -9,9 +9,6 @@
 		<ApplicationIcon>Assets\logo.ico</ApplicationIcon>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<AvaloniaResource Include="Assets\**" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia" Version="11.3.11" />
@@ -27,7 +24,6 @@
 		<PackageReference Include="Irihi.Ursa" Version="1.15.0" />
 		<PackageReference Include="Irihi.Ursa.Themes.Semi" Version="1.15.0" />
 		<PackageReference Include="MessageBox.Avalonia" Version="3.3.1.1" />
-		<PackageReference Include="MvvmDialogs" Version="9.1.2" />
 		<PackageReference Include="Semi.Avalonia" Version="11.3.7.3" />
 	</ItemGroup>
 
@@ -37,26 +33,36 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Controls\TopMenu.axaml.cs">
-	    <DependentUpon>TopMenu.axaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\Importers\PlatformImporter.axaml.cs">
-	    <DependentUpon>PlatformImporter.axaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\Importers\TaxcomImporter.axaml.cs">
-	    <DependentUpon>TaxcomImporter.axaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\Importers\SabyImporter.axaml.cs">
-	    <DependentUpon>SabyImporter.axaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\Importers\OfdRuImporter.axaml.cs">
-	    <DependentUpon>OfdRuImporter.axaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\Importers\OfdRuTokenImporter.axaml.cs">
-	    <DependentUpon>OfdRuTokenImporter.axaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\Windows\ReceiptDeserializatorWindow.axaml.cs">
-	    <DependentUpon>ReceiptDeserializatorWindow.axaml</DependentUpon>
-	  </Compile>
+		<Compile Update="Controls\TopMenu.axaml.cs">
+			<DependentUpon>TopMenu.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Importers\PlatformImporter.axaml.cs">
+			<DependentUpon>PlatformImporter.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Importers\TaxcomImporter.axaml.cs">
+			<DependentUpon>TaxcomImporter.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Importers\SabyImporter.axaml.cs">
+			<DependentUpon>SabyImporter.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Importers\OfdRuImporter.axaml.cs">
+			<DependentUpon>OfdRuImporter.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Importers\OfdRuTokenImporter.axaml.cs">
+			<DependentUpon>OfdRuTokenImporter.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Windows\ReceiptDeserializatorWindow.axaml.cs">
+			<DependentUpon>ReceiptDeserializatorWindow.axaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\logo.ico" />
+		<None Update="Assets\Icons\File.ico">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Assets\Icons\Directory.ico">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 </Project>
