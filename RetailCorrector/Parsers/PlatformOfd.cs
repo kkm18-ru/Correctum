@@ -19,7 +19,7 @@ internal sealed class PlatformOfd : IParser
     public bool Parse(string raw, ref Receipt receipt)
     {
         var span = raw.AsSpan();
-        Span<char> rawValue = stackalloc char[128];
+        Span<char> rawValue = stackalloc char[256];
         foreach (var range in span.Split('\n'))
         {
             var line = span[range];
@@ -41,8 +41,7 @@ internal sealed class PlatformOfd : IParser
             }
             rawValue.Clear();
             line[43..].TrimEnd('·').Replace(rawValue,'·', ' ');
-            var valueLength = rawValue.IndexOf('\r');
-            var value = rawValue[..valueLength];
+            var value = rawValue.Trim(['\r', '\n', '\0', '\t', ' ']);
 
             try
             {
