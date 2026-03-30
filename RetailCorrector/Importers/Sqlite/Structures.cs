@@ -21,6 +21,7 @@ internal partial class Sqlite
         public ulong post { get; init; }
         public ulong other { get; init; }
         public ulong total { get; init; }
+        public int taxation { get; init; }
         public string buyer { get; init; }
     }
 
