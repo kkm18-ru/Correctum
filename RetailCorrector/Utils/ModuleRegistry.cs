@@ -24,6 +24,7 @@ internal static class ModuleRegistry
         new(RetailCorrector.Importers.Saby.Instance),
         new(RetailCorrector.Importers.Sqlite.Instance),
         new(RetailCorrector.Importers.OfdRu.Instance),
+        new(RetailCorrector.Importers.FreeOfdRu.Instance),
         new(RetailCorrector.Importers.PlatformOfd.Instance),
         new(RetailCorrector.Importers.FxPOS.Instance),
         new(RetailCorrector.Importers.Acquirer.Instance),
