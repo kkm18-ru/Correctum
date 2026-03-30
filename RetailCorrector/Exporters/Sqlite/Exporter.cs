@@ -41,6 +41,7 @@ namespace RetailCorrector.Exporters
                         devid = receipt.RegId,
                         drive = receipt.StorageId,
                         shift = receipt.SessionId,
+                        taxation = (int)receipt.TaxationSystem,
                         doc = receipt.DocNumber,
                         req = receipt.DocInSession,
                     });
