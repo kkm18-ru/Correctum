@@ -19,8 +19,8 @@ jobs:
       - id: bot-token
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ vars.RELEASE_BOT_APPID }}
-          private-key: ${{ secrets.RELEASE_BOT_TOKEN }}
+          app-id: ${{ vars.RELEASER_APP_ID }}
+          private-key: ${{ secrets.RELEASER_PRIVATE_KEY }}
       - uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38
         id: release
         with:
