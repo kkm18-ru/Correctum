@@ -8,17 +8,7 @@ on:
 jobs:
   build:
     name: Сборка и анализ
-    if: >
-      github.event_name == 'push' || 
-      (
-        github.event_name == 'pull_request' &&
-        github.event.pull_request.draft == false &&
-        (
-          contains(join(github.event.pull_request.changed_files, ' '), 'RetailCorrector/') ||
-          contains(join(github.event.pull_request.changed_files, ' '), 'RetailCorrector.Tests/')
-        )
-      )
-      
+    if: ${{ github.event.pull_request.draft == false }}
     runs-on: windows-latest
     steps:
       - name: Установка JDK 17
