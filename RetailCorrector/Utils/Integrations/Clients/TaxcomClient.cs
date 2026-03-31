@@ -17,9 +17,9 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : ApiCli
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     
-    #if DEBUG
     private const string SessionHeaderName = "Session-Token";
 
+    #if DEBUG
     public static string IntegratorId
     {
         get => Configuration.Instance.Importers.TaxcomIntegratorId;
