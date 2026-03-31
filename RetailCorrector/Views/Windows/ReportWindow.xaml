@@ -1,18 +1,16 @@
-﻿<wintypes:DialogWindow x:Class="RetailCorrector.UI.Windows.PositionNamesReportWindow"
+﻿<wintypes:DialogWindow x:Class="RetailCorrector.Views.Windows.ReportWindow"
                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                        xmlns:wintypes="clr-namespace:RetailCorrector.UI.Windows.Types"
+                       xmlns:sys="clr-namespace:System;assembly=mscorlib"
                        xmlns:conv="clr-namespace:RetailCorrector.Converters"
+                       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                        xmlns:tk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                       DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                       xmlns:vmr="clr-namespace:RetailCorrector.ViewModels.Reports"
                        xmlns:local="clr-namespace:RetailCorrector.UI.Windows"
                        Title="{Binding ReportName, Mode=OneTime, StringFormat='Отчет &quot;{0}&quot;'}"
                        Height="450" Width="700">
-    <Window.Resources>
-        <conv:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
-        <conv:MultiBooleanConverter x:Key="MultiBooleanConverter"/>
-        <conv:IntegerToBooleanConverter x:Key="IntegerToBooleanConverter"/>
-    </Window.Resources>
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -26,29 +24,26 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
         <ProgressBar Grid.Column="0" Grid.Row="0" Value="0" Maximum="1"
                      IsIndeterminate="{Binding IsBusy, Mode=OneWay}" />
-        <Button Grid.Column="2" Grid.Row="0" Content="Обновить" Click="Refresh"
-                IsEnabled="{Binding IsBusy, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}"/>
-        <Button Grid.Column="4" Grid.Row="0" Content="Экспорт в CSV" Click="Export">
-            <Button.IsEnabled>
-                <MultiBinding Converter="{StaticResource MultiBooleanConverter}">
-                    <Binding Path="IsBusy" Mode="OneWay" Converter="{StaticResource InvertBooleanConverter}"/>
-                    <Binding Path="CanExport" Mode="OneWay"/>
-                </MultiBinding>
-            </Button.IsEnabled>
-        </Button>
+        <Button Grid.Column="2" Grid.Row="0" Content="Обновить"
+                Command="{Binding RefreshCommand}"/>
+        <Button Grid.Column="4" Grid.Row="0" Content="Экспорт в CSV"
+                Command="{Binding ExportCommand}"/>
+        
         <DataGrid Grid.ColumnSpan="5" Grid.Row="2" IsReadOnly="True"
-                  AutoGenerateColumns="False" CanUserAddRows="False"
+                  AutoGenerateColumns="True" CanUserAddRows="False"
                   CanUserDeleteRows="False" ItemsSource="{Binding Items}"
                   HeadersVisibility="Column" CanUserResizeColumns="False"
                   CanUserResizeRows="False" CanUserReorderColumns="False"
                   CanUserSortColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Наименование" Width="*" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Тип" Width="200" Binding="{Binding TypeName}"/>
-                <DataGridTextColumn Header="Количество чеков" Width="115" Binding="{Binding CountReceipts}"/>
-            </DataGrid.Columns>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="AutoGeneratingColumn">
+                    <i:InvokeCommandAction Command="{Binding AutoGeneratingColumnCommand}"
+                                           PassEventArgsToCommand="True"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </DataGrid>
     </Grid>
 </wintypes:DialogWindow>

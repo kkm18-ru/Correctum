@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using RetailCorrector.UI.Windows;
 using RetailCorrector.Utils;
+using RetailCorrector.ViewModels.Reports;
+using RetailCorrector.Views.Windows;
 
 namespace RetailCorrector.UI.Controls;
 
@@ -13,7 +15,7 @@ public partial class MainMenu : Menu
         InitializeComponent();
     }
 
-    private void ShowPosNameReport(object s, RoutedEventArgs e) => new PositionNamesReportWindow().ShowDialog();
+    private void ShowPosNameReport(object s, RoutedEventArgs e) => new ReportWindow(new PositionNamesReportViewModel()).ShowDialog();
     private void ShowFptrWindow(object s, RoutedEventArgs e) => new FptrWindow().ShowDialog();
     private void ShowConfigurationWindow(object s, RoutedEventArgs e) => new ConfigurationWindow().ShowDialog();
     private void Quit(object s, RoutedEventArgs e) => Application.Current.Shutdown();
