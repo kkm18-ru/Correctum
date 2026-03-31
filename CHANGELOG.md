@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.8.1](https://github.com/kkm18-ru/Correctum/compare/v0.8.0...v0.8.1) (2026-03-31)
+
+
+### 🐞 Исправления
+
+* Добавлена поддержка архитектуры x86 ([#42](https://github.com/kkm18-ru/Correctum/issues/42)) ([9e302a6](https://github.com/kkm18-ru/Correctum/commit/9e302a67e19216431ae765fc9c8276c320b3b1b5))
+* Исправлен парсинг количества в парсере PlatformOfd ([#40](https://github.com/kkm18-ru/Correctum/issues/40)) ([16cd4ad](https://github.com/kkm18-ru/Correctum/commit/16cd4adfaf3b99a5c0f13bb1fef3244adecd3ee8))
+* Исправлен цикл импорта из ПлатформаОФД ([#41](https://github.com/kkm18-ru/Correctum/issues/41)) ([af6a505](https://github.com/kkm18-ru/Correctum/commit/af6a505a1e0a7e85b46d0a328c4a9a535bfe0f54))
+* Исправлена обрезка строк в парсере PlatformOfd ([#39](https://github.com/kkm18-ru/Correctum/issues/39)) ([14c62fd](https://github.com/kkm18-ru/Correctum/commit/14c62fd40c71315b5fc103d29649b3ef5073a2b4))
+
 ## [0.8.0](https://github.com/ornaras/RetailCorrector/compare/v0.7.1...v0.8.0) (2026-03-01)
 
 
