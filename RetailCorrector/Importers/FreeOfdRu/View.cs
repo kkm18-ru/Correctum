@@ -42,9 +42,9 @@ namespace RetailCorrector.Importers
                 tbLogin.SetBinding(TextBox.IsEnabledProperty, nameof(CanAuthorize));
                 grid.AddChild(tbLogin, 2, 0);
 
-                var tbPswd = new TextBox();
-                tbPswd.SetBinding(TextBox.TextProperty, nameof(Password));
-                tbPswd.SetBinding(TextBox.IsEnabledProperty, nameof(CanAuthorize));
+                var tbPswd = new PasswordBox();
+                tbPswd.PasswordChanged += (s, _) => Presenter.Password = ((PasswordBox)s).Password;
+                tbPswd.SetBinding(PasswordBox.IsEnabledProperty, nameof(CanAuthorize));
                 grid.AddChild(tbPswd, 2, 2);
 
                 var btnAuth = new Button { Content = "Авторизоваться" };

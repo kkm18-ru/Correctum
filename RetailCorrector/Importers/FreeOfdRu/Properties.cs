@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -25,12 +26,13 @@ namespace RetailCorrector.Importers
 
         public string Password
         {
-            get;
+            get => SecretHelper.DecodeSecret(field);
             set
             {
+                value = SecretHelper.EncodeSecret(value);
                 if (field == value) return;
                 field = value;
-                NotifyPropertyChanged();
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Password)));
             }
         } = string.Empty;
 
@@ -63,6 +65,7 @@ namespace RetailCorrector.Importers
                 if (field == value) return;
                 field = value;
                 NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(CanAuthorize));
             }
         } = false;
         public bool Authorized
