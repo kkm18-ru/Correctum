@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using RetailCorrector.Data;
+using RetailCorrector.Enums;
 using RetailCorrector.Utils;
 using System.Runtime.CompilerServices;
 
@@ -57,7 +58,8 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                             Provision = docs[j].other,
                         },
                         Type = docs[j].type,
-                        BuyerContact = docs[j].buyer
+                        BuyerContact = docs[j].buyer,
+                        TaxationSystem = (TaxationSystem)docs[j].taxation
                     };
                     progress.Report(i + j);
                 }
