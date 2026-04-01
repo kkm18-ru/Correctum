@@ -33,9 +33,9 @@ namespace RetailCorrector.Importers
 
                 grid.AddChild(new TextBlock { Text = "Логин", VerticalAlignment = VerticalAlignment.Center }, y: 0);
                 grid.AddChild(new TextBlock { Text = "Пароль", VerticalAlignment = VerticalAlignment.Center }, y: 2);
-                grid.AddChild(new TextBlock { Text = "ККТ", VerticalAlignment = VerticalAlignment.Center }, y: 6);
-                grid.AddChild(new TextBlock { Text = "Начало", VerticalAlignment = VerticalAlignment.Center }, y: 8);
-                grid.AddChild(new TextBlock { Text = "Конец", VerticalAlignment = VerticalAlignment.Center }, y: 10);
+                grid.AddChild(new TextBlock { Text = "Кассовые терминалы", VerticalAlignment = VerticalAlignment.Center }, y: 6);
+                grid.AddChild(new TextBlock { Text = "Начало периода", VerticalAlignment = VerticalAlignment.Center }, y: 8);
+                grid.AddChild(new TextBlock { Text = "Конец периода", VerticalAlignment = VerticalAlignment.Center }, y: 10);
 
                 var tbLogin = new TextBox();
                 tbLogin.SetBinding(TextBox.TextProperty, nameof(Login));
