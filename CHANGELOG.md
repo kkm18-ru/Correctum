@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/kkm18-ru/Correctum/compare/v0.9.0...v0.9.1) (2026-04-01)
+
+
+### 🐞 Исправления
+
+* **sqlite:** Добавлено сохранение и загрузка СНО в/из SQLite ([#38](https://github.com/kkm18-ru/Correctum/issues/38)) ([da52dce](https://github.com/kkm18-ru/Correctum/commit/da52dce8235f10031ff8e0ae97fcbb3c58322c99))
+
 ## [0.9.0](https://github.com/kkm18-ru/Correctum/compare/v0.8.0...v0.9.0) (2026-03-31)
 
 
