@@ -17,25 +17,26 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : ApiCli
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     
-    #if DEBUG
     private const string SessionHeaderName = "Session-Token";
-    public string SessionToken
-    {
-        get => Client.DefaultRequestHeaders.GetValues(SessionHeaderName).FirstOrDefault("");
-        set
-        {
-            Client.DefaultRequestHeaders.Remove(SessionHeaderName);
-            if(!string.IsNullOrWhiteSpace(value))
-                Client.DefaultRequestHeaders.Add(SessionHeaderName, value);
-        }
-    }
 
+    #if DEBUG
     public static string IntegratorId
     {
         get => Configuration.Instance.Importers.TaxcomIntegratorId;
         set => Configuration.Instance.Importers.TaxcomIntegratorId = value;
     }
-    #endif
+    public
+#endif
+    string SessionToken
+    {
+        get => Client.DefaultRequestHeaders.GetValues(SessionHeaderName).FirstOrDefault("");
+        set
+        {
+            Client.DefaultRequestHeaders.Remove(SessionHeaderName);
+            if (!string.IsNullOrWhiteSpace(value))
+                Client.DefaultRequestHeaders.Add(SessionHeaderName, value);
+        }
+    }
 
     private async Task<T> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
     {

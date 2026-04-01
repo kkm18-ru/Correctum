@@ -5,9 +5,6 @@ on:
     paths: 
       - CHANGELOG.md
       - .release-please-manifest.json
-        
-env: 
-  GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
 jobs:
   release-please:
@@ -18,9 +15,15 @@ jobs:
       tag: ${{ steps.release.outputs.tag_name }}
       version: ${{ steps.release.outputs.version }}
     steps:
+      - id: bot-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.RELEASER_APP_ID }}
+          private-key: ${{ secrets.RELEASER_PRIVATE_KEY }}
       - uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38
         id: release
         with:
+          token: ${{ steps.bot-token.outputs.token }}
           skip-github-pull-request: true
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
@@ -34,6 +37,11 @@ jobs:
       run:
         shell: pwsh
     steps:
+      - id: bot-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.RELEASER_APP_ID }}
+          private-key: ${{ secrets.RELEASER_PRIVATE_KEY }}
       - uses: actions/checkout@v4
         with:
           submodules: true
@@ -55,5 +63,6 @@ jobs:
       - name: Добавлены ассет в релиз
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         with:
+          token: ${{ steps.bot-token.outputs.token }}
           files: RetailCorrector-${{ needs.release-please.outputs.version }}.exe
           tag_name: ${{ needs.release-please.outputs.tag }}

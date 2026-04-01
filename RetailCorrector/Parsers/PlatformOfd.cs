@@ -1,6 +1,7 @@
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
+using System.Globalization;
 
 namespace RetailCorrector.Parsers;
 
@@ -18,7 +19,7 @@ internal sealed class PlatformOfd : IParser
     public bool Parse(string raw, ref Receipt receipt)
     {
         var span = raw.AsSpan();
-        Span<char> rawValue = stackalloc char[128];
+        Span<char> rawValue = stackalloc char[256];
         foreach (var range in span.Split('\n'))
         {
             var line = span[range];
@@ -40,8 +41,7 @@ internal sealed class PlatformOfd : IParser
             }
             rawValue.Clear();
             line[43..].TrimEnd('·').Replace(rawValue,'·', ' ');
-            var valueLength = rawValue.IndexOf('\r');
-            var value = rawValue[..valueLength];
+            var value = rawValue.Trim(['\r', '\n', '\0', '\t', ' ']);
 
             try
             {
@@ -86,7 +86,7 @@ internal sealed class PlatformOfd : IParser
             case 1199: UpdatePosition((ref p, v) => p.TaxRate = EnumUtils.ToTaxRate(byte.Parse(v)), value, ref receipt); break;
             case 1214: UpdatePosition((ref p, v) => p.PayMethod = (PayMethod)byte.Parse(v), value, ref receipt); break;
             case 1212: UpdatePosition((ref p, v) => p.Type = (PositionType)byte.Parse(v), value, ref receipt); break;
-            case 1023: UpdatePosition((ref p, v) => p.Quantity = (ulong)Math.Round(double.Parse(v) * 1000, 0), value, ref receipt); break;
+            case 1023: UpdatePosition((ref p, v) => p.Quantity = (ulong)Math.Round(double.Parse(v, CultureInfo.InvariantCulture) * 1000, 0), value, ref receipt); break;
             case 1030: UpdatePosition((ref p, v) => p.Name = v.ToString(), value, ref receipt); break;
             
             default: break;
