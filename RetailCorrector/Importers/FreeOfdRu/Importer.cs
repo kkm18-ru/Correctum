@@ -5,7 +5,7 @@ namespace RetailCorrector.Importers
 {
     internal partial class FreeOfdRu : ImporterBase<FreeOfdRu, FreeOfdRu.View>
     {
-        public override string Name => "ОФД.ру (Логин-Пароль)";
+        public override string Name => "OFD.ru (Логин-Пароль)";
         public FreeOfdRuClient Client { get; } = new();
 
         public override ImportSession GenerateInfo() =>
