@@ -16,14 +16,13 @@ internal sealed partial class PlatformOfd : ImporterBase<PlatformOfd, PlatformOf
     public override async IAsyncEnumerable<Receipt> Import
         (IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        progress.Report(-((long)Math.Ceiling((EndDate - BeginDate).TotalDays + 1) * SelectedDevices.Count));
-        for (var (d, i) = (BeginDate, 0); d <= EndDate; d = d.AddDays(1))
+        progress.Report(-DateRange.Count * SelectedDevices.Count);
+        var i = 0;
+        foreach(var date in DateRange)
         {
             foreach(var Device in SelectedDevices)
             {
-                var end = d.AddSeconds(23 * 60 * 60 + 59 * 60 + 59);
-                end = end > EndDate ? EndDate : end;
-                var references = await Client.FetchReceiptsAsync(d, end, Device, cancellationToken);
+                var references = await Client.FetchReceiptsAsync(date, Device, cancellationToken);
                 foreach (var @ref in references)
                     if(await Client.FetchReceiptAsync(@ref, parseInfo.Id, cancellationToken) is {} receipt)
                         yield return receipt;

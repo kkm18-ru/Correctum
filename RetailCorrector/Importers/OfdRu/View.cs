@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Utils;
+﻿using RetailCorrector.UI.Controls;
+using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,17 +28,9 @@ internal partial class OfdRu
                     .AddBinding(CheckComboBox.ItemsSourceProperty, nameof(Devices))
                     .AddBinding(CheckComboBox.IsEnabledProperty, nameof(Authorized)))
 
-                .AddRow("Начало сканирования: ", new DatePicker()
-                    .SetBeginDate(Constants.OfdBeginDate).SetDateFormat(DatePickerFormat.Short)
-                    .AddBinding(DatePicker.SelectedDateProperty, nameof(BeginDate))
-                    .AddBinding(DatePicker.DisplayDateEndProperty, nameof(EndDate))
-                    .AddBinding(DatePicker.IsEnabledProperty, nameof(Authorized)))
-
-                .AddRow("Конец сканирования: ", new DatePicker()
-                    .SetEndDate(DateTime.Today).SetDateFormat(DatePickerFormat.Short)
-                    .AddBinding(DatePicker.SelectedDateProperty, nameof(EndDate))
-                    .AddBinding(DatePicker.DisplayDateStartProperty, nameof(BeginDate))
-                    .AddBinding(DatePicker.IsEnabledProperty, nameof(Authorized)));
+                .AddRow("Период выгрузки: ", new DateRangePicker()
+                    .AddBinding(DateRangePicker.IsEnabledProperty, nameof(Authorized))
+                    .AddBinding(DateRangePicker.DateRangeProperty, nameof(DateRange)));
         }
 
         private async void OnAuthClicked(object? sender, RoutedEventArgs args)
@@ -94,24 +87,6 @@ file static class Utils
         where T : FrameworkElement
     {
         elem.SetBinding(prop, path);
-        return elem;
-    }
-
-    public static DatePicker SetDateFormat(this DatePicker elem, DatePickerFormat format)
-    {
-        elem.SelectedDateFormat = format;
-        return elem;
-    }
-
-    public static DatePicker SetBeginDate(this DatePicker elem, DateTime value)
-    {
-        elem.DisplayDateStart = value;
-        return elem;
-    }
-
-    public static DatePicker SetEndDate(this DatePicker elem, DateTime value)
-    {
-        elem.DisplayDateEnd = value;
         return elem;
     }
 

@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Utils.Integrations.Clients;
+﻿using RetailCorrector.Utils;
+using RetailCorrector.Utils.Integrations.Clients;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -56,36 +57,15 @@ partial class PlatformOfd : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, AuthorizedNotifier);
         }
     } = false;
-    public DateTime BeginDate
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            PropertyChanged?.Invoke(this, BeginDateNotifier);
-        }
-    } = DateTime.Today;
-    public DateTime EndDate
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            PropertyChanged?.Invoke(this, EndDateNotifier);
-        }
-    } = DateTime.Today;
 
     public bool CanAuthorize => !Authorizing;
+    public DateRange DateRange { get; } = new();
     public ObservableCollection<PlatformaOfdDevice> Devices { get; } = [];
     public ObservableCollection<PlatformaOfdDevice> SelectedDevices { get; } = [];
 
     private readonly static PropertyChangedEventArgs SessionIdEventArg = new(nameof(SessionId));
     private readonly static PropertyChangedEventArgs AccessTokenEventArg = new(nameof(AccessToken));
     private readonly static PropertyChangedEventArgs RefreshTokenEventArg = new(nameof(RefreshToken));
-    private readonly static PropertyChangedEventArgs BeginDateNotifier = new(nameof(BeginDate));
-    private readonly static PropertyChangedEventArgs EndDateNotifier = new(nameof(EndDate));
     private readonly static PropertyChangedEventArgs CanAuthorizeNotifier = new(nameof(CanAuthorize));
     private readonly static PropertyChangedEventArgs AuthorizedNotifier = new(nameof(Authorized));
 

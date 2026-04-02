@@ -73,22 +73,19 @@ internal sealed class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>(Host)
 
     /// <summary>Получение списка ссылок на чеки.</summary>
     /// <param name="device">Контрольно-кассовая машина.</param>
-    /// <param name="fromDate">Начальная дата периода для формирования отчета.</param>
-    /// <param name="toDate">Конечная дата периода для формирования отчета.</param>
+    /// <param name="date">Дата для формирования отчета.</param>
     /// <param name="cancel">Токен, позволяющий отменить получение ссылок на чеки.</param>
     /// <returns>Список ссылок на чеки.</returns>
-    public async Task<PlatformaOfdReceiptReference[]> FetchReceiptsAsync(DateTime fromDate, DateTime toDate, PlatformaOfdDevice device, CancellationToken cancel = default)
+    public async Task<PlatformaOfdReceiptReference[]> FetchReceiptsAsync(DateOnly date, PlatformaOfdDevice device, CancellationToken cancel = default)
     {
         ThrowIfDisposed();
-        const string DateFormat = "dd.MM.yyyy'%20'HH'%3A'mm";
         const string UrlPattern = @"(?<id>\d+)\/(?<ts>\d+)\/(?<sign>\d+)";
 
         var textDeviceId = device is { Id: > 0 } id ? id.Id.ToString() :
             "%D0%92%D1%81%D0%B5%20%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B0%D0%BB%D1%8B";
-        var textFromDate = fromDate.ToString(DateFormat);
-        var textToDate = toDate.ToString(DateFormat);
+        var textDate = date.ToString("dd.MM.yyyy");
         var url = new StringBuilder("/web/auth/cheques/search");
-        url.Append($"?deviceId={textDeviceId}&start={textFromDate}&end={textToDate}");
+        url.Append($"?deviceId={textDeviceId}&start={textDate}%2000%3A00&end={textDate}%2023%3A59");
         url.Append("&shiftNumber=&requestNumber=&sumFrom=&sumTo=&cashiers=%5B%5D&tag=&tagSearchField=&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_operTypes=on&_operTypes=on&_operTypes=on&_operTypes=on&fragments=cheques-search-content%2Ccheques-search-common-content-block%2Ccom-messages&ajaxSource=cheques_filter_form_id");
 
         using var req = new HttpRequestMessage(HttpMethod.Get, url.ToString());

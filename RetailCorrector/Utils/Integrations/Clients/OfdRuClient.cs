@@ -45,17 +45,15 @@ internal sealed class OfdRuClient() : ApiClient<OfdRuClient>(Host)
     /// <summary>Получение списка чеков.</summary>
     /// <param name="parseId">Идентификтор сессии парсера.</param>
     /// <param name="device">Контрольно-кассовая машина.</param>
-    /// <param name="fromDate">Начальная дата периода для формирования отчета.</param>
-    /// <param name="toDate">Конечная дата периода для формирования отчета.</param>
+    /// <param name="date">Дата для формирования отчета.</param>
     /// <param name="cancel">Токен, позволяющий отменить получение данных о ККТ.</param>
     /// <returns>Список чеков.</returns>
     public async Task<Receipt[]> FetchReceiptsAsync
-        (Guid parseId, OfdRuDevice device, DateTime fromDate, DateTime toDate, CancellationToken cancel = default)
+        (Guid parseId, OfdRuDevice device, DateOnly date, CancellationToken cancel = default)
     {
         ThrowIfDisposed();
         var uri = $"inn/{device.INN}/kkt/{device.KktRegId}/receipts-info?AuthToken={_token}" +
-            $"&dateFrom={fromDate:yyyy-MM-ddTHH:mm:ss}" +
-            $"&dateTo={toDate:yyyy-MM-ddTHH:mm:ss}";
+            $"&dateFrom={date:yyyy-MM-dd}T00:00:00&dateTo={date:yyyy-MM-dd}T23:59:59";
         using var req = new HttpRequestMessage(HttpMethod.Get, uri);
         using var resp = await Client.SendAsync(req, cancel).ConfigureAwait(false);
         var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);

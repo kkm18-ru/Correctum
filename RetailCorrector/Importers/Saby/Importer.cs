@@ -11,15 +11,15 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
 
     public override ImportSession GenerateInfo() =>
         parseInfo = new ImportSession(Name, ("ИНН", Inn), 
-            ("Старт", FromDate.ToString("dd'.'MM'.'yyyy")), 
-            ("Конец", ToDate.ToString("dd'.'MM'.'yyyy")));
+            ("Старт", DateRange.BeginDate.ToString("dd'.'MM'.'yyyy")), 
+            ("Конец", DateRange.EndDate.ToString("dd'.'MM'.'yyyy")));
 
     public override async IAsyncEnumerable<Receipt> Import
         (IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var drives = new Dictionary<string, SabyDriveResponse[]>();
         foreach (var device in SelectedDevices)
-            drives.Add(device, await _client.FetchDrivesAsync(Inn, device, FromDate, ToDate, cancellationToken));
+            drives.Add(device, await _client.FetchDrivesAsync(Inn, device, DateRange.BeginDate.ToDateTime(new()), DateRange.EndDate.ToDateTime(new()), cancellationToken));
 
         progress.Report(-drives.SelectMany(d => d.Value).Sum(d =>
         {
@@ -67,8 +67,8 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
     private (DateTime, DateTime) GetAvailablePeriod(SabyDriveResponse drive)
     {
         var end = drive.DateEnd ?? DateTime.Now;
-        end = end > ToDate ? ToDate : end;
-        var start = drive.DateStart > FromDate ? drive.DateStart : FromDate;
+        end = end > DateRange.EndDate.ToDateTime(new()) ? DateRange.EndDate.ToDateTime(new()) : end;
+        var start = drive.DateStart > DateRange.BeginDate.ToDateTime(new()) ? drive.DateStart : DateRange.BeginDate.ToDateTime(new());
         return (start.Date, end.Date);
     }
 

@@ -29,9 +29,7 @@ internal partial class Saby
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Auto); // auth
             grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Auto); // dateFrom
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Auto); // dateTo
+            grid.AddRow(GridUnitType.Auto); // dateRange
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Auto); // inn
             grid.AddRow(GridUnitType.Pixel, 5);
@@ -77,38 +75,24 @@ internal partial class Saby
             };
             grid.AddChild(btn, y: 4, dx: 3);
 
-            grid.AddChild(CreateLabel("Начало сканирования"), y: 6);
-            var dp = new DatePicker
-            {
-                DisplayDateStart = Constants.OfdBeginDate,
-                SelectedDateFormat = DatePickerFormat.Short
-            };
-            dp.SetBinding(DatePicker.SelectedDateProperty, nameof(FromDate));
-            dp.SetBinding(DatePicker.DisplayDateEndProperty, nameof(ToDate));
-            grid.AddChild(dp, 2, 6);
+            grid.AddChild(CreateLabel("Период выгрузки"), y: 6);
+            var drp = new DateRangePicker();
+            drp.SetBinding(DateRangePicker.DateRangeProperty, nameof(DateRange));
+            drp.SetBinding(DateRangePicker.IsEnabledProperty, nameof(Authorized));
+            grid.AddChild(drp, 2, 6);
 
-            grid.AddChild(CreateLabel("Конец сканирования"), y: 8);
-            dp = new DatePicker
-            {
-                DisplayDateEnd = DateTime.Today,
-                SelectedDateFormat = DatePickerFormat.Short
-            };
-            dp.SetBinding(DatePicker.SelectedDateProperty, nameof(ToDate));
-            dp.SetBinding(DatePicker.DisplayDateStartProperty, nameof(FromDate));
-            grid.AddChild(dp, 2, 8);
-
-            grid.AddChild(CreateLabel("ИНН организации"), y: 10);
+            grid.AddChild(CreateLabel("ИНН организации"), y: 8);
             tb = new NotifyTextBox();
             tb.SetBinding(TextBox.TextProperty, new ValidatedBinding(nameof(Inn), InnValidationRule.Instance));
             tb.SetBinding(TextBox.IsEnabledProperty, nameof(Authorized));
-            grid.AddChild(tb, 2, 10);
+            grid.AddChild(tb, 2, 8);
 
-            grid.AddChild(CreateLabel("Регистрационный номер ККТ"), y: 12);
+            grid.AddChild(CreateLabel("Регистрационный номер ККТ"), y: 10);
             var cb = new CheckComboBox { IsEditable = true };
             cb.SetBinding(CheckComboBox.ItemsSourceProperty, nameof(Devices));
             cb.SetBinding(CheckComboBox.SelectedItemsOverrideProperty, nameof(SelectedDevices));
             cb.SetBinding(CheckComboBox.IsEnabledProperty, nameof(Authorized));
-            grid.AddChild(cb, 2, 12);
+            grid.AddChild(cb, 2, 10);
         }
 
         private static TextBlock CreateLabel(string text) => new()

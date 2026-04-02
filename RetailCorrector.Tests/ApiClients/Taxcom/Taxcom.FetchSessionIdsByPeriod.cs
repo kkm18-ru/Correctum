@@ -8,21 +8,21 @@ namespace RetailCorrector.Tests.ApiClients.Taxcom;
 partial class Taxcom
 {
     private static Array sessions;
-    private static DateTime beginDate;
-    private static DateTime endDate;
+    private static DateOnly beginDate;
+    private static DateOnly endDate;
     private static string fnNumber;
     
     private static void InitValuesSession(Faker faker)
     {
         fnNumber = faker.Random.ULong().ToString("D16");
-        beginDate = faker.Date.Past();
-        endDate = faker.Date.Future();
+        beginDate = faker.Date.PastDateOnly();
+        endDate = faker.Date.FutureDateOnly();
         
         sessions = new Session[faker.Random.Int(2, 5)];
         var sessionFaker = new Faker<Session>()
             .RuleFor(o => o.fnFactoryNumber, (_, _) => fnNumber)
             .RuleFor(o => o.shiftNumber, (f, _) => f.Random.Int(1))
-            .RuleFor(o => o.openDateTime, (f, _) => f.Date.Between(beginDate, endDate))
+            .RuleFor(o => o.openDateTime, (f, _) => f.Date.Between(beginDate.ToDateTime(new()), endDate.ToDateTime(new())))
             .RuleFor(o => o.closeDateTime, (f, s) => f.Date.Between(s.openDateTime, s.openDateTime.AddHours(24)))
             .RuleFor(o => o.receiptCount, (f, _) => f.Random.Int(2));
         for (var i = 0; i < sessions.Length; i++) 
