@@ -21,11 +21,7 @@ namespace RetailCorrector.UI.Controls
                 typeof(DateRangePicker),
                 new FrameworkPropertyMetadata(new DateRange()));
 
-        public DateRange DateRange
-        {
-            get => (DateRange)GetValue(DateRangeProperty); 
-            set => SetValue(DateRangeProperty, value);
-        }
+        public DateRange DateRange => (DateRange)GetValue(DateRangeProperty);
 
         #region UserControl Properties
 
