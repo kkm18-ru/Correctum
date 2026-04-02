@@ -1,6 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using RetailCorrector.Exceptions;
+using RetailCorrector.UI.Controls;
+using RetailCorrector.Utils;
 using Xceed.Wpf.Toolkit;
 using MessageBox = System.Windows.MessageBox;
 
@@ -28,16 +30,13 @@ partial class Taxcom
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Auto); // device
             grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Auto); // beginDate
-            grid.AddRow(GridUnitType.Pixel, 5);
-            grid.AddRow(GridUnitType.Auto); // endDate
+            grid.AddRow(GridUnitType.Auto); // dateRange
 
             grid.AddChild(new TextBlock { Text = "Логин: " }, 0, 0);
             grid.AddChild(new TextBlock { Text = "Пароль: " }, 0, 2);
             grid.AddChild(new TextBlock { Text = "Номер договора: " }, 0, 4);
             grid.AddChild(new TextBlock { Text = "ККТ: " }, 0, 8);
-            grid.AddChild(new TextBlock { Text = "Начало периода: " }, 0, 10);
-            grid.AddChild(new TextBlock { Text = "Конец периода: " }, 0, 12);
+            grid.AddChild(new TextBlock { Text = "Период выгрузки: " }, 0, 10);
 
             var tb = new TextBox();
             tb.SetBinding(TextBox.TextProperty, nameof(Login));
@@ -62,17 +61,13 @@ partial class Taxcom
             var ccb = new CheckComboBox();
             ccb.SetBinding(CheckComboBox.SelectedItemsOverrideProperty, nameof(SelectedDevices));
             ccb.SetBinding(CheckComboBox.ItemsSourceProperty, nameof(Devices));
+            ccb.SetBinding(CheckComboBox.IsEnabledProperty, nameof(Authorized));
             grid.AddChild(ccb, 2, 8);
 
-            var dp = new DatePicker();
-            dp.SetBinding(DatePicker.SelectedDateProperty, nameof(BeginDate));
-            dp.SetBinding(IsEnabledProperty, nameof(Authorized));
-            grid.AddChild(dp, 2, 10);
-
-            dp = new DatePicker();
-            dp.SetBinding(DatePicker.SelectedDateProperty, nameof(EndDate));
-            dp.SetBinding(IsEnabledProperty, nameof(Authorized));
-            grid.AddChild(dp, 2, 12);
+            var drp = new DateRangePicker();
+            drp.SetBinding(DateRangePicker.DateRangeProperty, nameof(DateRange));
+            drp.SetBinding(DateRangePicker.IsEnabledProperty, nameof(Authorized));
+            grid.AddChild(drp, 2, 10);
 
             Content = grid;
         }

@@ -134,7 +134,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : ApiCli
     /// <returns>Объект задачи, представляющий асинхронную операцию.</returns>
     /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
     public async Task<List<uint>> FetchSessionIdsByPeriodAsync
-        (string fn, DateTime begin, DateTime end, CancellationToken cancellationToken = default)
+        (string fn, DateOnly begin, DateOnly end, CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
         var textBegin = $"begin={begin:yyyy-MM-dd}T00:00:00";

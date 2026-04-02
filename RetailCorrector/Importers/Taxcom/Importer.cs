@@ -40,7 +40,7 @@ internal partial class Taxcom : ImporterBase<Taxcom, Taxcom.View>
             await foreach (var drive in _client.FetchDriveIdsAsync(device, cancellationToken))
             {
                 var sessionIds = await _client.FetchSessionIdsByPeriodAsync
-                    (drive, BeginDate, EndDate, cancellationToken);
+                    (drive, DateRange.BeginDate, DateRange.EndDate, cancellationToken);
                 if(sessionIds.Count == 0) continue;
                 sessionIds.Sort();
                 var docIds = await _client.FetchDocumentNumbersBySessionAsync(drive, sessionIds[0], cancellationToken);

@@ -25,18 +25,6 @@ partial class Taxcom : INotifyPropertyChanged
         set => SetField(ref field, value);
     } = "";
 
-    public DateTime BeginDate
-    {
-        get;
-        set => SetField(ref field, value);
-    } = DateTime.Today;
-
-    public DateTime EndDate
-    {
-        get;
-        set => SetField(ref field, value);
-    } = DateTime.Today;
-
     public bool Authorizing
     {
         get;
@@ -55,6 +43,7 @@ partial class Taxcom : INotifyPropertyChanged
 
     public bool CanAuthorized => !Authorizing;
 
+    public DateRange DateRange { get; } = new();
     public ObservableCollection<string> Devices { get; } = [];
     public ObservableCollection<string> SelectedDevices { get; } = [];
 
