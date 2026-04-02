@@ -4,11 +4,11 @@ using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Utils;
 
-public struct DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
+public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
 {
     public DateOnly BeginDate
     {
-        readonly get => MinValue.AddDays(_beginDays);
+        get => MinValue.AddDays(_beginDays);
         set
         {
             if (!ValidDateByPeriod(value)) return;
@@ -23,7 +23,7 @@ public struct DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
 
     public DateOnly EndDate
     {
-        readonly get => MinValue.AddDays(_endDays);
+        get => MinValue.AddDays(_endDays);
         set
         {
             if (!ValidDateByPeriod(value)) return;
@@ -52,11 +52,11 @@ public struct DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         _enumerator = new DateRangeEnumerator();
     }
 
-    public readonly IEnumerator<DateOnly> GetEnumerator() => _enumerator;
+    public IEnumerator<DateOnly> GetEnumerator() => _enumerator;
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    private readonly void OnPropertyChanged([CallerMemberName] string propertyName = "") =>
+    private void OnPropertyChanged([CallerMemberName] string propertyName = "") =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
     private static bool ValidDateByPeriod(DateOnly value) =>
