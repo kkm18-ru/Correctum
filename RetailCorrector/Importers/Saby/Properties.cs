@@ -41,26 +41,7 @@ internal partial class Saby : INotifyPropertyChanged
 
     public ObservableCollection<string> Devices { get; set; } = [];
     public ObservableCollection<string> SelectedDevices { get; set; } = [];
-    public DateTime FromDate
-    {
-        get;
-        set
-        {
-            if(field == value) return;
-            field = value;
-            PropertyChanged?.Invoke(this, FromDateNotifier);
-        }
-    } = DateTime.Today;
-    public DateTime ToDate
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            PropertyChanged?.Invoke(this, ToDateNotifier);
-        }
-    } = DateTime.Today;
+    public DateRange DateRange { get; } = new();
     public bool Authorizing
     {
         get;
@@ -98,8 +79,6 @@ internal partial class Saby : INotifyPropertyChanged
     private readonly static PropertyChangedEventArgs LoginNotifier = new(nameof(Login));
     private readonly static PropertyChangedEventArgs PasswordNotifier = new(nameof(Password));
     private readonly static PropertyChangedEventArgs InnNotifier = new(nameof(Inn));
-    private readonly static PropertyChangedEventArgs FromDateNotifier = new(nameof(FromDate));
-    private readonly static PropertyChangedEventArgs ToDateNotifier = new(nameof(ToDate));
     private readonly static PropertyChangedEventArgs CanAuthorizeNotifier = new(nameof(CanAuthorize));
     private readonly static PropertyChangedEventArgs AuthorizedNotifier = new(nameof(Authorized));
 
