@@ -29,10 +29,12 @@ namespace RetailCorrector.UI.Controls
 
         #region UserControl Properties
 
-        public string DisplayValue =>
-            DateRange.BeginDate == DateRange.EndDate ? 
-            $"{DateRange.BeginDate:dd.MM.yyyy}" : 
-            $"{DateRange.BeginDate:dd.MM.yyyy} - {DateRange.EndDate:dd.MM.yyyy}";
+        public string DisplayValue => DateRange.Count switch
+        {
+            <= 0 => "",
+            1 => $"{DateRange.BeginDate:dd.MM.yyyy}",
+            > 1 => $"{DateRange.BeginDate:dd.MM.yyyy} - {DateRange.EndDate:dd.MM.yyyy}",
+        };
 
         public bool IsDropDownOpen
         {

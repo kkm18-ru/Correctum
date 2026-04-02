@@ -55,6 +55,8 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         _enumerator = new DateRangeEnumerator();
     }
 
+    public int Count => _endDays - _beginDays + 1;
+
     public IEnumerator<DateOnly> GetEnumerator() => _enumerator;
 
     public void SetRangeUnsafe(DateOnly begin, DateOnly end)
