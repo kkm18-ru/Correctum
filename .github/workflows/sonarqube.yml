@@ -16,6 +16,10 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu'
+      - name: Установка .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -38,9 +42,9 @@ jobs:
         run: |
           New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
-      - name: Установка coverlet.console
+      - name: Установка dotnet-coverage
         shell: powershell
-        run: dotnet tool install --global coverlet.console
+        run: dotnet tool install --global dotnet-coverage
       - name: Сборка и анализ
         shell: cmd
         env:
@@ -49,7 +53,7 @@ jobs:
           SONAR_ORGANISATION_ID: ${{ vars.SONAR_ORGANISATION }}
           SONAR_HOST: ${{ vars.SONAR_HOST }}
         run: |
-          "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin /k:"%SONAR_PROJECT_ID%" /o:"%SONAR_ORGANISATION_ID%" /d:sonar.cs.opencover.reportsPaths=coverage.xml /d:sonar.host.url="%SONAR_HOST%" /d:sonar.token="%SONAR_TOKEN%"
+          "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin /k:"%SONAR_PROJECT_ID%" /o:"%SONAR_ORGANISATION_ID%" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.host.url="%SONAR_HOST%" /d:sonar.token="%SONAR_TOKEN%"
           dotnet build --no-incremental
-          coverlet .\RetailCorrector.Tests\bin\x86\Debug\net10.0-windows\RetailCorrector.Tests.dll --target "dotnet" --targetargs "test --no-build" -f=opencover -o="coverage.xml"
+          dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
           "${{ runner.temp }}\scanner\dotnet-sonarscanner" end /d:sonar.token="%SONAR_TOKEN%"
