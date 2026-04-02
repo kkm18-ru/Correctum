@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Utils.Integrations.Clients;
+﻿using RetailCorrector.Utils;
+using RetailCorrector.Utils.Integrations.Clients;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -26,26 +27,6 @@ internal partial class OfdRu : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, TokenNotifier);
         }
     } = "";
-    public DateTime BeginDate
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            PropertyChanged?.Invoke(this, BeginDateNotifier);
-        }
-    } = DateTime.Today;
-    public DateTime EndDate
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            PropertyChanged?.Invoke(this, EndDateNotifier);
-        }
-    } = DateTime.Today;
     public bool Authorizing
     {
         get;
@@ -69,13 +50,12 @@ internal partial class OfdRu : INotifyPropertyChanged
 
     public bool CanAuthorize => !Authorizing;
 
+    public DateRange DateRange { get; } = new();
     public ObservableCollection<OfdRuDevice> Devices { get; } = [];
     public ObservableCollection<OfdRuDevice> SelectedDevices { get; } = [];
 
     private readonly static PropertyChangedEventArgs StorageNotifier = new(nameof(Storage));
     private readonly static PropertyChangedEventArgs TokenNotifier = new(nameof(Token));
-    private readonly static PropertyChangedEventArgs BeginDateNotifier = new(nameof(BeginDate));
-    private readonly static PropertyChangedEventArgs EndDateNotifier = new(nameof(EndDate));
     private readonly static PropertyChangedEventArgs CanAuthorizeNotifier = new(nameof(CanAuthorize));
     private readonly static PropertyChangedEventArgs AuthorizedNotifier = new(nameof(Authorized));
 
