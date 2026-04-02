@@ -16,6 +16,10 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu'
+      - name: Установка .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.x'
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
