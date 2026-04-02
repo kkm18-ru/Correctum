@@ -54,6 +54,26 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
 
     public IEnumerator<DateOnly> GetEnumerator() => _enumerator;
 
+    public void SetRangeUnsafe(DateOnly begin, DateOnly end)
+    {
+        if (!ValidDateByPeriod(begin) || !ValidDateByPeriod(end)) return;
+
+        var beginDays = (begin - MinValue).TotalDays;
+        var endDays = (end - MinValue).TotalDays;
+
+        _beginDays = (ushort)beginDays;
+        _endDays = (ushort)endDays;
+
+        _enumerator.SetBegin(begin);
+        _enumerator.SetEnd(end);
+
+        OnPropertyChanged(nameof(BeginDate));
+        OnPropertyChanged(nameof(EndDate));
+    }
+
+    public void SetRangeUnsafe(DateTime begin, DateTime end) =>
+        SetRangeUnsafe(DateOnly.FromDateTime(begin), DateOnly.FromDateTime(end));
+
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     private void OnPropertyChanged([CallerMemberName] string propertyName = "") =>
