@@ -12,7 +12,7 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         set
         {
             if (!ValidDateByPeriod(value)) return;
-            var days = (value - MinValue).TotalDays;
+            var days = (int)(value - MinValue).TotalDays;
             if (days == _beginDays) return;
             if (days > _endDays) return;
             _beginDays = (ushort)days;
@@ -27,7 +27,7 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         set
         {
             if (!ValidDateByPeriod(value)) return;
-            var days = (value - MinValue).TotalDays;
+            var days = (int)(value - MinValue).TotalDays;
             if (days == _endDays) return;
             if (days < _beginDays) return;
             _endDays = (ushort)days;
