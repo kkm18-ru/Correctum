@@ -54,6 +54,6 @@ jobs:
           SONAR_HOST: ${{ vars.SONAR_HOST }}
         run: |
           "${{ runner.temp }}\scanner\dotnet-sonarscanner" begin /k:"%SONAR_PROJECT_ID%" /o:"%SONAR_ORGANISATION_ID%" /d:sonar.cs.opencover.reportsPaths=coverage.xml /d:sonar.host.url="%SONAR_HOST%" /d:sonar.token="%SONAR_TOKEN%"
-          dotnet build --no-incremental -a x64 -o bin
-          coverlet .\bin\RetailCorrector.Tests.dll --target "dotnet" --targetargs "test --no-build" -f=opencover -o="coverage.xml"
+          dotnet build --no-incremental -a x64
+          coverlet .\RetailCorrector.Tests\bin\Debug\net10.0-windows\win-x64\RetailCorrector.Tests.dll --target "dotnet" --targetargs "test --no-build" -f=opencover -o="coverage.xml"
           "${{ runner.temp }}\scanner\dotnet-sonarscanner" end /d:sonar.token="%SONAR_TOKEN%"
