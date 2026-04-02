@@ -1,4 +1,5 @@
-﻿using RetailCorrector.Utils;
+﻿using RetailCorrector.UI.Controls;
+using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Controls;
 using Xceed.Wpf.Toolkit;
@@ -18,8 +19,6 @@ partial class PlatformOfd
             grid.AddColumn(GridUnitType.Pixel, 5);
             grid.AddColumn(GridUnitType.Star);
 
-            grid.AddRow(GridUnitType.Auto);
-            grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Auto);
             grid.AddRow(GridUnitType.Pixel, 5);
             grid.AddRow(GridUnitType.Auto);
@@ -62,19 +61,11 @@ partial class PlatformOfd
             cb.SetBinding(IsEnabledProperty, nameof(Authorized));
             grid.AddChild(cb, 2, 8);
 
-            grid.AddChild(new TextBlock { Text = "Начало периода" }, y: 10);
-            var dp = new DatePicker { DisplayDateStart = Constants.OfdBeginDate };
-            dp.SetBinding(DatePicker.DisplayDateEndProperty, nameof(EndDate));
-            dp.SetBinding(DatePicker.SelectedDateProperty, nameof(BeginDate));
-            dp.SetBinding(IsEnabledProperty, nameof(Authorized));
-            grid.AddChild(dp, 2, 10);
-
-            grid.AddChild(new TextBlock { Text = "Конец периода" }, y: 12);
-            dp = new DatePicker { DisplayDateEnd = DateTime.Now };
-            dp.SetBinding(DatePicker.DisplayDateStartProperty, nameof(BeginDate));
-            dp.SetBinding(DatePicker.SelectedDateProperty, nameof(EndDate));
-            dp.SetBinding(IsEnabledProperty, nameof(Authorized));
-            grid.AddChild(dp, 2, 12);
+            grid.AddChild(new TextBlock { Text = "Период выгрузки" }, y: 10);
+            var drp = new DateRangePicker();
+            drp.SetBinding(DateRangePicker.DateRangeProperty, nameof(DateRange));
+            drp.SetBinding(IsEnabledProperty, nameof(Authorized));
+            grid.AddChild(drp, 2, 10);
         }
 
         private async void OnAuthClicked(object? sender, RoutedEventArgs args)
