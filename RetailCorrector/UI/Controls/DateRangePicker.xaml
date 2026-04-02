@@ -1,71 +1,34 @@
-﻿<UserControl x:Class="RetailCorrector.UI.Controls.DateRangePicker" x:Name="this"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:RetailCorrector.UI.Controls"
-             mc:Ignorable="d" d:DesignHeight="30" d:DesignWidth="160">
-    <StackPanel>
-        <Border
-            BorderThickness="1"
-            BorderBrush="{Binding ElementName=DateRangePicker_TextBox, Path=BorderBrush}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="30" />
-                </Grid.ColumnDefinitions>
-                <TextBox
-                    x:Name="DateRangePicker_TextBox"
-                    Grid.Column="0"
-                    Margin="0"
-                    MinHeight="30"
-                    BorderThickness="0"
-                    d:Text="14.03.2023 - 20.03.2023"
-                    Text="{Binding ElementName=this, Path=DisplayValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=300}"
-                    KeyUp="Handle_Escape_Button" />
-                <ToggleButton
-                    x:Name="DateRangePicker_ArrowButton"
-                    Grid.Column="1"
-                    Height="{Binding ElementName=DateRangePicker_TextBox, Path=Height}"
-                    Focusable="False"
-                    ClickMode="Press"
-                    IsChecked="{Binding ElementName=this, Path=IsDropDownOpen, Mode=TwoWay}"
-                    MinWidth="30"
-                    Background="{Binding ElementName=DateRangePicker_TextBox, Path=Background}"
-                    BorderBrush="{Binding ElementName=DateRangePicker_TextBox, Path=Background}"
-                    BorderThickness="0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Stretch">
-                    <Path
-                        x:Name="DateRangePicker_Arrow"
-                        Data="M 0 0 L 4 4 L 8 0 Z">
-                        <Path.Fill>
-                            <SolidColorBrush Color="#FF444444"/>
-                        </Path.Fill>
-                    </Path>
-                </ToggleButton>
-            </Grid>
-        </Border>
-        <Popup
-            x:Name="DateRangePicker_Popup"
-            Placement="Bottom"
-            IsOpen="{Binding ElementName=this, Path=IsDropDownOpen}"
-            AllowsTransparency="True"
-            Focusable="False"
-            PopupAnimation="Slide">
-
-            <Viewbox
-                x:Name="DateRangePicker_DropDown"
-                SnapsToDevicePixels="True"
-                Stretch="Fill">
-                <Calendar
-                    x:Name="DateRangePicker_Calendar"
-                    SelectionMode="SingleRange"
-                    SelectedDatesChanged="DateRangePicker_Calendar_SelectedDatesChanged"/>
-            </Viewbox>
-        </Popup>
-    </StackPanel>
-</UserControl>
+﻿<StackPanel x:Class="RetailCorrector.UI.Controls.DateRangePicker"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:uc="clr-namespace:RetailCorrector.UI.Controls"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:local="clr-namespace:RetailCorrector.UI.Controls"
+            Background="White" mc:Ignorable="d">
+    <ToggleButton IsChecked="{Binding IsDropDownOpen}"
+                  DataContext="{Binding RelativeSource={RelativeSource AncestorType=uc:DateRangePicker}}">
+        <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="4"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock d:Text="01.01.2016 - 31.12.2026" VerticalAlignment="Center"
+                       HorizontalAlignment="Left" Margin="5,0,0,0"
+                       Text="{Binding DisplayValue, Mode=OneWay}"/>
+            <Polyline Points="5,0 10,6 15,0" Fill="#444444"
+                      Grid.Column="1" VerticalAlignment="Center">
+                <Polyline.RenderTransform>
+                    <RotateTransform CenterX="10" CenterY="3" Angle="{Binding RotateOpenedIndicator, Mode=OneWay}" />
+                </Polyline.RenderTransform>
+            </Polyline>
+        </Grid>
+    </ToggleButton>
+    <Popup IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource AncestorType=uc:DateRangePicker}}"
+           Placement="Bottom" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+        <Viewbox SnapsToDevicePixels="True" Stretch="Fill">
+            <Calendar SelectionMode="SingleRange" SelectedDatesChanged="SelectedDatesChanged"/>
+        </Viewbox>
+    </Popup>
+</StackPanel>

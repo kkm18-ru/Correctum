@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using RetailCorrector.Utils;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -7,151 +7,75 @@ using System.Windows.Controls;
 
 namespace RetailCorrector.UI.Controls
 {
-    public partial class DateRangePicker : UserControl, INotifyPropertyChanged
+    public partial class DateRangePicker : StackPanel, INotifyPropertyChanged
     {
         public DateRangePicker()
         {
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty SelectedDateRangeProperty
-        = DependencyProperty.Register(
-            nameof(SelectedDateRange),
-            typeof(ObservableCollection<DateTime>),
-            typeof(DateRangePicker),
-            new FrameworkPropertyMetadata(default(ObservableCollection<DateTime>), FrameworkPropertyMetadataOptions.None));
+        public static readonly DependencyProperty DateRangeProperty =
+            DependencyProperty.Register(
+                nameof(DateRange),
+                typeof(DateRange),
+                typeof(DateRangePicker),
+                new FrameworkPropertyMetadata(new DateRange()));
 
-        public ObservableCollection<DateTime> SelectedDateRange
+        public DateRange DateRange
         {
-            get => (ObservableCollection<DateTime>)GetValue(SelectedDateRangeProperty);
-            set => SetValue(SelectedDateRangeProperty, value);
+            get => (DateRange)GetValue(DateRangeProperty); 
+            set => SetValue(DateRangeProperty, value);
         }
 
         #region UserControl Properties
 
-        public string DisplayValue
-        {
-            get => _displayValue;
-            set => SetProperty(ref _displayValue, value, onChanged: () =>
-            {
-                if (string.IsNullOrWhiteSpace(value) == true)
-                {
-                    DateRangePicker_Calendar?.SelectedDates.Clear();
-                }
-                else
-                {
-                    var dates = value.Trim().Replace(" ", "").Split('-');
-                    if (dates.Count() == 2)
-                    {
-                        var isFirstDateValid = DateTime.TryParse(dates.First(), out var firstDate) && dates.First().Length == 10;
-                        var isLastDateValid = DateTime.TryParse(dates.Last(), out var lastDate) && dates.Last().Length == 10;
-
-                        if (isFirstDateValid && isLastDateValid)
-                        {
-                            DateRangePicker_Calendar?.SelectedDates.AddRange(firstDate, lastDate);
-                        }
-                    }
-                    else if (dates.Count() == 1)
-                    {
-                        var isValidDate = DateTime.TryParse(dates.First(), out var date) && dates.First().Length == 10;
-                        if (isValidDate)
-                        {
-                            DateRangePicker_Calendar?.SelectedDates.Add(date);
-                        }
-                    }
-                }
-            });
-        }
-        private string _displayValue;
+        public string DisplayValue =>
+            DateRange.BeginDate == DateRange.EndDate ? 
+            $"{DateRange.BeginDate:dd.MM.yyyy}" : 
+            $"{DateRange.BeginDate:dd.MM.yyyy} - {DateRange.EndDate:dd.MM.yyyy}";
 
         public bool IsDropDownOpen
         {
-            get => _isDropDownOpen;
-            set => SetProperty(ref _isDropDownOpen, value);
-        }
-        private bool _isDropDownOpen;
-
-        public ObservableCollection<DateTime> SelectedDates
-        {
-            get => _selectedDate;
-            set => SetProperty(ref _selectedDate, value, onChanged: () =>
+            get;
+            set
             {
-                IsDropDownOpen = false;
-                if (value.Any())
-                {
-                    if (value.Count == 1)
-                    {
-                        DisplayValue = value.First().ToString("dd.MM.yyyy");
-                        SelectedDateRange = new ObservableCollection<DateTime> { value.First() };
-                    }
-                    else
-                    {
-                        DisplayValue = $"{value.First():dd.MM.yyyy} - {value.Last():dd.MM.yyyy}";
-                        SelectedDateRange = new ObservableCollection<DateTime> { value.First(), value.Last() };
-                    }
-                }
-                else
-                {
-                    SelectedDateRange = new ObservableCollection<DateTime>();
-                }
-            });
+                if (value == field) return;
+                field = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(RotateOpenedIndicator));
+            }
         }
-        private ObservableCollection<DateTime> _selectedDate = new ObservableCollection<DateTime>();
+
+        public int RotateOpenedIndicator => IsDropDownOpen ? 180 : 0;
 
         #endregion
 
         #region UI Events
 
-        private void Handle_Escape_Button(object sender, System.Windows.Input.KeyEventArgs e)
+        private void SelectedDatesChanged(object sender, SelectionChangedEventArgs e) 
         {
-            var textBox = sender as TextBox;
-            if (e.Key == System.Windows.Input.Key.Escape && textBox != null)
-            {
-                textBox.Text = string.Empty;
-            }
-        }
-
-        private void DateRangePicker_Calendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var calendar = sender as Calendar;
-            if (calendar == null)
-            {
-                return;
-            }
-
-            SelectedDates = new ObservableCollection<DateTime>(calendar.SelectedDates);
+            if (sender is not Calendar calendar) return;
+            DateRange.SetRangeUnsafe(calendar.SelectedDates.Min(), calendar.SelectedDates.Max());
+            RaisePropertyChanged(nameof(DisplayValue));
+            IsDropDownOpen = false;
         }
 
         #endregion
 
         #region INotifyPropertyChanged
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        public void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        public void RaisePropertyChanged([CallerMemberName] string propertyName = "")
         {
-#if DEBUG
+            #if DEBUG
             Debug.Print($"RaisePropertyChanged for {propertyName}");
-#endif
+            #endif
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action onChanged = null)
-        {
-            var output = false;
-
-            if (EqualityComparer<T>.Default.Equals(backingStore, value) == false)
-            {
-                backingStore = value;
-                onChanged?.Invoke();
-                RaisePropertyChanged(propertyName);
-
-                output = true;
-            }
-
-            return output;
-        }
-
         #endregion
+
     }
 }
