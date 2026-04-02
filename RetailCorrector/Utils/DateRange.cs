@@ -1,0 +1,97 @@
+﻿using System.Collections;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace RetailCorrector.Utils;
+
+public struct DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
+{
+    public DateOnly BeginDate
+    {
+        readonly get => MinValue.AddDays(_beginDays);
+        set
+        {
+            if (!ValidDateByPeriod(value)) return;
+            var days = (value - MinValue).TotalDays;
+            if (days == _beginDays) return;
+            if (days > _endDays) return;
+            _beginDays = (ushort)days;
+            _enumerator.SetBegin(value);
+            OnPropertyChanged();
+        }
+    }
+
+    public DateOnly EndDate
+    {
+        readonly get => MinValue.AddDays(_endDays);
+        set
+        {
+            if (!ValidDateByPeriod(value)) return;
+            var days = (value - MinValue).TotalDays;
+            if (days == _endDays) return;
+            if (days < _beginDays) return;
+            _endDays = (ushort)days;
+            _enumerator.SetEnd(value);
+            OnPropertyChanged();
+        }
+    }
+
+    public static DateOnly MinValue { get; } = new(2016, 1, 1);
+    public static DateOnly MaxValue => DateOnly.Today;
+
+    private ushort _beginDays;
+    private ushort _endDays;
+    private readonly DateRangeEnumerator _enumerator;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public DateRange()
+    {
+        _beginDays = _endDays = 
+            (ushort)Math.Min(MaxValue.DayNumber - MinValue.DayNumber, ushort.MaxValue);
+        _enumerator = new DateRangeEnumerator();
+    }
+
+    public readonly IEnumerator<DateOnly> GetEnumerator() => _enumerator;
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    private readonly void OnPropertyChanged([CallerMemberName] string propertyName = "") =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    private static bool ValidDateByPeriod(DateOnly value) =>
+        value >= MinValue && value <= MaxValue;
+}
+
+internal class DateRangeEnumerator() : IEnumerator<DateOnly>
+{
+    public DateOnly Current => current;
+    object IEnumerator.Current => Current;
+
+    private DateOnly current;
+    private DateOnly begin;
+    private DateOnly end;
+
+    public void SetBegin(DateOnly value)
+    {
+        begin = value.AddDays(-1);
+        Reset();
+    }
+
+    public void SetEnd(DateOnly value)
+    {
+        end = value;
+        Reset();
+    }
+
+    public void Reset() => current = begin;
+
+    public bool MoveNext()
+    {
+        if(current.CompareTo(end) >= 0) return false;
+        current = current.AddDays(1);
+        return true;
+    }
+
+    public void Dispose() { }
+}
