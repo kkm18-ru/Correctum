@@ -80,7 +80,7 @@ internal sealed partial class KktOnlineClient() : ApiClient<KktOnlineClient>("ht
             return StatusCode.Unknown;
         }
 
-        [GeneratedRegex(@"^Заводской номер \w+ отсутствует в реестре произведенных экземпляров \w+$")]
+        [GeneratedRegex(@"^Заводской номер \w+ отсутствует в реестре произведенных экземпляров \w+$", 0, 250)]
         private static partial Regex NoCreatedRegex();
     }
     
