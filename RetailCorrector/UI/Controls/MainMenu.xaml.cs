@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using RetailCorrector.UI.Windows;
@@ -10,6 +11,10 @@ namespace RetailCorrector.UI.Controls;
 
 public partial class MainMenu : Menu
 {
+    private string ExplorerPath { get; } = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.Windows), 
+        "explorer.exe");
+
     public MainMenu()
     {
         InitializeComponent();
@@ -20,7 +25,7 @@ public partial class MainMenu : Menu
     private void ShowConfigurationWindow(object s, RoutedEventArgs e) => new ConfigurationWindow().ShowDialog();
     private void Quit(object s, RoutedEventArgs e) => Application.Current.Shutdown();
 
-    private void OpenDocs(object s, RoutedEventArgs e) => Process.Start("explorer", Constants.DocsUrl);
-    private void OpenRoadmap(object s, RoutedEventArgs e) => Process.Start("explorer", Constants.RoadmapUrl);
-    private void OpenChangelog(object s, RoutedEventArgs e) => Process.Start("explorer", Constants.ChangelogUrl);
+    private void OpenDocs(object s, RoutedEventArgs e) => Process.Start(ExplorerPath, Constants.DocsUrl);
+    private void OpenRoadmap(object s, RoutedEventArgs e) => Process.Start(ExplorerPath, Constants.RoadmapUrl);
+    private void OpenChangelog(object s, RoutedEventArgs e) => Process.Start(ExplorerPath, Constants.ChangelogUrl);
 }
