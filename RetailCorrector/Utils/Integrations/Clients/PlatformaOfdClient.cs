@@ -9,7 +9,7 @@ using System.Web;
 namespace RetailCorrector.Utils.Integrations.Clients;
 
 /// <summary>Обертка API-клиента ПлатформаОФД.</summary>
-internal sealed class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>(Host)
+internal sealed partial class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>(Host)
 {
     private const string Host = "https://lk.platformaofd.ru";
     private string JSessionId = "";
@@ -54,16 +54,14 @@ internal sealed class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>(Host)
     public async Task<PlatformaOfdDevice[]> FetchDevicesAsync(CancellationToken cancel = default)
     {
         ThrowIfDisposed();
-        const string DevicePattern = @"terminal_(?<id>\d+)_id";
-        const string NumberPattern = @"<td>(?<numb>\d{16})</td>";
 
         using var req = new HttpRequestMessage(HttpMethod.Get, "/web/auth/terminals/monitoring");
         using var resp = await Client.SendAsync(req, cancel);
         Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
 
-        var deviceIds = Regex.Matches(html, DevicePattern);
-        var numbers = Regex.Matches(html, NumberPattern);
+        var deviceIds = DeviceIdRegex().Matches(html);
+        var numbers = RegIdRegex().Matches(html);
         var devices = new PlatformaOfdDevice[deviceIds.Count];
 
         for (var i = 0; i < devices.Length; i++)
@@ -79,7 +77,6 @@ internal sealed class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>(Host)
     public async Task<PlatformaOfdReceiptReference[]> FetchReceiptsAsync(DateOnly date, PlatformaOfdDevice device, CancellationToken cancel = default)
     {
         ThrowIfDisposed();
-        const string UrlPattern = @"(?<id>\d+)\/(?<ts>\d+)\/(?<sign>\d+)";
 
         var textDeviceId = device is { Id: > 0 } id ? id.Id.ToString() :
             "%D0%92%D1%81%D0%B5%20%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B0%D0%BB%D1%8B";
@@ -92,7 +89,7 @@ internal sealed class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>(Host)
         using var resp = await Client.SendAsync(req, cancel);
         Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
-        var matches = Regex.Matches(html, UrlPattern);
+        var matches = DocumentIdRegex().Matches(html);
         var arr = new PlatformaOfdReceiptReference[matches.Count];
         for (var i = 0; i < arr.Length; i++)
             arr[i] = new(matches[i]);
@@ -115,6 +112,13 @@ internal sealed class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>(Host)
         var receipt = new Receipt { ParseId = parseId };
         return PlatformOfd.Instance.Parse(raw, ref receipt) ? receipt : null;
     }
+
+    [GeneratedRegex(@"terminal_(?<id>\d+)_id", 0, 250)]
+    private static partial Regex DeviceIdRegex();
+    [GeneratedRegex(@"<td>(?<numb>\d{16})</td>", 0, 250)]
+    private static partial Regex RegIdRegex();
+    [GeneratedRegex(@"(?<id>\d+)\/(?<ts>\d+)\/(?<sign>\d+)", 0, 250)]
+    private static partial Regex DocumentIdRegex();
 }
 
 public readonly struct PlatformaOfdReceiptReference(Match match)

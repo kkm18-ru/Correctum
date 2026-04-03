@@ -14,6 +14,6 @@ public partial class SabyAuthException : Exception
         Description = match.Groups["desc"].Value;
     }
 
-    [GeneratedRegex(@"(?<title>.+) \[0\] \(ОПИСАНИЕ: (?<desc>.+)\)")]
+    [GeneratedRegex(@"(?<title>.+) \[0\] \(ОПИСАНИЕ: (?<desc>.+)\)",0,250)]
     private static partial Regex MessageRegex();
 }
