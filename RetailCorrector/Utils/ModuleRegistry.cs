@@ -10,11 +10,6 @@ internal static class ModuleRegistry
         RetailCorrector.Parsers.OfdRuJson.Instance,
     ];
 
-    public static readonly ImmutableArray<ExportMenuItem> Exporters = [
-        new(RetailCorrector.Exporters.Fptr.Instance),
-        new(RetailCorrector.Exporters.Sqlite.Instance),
-    ];
-
     public static readonly ImmutableArray<ActionMenuItem> Actions = [
         new(RetailCorrector.Actions.CancelReceipt.Instance),
         new(RetailCorrector.Actions.RemoveReceipt.Instance),
