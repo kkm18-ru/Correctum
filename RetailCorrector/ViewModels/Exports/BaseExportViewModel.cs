@@ -13,14 +13,14 @@ public abstract class BaseExportViewModel : BaseViewModel
 
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public BaseExportViewModel()
+    protected BaseExportViewModel()
     {
-        ExportCommand = new RelayCommand(_ => Export());
+        ExportCommand = new RelayCommand(async _ => await Export());
     }
 
     protected abstract Task<bool> InternalExport();
 
-    public async void Export()
+    public async Task Export()
     {
         try
         {
