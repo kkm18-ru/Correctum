@@ -39,3 +39,28 @@ public abstract class BaseExportViewModel : BaseViewModel
         }
     }
 }
+
+public abstract class FileExportViewModel : BaseExportViewModel
+{
+    public virtual string Filter => string.Empty;
+    protected override async Task<bool> InternalExport()
+    {
+        var dialog = new SaveFileDialog
+        {
+            Filter = Filter,
+            ShowHiddenItems = true,
+            DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+            AddExtension = true,
+            AddToRecent = true,
+            CheckFileExists = false,
+            CheckPathExists = true,
+            OverwritePrompt = true,
+        };
+        if (!dialog.ShowDialog() ?? false) 
+            return true;
+        await InternalExport(dialog.FileName).AsTask();
+        return false;
+    }
+
+    protected abstract ValueTask InternalExport(string filepath);
+}
