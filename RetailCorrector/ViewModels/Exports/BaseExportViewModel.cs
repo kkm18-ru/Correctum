@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Input;
@@ -16,20 +17,20 @@ public abstract class BaseExportViewModel : BaseViewModel
 
     protected BaseExportViewModel()
     {
-        ExportCommand = new RelayCommand(async _ => await Export());
+        ExportCommand = new RelayCommand(async _ => await ExportAsync());
     }
 
     protected void ShowNotification(string message, string caption = "", MessageBoxImage image = 0, MessageBoxButton button = 0) =>
         NotifyCreated?.Invoke(message, caption, button, image);
 
-    protected abstract Task<bool> InternalExport();
+    protected abstract Task<bool> InternalExportAsync();
 
-    public async Task Export()
+    public async Task ExportAsync()
     {
         try
         {
             IsBusy = true;
-            var forcedFinish = await InternalExport();
+            var forcedFinish = await InternalExportAsync();
             if(!forcedFinish) ShowNotification("Экспорт завершен успешно");
         }
         catch(Exception ex)
@@ -47,7 +48,7 @@ public abstract class BaseExportViewModel : BaseViewModel
 public abstract class FileExportViewModel : BaseExportViewModel
 {
     public virtual string Filter => string.Empty;
-    protected override async Task<bool> InternalExport()
+    protected override async Task<bool> InternalExportAsync()
     {
         var dialog = new SaveFileDialog
         {
@@ -62,9 +63,9 @@ public abstract class FileExportViewModel : BaseExportViewModel
         };
         if (!dialog.ShowDialog() ?? false) 
             return true;
-        await InternalExport(dialog.FileName).AsTask();
+        await Export(dialog.FileName, Workspace.Instance.Receipts).AsTask();
         return false;
     }
 
-    protected abstract ValueTask InternalExport(string filepath);
+    public abstract ValueTask Export(string filepath, IEnumerable<Receipt> receipts);
 }

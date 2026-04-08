@@ -9,11 +9,11 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
     public override string ExportName => "Скрипт драйвера АТОЛ (ФФД 1.2)";
     public override string Filter => "Duktape-скрипт|*.js";
 
-    protected override async ValueTask InternalExport(string filepath)
+    public override async ValueTask Export(string filepath, IEnumerable<Receipt> receipts)
     {
         await using var stream = File.Open(filepath, FileMode.Create, FileAccess.Write, FileShare.Read);
         using var writer = new StreamWriter(stream);
-        foreach (var receipt in Workspace.Instance.Receipts)
+        foreach (var receipt in receipts)
         {
             await CorrectionDataAsync(writer, receipt.Created);
             await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_TYPE, Fptr.{receipt.Type switch

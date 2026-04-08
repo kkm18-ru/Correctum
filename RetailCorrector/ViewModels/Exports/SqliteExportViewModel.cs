@@ -49,12 +49,12 @@ public sealed class SqliteExportViewModel : FileExportViewModel
         );
         """;
 
-    protected override async ValueTask InternalExport(string filepath)
+    public override async ValueTask Export(string filepath, IEnumerable<Receipt> receipts)
     {
         var conn = new SqliteConnection($"Data Source={filepath}");
         await conn.OpenAsync();
         await conn.ExecuteAsync(InitializationQuery);
-        foreach (var receipt in Workspace.Instance.Receipts)
+        foreach (var receipt in receipts)
         {
             var tr = await conn.BeginTransactionAsync();
             try
