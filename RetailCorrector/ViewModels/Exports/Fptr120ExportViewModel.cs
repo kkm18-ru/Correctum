@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using RetailCorrector.Enums;
 using System.Globalization;
 using System.IO;
 
@@ -16,44 +17,45 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         foreach (var receipt in receipts)
         {
             await CorrectionDataAsync(writer, receipt.Created);
-            await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_TYPE, Fptr.{receipt.Type switch
-            {
-                Enums.Operation.Income => "LIBFPTR_RT_SELL_CORRECTION",
-                Enums.Operation.RefundIncome => "LIBFPTR_RT_SELL_RETURN_CORRECTION",
-                Enums.Operation.Outcome => "LIBFPTR_RT_BUY_CORRECTION",
-                Enums.Operation.RefundOutcome => "LIBFPTR_RT_BUY_RETURN_CORRECTION",
-                _ => throw new FormatException("Найден чек с некорректным типом операции.")
-            }});");
+            await SetReceiptTypeAsync(writer, receipt.Type);            
             await writer.WriteLineAsync($"Fptr.setParam(1055, {(int)receipt.TaxationSystem});");
             await ElectronicallyDocumentAsync(writer);
             await SetCorrectionDataAsync(writer, receipt.DocSign);
             await writer.WriteLineAsync("Fptr.openReceipt();");
-
-            foreach (var pos in receipt.Items)
-                await PositionAsync(writer, pos);
-
+            await PositionsAsync(writer, receipt.Items);
             await TotalSumAsync(writer, receipt.TotalSum);
             await PaymentAsync(writer, receipt.Payment);
             await writer.WriteLineAsync("Fptr.closeReceipt();");
             await writer.WriteLineAsync();
         }
     }
+    internal static async Task SetReceiptTypeAsync(StreamWriter writer, Operation receiptType) =>
+        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_TYPE, Fptr.{ToAtolConstant(receiptType)});");
 
-    private static async Task SetCorrectionDataAsync(StreamWriter writer, uint sign)
+    private static string ToAtolConstant(Operation receiptType) => receiptType switch
+    {
+        Operation.Income => "LIBFPTR_RT_SELL_CORRECTION",
+        Operation.RefundIncome => "LIBFPTR_RT_SELL_RETURN_CORRECTION",
+        Operation.Outcome => "LIBFPTR_RT_BUY_CORRECTION",
+        Operation.RefundOutcome => "LIBFPTR_RT_BUY_RETURN_CORRECTION",
+        _ => throw new FormatException("Найден чек с некорректным типом операции.")
+    };
+
+    internal static async Task SetCorrectionDataAsync(StreamWriter writer, uint sign)
     {
         await writer.WriteLineAsync("Fptr.setParam(1173, 0);");
         await writer.WriteLineAsync("Fptr.setParam(1174, correctionInfo);");
         if (sign > 0) await writer.WriteLineAsync($"Fptr.setParam(1192, \"{sign}\");");
     }
 
-    private static async Task ElectronicallyDocumentAsync(StreamWriter writer)
+    internal static async Task ElectronicallyDocumentAsync(StreamWriter writer)
     {
         await writer.WriteLineAsync("Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_ELECTRONICALLY, true);");
         await writer.WriteLineAsync("Fptr.setParam(1117, \"none\");");
         await writer.WriteLineAsync("Fptr.setParam(1008, \"none\");");
     }
 
-    private static async Task CorrectionDataAsync(StreamWriter writer, DateTime dt)
+    internal static async Task CorrectionDataAsync(StreamWriter writer, DateTime dt)
     {
         await writer.WriteLineAsync($"Fptr.setParam(1178, new Date(\"{dt:yyyy'-'MM'-'dd'T'HH':'mm':'ss}\"));");
         await writer.WriteLineAsync($"Fptr.setParam(1179, \" \");");
@@ -61,10 +63,27 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         await writer.WriteLineAsync("correctionInfo = Fptr.getParamByteArray(Fptr.LIBFPTR_PARAM_TAG_VALUE);");
     }
 
-    private static async Task PositionAsync(StreamWriter writer, Position info)
+    internal static async Task PositionsAsync(StreamWriter writer, Position[] array)
     {
-        if (info.Unit is null || info.Type == 0 || info.PayMethod == 0 || info.TaxRate == 0 || string.IsNullOrWhiteSpace(info.Name))
-            throw new FormatException("Найдены чеки с некорректными позициями.");
+        array ??= [];
+        if (array.Length == 0)
+            throw new FormatException("Кассовый чек должен содержать хотя бы одну позицию.");
+        foreach (var pos in array) await PositionAsync(writer, pos);
+    }
+
+    internal static async Task PositionAsync(StreamWriter writer, Position info)
+    {
+        if (string.IsNullOrWhiteSpace(info.Name))
+            throw new FormatException("Найдена позиция чека с некорректным наименованием.");
+        if (!info.Unit.HasValue) throw new FormatException("Найдена позиция чека без единицы измерения.");
+        if (Enum.GetName(info.Unit.Value) is null)
+            throw new FormatException("Найдена позиция чека с некорректной единицей измерения.");
+        if (Enum.GetName(info.Type) is null)
+            throw new FormatException("Найдена позиция чека с некорректным типом.");
+        if (Enum.GetName(info.PayMethod) is null)
+            throw new FormatException("Найдена позиция чека с некорректным способом расчета.");
+        if (Enum.GetName(info.TaxRate) is null || info.TaxRate == TaxRate.Unknown)
+            throw new FormatException("Найдена позиция чека с некорректной ставкой НДС.");
 
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, \"{info.Name.Replace("\"", "\\\"")}\");");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, {RestoreDecimalAndToString(info.Price, 2)});");
@@ -77,13 +96,13 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         await writer.WriteLineAsync("Fptr.registration();");
     }
 
-    private static async Task TotalSumAsync(StreamWriter writer, ulong sum)
+    internal static async Task TotalSumAsync(StreamWriter writer, ulong sum)
     {
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_SUM, {RestoreDecimalAndToString(sum, 2)});");
         await writer.WriteLineAsync("Fptr.receiptTotal();");
     }
 
-    private static async Task PaymentAsync(StreamWriter writer, Payment info)
+    internal static async Task PaymentAsync(StreamWriter writer, Payment info)
     {
         if (info.Cash > 0) await PaymentAsync(writer, "LIBFPTR_PT_CASH", info.Cash);
         if (info.ECash > 0) await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", info.ECash);
