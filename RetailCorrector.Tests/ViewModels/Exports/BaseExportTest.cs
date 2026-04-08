@@ -20,7 +20,7 @@ public class BaseExportTest<TViewModel, TTests>
     }
 
     protected static string GenPath([CallerMemberName] string? methodName = null) =>
-        Path.Combine(DirectoryPath, $"{methodName ?? Path.GetRandomFileName()}.js");
+        Path.Combine(DirectoryPath, methodName ?? Path.GetRandomFileName());
 
     [OneTimeTearDown]
     public static void TearDown()

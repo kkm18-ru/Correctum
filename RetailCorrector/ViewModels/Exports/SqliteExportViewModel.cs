@@ -51,7 +51,7 @@ public sealed class SqliteExportViewModel : FileExportViewModel
 
     public override async ValueTask Export(string filepath, IEnumerable<Receipt> receipts)
     {
-        var conn = new SqliteConnection($"Data Source={filepath}");
+        var conn = new SqliteConnection($"Data Source={filepath};Pooling=False");
         await conn.OpenAsync();
         await conn.ExecuteAsync(InitializationQuery);
         foreach (var receipt in receipts)
