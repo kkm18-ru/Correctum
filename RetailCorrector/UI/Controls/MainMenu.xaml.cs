@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using RetailCorrector.UI.Windows;
 using RetailCorrector.Utils;
+using RetailCorrector.ViewModels.Exports;
 using RetailCorrector.ViewModels.Reports;
 using RetailCorrector.Views.Windows;
 
@@ -21,6 +22,8 @@ public partial class MainMenu : Menu
     }
 
     private void ShowPosNameReport(object s, RoutedEventArgs e) => new ReportWindow(new PositionNamesReportViewModel()).ShowDialog();
+    private void ShowSqliteExport(object s, RoutedEventArgs e) => new ExportWindow(new SqliteExportViewModel()).ShowDialog();
+    private void ShowFptr120Export(object s, RoutedEventArgs e) => new ExportWindow(new Fptr120ExportViewModel()).ShowDialog();
     private void ShowFptrWindow(object s, RoutedEventArgs e) => new FptrWindow().ShowDialog();
     private void ShowConfigurationWindow(object s, RoutedEventArgs e) => new ConfigurationWindow().ShowDialog();
     private void Quit(object s, RoutedEventArgs e) => Application.Current.Shutdown();

@@ -7,7 +7,10 @@
       mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="1000">
     <MenuItem Header="Файл">
         <MenuItem Header="Импорт" ItemsSource="{x:Static u:ModuleRegistry.Importers}"/>
-        <MenuItem Header="Экспорт" ItemsSource="{x:Static u:ModuleRegistry.Exporters}"/>
+        <MenuItem Header="Экспорт...">
+            <MenuItem Header="SQLite" Click="ShowSqliteExport"/>
+            <MenuItem Header="Скрипт драйвера АТОЛ (ФФД 1.2)" Click="ShowFptr120Export"/>
+        </MenuItem>
         <Separator/>
         <MenuItem Header="Провести чеки" Click="ShowFptrWindow"/>
         <Separator/>
