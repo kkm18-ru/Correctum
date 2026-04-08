@@ -3,7 +3,6 @@ using Microsoft.Data.Sqlite;
 using RetailCorrector.Data;
 using System.Data;
 using System.IO;
-using System.Windows;
 
 namespace RetailCorrector.ViewModels.Exports;
 
@@ -71,7 +70,7 @@ public sealed class SqliteExportViewModel : FileExportViewModel
                 await tr.RollbackAsync();
                 await conn.DisposeAsync();
                 File.Delete(filepath);
-                MessageBox.Show(ex.Message, "Ошибка при экспорте чека.");
+                ShowNotification(ex.Message, "Ошибка при экспорте чека.");
                 return;
             }
         }

@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.UI.Windows.Types;
 using RetailCorrector.ViewModels.Exports;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
@@ -9,6 +10,7 @@ public class ExportWindow : DialogWindow
 {
     public ExportWindow(BaseExportViewModel vm)
     {
+        vm.NotifyCreated += (msg, title, btn, img) => MessageBox.Show(msg, title, btn, img);
         DataContext = vm;
         InitializeComponent();
     }
