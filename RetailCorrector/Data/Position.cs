@@ -1,16 +1,17 @@
 ﻿using RetailCorrector.Enums;
+using RetailCorrector.ValueObjects;
 
 namespace RetailCorrector.Data
 {
-    public struct Position(string name, ulong price, ulong quantity)
+    public struct Position
     {
-        public string Name { get; set; } = name;
+        public string Name { get; set; }
         public PayMethod PayMethod { get; set; }
         public PositionType Type { get; set; }
         public TaxRate TaxRate { get; set; }
-        public ulong Price { get; set; } = price;
-        public ulong Quantity { get; set; } = quantity;
+        public Currency Price { get; set; }
+        public ulong Quantity { get; set; }
         public PositionUnit? Unit { get; set; }
-        public ulong Cost { get; set; } = price * quantity / 1000;
+        public Currency Cost { get; set; }
     }
 }

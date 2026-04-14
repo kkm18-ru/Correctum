@@ -1,11 +1,13 @@
-﻿namespace RetailCorrector.Data
+﻿using RetailCorrector.ValueObjects;
+
+namespace RetailCorrector.Data
 {
-    public struct Payment(ulong cash, ulong ecash, ulong pre, ulong post, ulong other)
+    public struct Payment
     {
-        public ulong Cash { get; set; } = cash;
-        public ulong ECash { get; set; } = ecash;
-        public ulong Pre { get; set; } = pre;
-        public ulong Post { get; set; } = post;
-        public ulong Provision { get; set; } = other;
+        public Currency Cash { get; set; }
+        public Currency ECash { get; set; }
+        public Currency Pre { get; set; }
+        public Currency Post { get; set; }
+        public Currency Provision { get; set; }
     }
 }
