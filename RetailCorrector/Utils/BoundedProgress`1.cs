@@ -24,12 +24,13 @@ public class BoundedProgress<T> where T : struct, IUnsignedNumber<T>
 
     public void ReportIncrement()
     {
-        if (ValueIncremented is not null)
-            _synchronizationContext.Post(_invokeIncrementHandlers, null);
+        ArgumentNullException.ThrowIfNull(ValueIncremented);
+        _synchronizationContext.Post(_invokeIncrementHandlers, null);
     }
     public void ReportMaximum(T value)
     {
-        if (MaximumChanged is null || ValueCleared is null) return;
+        ArgumentNullException.ThrowIfNull(MaximumChanged);
+        ArgumentNullException.ThrowIfNull(ValueCleared);
         _synchronizationContext.Post(_invokeMaximumHandlers, value);
         _synchronizationContext.Post(_invokeClearHandlers, null);
     }
