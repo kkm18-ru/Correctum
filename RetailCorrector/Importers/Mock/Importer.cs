@@ -37,7 +37,7 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
                     TaxRate = faker.Random.Enum<TaxRate>(),
                     Type = faker.Random.Enum<PositionType>(),
                 };
-                pos[j].Cost = pos[j].Price * (pos[j].Quantity / 1000);
+                pos[j].Cost = pos[j].Price * pos[j].Quantity / 1000;
                 sum += pos[j].Cost;
             }
             var payment = new Payment();
@@ -68,7 +68,7 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
                 DocInSession = faker.Random.UInt(1,1000),
                 SessionId = faker.Random.UInt(1,365),
                 Created = faker.Date.Past(),
-                DocSign = faker.Random.UInt(),
+                DocSign = new(faker.Random.UInt()),
                 Type = faker.Random.Enum<Operation>(),
                 Payment = payment,
                 TotalSum = sum,

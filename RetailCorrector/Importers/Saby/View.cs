@@ -1,6 +1,6 @@
 using RetailCorrector.UI.Controls;
-using RetailCorrector.Utils;
-using RetailCorrector.Utils.ValidationRules;
+using RetailCorrector.Converters;
+using System.Windows.Data;
 using System.Windows;
 using System.Windows.Controls;
 using RetailCorrector.Exceptions.Saby;
@@ -83,7 +83,12 @@ internal partial class Saby
 
             grid.AddChild(CreateLabel("ИНН организации"), y: 8);
             tb = new NotifyTextBox();
-            tb.SetBinding(TextBox.TextProperty, new ValidatedBinding(nameof(Inn), InnValidationRule.Instance));
+            tb.SetBinding(TextBox.TextProperty, new Binding(nameof(Inn))
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                Mode = BindingMode.TwoWay,
+                Converter = new InnConverter()
+            });
             tb.SetBinding(TextBox.IsEnabledProperty, nameof(Authorized));
             grid.AddChild(tb, 2, 8);
 

@@ -12,10 +12,10 @@ namespace RetailCorrector.Data
         public string Type { get; } = EnumLocales.PositionTypes.GetLocale(origin.Type);
         public string PayMethod { get; } = EnumLocales.PositionPayments.GetLocale(origin.PayMethod);
         public string TaxRate { get; } = EnumLocales.TaxRates.GetLocale(origin.TaxRate);
-        public string Price { get; } = $"{(origin.Price * 0.01):F2}";
+        public string Price { get; } = $"{(decimal)origin.Price:F2}";
 
         public string Quantity { get; } =
             $"{(origin.Quantity * 0.001):F3}{EnumLocales.PositionUnits.GetLocale(origin.Unit)}";
-        public string Cost { get; } = $"{(origin.Cost * 0.01):F2}";
+        public string Cost { get; } = $"{(decimal)origin.Cost:F2}";
     }
 }

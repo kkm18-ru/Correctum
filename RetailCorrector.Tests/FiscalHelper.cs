@@ -1,4 +1,4 @@
-namespace RetailCorrector.Utils;
+namespace RetailCorrector.Tests;
 
 public static class FiscalHelper
 {

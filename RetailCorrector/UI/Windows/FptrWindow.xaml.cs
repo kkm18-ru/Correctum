@@ -7,6 +7,7 @@ using RetailCorrector.Enums;
 using RetailCorrector.UI.Windows.Types;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations;
+using RetailCorrector.ValueObjects;
 
 namespace RetailCorrector.UI.Windows;
 
@@ -107,7 +108,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
         }
         
         token.ThrowIfCancellationRequested();
-        if (!_handle.SetTotal(data.TotalSum / 100.0)) return false;
+        if (!_handle.SetTotal(data.TotalSum)) return false;
         
         token.ThrowIfCancellationRequested();
         if (!_handle.Payment(data.Payment)) return false;
@@ -274,7 +275,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                 var info = _handle.GetReceiptInfo(docNumb + i);
                 var receipt = slice[i] with
                 {
-                    DocSign = uint.Parse(info.Item1),
+                    DocSign = FiscalSign.Parse(info.Item1),
                     Created = info.Item2,
                     Type = slice[i].Type switch
                     {

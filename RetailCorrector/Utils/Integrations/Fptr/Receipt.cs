@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using RetailCorrector.ValueObjects;
 using System.Windows;
 
 namespace RetailCorrector.Utils.Integrations
@@ -50,8 +51,8 @@ namespace RetailCorrector.Utils.Integrations
                 SetInteger(1173, (uint)args.CorrType);
                 SetBytes(1174, corrData);
             }
-            if(doc.DocSign > 0) 
-                SetString(1192, doc.DocSign.ToString());
+            if(doc.DocSign is { } sign) 
+                SetString(1192, sign.ToString());
             return openReceipt(handle) == 0;
 
         }
@@ -69,9 +70,9 @@ namespace RetailCorrector.Utils.Integrations
         public bool AddPosition(Position pos)
         {
             SetString(65631, pos.Name);
-            SetDouble(65632, pos.Price / 100.0);
+            SetDouble(65632, (double)pos.Price);
             SetDouble(65633, pos.Quantity / 1000.0);
-            SetDouble(65634, pos.Cost / 100.0);
+            SetDouble(65634, (double)pos.Cost);
             SetInteger(65569, (uint)pos.TaxRate);
             SetInteger(1212, (uint)pos.Type);
             SetInteger(1214, (uint)pos.PayMethod);
@@ -80,25 +81,26 @@ namespace RetailCorrector.Utils.Integrations
             return registration(handle) == 0;
         }
 
-        public bool SetTotal(double sum)
+        public bool SetTotal(Currency sum)
         {
-            SetDouble(65613, sum);
+            SetDouble(65613, (double)sum);
             return receiptTotal(handle) == 0;
         }
 
-        public bool Payment(uint type, double sum)
+        public bool Payment(uint type, Currency sum)
         {
+            if (sum.IsZero) return true;
             SetInteger(65564, type);
-            SetDouble(65565, sum);
+            SetDouble(65565, (double)sum);
             return payment(handle) == 0;
         }
 
         public bool Payment(Payment pay) =>
-            (pay.Cash == 0 || Payment(0, pay.Cash / 100.0)) &&
-            (pay.ECash == 0 || Payment(1, pay.ECash / 100.0)) &&
-            (pay.Pre == 0 || Payment(2, pay.Pre / 100.0)) &&
-            (pay.Post == 0 || Payment(3, pay.Post / 100.0)) &&
-            (pay.Provision == 0 || Payment(4, pay.Provision / 100.0));
+            Payment(0, pay.Cash) &&
+            Payment(1, pay.ECash) &&
+            Payment(2, pay.Pre) &&
+            Payment(3, pay.Post) &&
+            Payment(4, pay.Provision);
 
         public bool CloseReceipt() => closeReceipt(handle) == 0;
 

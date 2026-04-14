@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using RetailCorrector.ValueObjects;
 
 namespace RetailCorrector.Parsers;
 
@@ -17,7 +18,7 @@ internal sealed class OfdRuJson : IParser
         {
             var json = JsonSerializer.Deserialize<OfdRuJsonDocument>(raw);
 
-            receipt.DocSign = uint.Parse(json.Document.DecimalFiscalSign);
+            receipt.DocSign = FiscalSign.Parse(json.Document.DecimalFiscalSign);
             receipt.RegId = json.Document.KKT_RegNumber;
             receipt.StorageId = json.Document.FN_FactoryNumber;
             receipt.DocNumber = json.Document.Document_Number;

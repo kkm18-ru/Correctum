@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using RetailCorrector.ValueObjects;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -116,7 +117,7 @@ file struct Document
         SessionId = DocShiftNumber,
         DocInSession = uint.Parse(ReceiptNumber),
         Created = DocDateTime,
-        DocSign = uint.Parse(DecimalFiscalSign),
+        DocSign = FiscalSign.Parse(DecimalFiscalSign),
         Type = OperationType.ToLowerInvariant() switch
         {
             "income" => Operation.Income,

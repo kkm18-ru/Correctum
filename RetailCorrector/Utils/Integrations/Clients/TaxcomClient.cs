@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Exceptions;
+using RetailCorrector.ValueObjects;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
 
@@ -225,7 +226,7 @@ file readonly struct TaxcomDocumentResponse
             DocInSession = Details["1042"]?.GetValue<uint>() ?? 0,
             Items = new Position[Details["1059"]?.AsArray().Count ?? 0],
             Type = (Operation?)Details["1054"]?.GetValue<int>() ?? 0,
-            DocSign = FiscalHelper.ToDecimalSign(Details["1077"]?.GetValue<string>()),
+            DocSign = FiscalSign.Parse(Details["1077"]?.GetValue<string>()),
             Payment = ParsePayment(),
             TotalSum = Details["1020"]?.GetValue<ulong>() ?? 0,
             TaxationSystem = (TaxationSystem?)Details["1055"]?.GetValue<int>()?? 0

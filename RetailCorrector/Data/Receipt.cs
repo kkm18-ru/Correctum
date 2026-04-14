@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.Enums;
 using RetailCorrector.Exceptions;
+using RetailCorrector.ValueObjects;
 
 namespace RetailCorrector.Data
 {
@@ -12,11 +13,11 @@ namespace RetailCorrector.Data
         public uint SessionId { get; set; }
         public uint DocInSession { get; set; }
         public DateTime Created { get; set; }
-        public uint DocSign { get; set; }
+        public FiscalSign? DocSign { get; set; }
         public Operation Type { get; set; }
         public Position[] Items { get; set; }
         public Payment Payment { get; set; }
-        public ulong TotalSum { get; set; }
+        public Currency TotalSum { get; set; }
         public string BuyerContact { get; set; }
         public TaxationSystem TaxationSystem { get; set; }
 

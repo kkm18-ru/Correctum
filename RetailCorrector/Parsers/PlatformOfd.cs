@@ -1,6 +1,7 @@
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
+using RetailCorrector.ValueObjects;
 using System.Globalization;
 
 namespace RetailCorrector.Parsers;
@@ -62,7 +63,7 @@ internal sealed class PlatformOfd : IParser
         switch (tag)
         {
             // Простые реквизиты чека
-            case 1077: receipt.DocSign = uint.Parse(value); break;
+            case 1077: receipt.DocSign = FiscalSign.Parse(value); break;
             case 1012: receipt.Created = DateTimeOffset.UnixEpoch.AddSeconds(ulong.Parse(value)).DateTime; break;
             case 1041: receipt.StorageId = value.ToString(); break;
             case 1037: receipt.RegId = value.ToString(); break;
