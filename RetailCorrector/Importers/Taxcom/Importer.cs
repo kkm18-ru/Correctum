@@ -1,7 +1,8 @@
-using System.Runtime.CompilerServices;
 using RetailCorrector.Data;
 using RetailCorrector.Exceptions;
+using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
+using System.Runtime.CompilerServices;
 using Range = (string drive, uint min, uint max);
 
 namespace RetailCorrector.Importers;
@@ -15,25 +16,24 @@ internal partial class Taxcom : ImporterBase<Taxcom, Taxcom.View>
         parseInfo = new ImportSession(Name);
 
     public override async IAsyncEnumerable<Receipt> Import
-        (IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var ranges = new List<Range>(SelectedDevices.Count);
 
         await FillRanges(progress, ranges, cancellationToken);
 
-        var i = 0L;
         foreach (var range in ranges)
         {
             for (var j = range.min; j <= range.max; j++)
             {
                 if (await _client.FetchReceiptAsync(range.drive, j, parseInfo.Id, cancellationToken) is { } receipt)
                     yield return receipt;
-                progress.Report(++i);
+                progress.ReportIncrement();
             }
         }
     }
 
-    private async Task FillRanges(IProgress<long> progress, List<Range> ranges, CancellationToken cancellationToken)
+    private async Task FillRanges(BoundedProgress<uint> progress, List<Range> ranges, CancellationToken cancellationToken)
     {
         foreach (var device in SelectedDevices)
         {
@@ -49,7 +49,7 @@ internal partial class Taxcom : ImporterBase<Taxcom, Taxcom.View>
                     docIds = await _client.FetchDocumentNumbersBySessionAsync(drive, sessionIds[^1], cancellationToken);
                 var maxDocId = docIds[^1];
                 ranges.Add((drive, minDocId, maxDocId));
-                progress.Report(-ranges.Sum(r => r.Item3 - r.Item2 + 1));
+                progress.ReportMaximum((uint)ranges.Sum(r => r.Item3 - r.Item2 + 1));
             }
         }
     }

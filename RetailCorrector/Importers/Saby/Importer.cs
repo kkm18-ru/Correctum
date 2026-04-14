@@ -1,4 +1,5 @@
 using RetailCorrector.Data;
+using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
 using System.Runtime.CompilerServices;
 
@@ -15,13 +16,13 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
             ("Конец", DateRange.EndDate.ToString("dd'.'MM'.'yyyy")));
 
     public override async IAsyncEnumerable<Receipt> Import
-        (IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var drives = new Dictionary<string, SabyDriveResponse[]>();
         foreach (var device in SelectedDevices)
             drives.Add(device, await _client.FetchDrivesAsync(Inn, device, DateRange.BeginDate.ToDateTime(new()), DateRange.EndDate.ToDateTime(new()), cancellationToken));
 
-        progress.Report(-drives.SelectMany(d => d.Value).Sum(d =>
+        progress.ReportMaximum((uint)drives.SelectMany(d => d.Value).Sum(d =>
         {
             var (start, end) = GetAvailablePeriod(d);
             return (end.Date - start.Date).Days + 1;
@@ -38,7 +39,7 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
     }
 
     private async IAsyncEnumerable<Receipt> ParseByStorage
-        (string regId, SabyDriveResponse drive, IProgress<long> progress,  [EnumeratorCancellation] CancellationToken cancellationToken)
+        (string regId, SabyDriveResponse drive, BoundedProgress<uint> progress,  [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var baseRequest = new SabyReceiptsRequest(parseInfo.Id, Inn, regId, drive.Id);
         var (start, end) = GetAvailablePeriod(drive);
@@ -47,7 +48,8 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
             var request = baseRequest with { DateFrom = day, DateTo = day.AddSeconds(86_399) };
             await foreach (var receipt in ParseByDay(request, cancellationToken))
                 yield return receipt;
-            progress.Report(++ProgressValue);
+            ProgressValue++;
+            progress.ReportIncrement();
         }
     }
 
