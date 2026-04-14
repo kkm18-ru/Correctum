@@ -1,6 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-using RetailCorrector.Data;
+﻿using RetailCorrector.Data;
+using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
+using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Importers;
 
@@ -14,10 +15,9 @@ internal sealed partial class PlatformOfd : ImporterBase<PlatformOfd, PlatformOf
         parseInfo = new ImportSession(Name);
 
     public override async IAsyncEnumerable<Receipt> Import
-        (IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        progress.Report(-DateRange.Count * SelectedDevices.Count);
-        var i = 0;
+        progress.ReportMaximum((uint)(DateRange.Count * SelectedDevices.Count));
         foreach(var date in DateRange)
         {
             foreach(var Device in SelectedDevices)
@@ -26,7 +26,7 @@ internal sealed partial class PlatformOfd : ImporterBase<PlatformOfd, PlatformOf
                 foreach (var @ref in references)
                     if(await Client.FetchReceiptAsync(@ref, parseInfo.Id, cancellationToken) is {} receipt)
                         yield return receipt;
-                progress.Report(i++);
+                progress.ReportIncrement();
             }
         }
     }

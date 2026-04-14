@@ -1,9 +1,10 @@
 ﻿#pragma warning disable CS1998
 #if DEBUG
+using Bogus;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using RetailCorrector.Utils;
 using System.Runtime.CompilerServices;
-using Bogus;
 
 namespace RetailCorrector.Importers;
 
@@ -14,10 +15,11 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
     public override ImportSession GenerateInfo() =>
         parseInfo = new ImportSession("Mock");
 
-    public override async IAsyncEnumerable<Receipt> Import(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<Receipt> Import(BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var faker = new Faker();
-        var count = faker.Random.Int(MinCountDocs, MaxCountDocs);
+        var count = faker.Random.UInt((uint)MinCountDocs, (uint)MaxCountDocs);
+        progress.ReportMaximum(count);
         for(var i = 0; i < count; i++)
         {
             var posCount = faker.Random.UInt(1, 10);
@@ -73,6 +75,8 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
                 ParseId = parseInfo.Id,
                 TaxationSystem = faker.Random.Enum<TaxationSystem>()
             };
+            await Task.Delay(50, cancellationToken);
+            progress.ReportIncrement();
         }
     }
 }

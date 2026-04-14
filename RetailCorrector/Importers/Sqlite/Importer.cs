@@ -14,12 +14,12 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
     public override ImportSession GenerateInfo() =>
         parseInfo = new ImportSession("SQLite", ("Путь", Path));
 
-    public override async IAsyncEnumerable<Receipt> Import(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<Receipt> Import(BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         using (var conn = new SqliteConnection($"Data Source={Path};Mode=ReadOnly"))
         {
-            var count = await conn.ExecuteScalarAsync<int>(COUNT_RECEIPTS);
-            progress.Report(-count);
+            var count = await conn.ExecuteScalarAsync<uint>(COUNT_RECEIPTS);
+            progress.ReportMaximum(count);
             for (var i = 0; i < count; i += Configuration.Instance.Sqlite.Limit)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -61,7 +61,7 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                         BuyerContact = docs[j].buyer,
                         TaxationSystem = (TaxationSystem)docs[j].taxation
                     };
-                    progress.Report(i + j);
+                    progress.ReportIncrement();
                 }
             }
         }

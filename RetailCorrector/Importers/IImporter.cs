@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using RetailCorrector.Utils;
 
 namespace RetailCorrector.Importers;
 
@@ -7,6 +8,6 @@ internal interface IImporter
     string Name { get; }
     void Show();
     ImportSession GenerateInfo();
-    IAsyncEnumerable<Receipt> Import(IProgress<long> progress, CancellationToken cancellationToken);
+    IAsyncEnumerable<Receipt> Import(BoundedProgress<uint> progress, CancellationToken cancellationToken);
     void OnClosing();
 }

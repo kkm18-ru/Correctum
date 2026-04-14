@@ -13,15 +13,14 @@ internal partial class FxPOS : ImporterBase<FxPOS, FxPOS.View>
     public override ImportSession GenerateInfo() =>
         parseInfo = new ImportSession("Frontol xPOS", ("Путь", Path));
 
-    public override async IAsyncEnumerable<Receipt> Import(IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<Receipt> Import(BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         using (var conn = new SqliteConnection($"Data Source={Path};Mode=ReadOnly"))
         {
-            var count = await conn.ExecuteScalarAsync<int>(COUNT_RECEIPTS);
-            progress.Report(-count);
+            var count = await conn.ExecuteScalarAsync<uint>(COUNT_RECEIPTS);
+            progress.ReportMaximum(count);
             for (var i = 0; i < count; i += Configuration.Instance.Sqlite.Limit)
             {
-                progress.Report(i);
                 cancellationToken.ThrowIfCancellationRequested();
                 var docs = (await Task.Run(() => conn.QueryAsync<Document>(GET_RECEIPTS, new { limit = Configuration.Instance.Sqlite.Limit, offset = i }))).ToArray();
                 for (var j = 0; j < docs.Length; j++)
@@ -44,6 +43,7 @@ internal partial class FxPOS : ImporterBase<FxPOS, FxPOS.View>
                             26 => Enums.Operation.RefundOutcome
                         }
                     };
+                    progress.ReportIncrement();
                 }
             }
         }

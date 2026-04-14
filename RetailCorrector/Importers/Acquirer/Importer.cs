@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using RetailCorrector.Utils;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -13,7 +14,7 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
         parseInfo = new ImportSession(Name);
 
     public override async IAsyncEnumerable<Receipt> Import
-        (IProgress<long> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var lines = File.ReadAllLines(FilePath);
         for (var i = (HasHeaders ? 1u : 0); i < lines.Length; i++)

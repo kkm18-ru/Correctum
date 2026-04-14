@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿using Bogus.Bson;
 using RetailCorrector.Importers;
 using RetailCorrector.UI.Controls;
+using RetailCorrector.Utils;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,7 +11,7 @@ namespace RetailCorrector.UI.Windows
     internal class ImportWindow : Types.DialogWindow
     {
         private CancellationTokenSource? cts;
-        private readonly Progress<long> progress;
+        private readonly BoundedProgress<uint> progress;
         private readonly IImporter importer;
 
         private readonly Button btnStart;
@@ -24,7 +26,19 @@ namespace RetailCorrector.UI.Windows
         {
             #region Основные параметры
             this.importer = importer;
-            progress = new(OnChangedProgress);
+            progress = new();
+            progress.ValueIncremented += () => {
+                barProgress.Value++;
+                txtProgress.Text = $"{barProgress.Value} / {barProgress.Maximum}";
+            };
+            progress.ValueCleared += () => {
+                barProgress.Value = 0;
+                txtProgress.Text = $"{barProgress.Value} / {barProgress.Maximum}";
+            };
+            progress.MaximumChanged += value => {
+                barProgress.Maximum = value;
+                txtProgress.Text = $"{barProgress.Value} / {barProgress.Maximum}";
+            };
             SizeToContent = SizeToContent.WidthAndHeight;
             var stack = new StackPanel { Margin = new(5, 5, 5, 5) };
             Content = stack;
@@ -74,17 +88,6 @@ namespace RetailCorrector.UI.Windows
             btnCancel.Click += CancelParse;
             grid.AddChild(btnCancel, 4);
             #endregion
-        }
-
-        private void OnChangedProgress(long value)
-        {
-            if (value < 0)
-            {
-                barProgress.Value = 0;
-                barProgress.Maximum = -value;
-            }
-            else barProgress.Value = value;
-            txtProgress.Text = $"{barProgress.Value} / {barProgress.Maximum}";
         }
 
         protected override void OnClosing(CancelEventArgs e)
