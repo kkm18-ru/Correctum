@@ -32,7 +32,7 @@ internal partial class FxPOS : ImporterBase<FxPOS, FxPOS.View>
                         ParseId = parseInfo.Id,
                         Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => (Position)i)],
                         Created = docs[j].Date,
-                        DocSign = docs[j].Sign,
+                        DocSign = new(docs[j].Sign),
                         TotalSum = docs[j].Total,
                         Payment = await Task.Run(() => conn.QuerySingleAsync<Payment>(GET_PAYMENT, docs[j])),
                         Type = docs[j].Type switch

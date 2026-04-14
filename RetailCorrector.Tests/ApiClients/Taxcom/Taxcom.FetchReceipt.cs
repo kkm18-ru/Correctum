@@ -5,7 +5,7 @@ using HandlebarsDotNet.MemberAccessors;
 using Newtonsoft.Json.Linq;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
-using RetailCorrector.Utils;
+using RetailCorrector.ValueObjects;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -97,16 +97,16 @@ partial class Taxcom
             Assert.That(receipt.DocInSession, Is.EqualTo(document["1042"]?.Value<uint>()));
             Assert.That(receipt.SessionId, Is.EqualTo(document["1038"]?.Value<uint>()));
             Assert.That(receipt.DocNumber, Is.EqualTo(document["1040"]?.Value<uint>()));
-            Assert.That(receipt.DocSign, Is.EqualTo(FiscalHelper.ToDecimalSign(document["1077"]?.Value<string>())));
+            Assert.That(receipt.DocSign, Is.EqualTo(FiscalSign.Parse(document["1077"]?.Value<string>())));
             Assert.That(receipt.ParseId, Is.EqualTo(Guid.Empty));
             Assert.That(receipt.Created.ToString("s"), Is.EqualTo(document["1012"]?.Value<string>()));
             Assert.That((int)receipt.Type, Is.EqualTo(document["1054"]?.Value<int>()));
-            Assert.That(receipt.Payment.Cash, Is.EqualTo(document["1031"]?.Value<uint>()));
-            Assert.That(receipt.Payment.ECash, Is.EqualTo(document["1081"]?.Value<uint>()));
-            Assert.That(receipt.Payment.Pre, Is.EqualTo(document["1215"]?.Value<uint>()));
-            Assert.That(receipt.Payment.Post, Is.EqualTo(document["1216"]?.Value<uint>()));
-            Assert.That(receipt.Payment.Provision, Is.EqualTo(document["1217"]?.Value<uint>()));
-            Assert.That(receipt.TotalSum, Is.EqualTo(document["1020"]?.Value<uint>()));
+            Assert.That((ulong)receipt.Payment.Cash, Is.EqualTo(document["1031"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.ECash, Is.EqualTo(document["1081"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.Pre, Is.EqualTo(document["1215"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.Post, Is.EqualTo(document["1216"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.Provision, Is.EqualTo(document["1217"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.TotalSum, Is.EqualTo(document["1020"]?.Value<ulong>()));
             Assert.That(receipt.BuyerContact, Is.EqualTo(document["1008"]?.Value<string>()));
             Assert.That((int)receipt.TaxationSystem, Is.EqualTo(document["1055"]?.Value<int>()));
             Assert.That(receipt.Items, Has.Length.EqualTo(((JArray?)document["1059"])?.Count));
@@ -115,10 +115,10 @@ partial class Taxcom
                 var position = receipt.Items[i];
                 var posObject = document["1059"]?[i]!;
                 Assert.That(position.Name, Is.EqualTo(posObject["1030"]?.Value<string>()));
-                Assert.That(position.Price, Is.EqualTo(posObject["1079"]?.Value<uint>()));
+                Assert.That((ulong)position.Price, Is.EqualTo(posObject["1079"]?.Value<ulong>()));
                 Assert.That((position.Quantity/1000.0).ToString("F6", CultureInfo.InvariantCulture), 
                     Is.EqualTo(posObject["1023"]?.Value<string>()));
-                Assert.That(position.Cost, Is.EqualTo(posObject["1043"]?.Value<uint>()));
+                Assert.That((ulong)position.Cost, Is.EqualTo(posObject["1043"]?.Value<ulong>()));
                 Assert.That((int?)position.Unit, Is.EqualTo(posObject["2108"]?.Value<int>()));
                 Assert.That((int)position.PayMethod, Is.EqualTo(posObject["1214"]?.Value<int>()));
                 Assert.That((int)position.Type, Is.EqualTo(posObject["1212"]?.Value<int>()));

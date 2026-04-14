@@ -2,6 +2,7 @@
 using Microsoft.Data.Sqlite;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using RetailCorrector.ValueObjects;
 using RetailCorrector.ViewModels.Exports;
 
 namespace RetailCorrector.Tests.ViewModels.Exports;
@@ -24,16 +25,16 @@ public class SqliteExportViewModelTests :
             EditsCount = 5,
             Payment = new()
             {
-                Cash = 6,
-                ECash = 7,
-                Pre = 8,
-                Post = 9,
-                Provision = 10,
+                Cash = 6UL,
+                ECash = 7UL,
+                Pre = 8UL,
+                Post = 9UL,
+                Provision = 10UL,
             },
-            TotalSum = 11,
+            TotalSum = 11UL,
             Created = new DateTime(2023,12,30,15,35,29),
             DocInSession = 13,
-            DocSign = 16,
+            DocSign = new(16),
             TaxationSystem = TaxationSystem.Patent,
             Items = [new() {
                 Name = "Товар",
@@ -41,8 +42,8 @@ public class SqliteExportViewModelTests :
                 Type = PositionType.OtherPayment,
                 TaxRate = TaxRate.Calc22,
                 Quantity = 17,
-                Cost = 18,
-                Price = 19,
+                Cost = 18UL,
+                Price = 19UL,
                 Unit = PositionUnit.Other
             }]
         };
@@ -65,14 +66,14 @@ public class SqliteExportViewModelTests :
                 Assert.That(receipts[0].date, Is.EqualTo(receipt.Created.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")));
                 Assert.That(receipts[0].type, Is.EqualTo((byte)receipt.Type));
                 Assert.That(receipts[0].taxation, Is.EqualTo((byte)receipt.TaxationSystem));
-                Assert.That(receipts[0].sign, Is.EqualTo(receipt.DocSign.ToString()));
+                Assert.That(FiscalSign.Parse(receipts[0].sign), Is.EqualTo(receipt.DocSign));
                 Assert.That(receipts[0].buyer, Is.EqualTo(receipt.BuyerContact));
-                Assert.That(receipts[0].cash, Is.EqualTo(receipt.Payment.Cash));
-                Assert.That(receipts[0].ecash, Is.EqualTo(receipt.Payment.ECash));
-                Assert.That(receipts[0].pre, Is.EqualTo(receipt.Payment.Pre));
-                Assert.That(receipts[0].post, Is.EqualTo(receipt.Payment.Post));
-                Assert.That(receipts[0].other, Is.EqualTo(receipt.Payment.Provision));
-                Assert.That(receipts[0].total, Is.EqualTo(receipt.TotalSum));
+                Assert.That((Currency)receipts[0].cash, Is.EqualTo(receipt.Payment.Cash));
+                Assert.That((Currency)receipts[0].ecash, Is.EqualTo(receipt.Payment.ECash));
+                Assert.That((Currency)receipts[0].pre, Is.EqualTo(receipt.Payment.Pre));
+                Assert.That((Currency)receipts[0].post, Is.EqualTo(receipt.Payment.Post));
+                Assert.That((Currency)receipts[0].other, Is.EqualTo(receipt.Payment.Provision));
+                Assert.That((Currency)receipts[0].total, Is.EqualTo(receipt.TotalSum));
             }
 
             var positions = conn.Query<position>("SELECT * FROM position;").ToArray();
@@ -85,9 +86,9 @@ public class SqliteExportViewModelTests :
                 Assert.That(positions[0].type, Is.EqualTo((byte?)receipt.Items[0].Type));
                 Assert.That(positions[0].tax, Is.EqualTo((byte?)receipt.Items[0].TaxRate));
                 Assert.That(positions[0].unit, Is.EqualTo((byte?)receipt.Items[0].Unit));
-                Assert.That(positions[0].price, Is.EqualTo(receipt.Items[0].Price));
+                Assert.That((Currency)positions[0].price, Is.EqualTo(receipt.Items[0].Price));
                 Assert.That(positions[0].quantity, Is.EqualTo(receipt.Items[0].Quantity));
-                Assert.That(positions[0].total, Is.EqualTo(receipt.Items[0].Cost));
+                Assert.That((Currency)positions[0].total, Is.EqualTo(receipt.Items[0].Cost));
                 Assert.That(positions[0].receipt, Is.EqualTo(receipts[0].id));
             }
         }

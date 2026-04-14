@@ -259,7 +259,7 @@ file struct ReceiptResponse
         },
         Type = Operation,
         BuyerContact = Buyer,
-        DocSign = Sign,
+        DocSign = new(Sign),
         TotalSum = Total,
         TaxationSystem = Taxation,
         DocNumber = Number,

@@ -8,7 +8,7 @@ public readonly struct FiscalSign : IUtf8SpanParsable<FiscalSign>, ISpanParsable
 {
     private readonly uint _data;
 
-    private FiscalSign(uint data) => _data = data;
+    public FiscalSign(uint data) => _data = data;
 
     public static FiscalSign Parse(string? s) => Parse(s, null);
     public static FiscalSign Parse(string? s, IFormatProvider? provider) => Parse(s.AsSpan(), provider);

@@ -3,6 +3,7 @@ using Microsoft.Data.Sqlite;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
 using RetailCorrector.Utils;
+using RetailCorrector.ValueObjects;
 using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Importers;
@@ -47,7 +48,7 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                         SessionId = docs[j].shift,
                         DocNumber = docs[j].doc,
                         DocInSession = docs[j].req,
-                        DocSign = uint.Parse(docs[j].sign),
+                        DocSign = FiscalSign.Parse(docs[j].sign),
                         TotalSum = docs[j].total,
                         Payment = new Payment
                         {

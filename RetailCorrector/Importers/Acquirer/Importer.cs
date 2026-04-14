@@ -50,7 +50,7 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
                 ],
                 Payment = new Payment { ECash = sum },
                 TaxationSystem = 0,
-                DocSign = 0
+                DocSign = null
             };
         }
         yield break;

@@ -23,13 +23,18 @@ public readonly struct INN : IEqualityOperators<INN, INN, bool>, IEquatable<INN>
     public static bool TryParse(string? s, out INN result) => TryParse(s, null, out result);
     public static bool TryParse(string? s, IFormatProvider? provider, out INN result) => Parse(s ?? string.Empty, out result) == 0;
 
-    public override string ToString() => _value.ToString() ?? "";
+    public override string ToString() => _value switch
+    {
+        >= 100_000_000 and <= 9_999_999_999 => _value.Value.ToString("D10"),
+        >= 10_000_000_000 and <= 999_999_999_999 => _value.Value.ToString("D12"),
+        _ => ""
+    };
 
     public override int GetHashCode() => _value.GetHashCode();
     public override bool Equals(object? obj) => obj is INN other && Equals(other);
-    public bool Equals(INN other) => _value == other._value;
-    public static bool operator ==(INN left, INN right) => left.Equals(right);
-    public static bool operator !=(INN left, INN right) => !left.Equals(right);
+    public bool Equals(INN other) => _value.Equals(other._value);
+    public static bool operator ==(INN left, INN right) => left._value == right._value;
+    public static bool operator !=(INN left, INN right) => left._value != right._value;
 
     private enum InnParsingStatus { Ok, OutOfRangeLength, IsNotDigitCode, InvalidHashSum }
     private static InnParsingStatus Parse(string s, out INN result)

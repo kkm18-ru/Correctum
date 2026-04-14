@@ -89,9 +89,9 @@ namespace RetailCorrector.UI.Controls
                             2 => pos.Type,
                             3 => pos.PayMethod,
                             4 => pos.TaxRate,
-                            5 => pos.Price * 0.01,
+                            5 => (double)pos.Price,
                             6 => pos.Quantity * 0.001,
-                            7 => pos.Cost * 0.01,
+                            7 => (double)pos.Cost,
                         };
                         if (!o.Action.Invoke(src, val))
                             return false;
@@ -101,12 +101,12 @@ namespace RetailCorrector.UI.Controls
                 {
                     object src = cond.PartId switch
                     {
-                        0 => item.Payment.Cash * 0.01,
-                        1 => item.Payment.ECash * 0.01,
-                        2 => item.Payment.Pre * 0.01,
-                        3 => item.Payment.Post * 0.01,
-                        4 => item.Payment.Provision * 0.01,
-                        5 => item.TotalSum * 0.01,
+                        0 => (double)item.Payment.Cash,
+                        1 => (double)item.Payment.ECash,
+                        2 => (double)item.Payment.Pre,
+                        3 => (double)item.Payment.Post,
+                        4 => (double)item.Payment.Provision,
+                        5 => (double)item.TotalSum,
                     };
                     if(!o.Action.Invoke(src, val))
                         return false;

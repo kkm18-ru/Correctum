@@ -101,13 +101,13 @@ file static class SqliteExportViewModelTools
             parameters.Add("@Operaion", (uint)data.Type, DbType.UInt32);
             parameters.Add("@BuyerContact", string.IsNullOrWhiteSpace(data.BuyerContact) ? null : data.BuyerContact, DbType.String);
             parameters.Add("@Taxation", (uint)data.TaxationSystem, DbType.UInt32);
-            parameters.Add("@FiscalSign", data.DocSign == 0 ? null : data.DocSign.ToString(), DbType.String);
-            parameters.Add("@CashSum", data.Payment.Cash, DbType.UInt64);
-            parameters.Add("@NonCashSum", data.Payment.ECash, DbType.UInt64);
-            parameters.Add("@AdvanceSum", data.Payment.Pre, DbType.UInt64);
-            parameters.Add("@CreditSum", data.Payment.Post, DbType.UInt64);
-            parameters.Add("@OtherSum", data.Payment.Provision, DbType.UInt64);
-            parameters.Add("@TotalSum", data.TotalSum, DbType.UInt64);
+            parameters.Add("@FiscalSign", data.DocSign?.ToString(), DbType.String);
+            parameters.Add("@CashSum", (ulong)data.Payment.Cash, DbType.UInt64);
+            parameters.Add("@NonCashSum", (ulong)data.Payment.ECash, DbType.UInt64);
+            parameters.Add("@AdvanceSum", (ulong)data.Payment.Pre, DbType.UInt64);
+            parameters.Add("@CreditSum", (ulong)data.Payment.Post, DbType.UInt64);
+            parameters.Add("@OtherSum", (ulong)data.Payment.Provision, DbType.UInt64);
+            parameters.Add("@TotalSum", (ulong)data.TotalSum, DbType.UInt64);
             return conn.QuerySingleAsync<uint>(Query, parameters, tr);
         }
         public Task AddPositionAsync(Position data, uint receiptId, IDbTransaction tr)
@@ -122,9 +122,9 @@ file static class SqliteExportViewModelTools
             parameters.Add("@Type", (uint?)data.Type, DbType.UInt32);
             parameters.Add("@TaxRate", (uint?)data.TaxRate, DbType.UInt32);
             parameters.Add("@Unit", (uint?)data.Unit, DbType.UInt32);
-            parameters.Add("@Price", data.Price, DbType.UInt64);
+            parameters.Add("@Price", (ulong)data.Price, DbType.UInt64);
             parameters.Add("@Quantity", data.Quantity, DbType.UInt64);
-            parameters.Add("@Cost", data.Cost, DbType.UInt64);
+            parameters.Add("@Cost", (ulong)data.Cost, DbType.UInt64);
             parameters.Add("@ReceiptId", receiptId, DbType.UInt32);
             return conn.ExecuteAsync(Query, parameters, tr);
         }

@@ -62,7 +62,7 @@ public class Fptr120ExportViewModelTests :
         using var stream = new MemoryStream();
         using (var writer = new StreamWriter(stream, leaveOpen: true))
         {
-            var task = Fptr120ExportViewModel.SetCorrectionDataAsync(writer, 0);
+            var task = Fptr120ExportViewModel.SetCorrectionDataAsync(writer, null);
             Assert.DoesNotThrowAsync(async () => await task);
         }
         stream.Position = 0;
@@ -82,7 +82,7 @@ public class Fptr120ExportViewModelTests :
         using var stream = new MemoryStream();
         using (var writer = new StreamWriter(stream, leaveOpen: true))
         {
-            var task = Fptr120ExportViewModel.SetCorrectionDataAsync(writer, 1);
+            var task = Fptr120ExportViewModel.SetCorrectionDataAsync(writer, new(1));
             Assert.DoesNotThrowAsync(async () => await task);
         }
         stream.Position = 0;
@@ -209,9 +209,9 @@ public class Fptr120ExportViewModelTests :
             Type = PositionType.Product,
             PayMethod = PayMethod.FullPayment,
             TaxRate = TaxRate.Without,
-            Price = 10010,
+            Price = 10010UL,
             Quantity = 1234,
-            Cost = 12300
+            Cost = 12300UL
         };
         using var stream = new MemoryStream();
         using (var writer = new StreamWriter(stream, leaveOpen: true))
@@ -247,7 +247,7 @@ public class Fptr120ExportViewModelTests :
         using var stream = new MemoryStream();
         using (var writer = new StreamWriter(stream, leaveOpen: true))
         {
-            var task = Fptr120ExportViewModel.TotalSumAsync(writer, 12345);
+            var task = Fptr120ExportViewModel.TotalSumAsync(writer, 12345UL);
             Assert.DoesNotThrowAsync(async () => await task);
         }
         stream.Position = 0;
@@ -270,11 +270,11 @@ public class Fptr120ExportViewModelTests :
     {
         var payment = new Payment
         {
-            Cash = 100,
-            ECash = 120,
-            Pre = 0,
-            Post = 12,
-            Provision = 12345,
+            Cash = 100UL,
+            ECash = 120UL,
+            Pre = 0UL,
+            Post = 12UL,
+            Provision = 12345UL,
         };
 
         using var stream = new MemoryStream();
@@ -316,9 +316,9 @@ public class Fptr120ExportViewModelTests :
             Type = PositionType.Product,
             PayMethod = PayMethod.FullPayment,
             TaxRate = TaxRate.Tax20,
-            Price = 5000,
+            Price = 5000UL,
             Quantity = 2000,
-            Cost = 10000
+            Cost = 10000UL
         };
         var position2 = new Position
         {
@@ -327,9 +327,9 @@ public class Fptr120ExportViewModelTests :
             Type = PositionType.Product,
             PayMethod = PayMethod.FullPayment,
             TaxRate = TaxRate.Tax10,
-            Price = 6500,
+            Price = 6500UL,
             Quantity = 1000,
-            Cost = 6500
+            Cost = 6500UL
         };
         var receipt = new Receipt
         {
@@ -338,13 +338,13 @@ public class Fptr120ExportViewModelTests :
             BuyerContact = "client@mail.ru",
             Type = Operation.Income,
             TaxationSystem = TaxationSystem.USNIncomeExpenditure,
-            DocSign = 0,
+            DocSign = null,
             Items = [position1, position2],
-            TotalSum = 16500,
+            TotalSum = 16500UL,
             Payment = new()
             {
-                Cash = 5000,
-                ECash = 11500
+                Cash = 5000UL,
+                ECash = 11500UL
             }
         };
 

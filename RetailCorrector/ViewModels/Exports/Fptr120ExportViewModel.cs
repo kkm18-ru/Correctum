@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using RetailCorrector.ValueObjects;
 using System.Globalization;
 using System.IO;
 
@@ -41,11 +42,11 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         _ => throw new FormatException("Найден чек с некорректным типом операции.")
     };
 
-    internal static async Task SetCorrectionDataAsync(StreamWriter writer, uint sign)
+    internal static async Task SetCorrectionDataAsync(StreamWriter writer, FiscalSign? sign)
     {
         await writer.WriteLineAsync("Fptr.setParam(1173, 0);");
         await writer.WriteLineAsync("Fptr.setParam(1174, correctionInfo);");
-        if (sign > 0) await writer.WriteLineAsync($"Fptr.setParam(1192, \"{sign}\");");
+        if (sign is not null) await writer.WriteLineAsync($"Fptr.setParam(1192, \"{sign}\");");
     }
 
     internal static async Task ElectronicallyDocumentAsync(StreamWriter writer)
@@ -86,9 +87,9 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
             throw new FormatException("Найдена позиция чека с некорректной ставкой НДС.");
 
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, \"{info.Name.Replace("\"", "\\\"")}\");");
-        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, {RestoreDecimalAndToString(info.Price, 2)});");
+        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, {info.Price});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, {RestoreDecimalAndToString(info.Quantity, 3)});");
-        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, {RestoreDecimalAndToString(info.Cost, 2)});");
+        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, {info.Cost});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_TAX_TYPE, {(int)info.TaxRate});");
         await writer.WriteLineAsync($"Fptr.setParam(2108, {(int)info.Unit});");
         await writer.WriteLineAsync($"Fptr.setParam(1212, {(int)info.Type});");
@@ -96,25 +97,25 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         await writer.WriteLineAsync("Fptr.registration();");
     }
 
-    internal static async Task TotalSumAsync(StreamWriter writer, ulong sum)
+    internal static async Task TotalSumAsync(StreamWriter writer, Currency sum)
     {
-        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_SUM, {RestoreDecimalAndToString(sum, 2)});");
+        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_SUM, {sum});");
         await writer.WriteLineAsync("Fptr.receiptTotal();");
     }
 
     internal static async Task PaymentAsync(StreamWriter writer, Payment info)
     {
-        if (info.Cash > 0) await PaymentAsync(writer, "LIBFPTR_PT_CASH", info.Cash);
-        if (info.ECash > 0) await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", info.ECash);
-        if (info.Pre > 0) await PaymentAsync(writer, "LIBFPTR_PT_PREPAID", info.Pre);
-        if (info.Post > 0) await PaymentAsync(writer, "LIBFPTR_PT_CREDIT", info.Post);
-        if (info.Provision > 0) await PaymentAsync(writer, "LIBFPTR_PT_OTHER", info.Provision);
+        if (!info.Cash.IsZero) await PaymentAsync(writer, "LIBFPTR_PT_CASH", info.Cash);
+        if (!info.ECash.IsZero) await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", info.ECash);
+        if (!info.Pre.IsZero) await PaymentAsync(writer, "LIBFPTR_PT_PREPAID", info.Pre);
+        if (!info.Post.IsZero) await PaymentAsync(writer, "LIBFPTR_PT_CREDIT", info.Post);
+        if (!info.Provision.IsZero) await PaymentAsync(writer, "LIBFPTR_PT_OTHER", info.Provision);
     }
 
-    private static async Task PaymentAsync(StreamWriter writer, string type, ulong sum)
+    private static async Task PaymentAsync(StreamWriter writer, string type, Currency sum)
     {
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.{type});");
-        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, {RestoreDecimalAndToString(sum, 2)});");
+        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, {sum});");
         await writer.WriteLineAsync("Fptr.payment();");
     }
 
