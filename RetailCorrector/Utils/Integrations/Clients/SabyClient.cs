@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using RetailCorrector.Exceptions.Saby;
 using RetailCorrector.Data;
 using RetailCorrector.Enums;
+using RetailCorrector.ValueObjects;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
 
@@ -44,7 +45,7 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
     /// <param name="cancel">Токен, позволяющий отменить выгрузку ККТ.</param>
     /// <returns>Асинхронное перечисление зарегистрированных ККТ.</returns>
     public async IAsyncEnumerable<string> EnumerateDevicesAsync
-        (string inn, [EnumeratorCancellation] CancellationToken cancel = default)
+        (INN inn, [EnumeratorCancellation] CancellationToken cancel = default)
     {
         ThrowIfDisposed();
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/ofd/v1/orgs/{inn}/kkts");
@@ -65,7 +66,7 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
     /// <param name="cancel">Токен, позволяющий отменить выгрузку фискальных накопителей.</param>
     /// <returns>Массив фискальных накопителей по ККТ</returns>
     public async Task<SabyDriveResponse[]> FetchDrivesAsync
-        (string inn, string regId, DateTime dateFrom, DateTime dateTo, CancellationToken cancel = default)
+        (INN inn, string regId, DateTime dateFrom, DateTime dateTo, CancellationToken cancel = default)
     {
         ThrowIfDisposed();
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/ofd/v1/orgs/{inn}/kkts/{regId}/storages");
@@ -104,13 +105,13 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
 /// <param name="inn">ИНН организации-владельца ККТ.</param>
 /// <param name="regId">Регистрационный номер ККТ, выданный ФНС.</param>
 /// <param name="driveId">Номер фискального накопителя.</param>
-public readonly struct SabyReceiptsRequest (Guid parseId, string inn, string regId, string driveId)
+public readonly struct SabyReceiptsRequest (Guid parseId, INN inn, string regId, string driveId)
 {
     /// <summary>Идентификатор сессии парсера.</summary>
     public Guid ParseId { get; } = parseId;
     
     /// <summary>ИНН организации-владельца ККТ.</summary>
-    private string Inn { get; } = inn;
+    private INN Inn { get; } = inn;
     
     /// <summary>Регистрационный номер ККТ, выданный ФНС.</summary>
     private string RegId { get; } = regId;

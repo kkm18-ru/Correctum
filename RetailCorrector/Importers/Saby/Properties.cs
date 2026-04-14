@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using RetailCorrector.Utils;
+using RetailCorrector.ValueObjects;
 
 namespace RetailCorrector.Importers;
 
@@ -27,17 +28,17 @@ internal partial class Saby : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, PasswordNotifier);
         }
     } = "";
-    public string Inn
+    public INN Inn
     {
         get;
         set
         {
-            if(field == value) return;
+            if (field == value) return;
             field = value;
             PropertyChanged?.Invoke(this, InnNotifier);
             UpdateDevices();
         }
-    } = "";
+    } = new();
 
     public ObservableCollection<string> Devices { get; set; } = [];
     public ObservableCollection<string> SelectedDevices { get; set; } = [];
