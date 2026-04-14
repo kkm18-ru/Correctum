@@ -6,7 +6,8 @@ namespace RetailCorrector.ValueObjects;
 
 public readonly struct INN : IEqualityOperators<INN, INN, bool>, IEquatable<INN>, IParsable<INN>
 {
-    private readonly ulong _value;
+    private readonly ulong? _value;
+
     private INN(ulong value) => _value = value;
 
     public static INN Parse(string s) => Parse(s, null);
@@ -21,6 +22,8 @@ public readonly struct INN : IEqualityOperators<INN, INN, bool>, IEquatable<INN>
 
     public static bool TryParse(string? s, out INN result) => TryParse(s, null, out result);
     public static bool TryParse(string? s, IFormatProvider? provider, out INN result) => Parse(s ?? string.Empty, out result) == 0;
+
+    public override string ToString() => _value.ToString() ?? "";
 
     public override int GetHashCode() => _value.GetHashCode();
     public override bool Equals(object? obj) => obj is INN other && Equals(other);
