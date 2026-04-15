@@ -1,6 +1,6 @@
-﻿using RetailCorrector.ValueObjects;
+﻿using Correctum.Core.ValueObjects;
 
-namespace RetailCorrector.Tests.ValueObjects;
+namespace Correctum.Core.Tests.ValueObjects;
 
 public sealed class InnTests
 {
