@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Correctum.Core\Correctum.Core.csproj" />
+    <ProjectReference Include="..\..\Correctum.Core\Correctum.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
