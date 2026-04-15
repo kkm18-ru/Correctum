@@ -1,7 +1,7 @@
 ﻿namespace Correctum.Core.Enums
 {
     /// <summary>
-    /// Тип оплаты позиции
+    /// Указывает метод рассчета 
     /// </summary>
     public enum CalculationMethod : byte
     {

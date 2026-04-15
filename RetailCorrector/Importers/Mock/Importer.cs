@@ -35,7 +35,7 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
                     Quantity = 1000 * faker.Random.UInt(1,10),
                     Unit = faker.Random.Enum<UnitOfMeasure>(),
                     PayMethod = faker.Random.Enum<CalculationMethod>(),
-                    TaxRate = faker.Random.Enum<TaxRate>(),
+                    TaxRate = faker.Random.Enum<NDSRate>(),
                     Type = faker.Random.Enum<PositionType>(),
                 };
                 pos[j].Cost = pos[j].Price * pos[j].Quantity / 1000;

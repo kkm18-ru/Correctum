@@ -93,7 +93,7 @@ file readonly struct OfdRuJsonPosition
         Cost = json.Total,
         Unit = (UnitOfMeasure)json.ProductUnitOfMeasure,
         PayMethod = (CalculationMethod)json.CalculationMethod,
-        TaxRate = (TaxRate)json.NDS_Rate,
+        TaxRate = (NDSRate)json.NDS_Rate,
         Type = (PositionType)json.SubjectType,
     };
 }

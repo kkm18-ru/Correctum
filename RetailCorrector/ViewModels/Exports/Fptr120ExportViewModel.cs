@@ -83,7 +83,7 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
             throw new FormatException("Найдена позиция чека с некорректным типом.");
         if (Enum.GetName(info.PayMethod) is null)
             throw new FormatException("Найдена позиция чека с некорректным способом расчета.");
-        if (Enum.GetName(info.TaxRate) is null || info.TaxRate == TaxRate.Unknown)
+        if (Enum.GetName(info.TaxRate) is null)
             throw new FormatException("Найдена позиция чека с некорректной ставкой НДС.");
 
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, \"{info.Name.Replace("\"", "\\\"")}\");");

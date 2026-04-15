@@ -53,22 +53,22 @@ public static class EnumLocales
         new(UnitOfMeasure.Other, "др."),
     ];
     
-    public static readonly ReadOnlyCollection<EnumLocale<TaxRate>> TaxRates =
+    public static readonly ReadOnlyCollection<EnumLocale<NDSRate>> TaxRates =
     [
-        new(TaxRate.Tax18, "НДС 18%"),
-        new(TaxRate.Tax10, "НДС 10%"),
-        new(TaxRate.Calc18, "НДС 18/118"),
-        new(TaxRate.Calc10, "НДС 10/110"),
-        new(TaxRate.Tax0, "НДС 0%"),
-        new(TaxRate.Without, "Не облагается"),
-        new(TaxRate.Tax20, "НДС 20%"),
-        new(TaxRate.Calc20, "НДС 20/120"),
-        new(TaxRate.Tax5, "НДС 5%"),
-        new(TaxRate.Tax7, "НДС 7%"),
-        new(TaxRate.Calc5, "НДС 5/105"),
-        new(TaxRate.Calc7, "НДС 7/107"),
-        new(TaxRate.Tax22, "НДС 22%"),
-        new(TaxRate.Calc22, "НДС 22/122"),
+        new(NDSRate.NDS18, "НДС 18%"),
+        new(NDSRate.NDS10, "НДС 10%"),
+        new(NDSRate.NDS118, "НДС 18/118"),
+        new(NDSRate.NDS110, "НДС 10/110"),
+        new(NDSRate.NDS0, "НДС 0%"),
+        new(NDSRate.NoNDS, "Не облагается"),
+        new(NDSRate.NDS20, "НДС 20%"),
+        new(NDSRate.NDS120, "НДС 20/120"),
+        new(NDSRate.NDS5, "НДС 5%"),
+        new(NDSRate.NDS7, "НДС 7%"),
+        new(NDSRate.NDS105, "НДС 5/105"),
+        new(NDSRate.NDS107, "НДС 7/107"),
+        new(NDSRate.NDS22, "НДС 22%"),
+        new(NDSRate.NDS122, "НДС 22/122"),
     ];
 
     public static readonly ReadOnlyCollection<EnumLocale<PositionType>> PositionTypes =

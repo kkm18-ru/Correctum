@@ -79,12 +79,12 @@ internal partial class FxPOS
             },
             TaxRate = raw.TaxRate switch
             {
-                0 => Correctum.Core.Enums.TaxRate.Without,
-                5 => Correctum.Core.Enums.TaxRate.Tax5,
-                7 => Correctum.Core.Enums.TaxRate.Tax7,
-                10 => Correctum.Core.Enums.TaxRate.Tax10,
-                18 => Correctum.Core.Enums.TaxRate.Tax20,
-                20 => Correctum.Core.Enums.TaxRate.Tax20,
+                0 => NDSRate.NoNDS,
+                5 => NDSRate.NDS5,
+                7 => NDSRate.NDS7,
+                10 => NDSRate.NDS10,
+                18 => NDSRate.NDS20,
+                20 => NDSRate.NDS20,
             }
         };
     }

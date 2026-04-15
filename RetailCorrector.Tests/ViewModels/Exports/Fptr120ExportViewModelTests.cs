@@ -208,7 +208,7 @@ public class Fptr120ExportViewModelTests :
             Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
             PayMethod = CalculationMethod.FullPayment,
-            TaxRate = TaxRate.Without,
+            TaxRate = NDSRate.NoNDS,
             Price = 10010UL,
             Quantity = 1234,
             Cost = 12300UL
@@ -315,7 +315,7 @@ public class Fptr120ExportViewModelTests :
             Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
             PayMethod = CalculationMethod.FullPayment,
-            TaxRate = TaxRate.Tax20,
+            TaxRate = NDSRate.NDS20,
             Price = 5000UL,
             Quantity = 2000,
             Cost = 10000UL
@@ -326,7 +326,7 @@ public class Fptr120ExportViewModelTests :
             Unit = UnitOfMeasure.Liter,
             Type = PositionType.Product,
             PayMethod = CalculationMethod.FullPayment,
-            TaxRate = TaxRate.Tax10,
+            TaxRate = NDSRate.NDS10,
             Price = 6500UL,
             Quantity = 1000,
             Cost = 6500UL

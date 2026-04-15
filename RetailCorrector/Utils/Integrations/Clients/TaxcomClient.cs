@@ -246,7 +246,7 @@ file readonly struct TaxcomDocumentResponse
         Cost = Details["1059"]?[index]?["1043"]?.GetValue<ulong>() ?? 0,
         Type = (PositionType?)Details["1059"]?[index]?["1212"]?.GetValue<int>() ?? 0,
         PayMethod = (CalculationMethod?)Details["1059"]?[index]?["1214"]?.GetValue<int>() ?? 0,
-        TaxRate = (TaxRate?)Details["1059"]?[index]?["1199"]?.GetValue<int>() ?? 0,
+        TaxRate = (NDSRate?)Details["1059"]?[index]?["1199"]?.GetValue<int>() ?? 0,
         Unit = (UnitOfMeasure?)Details["1059"]?[index]?["2108"]?.GetValue<int>()
     };
 

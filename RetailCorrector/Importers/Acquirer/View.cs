@@ -120,7 +120,7 @@ partial class Acquirer
             grid.AddChild(tb, 2, 16, 3);
             
             grid.AddChild(new TextBlock { Text = "НДС" }, y: 18);
-            cb = new ComboBox { ItemsSource = Enum.GetValues<TaxRate>()};
+            cb = new ComboBox { ItemsSource = Enum.GetValues<NDSRate>()};
             cb.SetBinding(ComboBox.SelectedValueProperty, nameof(ItemVat));
             grid.AddChild(cb, 2, 18, 3);
             

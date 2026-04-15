@@ -38,7 +38,7 @@ partial class Taxcom
                 { "1079", new JValue(faker.Random.Int(1)) },
                 { "1043", new JValue(faker.Random.Int(1)) },
                 { "1023", new JValue(faker.Random.Double(1,5).ToString("F3", CultureInfo.InvariantCulture)+"000") },
-                { "1199", new JValue((int)faker.Random.Enum<TaxRate>()) },
+                { "1199", new JValue((int)faker.Random.Enum<NDSRate>()) },
                 { "2108", new JValue((int)faker.Random.Enum<UnitOfMeasure>()) },
                 { "1214", new JValue((int)faker.Random.Enum<CalculationMethod>()) },
                 { "1212", new JValue((int)faker.Random.Enum<PositionType>()) }

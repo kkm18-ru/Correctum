@@ -39,7 +39,7 @@ public class SqliteExportViewModelTests :
                 Name = "Товар",
                 PayMethod = CalculationMethod.FullPayment,
                 Type = PositionType.OtherPayment,
-                TaxRate = TaxRate.Calc22,
+                TaxRate = NDSRate.NDS122,
                 Quantity = 17,
                 Cost = 18UL,
                 Price = 19UL,
