@@ -233,7 +233,7 @@ file struct ReceiptResponse
     public ulong Credit { get; set; }
     
     [JsonPropertyName("taxationType")]
-    public TaxationSystem Taxation { get; set; }
+    public TaxationSystems Taxation { get; set; }
     
     [JsonPropertyName("provisionSum")]
     public ulong Provision { get; set; }

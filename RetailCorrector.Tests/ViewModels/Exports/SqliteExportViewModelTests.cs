@@ -34,7 +34,7 @@ public class SqliteExportViewModelTests :
             Created = new DateTime(2023,12,30,15,35,29),
             DocInSession = 13,
             DocSign = new(16),
-            TaxationSystem = TaxationSystem.Patent,
+            TaxationSystem = TaxationSystems.Patent,
             Items = [new() {
                 Name = "Товар",
                 PayMethod = CalculationMethod.FullPayment,

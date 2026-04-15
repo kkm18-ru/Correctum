@@ -337,7 +337,7 @@ public class Fptr120ExportViewModelTests :
             Created = new DateTime(2020, 12, 31, 13, 35, 59),
             BuyerContact = "client@mail.ru",
             Type = ReceiptType.Income,
-            TaxationSystem = TaxationSystem.USNIncomeExpenditure,
+            TaxationSystem = TaxationSystems.SimplifiedIncomeMinusExpense,
             DocSign = null,
             Items = [position1, position2],
             TotalSum = 16500UL,

@@ -74,7 +74,7 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
                 Payment = payment,
                 TotalSum = sum,
                 ParseId = parseInfo.Id,
-                TaxationSystem = faker.Random.Enum<TaxationSystem>()
+                TaxationSystem = faker.Random.Enum<TaxationSystems>()
             };
             await Task.Delay(50, cancellationToken);
             progress.ReportIncrement();

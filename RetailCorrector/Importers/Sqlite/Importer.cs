@@ -61,7 +61,7 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                         },
                         Type = docs[j].type,
                         BuyerContact = docs[j].buyer,
-                        TaxationSystem = (TaxationSystem)docs[j].taxation
+                        TaxationSystem = (TaxationSystems)docs[j].taxation
                     };
                     progress.ReportIncrement();
                 }

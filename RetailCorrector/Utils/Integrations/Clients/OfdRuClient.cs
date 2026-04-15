@@ -100,7 +100,7 @@ file struct Document
     public string ReceiptNumber { get; set; }
     public ulong TotalSumm { get; set; }
     public string OperationType { get; set; }
-    public TaxationSystem TaxationType { get; set; }
+    public TaxationSystems TaxationType { get; set; }
     public DocumentItem[] Items { get; set; }
     public ulong CashSumm { get; set; }
     public ulong ECashSumm { get; set; }

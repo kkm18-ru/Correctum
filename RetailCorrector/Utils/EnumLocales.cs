@@ -7,14 +7,14 @@ public record EnumLocale<TEnum>(TEnum Value, string Locale) where TEnum : Enum;
 
 public static class EnumLocales
 {
-    public static readonly ReadOnlyCollection<EnumLocale<TaxationSystem>> TaxationSystems =
+    public static readonly ReadOnlyCollection<EnumLocale<TaxationSystems>> TaxationSystems =
     [
-        new(TaxationSystem.OSN, "ОСН"),
-        new(TaxationSystem.USNIncome, "УСН доход"),
-        new(TaxationSystem.USNIncomeExpenditure, "УСН доход-расход"),
-        new(TaxationSystem.ENVD, "ЕНВД"),
-        new(TaxationSystem.ESHN, "ЕСХН"),
-        new(TaxationSystem.Patent, "Патент"),
+        new(Correctum.Core.Enums.TaxationSystems.General, "ОСН"),
+        new(Correctum.Core.Enums.TaxationSystems.SimplifiedIncome, "УСН доход"),
+        new(Correctum.Core.Enums.TaxationSystems.SimplifiedIncomeMinusExpense, "УСН доход-расход"),
+        new(Correctum.Core.Enums.TaxationSystems.ImputedIncome, "ЕНВД"),
+        new(Correctum.Core.Enums.TaxationSystems.Agricultural, "ЕСХН"),
+        new(Correctum.Core.Enums.TaxationSystems.Patent, "Патент"),
     ];
 
     public static readonly ReadOnlyCollection<EnumLocale<ReceiptType>> ReceiptTypes =

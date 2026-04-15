@@ -18,7 +18,7 @@ namespace Correctum.Core.Models
         public Payment Payment { get; set; }
         public Currency TotalSum { get; set; }
         public string BuyerContact { get; set; }
-        public TaxationSystem TaxationSystem { get; set; }
+        public TaxationSystems TaxationSystem { get; set; }
 
         #region Meta-Data
         public Guid Id

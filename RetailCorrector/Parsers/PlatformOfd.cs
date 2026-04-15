@@ -69,7 +69,7 @@ internal sealed class PlatformOfd : IParser
             case 1037: receipt.RegId = value.ToString(); break;
             case 1038: receipt.SessionId = uint.Parse(value); break;
             case 1020: receipt.TotalSum = ulong.Parse(value); break;
-            case 1055: receipt.TaxationSystem = (TaxationSystem)int.Parse(value); break;
+            case 1055: receipt.TaxationSystem = (TaxationSystems)int.Parse(value); break;
             case 1008: receipt.BuyerContact = value.ToString(); break;
             case 1042: receipt.DocInSession = uint.Parse(value); break;
             case 1040: receipt.DocNumber = uint.Parse(value); break;
