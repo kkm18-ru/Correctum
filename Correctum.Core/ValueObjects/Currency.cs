@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace RetailCorrector.ValueObjects;
+namespace Correctum.Core.ValueObjects;
 
 public readonly struct Currency
 {

@@ -1,4 +1,4 @@
-﻿namespace RetailCorrector.Enums
+﻿namespace Correctum.Core.Enums
 {
     /// <summary>
     /// Тип оплаты позиции

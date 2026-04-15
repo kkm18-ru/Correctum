@@ -1,7 +1,7 @@
-﻿using RetailCorrector.Enums;
-using RetailCorrector.ValueObjects;
+﻿using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 
-namespace RetailCorrector.Data
+namespace Correctum.Core.Models
 {
     public struct Position
     {

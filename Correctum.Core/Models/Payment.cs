@@ -1,6 +1,6 @@
-﻿using RetailCorrector.ValueObjects;
+﻿using Correctum.Core.ValueObjects;
 
-namespace RetailCorrector.Data
+namespace Correctum.Core.Models
 {
     public struct Payment
     {

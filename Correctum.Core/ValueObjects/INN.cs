@@ -2,7 +2,7 @@
 
 using System.Numerics;
 
-namespace RetailCorrector.ValueObjects;
+namespace Correctum.Core.ValueObjects;
 
 public readonly struct INN : IEqualityOperators<INN, INN, bool>, IEquatable<INN>, IParsable<INN>
 {

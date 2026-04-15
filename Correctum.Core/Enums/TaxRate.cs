@@ -1,5 +1,5 @@
 ﻿#pragma warning disable S1133
-namespace RetailCorrector.Enums
+namespace Correctum.Core.Enums
 {
     /// <summary>
     /// Ставки НДС

@@ -1,8 +1,8 @@
-﻿using RetailCorrector.Enums;
+﻿using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 using RetailCorrector.Exceptions;
-using RetailCorrector.ValueObjects;
 
-namespace RetailCorrector.Data
+namespace Correctum.Core.Models
 {
     public struct Receipt(bool @readonly = false)
     {

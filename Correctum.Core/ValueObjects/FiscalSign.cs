@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace RetailCorrector.ValueObjects;
+namespace Correctum.Core.ValueObjects;
 
 public readonly struct FiscalSign : IUtf8SpanParsable<FiscalSign>, ISpanParsable<FiscalSign>
 {
