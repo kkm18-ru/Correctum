@@ -3,7 +3,7 @@
     /// <summary>
     /// Единица измерения
     /// </summary>
-    public enum PositionUnit : byte
+    public enum UnitOfMeasure : byte
     {
         /// <summary>
         /// Штук/Единиц

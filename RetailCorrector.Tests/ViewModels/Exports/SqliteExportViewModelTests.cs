@@ -19,7 +19,7 @@ public class SqliteExportViewModelTests :
             BuyerContact = "client@mail.ru",
             RegId = "1234567980123456",
             StorageId = "6453210987654321",
-            Type = Operation.Income,
+            Type = ReceiptType.Income,
             SessionId = 2,
             DocNumber = 3,
             Payment = new()
@@ -37,13 +37,13 @@ public class SqliteExportViewModelTests :
             TaxationSystem = TaxationSystem.Patent,
             Items = [new() {
                 Name = "Товар",
-                PayMethod = PayMethod.FullPayment,
+                PayMethod = CalculationMethod.FullPayment,
                 Type = PositionType.OtherPayment,
                 TaxRate = TaxRate.Calc22,
                 Quantity = 17,
                 Cost = 18UL,
                 Price = 19UL,
-                Unit = PositionUnit.Other
+                Unit = UnitOfMeasure.Other
             }]
         };
         var path = GenPath();

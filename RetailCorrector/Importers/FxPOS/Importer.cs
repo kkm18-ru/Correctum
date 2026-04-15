@@ -39,10 +39,10 @@ internal partial class FxPOS : ImporterBase<FxPOS, FxPOS.View>
                         Payment = await Task.Run(() => conn.QuerySingleAsync<Payment>(GET_PAYMENT, docs[j])),
                         Type = docs[j].Type switch
                         {
-                            0 or 19 => Operation.Income,
-                            1 => Operation.RefundIncome,
-                            25 or 20 => Operation.Outcome,
-                            26 => Operation.RefundOutcome
+                            0 or 19 => ReceiptType.Income,
+                            1 => ReceiptType.RefundIncome,
+                            25 or 20 => ReceiptType.Outcome,
+                            26 => ReceiptType.RefundOutcome
                         }
                     };
                     progress.ReportIncrement();

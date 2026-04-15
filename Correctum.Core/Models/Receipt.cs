@@ -13,7 +13,7 @@ namespace Correctum.Core.Models
         public uint DocInSession { get; set; }
         public DateTime Created { get; set; }
         public FiscalSign? DocSign { get; set; }
-        public Operation Type { get; set; }
+        public ReceiptType Type { get; set; }
         public Position[] Items { get; set; }
         public Payment Payment { get; set; }
         public Currency TotalSum { get; set; }

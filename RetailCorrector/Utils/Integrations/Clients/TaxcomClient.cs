@@ -225,7 +225,7 @@ file readonly struct TaxcomDocumentResponse
             SessionId = Details["1038"]?.GetValue<uint>() ?? 0,
             DocInSession = Details["1042"]?.GetValue<uint>() ?? 0,
             Items = new Position[Details["1059"]?.AsArray().Count ?? 0],
-            Type = (Operation?)Details["1054"]?.GetValue<int>() ?? 0,
+            Type = (ReceiptType?)Details["1054"]?.GetValue<int>() ?? 0,
             DocSign = FiscalSign.Parse(Details["1077"]?.GetValue<string>()),
             Payment = ParsePayment(),
             TotalSum = Details["1020"]?.GetValue<ulong>() ?? 0,
@@ -245,9 +245,9 @@ file readonly struct TaxcomDocumentResponse
         Price = Details["1059"]?[index]?["1079"]?.GetValue<ulong>() ?? 0,
         Cost = Details["1059"]?[index]?["1043"]?.GetValue<ulong>() ?? 0,
         Type = (PositionType?)Details["1059"]?[index]?["1212"]?.GetValue<int>() ?? 0,
-        PayMethod = (PayMethod?)Details["1059"]?[index]?["1214"]?.GetValue<int>() ?? 0,
+        PayMethod = (CalculationMethod?)Details["1059"]?[index]?["1214"]?.GetValue<int>() ?? 0,
         TaxRate = (TaxRate?)Details["1059"]?[index]?["1199"]?.GetValue<int>() ?? 0,
-        Unit = (PositionUnit?)Details["1059"]?[index]?["2108"]?.GetValue<int>()
+        Unit = (UnitOfMeasure?)Details["1059"]?[index]?["2108"]?.GetValue<int>()
     };
 
     private Payment ParsePayment() => new()

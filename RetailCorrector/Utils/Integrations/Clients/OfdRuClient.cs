@@ -120,10 +120,10 @@ file struct Document
         DocSign = FiscalSign.Parse(DecimalFiscalSign),
         Type = OperationType.ToLowerInvariant() switch
         {
-            "income" => Operation.Income,
-            "outcome" => Operation.Outcome,
-            "refund income" => Operation.RefundIncome,
-            "refund outcome" => Operation.RefundOutcome,
+            "income" => ReceiptType.Income,
+            "outcome" => ReceiptType.Outcome,
+            "refund income" => ReceiptType.RefundIncome,
+            "refund outcome" => ReceiptType.RefundOutcome,
             _ => throw new NotSupportedException($"Тип операции '{OperationType}' не поддерживается.")
         },
         Items = [.. Items.Select(i => i.ToPosition())],
@@ -145,16 +145,16 @@ file struct DocumentItem
     public ulong Price { get; set; }
     public double Quantity { get; set; }
     public ulong Total { get; set; }
-    public PayMethod CalculationMethod { get; set; }
+    public CalculationMethod CalculationMethod { get; set; }
     public string? ProductUnitOfMeasure { get; set; }
     public byte NDS_Rate { get; set; }
     public PositionType SubjectType { get; set; }
 
     public Position ToPosition()
     {
-        PositionUnit? mu = null;
+        UnitOfMeasure? mu = null;
         if (ProductUnitOfMeasure is not null)
-            mu = (PositionUnit)int.Parse(ProductUnitOfMeasure);
+            mu = (UnitOfMeasure)int.Parse(ProductUnitOfMeasure);
 
         return new Position
         {

@@ -41,16 +41,16 @@ public class Fptr120ExportViewModelTests :
         }
     }
 
-    private static IEnumerable<(Operation, string)> Operations2AtolConstants()
+    private static IEnumerable<(ReceiptType, string)> Operations2AtolConstants()
     {
-        yield return (Operation.Income, "LIBFPTR_RT_SELL_CORRECTION");
-        yield return (Operation.RefundIncome, "LIBFPTR_RT_SELL_RETURN_CORRECTION");
-        yield return (Operation.Outcome, "LIBFPTR_RT_BUY_CORRECTION");
-        yield return (Operation.RefundOutcome, "LIBFPTR_RT_BUY_RETURN_CORRECTION");
+        yield return (ReceiptType.Income, "LIBFPTR_RT_SELL_CORRECTION");
+        yield return (ReceiptType.RefundIncome, "LIBFPTR_RT_SELL_RETURN_CORRECTION");
+        yield return (ReceiptType.Outcome, "LIBFPTR_RT_BUY_CORRECTION");
+        yield return (ReceiptType.RefundOutcome, "LIBFPTR_RT_BUY_RETURN_CORRECTION");
     }
 
-    private static IEnumerable<Operation> InvalidOperations() => Enumerable
-        .Sequence<byte>(byte.MinValue, byte.MaxValue, 1).Cast<Operation>()
+    private static IEnumerable<ReceiptType> InvalidOperations() => Enumerable
+        .Sequence<byte>(byte.MinValue, byte.MaxValue, 1).Cast<ReceiptType>()
         .Where(o => !Operations2AtolConstants().Select(i => i.Item1).Contains(o));
 
     #endregion
@@ -141,7 +141,7 @@ public class Fptr120ExportViewModelTests :
         var position = default(Position) with
         {
             Name = "Товар",
-            Unit = (PositionUnit)1,
+            Unit = (UnitOfMeasure)1,
         };
         using var stream = new MemoryStream();
         using var writer = new StreamWriter(stream, leaveOpen: true);
@@ -156,7 +156,7 @@ public class Fptr120ExportViewModelTests :
         var position = default(Position) with
         {
             Name = "Товар",
-            Unit = PositionUnit.Piece,
+            Unit = UnitOfMeasure.Piece,
         };
         using var stream = new MemoryStream();
         using var writer = new StreamWriter(stream, leaveOpen: true);
@@ -171,7 +171,7 @@ public class Fptr120ExportViewModelTests :
         var position = default(Position) with
         {
             Name = "Товар",
-            Unit = PositionUnit.Piece,
+            Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
         };
         using var stream = new MemoryStream();
@@ -187,9 +187,9 @@ public class Fptr120ExportViewModelTests :
         var position = default(Position) with
         {
             Name = "Товар",
-            Unit = PositionUnit.Piece,
+            Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
-            PayMethod = PayMethod.FullPrepaid,
+            PayMethod = CalculationMethod.FullPrepaid,
         };
         using var stream = new MemoryStream();
         using var writer = new StreamWriter(stream, leaveOpen: true);
@@ -205,9 +205,9 @@ public class Fptr120ExportViewModelTests :
         var position = new Position
         {
             Name = "Товар \"Хлеб\"",
-            Unit = PositionUnit.Piece,
+            Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
-            PayMethod = PayMethod.FullPayment,
+            PayMethod = CalculationMethod.FullPayment,
             TaxRate = TaxRate.Without,
             Price = 10010UL,
             Quantity = 1234,
@@ -312,9 +312,9 @@ public class Fptr120ExportViewModelTests :
         var position1 = new Position
         {
             Name = "Хлеб",
-            Unit = PositionUnit.Piece,
+            Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
-            PayMethod = PayMethod.FullPayment,
+            PayMethod = CalculationMethod.FullPayment,
             TaxRate = TaxRate.Tax20,
             Price = 5000UL,
             Quantity = 2000,
@@ -323,9 +323,9 @@ public class Fptr120ExportViewModelTests :
         var position2 = new Position
         {
             Name = "Молоко",
-            Unit = PositionUnit.Liter,
+            Unit = UnitOfMeasure.Liter,
             Type = PositionType.Product,
-            PayMethod = PayMethod.FullPayment,
+            PayMethod = CalculationMethod.FullPayment,
             TaxRate = TaxRate.Tax10,
             Price = 6500UL,
             Quantity = 1000,
@@ -336,7 +336,7 @@ public class Fptr120ExportViewModelTests :
             ParseId = Guid.Empty,
             Created = new DateTime(2020, 12, 31, 13, 35, 59),
             BuyerContact = "client@mail.ru",
-            Type = Operation.Income,
+            Type = ReceiptType.Income,
             TaxationSystem = TaxationSystem.USNIncomeExpenditure,
             DocSign = null,
             Items = [position1, position2],

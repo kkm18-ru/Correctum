@@ -215,7 +215,7 @@ file struct ReceiptResponse
     public ulong Cash { get; set; }
     
     [JsonPropertyName("operationType")]
-    public Operation Operation { get; set; }
+    public ReceiptType Operation { get; set; }
 
     [JsonPropertyName("items")]
     public ItemResponse[] Items { get; set; }
@@ -294,7 +294,7 @@ file struct ItemResponse
     public ulong Price { get; set; }
     
     [JsonPropertyName("itemsQuantityMeasure")]
-    public PositionUnit? Measure { get; set; }
+    public UnitOfMeasure? Measure { get; set; }
     
     [JsonPropertyName("nds")]
     public byte? Vat { get; set; }
@@ -303,7 +303,7 @@ file struct ItemResponse
     public PositionType? Type { get; set; }
 
     [JsonPropertyName("paymentType")]
-    public PayMethod? Payment { get; set; }
+    public CalculationMethod? Payment { get; set; }
 
 }
 

@@ -26,7 +26,7 @@ internal sealed class OfdRuJson : IParser
             receipt.SessionId = json.Document.ShiftNumber;
             receipt.Created = DateTime.ParseExact(json.Document.DateTime, DATE_FORMAT, 
                 Thread.CurrentThread.CurrentUICulture);
-            receipt.Type = (Operation)json.Document.OperationType;
+            receipt.Type = (ReceiptType)json.Document.OperationType;
             receipt.TotalSum = json.Document.Amount_Total;
             receipt.Payment = new Payment
             {
@@ -91,8 +91,8 @@ file readonly struct OfdRuJsonPosition
         Price = json.Price,
         Quantity = (ulong)(json.Quantity * 1000),
         Cost = json.Total,
-        Unit = (PositionUnit)json.ProductUnitOfMeasure,
-        PayMethod = (PayMethod)json.CalculationMethod,
+        Unit = (UnitOfMeasure)json.ProductUnitOfMeasure,
+        PayMethod = (CalculationMethod)json.CalculationMethod,
         TaxRate = (TaxRate)json.NDS_Rate,
         Type = (PositionType)json.SubjectType,
     };

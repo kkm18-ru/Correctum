@@ -34,7 +34,7 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
                 Created = DateTime.ParseExact(columns[DateReceipt].Trim('"'), DateFormat, null),
                 TotalSum = sum,
                 BuyerContact = columns[3],
-                Type = operation == IncomePattern ? Operation.Income : operation == RefundPattern ? Operation.RefundIncome : 0,
+                Type = operation == IncomePattern ? ReceiptType.Income : operation == RefundPattern ? ReceiptType.RefundIncome : 0,
                 Items = [
                     new Position
                     {
@@ -43,8 +43,8 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
                         Quantity = 1000,
                         Cost = sum,
                         TaxRate = ItemVat,
-                        Unit = PositionUnit.Piece,
-                        PayMethod = PayMethod.FullPayment,
+                        Unit = UnitOfMeasure.Piece,
+                        PayMethod = CalculationMethod.FullPayment,
                         Type = PositionType.Product
                     }
                 ],

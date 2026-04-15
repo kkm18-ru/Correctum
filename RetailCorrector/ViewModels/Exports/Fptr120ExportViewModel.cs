@@ -30,15 +30,15 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
             await writer.WriteLineAsync();
         }
     }
-    internal static async Task SetReceiptTypeAsync(StreamWriter writer, Operation receiptType) =>
+    internal static async Task SetReceiptTypeAsync(StreamWriter writer, ReceiptType receiptType) =>
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_RECEIPT_TYPE, Fptr.{ToAtolConstant(receiptType)});");
 
-    private static string ToAtolConstant(Operation receiptType) => receiptType switch
+    private static string ToAtolConstant(ReceiptType receiptType) => receiptType switch
     {
-        Operation.Income => "LIBFPTR_RT_SELL_CORRECTION",
-        Operation.RefundIncome => "LIBFPTR_RT_SELL_RETURN_CORRECTION",
-        Operation.Outcome => "LIBFPTR_RT_BUY_CORRECTION",
-        Operation.RefundOutcome => "LIBFPTR_RT_BUY_RETURN_CORRECTION",
+        ReceiptType.Income => "LIBFPTR_RT_SELL_CORRECTION",
+        ReceiptType.RefundIncome => "LIBFPTR_RT_SELL_RETURN_CORRECTION",
+        ReceiptType.Outcome => "LIBFPTR_RT_BUY_CORRECTION",
+        ReceiptType.RefundOutcome => "LIBFPTR_RT_BUY_RETURN_CORRECTION",
         _ => throw new FormatException("Найден чек с некорректным типом операции.")
     };
 

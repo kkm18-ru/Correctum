@@ -39,8 +39,8 @@ partial class Taxcom
                 { "1043", new JValue(faker.Random.Int(1)) },
                 { "1023", new JValue(faker.Random.Double(1,5).ToString("F3", CultureInfo.InvariantCulture)+"000") },
                 { "1199", new JValue((int)faker.Random.Enum<TaxRate>()) },
-                { "2108", new JValue((int)faker.Random.Enum<PositionUnit>()) },
-                { "1214", new JValue((int)faker.Random.Enum<PayMethod>()) },
+                { "2108", new JValue((int)faker.Random.Enum<UnitOfMeasure>()) },
+                { "1214", new JValue((int)faker.Random.Enum<CalculationMethod>()) },
                 { "1212", new JValue((int)faker.Random.Enum<PositionType>()) }
             });
         }
@@ -59,7 +59,7 @@ partial class Taxcom
             { "1041", new JValue(faker.Random.ULong().ToString("D16")) },                            // номер ФН
             { "1042", new JValue(faker.Random.UInt()) },                                                    // номер чека за смену
             { "1048", new JValue(faker.Name.JobTitle()) },                                                  // наименование пользователя
-            { "1054", new JValue((int)faker.Random.Enum<Operation>()) },                                    // признак расчета
+            { "1054", new JValue((int)faker.Random.Enum<ReceiptType>()) },                                    // признак расчета
             { "1055", new JValue(faker.Random.Int(1,63)) },                                                 // применяемая система налогообложения
             { "1059", new JArray(positions) },                                                              // предмет расчета
             { "1060", new JValue("www.nalog.gov.ru") },                                                     // адрес сайта ФНС

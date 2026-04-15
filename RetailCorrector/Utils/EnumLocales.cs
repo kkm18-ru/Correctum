@@ -17,40 +17,40 @@ public static class EnumLocales
         new(TaxationSystem.Patent, "Патент"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<Operation>> ReceiptTypes =
+    public static readonly ReadOnlyCollection<EnumLocale<ReceiptType>> ReceiptTypes =
     [
-        new(Operation.Income, "Приход"),
-        new(Operation.Outcome, "Расход"),
-        new(Operation.RefundIncome, "Возврат прихода"),
-        new(Operation.RefundOutcome, "Возврат расхода"),
+        new(ReceiptType.Income, "Приход"),
+        new(ReceiptType.Outcome, "Расход"),
+        new(ReceiptType.RefundIncome, "Возврат прихода"),
+        new(ReceiptType.RefundOutcome, "Возврат расхода"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<PositionUnit>> PositionUnits =
+    public static readonly ReadOnlyCollection<EnumLocale<UnitOfMeasure>> PositionUnits =
     [
-        new(PositionUnit.Piece, "шт."),
-        new(PositionUnit.Gram, "гр."),
-        new(PositionUnit.Kilogram, "кг"),
-        new(PositionUnit.Ton, "т"),
-        new(PositionUnit.Centimeter, "см"),
-        new(PositionUnit.Decimeter, "дм"),
-        new(PositionUnit.Meter, "м"),
-        new(PositionUnit.SquareCentimeter, "кв. см"),
-        new(PositionUnit.SquareDecimeter, "кв. дм"),
-        new(PositionUnit.SquareMeter, "кв. м"),
-        new(PositionUnit.Milliliter, "мл"),
-        new(PositionUnit.Liter, "л"),
-        new(PositionUnit.CubicMeter, "куб. м"),
-        new(PositionUnit.KilowattHour, "кВт·ч"),
-        new(PositionUnit.Gigacalories, "ГКал"),
-        new(PositionUnit.Days, "дн."),
-        new(PositionUnit.Hours, "ч"),
-        new(PositionUnit.Minutes, "мин."),
-        new(PositionUnit.Seconds, "сек."),
-        new(PositionUnit.Kilobyte, "КБ"),
-        new(PositionUnit.Megabyte, "МБ"),
-        new(PositionUnit.Gigabyte, "ГБ"),
-        new(PositionUnit.Terabyte, "ТБ"),
-        new(PositionUnit.Other, "др."),
+        new(UnitOfMeasure.Piece, "шт."),
+        new(UnitOfMeasure.Gram, "гр."),
+        new(UnitOfMeasure.Kilogram, "кг"),
+        new(UnitOfMeasure.Ton, "т"),
+        new(UnitOfMeasure.Centimeter, "см"),
+        new(UnitOfMeasure.Decimeter, "дм"),
+        new(UnitOfMeasure.Meter, "м"),
+        new(UnitOfMeasure.SquareCentimeter, "кв. см"),
+        new(UnitOfMeasure.SquareDecimeter, "кв. дм"),
+        new(UnitOfMeasure.SquareMeter, "кв. м"),
+        new(UnitOfMeasure.Milliliter, "мл"),
+        new(UnitOfMeasure.Liter, "л"),
+        new(UnitOfMeasure.CubicMeter, "куб. м"),
+        new(UnitOfMeasure.KilowattHour, "кВт·ч"),
+        new(UnitOfMeasure.Gigacalories, "ГКал"),
+        new(UnitOfMeasure.Days, "дн."),
+        new(UnitOfMeasure.Hours, "ч"),
+        new(UnitOfMeasure.Minutes, "мин."),
+        new(UnitOfMeasure.Seconds, "сек."),
+        new(UnitOfMeasure.Kilobyte, "КБ"),
+        new(UnitOfMeasure.Megabyte, "МБ"),
+        new(UnitOfMeasure.Gigabyte, "ГБ"),
+        new(UnitOfMeasure.Terabyte, "ТБ"),
+        new(UnitOfMeasure.Other, "др."),
     ];
     
     public static readonly ReadOnlyCollection<EnumLocale<TaxRate>> TaxRates =
@@ -106,15 +106,15 @@ public static class EnumLocales
         new(PositionType.Mark, "ТМ"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<PayMethod>> PositionPayments =
+    public static readonly ReadOnlyCollection<EnumLocale<CalculationMethod>> PositionPayments =
     [
-        new(PayMethod.FullPrepaid, "Полная предоплата"),
-        new(PayMethod.PartPrepaid, "Частичная предоплата"),
-        new(PayMethod.Advance, "Аванс"),
-        new(PayMethod.FullPayment, "Полная оплата"),
-        new(PayMethod.PartPayment, "Частичная оплата"),
-        new(PayMethod.ToCredit, "Передача в кредит"),
-        new(PayMethod.Postpaid, "Оплата кредита"),
+        new(CalculationMethod.FullPrepaid, "Полная предоплата"),
+        new(CalculationMethod.PartPrepaid, "Частичная предоплата"),
+        new(CalculationMethod.Advance, "Аванс"),
+        new(CalculationMethod.FullPayment, "Полная оплата"),
+        new(CalculationMethod.PartPayment, "Частичная оплата"),
+        new(CalculationMethod.ToCredit, "Передача в кредит"),
+        new(CalculationMethod.Postpaid, "Оплата кредита"),
     ];
 
     public static string GetLocale<TEnum>(this ReadOnlyCollection<EnumLocale<TEnum>> collection, TEnum? value,

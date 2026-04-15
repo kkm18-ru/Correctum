@@ -3,7 +3,7 @@
     /// <summary>
     /// Операция чека
     /// </summary>
-    public enum Operation : byte
+    public enum ReceiptType : byte
     {
         /// <summary>
         /// Приход

@@ -4,17 +4,17 @@ namespace RetailCorrector.Utils.Extensions;
 
 internal static class EnumExtensions
 {
-    extension(Operation origin)
+    extension(ReceiptType origin)
     {
         public uint? ToCorrection(uint? ffd) => (ffd, origin) switch
         {
             (null, _) => null,
-            ( <= 105, Operation.Income or Operation.RefundOutcome) => 1,
-            ( <= 105, Operation.Outcome or Operation.RefundIncome) => 4,
-            ( >= 110, Operation.Income) => 7,
-            ( >= 110, Operation.Outcome) => 9,
-            ( >= 110, Operation.RefundOutcome) => 10,
-            ( >= 110, Operation.RefundIncome) => 8,
+            ( <= 105, ReceiptType.Income or ReceiptType.RefundOutcome) => 1,
+            ( <= 105, ReceiptType.Outcome or ReceiptType.RefundIncome) => 4,
+            ( >= 110, ReceiptType.Income) => 7,
+            ( >= 110, ReceiptType.Outcome) => 9,
+            ( >= 110, ReceiptType.RefundOutcome) => 10,
+            ( >= 110, ReceiptType.RefundIncome) => 8,
             _ => throw new NotImplementedException()
         };
     }

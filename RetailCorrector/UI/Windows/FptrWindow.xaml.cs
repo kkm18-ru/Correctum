@@ -280,10 +280,10 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                     Created = info.Item2,
                     Type = slice[i].Type switch
                     {
-                        Operation.Income => Operation.RefundIncome,
-                        Operation.RefundIncome => Operation.Income,
-                        Operation.Outcome => Operation.RefundOutcome,
-                        Operation.RefundOutcome => Operation.Outcome,
+                        ReceiptType.Income => ReceiptType.RefundIncome,
+                        ReceiptType.RefundIncome => ReceiptType.Income,
+                        ReceiptType.Outcome => ReceiptType.RefundOutcome,
+                        ReceiptType.RefundOutcome => ReceiptType.Outcome,
                         _ => throw new NotImplementedException()
                     }
                 };
