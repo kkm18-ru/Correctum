@@ -45,7 +45,7 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
     /// <param name="cancel">Токен, позволяющий отменить выгрузку ККТ.</param>
     /// <returns>Асинхронное перечисление зарегистрированных ККТ.</returns>
     public async IAsyncEnumerable<string> EnumerateDevicesAsync
-        (INN inn, [EnumeratorCancellation] CancellationToken cancel = default)
+        (Inn inn, [EnumeratorCancellation] CancellationToken cancel = default)
     {
         ThrowIfDisposed();
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/ofd/v1/orgs/{inn}/kkts");
@@ -66,7 +66,7 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
     /// <param name="cancel">Токен, позволяющий отменить выгрузку фискальных накопителей.</param>
     /// <returns>Массив фискальных накопителей по ККТ</returns>
     public async Task<SabyDriveResponse[]> FetchDrivesAsync
-        (INN inn, string regId, DateTime dateFrom, DateTime dateTo, CancellationToken cancel = default)
+        (Inn inn, string regId, DateTime dateFrom, DateTime dateTo, CancellationToken cancel = default)
     {
         ThrowIfDisposed();
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/ofd/v1/orgs/{inn}/kkts/{regId}/storages");
@@ -105,13 +105,13 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
 /// <param name="inn">ИНН организации-владельца ККТ.</param>
 /// <param name="regId">Регистрационный номер ККТ, выданный ФНС.</param>
 /// <param name="driveId">Номер фискального накопителя.</param>
-public readonly struct SabyReceiptsRequest (Guid parseId, INN inn, string regId, string driveId)
+public readonly struct SabyReceiptsRequest (Guid parseId, Inn inn, string regId, string driveId)
 {
     /// <summary>Идентификатор сессии парсера.</summary>
     public Guid ParseId { get; } = parseId;
     
     /// <summary>ИНН организации-владельца ККТ.</summary>
-    private INN Inn { get; } = inn;
+    private Inn Inn { get; } = inn;
     
     /// <summary>Регистрационный номер ККТ, выданный ФНС.</summary>
     private string RegId { get; } = regId;
@@ -243,7 +243,7 @@ file struct ReceiptResponse
 
     public Receipt ToReceipt(Guid parseId) => new()
     {
-        ParseId = parseId,
+        //ParseId = parseId,
         RegId = RegId,
         StorageId = StorageId,
         DocInSession = DocInSession,
@@ -251,15 +251,15 @@ file struct ReceiptResponse
         Items = Items.Select(ToPosition).ToArray(),
         Payment = new Payment
         {
-            Cash = Cash,
-            ECash = Ecash,
-            Pre = Prepaid,
-            Post = Credit,
-            Provision = Provision
+            CashSum = Cash,
+            NonCashSum = Ecash,
+            AdvanceSum = Prepaid,
+            CreditSum = Credit,
+            ProvisionSum = Provision
         },
         Type = Operation,
         BuyerContact = Buyer,
-        DocSign = new(Sign),
+        DocSign = Sign,
         TotalSum = Total,
         TaxationSystem = Taxation,
         DocNumber = Number,
@@ -275,7 +275,7 @@ file struct ReceiptResponse
         Unit = item.Measure,
         TaxRate = EnumUtils.ToTaxRate(item.Vat ?? 0),
         Type = item.Type ?? 0,
-        PayMethod = item.Payment ?? 0
+        CalcMethod = item.Payment ?? 0
     };
 }
 

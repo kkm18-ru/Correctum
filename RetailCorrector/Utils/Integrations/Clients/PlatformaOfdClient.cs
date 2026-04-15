@@ -109,7 +109,7 @@ internal sealed partial class PlatformaOfdClient() : ApiClient<PlatformaOfdClien
         Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
         var raw = HttpUtility.HtmlDecode(html.Split(@"<pre>")[1].Split(@"</pre>")[0]);
-        var receipt = new Receipt { ParseId = parseId };
+        var receipt = new Receipt();// { ParseId = parseId };
         return PlatformOfd.Instance.Parse(raw, ref receipt) ? receipt : null;
     }
 

@@ -32,12 +32,12 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
 
                     yield return new()
                     {
-                        ParseId = parseInfo.Id,
+                        //ParseId = parseInfo.Id,
                         Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => new Position {
                             Name = i.name,
                             Cost = i.total,
                             Unit = i.unit,
-                            PayMethod = i.payment,
+                            CalcMethod = i.payment,
                             Price = i.price,
                             Quantity = i.quantity,
                             TaxRate = EnumUtils.ToTaxRate(i.tax),
@@ -53,11 +53,11 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                         TotalSum = docs[j].total,
                         Payment = new Payment
                         {
-                            Cash = docs[j].cash,
-                            ECash = docs[j].ecash,
-                            Pre = docs[j].pre,
-                            Post = docs[j].post,
-                            Provision = docs[j].other,
+                            CashSum = docs[j].cash,
+                            NonCashSum = docs[j].ecash,
+                            AdvanceSum = docs[j].pre,
+                            CreditSum = docs[j].post,
+                            ProvisionSum = docs[j].other,
                         },
                         Type = docs[j].type,
                         BuyerContact = docs[j].buyer,

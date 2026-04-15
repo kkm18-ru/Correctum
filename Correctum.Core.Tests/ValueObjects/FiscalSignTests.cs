@@ -15,7 +15,7 @@ public sealed class FiscalSignTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(FiscalSign.TryParse("1", out var sign), Is.True);
-            Assert.That(sign, Is.EqualTo(new FiscalSign(1)));
+            Assert.That(sign, Is.EqualTo((FiscalSign)1));
         }
     }
 
@@ -26,7 +26,7 @@ public sealed class FiscalSignTests
             foreach (var s in TlvFiscalSigns())
             {
                 Assert.That(FiscalSign.TryParse(s.Item1, out var sign), Is.True);
-                Assert.That(sign, Is.EqualTo(new FiscalSign(s.Item2)));
+                Assert.That(sign, Is.EqualTo((FiscalSign)s.Item2));
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿namespace Correctum.Core.Enums
 {
     /// <summary>
-    /// Единица измерения
+    /// Указывает меру количества предмета расчета
     /// </summary>
     public enum UnitOfMeasure : byte
     {

@@ -11,7 +11,7 @@ namespace RetailCorrector.Data
         public string Name { get; } = origin.Name;
 
         public string Type { get; } = EnumLocales.PositionTypes.GetLocale(origin.Type);
-        public string PayMethod { get; } = EnumLocales.PositionPayments.GetLocale(origin.PayMethod);
+        public string PayMethod { get; } = EnumLocales.PositionPayments.GetLocale(origin.CalcMethod);
         public string TaxRate { get; } = EnumLocales.TaxRates.GetLocale(origin.TaxRate);
         public string Price { get; } = $"{(decimal)origin.Price:F2}";
 

@@ -62,7 +62,7 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
         {
             var receipts = await _client.FetchReceiptsAsync(args, offset, cancellationToken);
             if (receipts is null || receipts.Length == 0) break;
-            offset = receipts[^1].DocNumber;
+            offset = receipts[^1].DocNumber.Value;
             foreach (var receipt in receipts) yield return receipt;
         }
     }

@@ -110,7 +110,7 @@ file struct Document
 
     public Receipt ToReceipt(Guid ParseId) => new()
     {
-        ParseId = ParseId,
+        //ParseId = ParseId,
         RegId = KktRegNumber,
         StorageId = FnNumber,
         DocNumber = DocNumber,
@@ -129,11 +129,11 @@ file struct Document
         Items = [.. Items.Select(i => i.ToPosition())],
         Payment = new Payment
         {
-            Cash = CashSumm,
-            ECash = ECashSumm,
-            Pre = PrepaidSumm,
-            Post = CreditSumm,
-            Provision = ProvisionSumm
+            CashSum = CashSumm,
+            NonCashSum = ECashSumm,
+            AdvanceSum = PrepaidSumm,
+            CreditSum = CreditSumm,
+            ProvisionSum = ProvisionSumm
         },
         TotalSum = TotalSumm,
         TaxationSystem = TaxationType
@@ -162,7 +162,7 @@ file struct DocumentItem
             Price = Price,
             Quantity = (ulong)(Quantity * 1000),
             Cost = Total,
-            PayMethod = CalculationMethod,
+            CalcMethod = CalculationMethod,
             Unit = mu,
             TaxRate = EnumUtils.ToTaxRate(NDS_Rate),
             Type = SubjectType

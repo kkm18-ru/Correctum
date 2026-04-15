@@ -116,7 +116,7 @@ namespace RetailCorrector.UI.Windows
                 var lastParse = Workspace.Instance.ImportHistory[^1];
                 for (var i = Workspace.Instance.Receipts.Count - 1; i >= 0; i--)
                 {
-                    if (Workspace.Instance.Receipts[i].ParseId == lastParse.Id)
+                    //if (Workspace.Instance.Receipts[i].ParseId == lastParse.Id)
                         Workspace.Instance.Receipts.RemoveAt(i);
                 }
                 Workspace.Instance.ImportHistory.Remove(lastParse);

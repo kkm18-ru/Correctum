@@ -1,48 +1,72 @@
 ﻿using System.Globalization;
 
-namespace Correctum.Core.ValueObjects;
-
-public readonly struct Currency
+namespace Correctum.Core.ValueObjects
 {
-    public readonly bool IsZero => _data == 0;
-
-    private readonly ulong _data;
-
-    private Currency(ulong data) => _data = data;
-
-    public static implicit operator Currency(ulong value) => new(value);
-    public static implicit operator Currency(long value)
+    /// <summary>
+    /// Представляет денежное значение.
+    /// </summary>
+    public readonly struct Currency
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(value);
-        return new((ulong)value);
+        private readonly ulong _data;
+
+        private Currency(ulong data) => _data = data;
+
+        /// <summary>
+        /// Преобразует целочисленное число без знака в число <see cref="Currency"/>.
+        /// </summary>
+        /// <param name="value">Преобразуемое целое число без знака.</param>
+        public static implicit operator Currency(ulong value) => new(value);
+
+        /// <summary>
+        /// Преобразует целочисленное число в число <see cref="Currency"/>.
+        /// </summary>
+        /// <param name="value">Преобразуемое целое число.</param>
+        public static implicit operator Currency(long value)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
+            return new((ulong)value);
+        }
+
+        /// <summary>
+        /// Преобразует десятичное число с плавающей точкой в число <see cref="Currency"/>.
+        /// </summary>
+        /// <param name="value">Преобразуемое десятичное число с плавающей точкой.</param>
+        public static implicit operator Currency(decimal value)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
+            return new((ulong)Math.Round(value * 100));
+        }
+
+        /// <summary>
+        /// Преобразует число с плавающей точкой в число <see cref="Currency"/>.
+        /// </summary>
+        /// <param name="value">Преобразуемое число с плавающей точкой.</param>
+        public static implicit operator Currency(double value)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
+            return new((ulong)Math.Round(value * 100));
+        }
+
+        /// <summary>
+        /// Преобразует число <see cref="Currency"/> в число с плавающей точкой.
+        /// </summary>
+        /// <param name="value">Преобразуемое число <see cref="Currency"/>.</param>
+        public static explicit operator double(Currency value) => value._data / 100D;
+        /// <summary>
+        /// Преобразует число <see cref="Currency"/> в десятичное число с плавающей точкой.
+        /// </summary>
+        /// <param name="value">Преобразуемое число <see cref="Currency"/>.</param>
+        public static explicit operator decimal(Currency value) => value._data / 100M;
+        /// <summary>
+        /// Преобразует число <see cref="Currency"/> в целочисленное число без знака.
+        /// </summary>
+        /// <param name="value">Преобразуемое число <see cref="Currency"/>.</param>
+        public static explicit operator ulong(Currency value) => value._data;
+
+        /// <summary>
+        /// Возвращает строковое представление значения этого экземпляра <see cref="Currency"/> структуры.
+        /// </summary>
+        /// <returns>Значение этого <see cref="Currency"/>.</returns>
+        public override string ToString() => ((decimal)this).ToString("F2", CultureInfo.InvariantCulture);
     }
-
-    public static implicit operator Currency(decimal value)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegative(value);
-        return new((ulong)Math.Round(value * 100));
-    }
-
-    public static implicit operator Currency(double value)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegative(value);
-        return new((ulong)Math.Round(value * 100));
-    }
-
-    public static explicit operator double(Currency curr) => curr._data / 100D;
-    public static explicit operator decimal(Currency curr) => curr._data / 100M;
-    public static explicit operator ulong(Currency curr) => curr._data;
-
-    public override string ToString() => ((decimal)this).ToString(CultureInfo.InvariantCulture);
-
-    public static Currency operator +(Currency left, Currency right) => left._data + right._data;
-    public static Currency operator -(Currency left, Currency right) => left._data - right._data;
-    public static ulong operator +(ulong left, Currency right) => left + right._data;
-    public static ulong operator +(Currency left, ulong right) => left._data + right;
-    public static ulong operator -(ulong left, Currency right) => left - right._data;
-    public static ulong operator -(Currency left, ulong right) => left._data - right;
-    public static ulong operator *(ulong left, Currency right) => left * right._data;
-    public static ulong operator *(Currency left, ulong right) => left._data * right;
-    public static ulong operator /(ulong left, Currency right) => left / right._data;
-    public static ulong operator /(Currency left, ulong right) => left._data / right;
 }

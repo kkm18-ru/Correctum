@@ -82,7 +82,7 @@ public class Fptr120ExportViewModelTests :
         using var stream = new MemoryStream();
         using (var writer = new StreamWriter(stream, leaveOpen: true))
         {
-            var task = Fptr120ExportViewModel.SetCorrectionDataAsync(writer, new(1));
+            var task = Fptr120ExportViewModel.SetCorrectionDataAsync(writer, 1);
             Assert.DoesNotThrowAsync(async () => await task);
         }
         stream.Position = 0;
@@ -189,7 +189,7 @@ public class Fptr120ExportViewModelTests :
             Name = "Товар",
             Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
-            PayMethod = CalculationMethod.FullPrepaid,
+            CalcMethod = CalculationMethod.FullPrepaid,
         };
         using var stream = new MemoryStream();
         using var writer = new StreamWriter(stream, leaveOpen: true);
@@ -207,7 +207,7 @@ public class Fptr120ExportViewModelTests :
             Name = "Товар \"Хлеб\"",
             Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
-            PayMethod = CalculationMethod.FullPayment,
+            CalcMethod = CalculationMethod.FullPayment,
             TaxRate = NDSRate.NoNDS,
             Price = 10010UL,
             Quantity = 1234,
@@ -270,11 +270,11 @@ public class Fptr120ExportViewModelTests :
     {
         var payment = new Payment
         {
-            Cash = 100UL,
-            ECash = 120UL,
-            Pre = 0UL,
-            Post = 12UL,
-            Provision = 12345UL,
+            CashSum = 100UL,
+            NonCashSum = 120UL,
+            AdvanceSum = 0UL,
+            CreditSum = 12UL,
+            ProvisionSum = 12345UL,
         };
 
         using var stream = new MemoryStream();
@@ -314,7 +314,7 @@ public class Fptr120ExportViewModelTests :
             Name = "Хлеб",
             Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
-            PayMethod = CalculationMethod.FullPayment,
+            CalcMethod = CalculationMethod.FullPayment,
             TaxRate = NDSRate.NDS20,
             Price = 5000UL,
             Quantity = 2000,
@@ -325,7 +325,7 @@ public class Fptr120ExportViewModelTests :
             Name = "Молоко",
             Unit = UnitOfMeasure.Liter,
             Type = PositionType.Product,
-            PayMethod = CalculationMethod.FullPayment,
+            CalcMethod = CalculationMethod.FullPayment,
             TaxRate = NDSRate.NDS10,
             Price = 6500UL,
             Quantity = 1000,
@@ -333,7 +333,6 @@ public class Fptr120ExportViewModelTests :
         };
         var receipt = new Receipt
         {
-            ParseId = Guid.Empty,
             Created = new DateTime(2020, 12, 31, 13, 35, 59),
             BuyerContact = "client@mail.ru",
             Type = ReceiptType.Income,
@@ -343,8 +342,8 @@ public class Fptr120ExportViewModelTests :
             TotalSum = 16500UL,
             Payment = new()
             {
-                Cash = 5000UL,
-                ECash = 11500UL
+                CashSum = 5000UL,
+                NonCashSum = 11500UL
             }
         };
 

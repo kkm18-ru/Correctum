@@ -25,7 +25,7 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
             var operation = columns[OperationReceipt].Trim('"');
             yield return new Receipt
             {
-                ParseId = parseInfo.Id,
+                //ParseId = parseInfo.Id,
                 DocInSession = 0,
                 RegId = 0.ToString("D16"),
                 StorageId = 0.ToString("D16"),
@@ -44,11 +44,11 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
                         Cost = sum,
                         TaxRate = ItemVat,
                         Unit = UnitOfMeasure.Piece,
-                        PayMethod = CalculationMethod.FullPayment,
+                        CalcMethod = CalculationMethod.FullPayment,
                         Type = PositionType.Product
                     }
                 ],
-                Payment = new Payment { ECash = sum },
+                Payment = new Payment { NonCashSum = sum },
                 TaxationSystem = 0,
                 DocSign = null
             };

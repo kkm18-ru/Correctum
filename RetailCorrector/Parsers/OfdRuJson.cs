@@ -30,11 +30,11 @@ internal sealed class OfdRuJson : IParser
             receipt.TotalSum = json.Document.Amount_Total;
             receipt.Payment = new Payment
             {
-                Cash = json.Document.Amount_Cash,
-                ECash = json.Document.Amount_ECash,
-                Pre = json.Document.Amount_Advance,
-                Post = json.Document.Amount_Loan,
-                Provision = json.Document.Amount_Granting,
+                CashSum = json.Document.Amount_Cash,
+                NonCashSum = json.Document.Amount_ECash,
+                AdvanceSum = json.Document.Amount_Advance,
+                CreditSum = json.Document.Amount_Loan,
+                ProvisionSum = json.Document.Amount_Granting,
             };
             receipt.Items = new Position[json.Document.Items.Length];
             for (var i = 0; i < receipt.Items.Length; i++)
@@ -92,7 +92,7 @@ file readonly struct OfdRuJsonPosition
         Quantity = (ulong)(json.Quantity * 1000),
         Cost = json.Total,
         Unit = (UnitOfMeasure)json.ProductUnitOfMeasure,
-        PayMethod = (CalculationMethod)json.CalculationMethod,
+        CalcMethod = (CalculationMethod)json.CalculationMethod,
         TaxRate = (NDSRate)json.NDS_Rate,
         Type = (PositionType)json.SubjectType,
     };

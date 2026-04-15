@@ -97,14 +97,13 @@ partial class Taxcom
             Assert.That(receipt.SessionId, Is.EqualTo(document["1038"]?.Value<uint>()));
             Assert.That(receipt.DocNumber, Is.EqualTo(document["1040"]?.Value<uint>()));
             Assert.That(receipt.DocSign, Is.EqualTo(FiscalSign.Parse(document["1077"]?.Value<string>())));
-            Assert.That(receipt.ParseId, Is.EqualTo(Guid.Empty));
             Assert.That(receipt.Created.ToString("s"), Is.EqualTo(document["1012"]?.Value<string>()));
             Assert.That((int)receipt.Type, Is.EqualTo(document["1054"]?.Value<int>()));
-            Assert.That((ulong)receipt.Payment.Cash, Is.EqualTo(document["1031"]?.Value<ulong>()));
-            Assert.That((ulong)receipt.Payment.ECash, Is.EqualTo(document["1081"]?.Value<ulong>()));
-            Assert.That((ulong)receipt.Payment.Pre, Is.EqualTo(document["1215"]?.Value<ulong>()));
-            Assert.That((ulong)receipt.Payment.Post, Is.EqualTo(document["1216"]?.Value<ulong>()));
-            Assert.That((ulong)receipt.Payment.Provision, Is.EqualTo(document["1217"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.CashSum, Is.EqualTo(document["1031"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.NonCashSum, Is.EqualTo(document["1081"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.AdvanceSum, Is.EqualTo(document["1215"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.CreditSum, Is.EqualTo(document["1216"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.ProvisionSum, Is.EqualTo(document["1217"]?.Value<ulong>()));
             Assert.That((ulong)receipt.TotalSum, Is.EqualTo(document["1020"]?.Value<ulong>()));
             Assert.That(receipt.BuyerContact, Is.EqualTo(document["1008"]?.Value<string>()));
             Assert.That((int)receipt.TaxationSystem, Is.EqualTo(document["1055"]?.Value<int>()));
@@ -119,9 +118,9 @@ partial class Taxcom
                     Is.EqualTo(posObject["1023"]?.Value<string>()));
                 Assert.That((ulong)position.Cost, Is.EqualTo(posObject["1043"]?.Value<ulong>()));
                 Assert.That((int?)position.Unit, Is.EqualTo(posObject["2108"]?.Value<int>()));
-                Assert.That((int)position.PayMethod, Is.EqualTo(posObject["1214"]?.Value<int>()));
-                Assert.That((int)position.Type, Is.EqualTo(posObject["1212"]?.Value<int>()));
-                Assert.That((int)position.TaxRate, Is.EqualTo(posObject["1199"]?.Value<int>()));
+                Assert.That((int?)position.CalcMethod, Is.EqualTo(posObject["1214"]?.Value<int>()));
+                Assert.That((int?)position.Type, Is.EqualTo(posObject["1212"]?.Value<int>()));
+                Assert.That((int?)position.TaxRate, Is.EqualTo(posObject["1199"]?.Value<int>()));
             }
         }
     }

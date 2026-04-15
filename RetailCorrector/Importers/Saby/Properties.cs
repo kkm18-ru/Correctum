@@ -28,12 +28,12 @@ internal partial class Saby : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, PasswordNotifier);
         }
     } = "";
-    public INN Inn
+    public Inn Inn
     {
         get;
         set
         {
-            if (field == value) return;
+            if (field.Equals(value)) return;
             field = value;
             PropertyChanged?.Invoke(this, InnNotifier);
             UpdateDevices();

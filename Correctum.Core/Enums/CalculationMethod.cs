@@ -1,7 +1,7 @@
 ﻿namespace Correctum.Core.Enums
 {
     /// <summary>
-    /// Указывает метод рассчета 
+    /// Определяет признак способа расчета 
     /// </summary>
     public enum CalculationMethod : byte
     {

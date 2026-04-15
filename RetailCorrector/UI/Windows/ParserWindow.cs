@@ -89,7 +89,7 @@ namespace RetailCorrector.UI.Windows
             Workspace.Instance.ImportHistory.Add(new ImportSession($"Вставка из {Current.Name}"));
             var receipt = new Receipt
             {
-                ParseId = Workspace.Instance.ImportHistory[^1].Id,
+                //ParseId = Workspace.Instance.ImportHistory[^1].Id,
                 Payment = new Payment()
             };
             if (Current.Parse(Text, ref receipt))

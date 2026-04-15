@@ -75,17 +75,17 @@ internal sealed class PlatformOfd : IParser
             case 1040: receipt.DocNumber = uint.Parse(value); break;
             case 1054: receipt.Type = (ReceiptType)byte.Parse(value); break;
             // Суммы способов оплаты
-            case 1031: UpdatePayment((ref p, sum) => p.Cash = sum, value, ref receipt); break;
-            case 1081: UpdatePayment((ref p, sum) => p.ECash = sum, value, ref receipt); break;
-            case 1215: UpdatePayment((ref p, sum) => p.Pre = sum, value, ref receipt); break;
-            case 1216: UpdatePayment((ref p, sum) => p.Post = sum, value, ref receipt); break;
-            case 1217: UpdatePayment((ref p, sum) => p.Provision = sum, value, ref receipt); break;
+            case 1031: UpdatePayment((ref p, sum) => p.CashSum = sum, value, ref receipt); break;
+            case 1081: UpdatePayment((ref p, sum) => p.NonCashSum = sum, value, ref receipt); break;
+            case 1215: UpdatePayment((ref p, sum) => p.AdvanceSum = sum, value, ref receipt); break;
+            case 1216: UpdatePayment((ref p, sum) => p.CreditSum = sum, value, ref receipt); break;
+            case 1217: UpdatePayment((ref p, sum) => p.ProvisionSum = sum, value, ref receipt); break;
             // Позиции
             case 2108: UpdatePosition((ref p, v) => p.Unit = (UnitOfMeasure)byte.Parse(v), value, ref receipt); break;
             case 1079: UpdatePosition((ref p, v) => p.Price = ulong.Parse(v), value, ref receipt); break;
             case 1043: UpdatePosition((ref p, v) => p.Cost = ulong.Parse(v), value, ref receipt); break;
             case 1199: UpdatePosition((ref p, v) => p.TaxRate = EnumUtils.ToTaxRate(byte.Parse(v)), value, ref receipt); break;
-            case 1214: UpdatePosition((ref p, v) => p.PayMethod = (CalculationMethod)byte.Parse(v), value, ref receipt); break;
+            case 1214: UpdatePosition((ref p, v) => p.CalcMethod = (CalculationMethod)byte.Parse(v), value, ref receipt); break;
             case 1212: UpdatePosition((ref p, v) => p.Type = (PositionType)byte.Parse(v), value, ref receipt); break;
             case 1023: UpdatePosition((ref p, v) => p.Quantity = (ulong)Math.Round(double.Parse(v, CultureInfo.InvariantCulture) * 1000, 0), value, ref receipt); break;
             case 1030: UpdatePosition((ref p, v) => p.Name = v.ToString(), value, ref receipt); break;

@@ -1,75 +1,101 @@
-﻿#pragma warning disable S101
-
-using System.Numerics;
-
-namespace Correctum.Core.ValueObjects;
-
-public readonly struct INN : IEqualityOperators<INN, INN, bool>, IEquatable<INN>, IParsable<INN>
+﻿namespace Correctum.Core.ValueObjects
 {
-    private readonly ulong? _value;
-
-    private INN(ulong value) => _value = value;
-
-    public static INN Parse(string s) => Parse(s, null);
-    public static INN Parse(string s, IFormatProvider? provider) => Parse(s ?? string.Empty, out var result) switch
+    /// <summary>
+    /// Представляет идентификационный номер налогоплательщика (ИНН)
+    /// </summary>
+    public readonly struct Inn : IEquatable<Inn>, IParsable<Inn>
     {
-        InnParsingStatus.Ok => result,
-        InnParsingStatus.OutOfRangeLength => throw new FormatException("Длина ввода отлична от 10 и 12 символов."),
-        InnParsingStatus.IsNotDigitCode => throw new FormatException("Ввод не является числовым кодом."),
-        InnParsingStatus.InvalidHashSum => throw new FormatException("Контрольное значение ИНН некорректно."),
-        InnParsingStatus status => throw new NotImplementedException($"Неизвестный статус код: {status}.")
-    };
+        private readonly ulong? _value;
 
-    public static bool TryParse(string? s, out INN result) => TryParse(s, null, out result);
-    public static bool TryParse(string? s, IFormatProvider? provider, out INN result) => Parse(s ?? string.Empty, out result) == 0;
+        private Inn(ulong value) => _value = value;
 
-    public override string ToString() => _value switch
-    {
-        >= 100_000_000 and <= 9_999_999_999 => _value.Value.ToString("D10"),
-        >= 10_000_000_000 and <= 999_999_999_999 => _value.Value.ToString("D12"),
-        _ => ""
-    };
-
-    public override int GetHashCode() => _value.GetHashCode();
-    public override bool Equals(object? obj) => obj is INN other && Equals(other);
-    public bool Equals(INN other) => _value.Equals(other._value);
-    public static bool operator ==(INN left, INN right) => left._value == right._value;
-    public static bool operator !=(INN left, INN right) => left._value != right._value;
-
-    private enum InnParsingStatus { Ok, OutOfRangeLength, IsNotDigitCode, InvalidHashSum }
-    private static InnParsingStatus Parse(string s, out INN result)
-    {
-        result = default;
-        if (s.Length != 10 && s.Length != 12) return InnParsingStatus.OutOfRangeLength;
-        if (!ulong.TryParse(s, out var code)) return InnParsingStatus.IsNotDigitCode;
-        var temp = new byte[s.Length];
-        for (var i = 0; i < temp.Length; i++)
-            temp[i] = (byte)(code / (ulong)Math.Pow(10, temp.Length - i - 1) % 10);
-        byte[] multiple = [3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8];
-        switch (s.Length)
+        /// <summary>
+        /// Преобразовывает строковое представление объекта ИНН в эквивалентную структуру <see cref="Inn"/>.
+        /// </summary>
+        /// <param name="s">Строка для синтаксического анализа.</param>
+        /// <returns>Результат синтаксического анализа <paramref name="s"/>.</returns>
+        /// <exception cref="FormatException"><paramref name="s"/> не находится в распознаваемом формате.</exception>
+        public static Inn Parse(string s) => Parse(s, null);
+        /// <summary>
+        /// Анализирует строку в значение.
+        /// </summary>
+        /// <param name="s">Строка для синтаксического анализа.</param>
+        /// <param name="provider">Объект, предоставляющий сведения о форматировании, зависящее от языка и региональных параметров, о <paramref name="s"/>.</param>
+        /// <returns>Результат синтаксического анализа <paramref name="s"/>.</returns>
+        /// <exception cref="FormatException"><paramref name="s"/> не находится в распознаваемом формате.</exception>
+        public static Inn Parse(string s, IFormatProvider? provider) => Parse(s ?? string.Empty, out var result) switch
         {
-            case 10:
-                var n10 = 0;
-                for (var i = 0; i < 9; i++)
-                    n10 += temp[i] * multiple[2 + i];
-                n10 = n10 % 11 % 10;
-                if ((byte)n10 != temp[^1]) return InnParsingStatus.InvalidHashSum;
-                break;
-            case 12:
-                var n11 = 0;
-                var n12 = 0;
-                for (var i = 0; i < 10; i++)
-                {
-                    n11 += temp[i] * multiple[1 + i];
-                    n12 += temp[i] * multiple[i];
-                }
-                n11 = n11 % 11 % 10;
-                n12 = (n12 + n11 * multiple[^1]) % 11 % 10;
-                if ((byte)n12 != temp[^1] || (byte)n11 != temp[^2]) return InnParsingStatus.InvalidHashSum;
-                break;
+            InnParsingStatus.Ok => result,
+            InnParsingStatus.OutOfRangeLength => throw new FormatException("Длина ввода отлична от 10 и 12 символов."),
+            InnParsingStatus.IsNotDigitCode => throw new FormatException("Ввод не является числовым кодом."),
+            InnParsingStatus.InvalidHashSum => throw new FormatException("Контрольное значение ИНН некорректно."),
+            InnParsingStatus status => throw new NotImplementedException($"Неизвестный статус код: {status}.")
+        };
+
+        /// <summary>
+        /// Пытается преобразовать строковое представление объекта ИНН в эквивалентную структуру <see cref="Inn"/>.
+        /// </summary>
+        /// <param name="s">Строка для синтаксического анализа.</param>
+        /// <param name="result">При возврате содержит результат успешного анализа <paramref name="s"/> или неопределенное значение при сбое.</param>
+        /// <returns>true, если <paramref name="s"/> анализ выполнен успешно; в противном случае — значение false.</returns>
+        public static bool TryParse(string? s, out Inn result) => TryParse(s, null, out result);
+
+        /// <summary>
+        /// Пытается проанализировать строку в значение.
+        /// </summary>
+        /// <param name="s">Строка для синтаксического анализа.</param>
+        /// <param name="provider">Объект, предоставляющий сведения о форматировании, зависящее от языка и региональных параметров, о <paramref name="s"/>.</param>
+        /// <param name="result">При возврате содержит результат успешного анализа <paramref name="s"/> или неопределенное значение при сбое.</param>
+        /// <returns>true, если <paramref name="s"/> анализ выполнен успешно; в противном случае — значение false.</returns>
+        public static bool TryParse(string? s, IFormatProvider? provider, out Inn result) => Parse(s ?? string.Empty, out result) == 0;
+
+        /// <summary>
+        /// Возвращает строковое представление значения этого экземпляра <see cref="Inn"/> структуры.
+        /// </summary>
+        /// <returns>Значение этого <see cref="Inn"/>.</returns>
+        public override string ToString() => _value switch
+        {
+            >= 100_000_000 and <= 9_999_999_999 => _value.Value.ToString("D10"),
+            >= 10_000_000_000 and <= 999_999_999_999 => _value.Value.ToString("D12"),
+            _ => ""
+        };
+
+        public bool Equals(Inn other) => _value.Equals(other._value);
+
+        private enum InnParsingStatus { Ok, OutOfRangeLength, IsNotDigitCode, InvalidHashSum }
+        private static InnParsingStatus Parse(string s, out Inn result)
+        {
+            result = default;
+            if (s.Length != 10 && s.Length != 12) return InnParsingStatus.OutOfRangeLength;
+            if (!ulong.TryParse(s, out var code)) return InnParsingStatus.IsNotDigitCode;
+            var temp = new byte[s.Length];
+            for (var i = 0; i < temp.Length; i++)
+                temp[i] = (byte)(code / (ulong)Math.Pow(10, temp.Length - i - 1) % 10);
+            byte[] multiple = [3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8];
+            switch (s.Length)
+            {
+                case 10:
+                    var n10 = 0;
+                    for (var i = 0; i < 9; i++)
+                        n10 += temp[i] * multiple[2 + i];
+                    n10 = n10 % 11 % 10;
+                    if ((byte)n10 != temp[^1]) return InnParsingStatus.InvalidHashSum;
+                    break;
+                case 12:
+                    var n11 = 0;
+                    var n12 = 0;
+                    for (var i = 0; i < 10; i++)
+                    {
+                        n11 += temp[i] * multiple[1 + i];
+                        n12 += temp[i] * multiple[i];
+                    }
+                    n11 = n11 % 11 % 10;
+                    n12 = (n12 + n11 * multiple[^1]) % 11 % 10;
+                    if ((byte)n12 != temp[^1] || (byte)n11 != temp[^2]) return InnParsingStatus.InvalidHashSum;
+                    break;
+            }
+            result = new(code);
+            return InnParsingStatus.Ok;
         }
-        result = new(code);
-        return InnParsingStatus.Ok;
     }
 }
-

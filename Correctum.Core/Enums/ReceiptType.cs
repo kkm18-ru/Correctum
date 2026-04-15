@@ -1,7 +1,7 @@
 ﻿namespace Correctum.Core.Enums
 {
     /// <summary>
-    /// Указывает операцию чека
+    /// Определяет признак расчета
     /// </summary>
     public enum ReceiptType : byte
     {

@@ -59,7 +59,7 @@ internal partial class FxPOS
                 22 => UnitOfMeasure.Terabyte,
                 23 => UnitOfMeasure.Other,
             },
-            PayMethod = (CalculationMethod)raw.PayMethod,
+            CalcMethod = (CalculationMethod)raw.PayMethod,
             Type = (raw.Type, raw.HasMark) switch
             {
                 (1, false) => PositionType.Product,

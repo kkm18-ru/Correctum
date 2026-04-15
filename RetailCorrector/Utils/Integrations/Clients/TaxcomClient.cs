@@ -218,7 +218,7 @@ file readonly struct TaxcomDocumentResponse
         var receipt = new Receipt
         {
             BuyerContact = Details["1008"]?.GetValue<string>() ?? "",
-            ParseId = importId,
+            //ParseId = importId,
             StorageId = Details["1041"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
             RegId = Details["1037"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
             DocNumber = Details["1040"]?.GetValue<uint>() ?? 0,
@@ -245,18 +245,18 @@ file readonly struct TaxcomDocumentResponse
         Price = Details["1059"]?[index]?["1079"]?.GetValue<ulong>() ?? 0,
         Cost = Details["1059"]?[index]?["1043"]?.GetValue<ulong>() ?? 0,
         Type = (PositionType?)Details["1059"]?[index]?["1212"]?.GetValue<int>() ?? 0,
-        PayMethod = (CalculationMethod?)Details["1059"]?[index]?["1214"]?.GetValue<int>() ?? 0,
+        CalcMethod = (CalculationMethod?)Details["1059"]?[index]?["1214"]?.GetValue<int>() ?? 0,
         TaxRate = (NDSRate?)Details["1059"]?[index]?["1199"]?.GetValue<int>() ?? 0,
         Unit = (UnitOfMeasure?)Details["1059"]?[index]?["2108"]?.GetValue<int>()
     };
 
     private Payment ParsePayment() => new()
     {
-        Cash = Details["1031"]?.GetValue<ulong>() ?? 0,
-        ECash = Details["1081"]?.GetValue<ulong>() ?? 0,
-        Pre = Details["1215"]?.GetValue<ulong>() ?? 0,
-        Post = Details["1216"]?.GetValue<ulong>() ?? 0,
-        Provision = Details["1217"]?.GetValue<ulong>() ?? 0,
+        CashSum = Details["1031"]?.GetValue<ulong>() ?? 0,
+        NonCashSum = Details["1081"]?.GetValue<ulong>() ?? 0,
+        AdvanceSum = Details["1215"]?.GetValue<ulong>() ?? 0,
+        CreditSum = Details["1216"]?.GetValue<ulong>() ?? 0,
+        ProvisionSum = Details["1217"]?.GetValue<ulong>() ?? 0,
     };
 }
 
