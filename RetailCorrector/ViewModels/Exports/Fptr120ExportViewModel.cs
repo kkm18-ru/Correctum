@@ -77,15 +77,15 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         if (string.IsNullOrWhiteSpace(info.Name))
             throw new FormatException("Найдена позиция чека с некорректным наименованием.");
         if (!info.Unit.HasValue) throw new FormatException("Найдена позиция чека без единицы измерения.");
-        if (!info.Type.HasValue) throw new FormatException("Найдена позиция чека без типа.");
-        if (!info.CalcMethod.HasValue) throw new FormatException("Найдена позиция чека без способа расчета.");
-        if (!info.TaxRate.HasValue) throw new FormatException("Найдена позиция чека без ставки НДС.");
         if (Enum.GetName(info.Unit.Value) is null)
             throw new FormatException("Найдена позиция чека с некорректной единицей измерения.");
+        if (!info.Type.HasValue) throw new FormatException("Найдена позиция чека без типа.");
         if (Enum.GetName(info.Type.Value) is null)
             throw new FormatException("Найдена позиция чека с некорректным типом.");
+        if (!info.CalcMethod.HasValue) throw new FormatException("Найдена позиция чека без способа расчета.");
         if (Enum.GetName(info.CalcMethod.Value) is null)
             throw new FormatException("Найдена позиция чека с некорректным способом расчета.");
+        if (!info.TaxRate.HasValue) throw new FormatException("Найдена позиция чека без ставки НДС.");
         if (Enum.GetName(info.TaxRate.Value) is null)
             throw new FormatException("Найдена позиция чека с некорректной ставкой НДС.");
 
