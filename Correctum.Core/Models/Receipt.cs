@@ -1,10 +1,9 @@
 ﻿using Correctum.Core.Enums;
 using Correctum.Core.ValueObjects;
-using RetailCorrector.Exceptions;
 
 namespace Correctum.Core.Models
 {
-    public struct Receipt(bool @readonly = false)
+    public struct Receipt
     {
         public required Guid ParseId { get; init; }
         public uint DocNumber { get; set; }
@@ -31,22 +30,6 @@ namespace Correctum.Core.Models
                 return field;
             }
         }
-
-        public int EditsCount
-        {
-            get;
-            set
-            {
-                if (value == field) return;
-                if (IsReadOnly && value != 0)
-                    throw new ReceiptReadOnlyException();
-                if (value < field)
-                    throw new NotImplementedException("Отмена действий в данный момент невозможна");
-                field = value;
-            }
-        }
-
-        public bool IsReadOnly { get; } = @readonly;
         #endregion
     }
 }
