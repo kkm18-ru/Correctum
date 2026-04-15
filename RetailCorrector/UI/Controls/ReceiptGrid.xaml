@@ -48,9 +48,4 @@
             </GroupStyle.HeaderTemplate>
         </GroupStyle>
     </DataGrid.GroupStyle>
-    <DataGrid.RowStyle>
-        <Style TargetType="DataGridRow">
-            <Setter Property="Background" Value="{Binding Background}"/>
-        </Style>
-    </DataGrid.RowStyle>
 </DataGrid>

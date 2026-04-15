@@ -1,5 +1,6 @@
 ﻿using RetailCorrector.Data;
-using RetailCorrector.Enums;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
 using RetailCorrector.Utils;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -29,7 +30,6 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
                 RegId = 0.ToString("D16"),
                 StorageId = 0.ToString("D16"),
                 SessionId = 0,
-                EditsCount = 0,
                 DocNumber = i,
                 Created = DateTime.ParseExact(columns[DateReceipt].Trim('"'), DateFormat, null),
                 TotalSum = sum,

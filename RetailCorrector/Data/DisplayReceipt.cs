@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using RetailCorrector.Utils;
+using Correctum.Core.Models;
 
 namespace RetailCorrector.Data
 {
@@ -21,12 +22,6 @@ namespace RetailCorrector.Data
         public string OtherPay { get; } = $"{(decimal)origin.Payment.Provision:F2}";
         public string Total { get; } = $"{(decimal)origin.TotalSum:F2}";
         public string TaxationSystem { get; } = EnumLocales.TaxationSystems.GetLocale(origin.TaxationSystem);
-
-        public Brush Background { get; } = origin.IsReadOnly switch
-        {
-            true => Brushes.LightGray,
-            false => Brushes.White
-        };
 
         public override string ToString() => $"Чек №{DocNumb} (ККТ: {RegId}; ФН: {StorageId})";
     }

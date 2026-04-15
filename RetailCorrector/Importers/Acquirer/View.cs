@@ -3,7 +3,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
-using RetailCorrector.Enums;
+using Correctum.Core.Enums;
 
 namespace RetailCorrector.Importers;
 

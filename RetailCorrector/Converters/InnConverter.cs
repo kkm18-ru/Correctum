@@ -1,4 +1,4 @@
-﻿using RetailCorrector.ValueObjects;
+﻿using Correctum.Core.ValueObjects;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;

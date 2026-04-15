@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Enums;
+﻿using Correctum.Core.Enums;
 using RetailCorrector.Utils;
 using System.IO;
 using System.Text;

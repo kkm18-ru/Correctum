@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using RetailCorrector.Utils;
+using Correctum.Core.Models;
 
 namespace RetailCorrector.Data
 {

@@ -5,10 +5,10 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
 using RetailCorrector.Exceptions;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.ValueObjects;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
 

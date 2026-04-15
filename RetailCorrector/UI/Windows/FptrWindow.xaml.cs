@@ -2,12 +2,13 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
-using RetailCorrector.Data;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
 using RetailCorrector.Enums;
 using RetailCorrector.UI.Windows.Types;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.ValueObjects;
 
 namespace RetailCorrector.UI.Windows;
 

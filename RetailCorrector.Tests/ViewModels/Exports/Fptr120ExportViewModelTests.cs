@@ -1,5 +1,5 @@
-﻿using RetailCorrector.Data;
-using RetailCorrector.Enums;
+﻿using Correctum.Core.Models;
+using Correctum.Core.Enums;
 using RetailCorrector.ViewModels.Exports;
 
 namespace RetailCorrector.Tests.ViewModels.Exports;

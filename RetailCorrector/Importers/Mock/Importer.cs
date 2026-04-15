@@ -2,7 +2,8 @@
 #if DEBUG
 using Bogus;
 using RetailCorrector.Data;
-using RetailCorrector.Enums;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
 using RetailCorrector.Utils;
 using System.Runtime.CompilerServices;
 

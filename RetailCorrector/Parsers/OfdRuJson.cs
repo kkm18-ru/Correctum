@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 
 namespace RetailCorrector.Parsers;
 

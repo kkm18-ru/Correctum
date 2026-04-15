@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using RetailCorrector.Enums;
+using Correctum.Core.Enums;
 
 namespace RetailCorrector.Utils;
 

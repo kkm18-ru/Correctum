@@ -1,7 +1,7 @@
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
 using RetailCorrector.Utils;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.ValueObjects;
 using System.Globalization;
 
 namespace RetailCorrector.Parsers;

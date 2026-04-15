@@ -1,4 +1,4 @@
-using RetailCorrector.Data;
+using Correctum.Core.Models;
 
 namespace RetailCorrector.Parsers;
 

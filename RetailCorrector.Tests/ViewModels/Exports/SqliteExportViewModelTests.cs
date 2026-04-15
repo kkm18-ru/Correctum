@@ -1,8 +1,8 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 using RetailCorrector.ViewModels.Exports;
 
 namespace RetailCorrector.Tests.ViewModels.Exports;
@@ -22,7 +22,6 @@ public class SqliteExportViewModelTests :
             Type = Operation.Income,
             SessionId = 2,
             DocNumber = 3,
-            EditsCount = 5,
             Payment = new()
             {
                 Cash = 6UL,

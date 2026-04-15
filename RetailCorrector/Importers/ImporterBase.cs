@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using Correctum.Core.Models;
 using RetailCorrector.UI.Windows;
 using RetailCorrector.Utils;
 

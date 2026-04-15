@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
-using RetailCorrector.Data;
+using Correctum.Core.Models;
 using System.Data;
 using System.IO;
 

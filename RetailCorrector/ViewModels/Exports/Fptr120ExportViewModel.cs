@@ -1,6 +1,6 @@
-﻿using RetailCorrector.Data;
-using RetailCorrector.Enums;
-using RetailCorrector.ValueObjects;
+﻿using Correctum.Core.Models;
+using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 using System.Globalization;
 using System.IO;
 

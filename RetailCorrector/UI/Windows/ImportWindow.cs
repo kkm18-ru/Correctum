@@ -1,5 +1,4 @@
-﻿using Bogus.Bson;
-using RetailCorrector.Importers;
+﻿using RetailCorrector.Importers;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 using System.ComponentModel;

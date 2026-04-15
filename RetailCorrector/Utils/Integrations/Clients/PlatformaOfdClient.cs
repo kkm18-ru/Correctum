@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Data;
+﻿using Correctum.Core.Models;
 using RetailCorrector.Parsers;
 using System.Net.Http;
 using System.Net.Http.Headers;

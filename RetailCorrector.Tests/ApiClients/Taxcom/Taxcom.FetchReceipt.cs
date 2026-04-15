@@ -1,11 +1,10 @@
 using System.Globalization;
 using System.Text;
 using Bogus;
-using HandlebarsDotNet.MemberAccessors;
 using Newtonsoft.Json.Linq;
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 

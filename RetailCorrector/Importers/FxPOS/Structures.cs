@@ -1,5 +1,5 @@
-﻿using RetailCorrector.Data;
-using RetailCorrector.Enums;
+﻿using Correctum.Core.Models;
+using Correctum.Core.Enums;
 
 namespace RetailCorrector.Importers;
 
@@ -79,12 +79,12 @@ internal partial class FxPOS
             },
             TaxRate = raw.TaxRate switch
             {
-                0 => Enums.TaxRate.Without,
-                5 => Enums.TaxRate.Tax5,
-                7 => Enums.TaxRate.Tax7,
-                10 => Enums.TaxRate.Tax10,
-                18 => Enums.TaxRate.Tax20,
-                20 => Enums.TaxRate.Tax20,
+                0 => Correctum.Core.Enums.TaxRate.Without,
+                5 => Correctum.Core.Enums.TaxRate.Tax5,
+                7 => Correctum.Core.Enums.TaxRate.Tax7,
+                10 => Correctum.Core.Enums.TaxRate.Tax10,
+                18 => Correctum.Core.Enums.TaxRate.Tax20,
+                20 => Correctum.Core.Enums.TaxRate.Tax20,
             }
         };
     }

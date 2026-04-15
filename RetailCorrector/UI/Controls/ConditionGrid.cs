@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using Correctum.Core.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

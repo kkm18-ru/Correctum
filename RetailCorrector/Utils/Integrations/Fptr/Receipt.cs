@@ -1,5 +1,5 @@
-﻿using RetailCorrector.Data;
-using RetailCorrector.ValueObjects;
+﻿using Correctum.Core.Models;
+using Correctum.Core.ValueObjects;
 using System.Windows;
 
 namespace RetailCorrector.Utils.Integrations
