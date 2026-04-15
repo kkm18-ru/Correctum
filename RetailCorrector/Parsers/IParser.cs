@@ -5,5 +5,5 @@ namespace RetailCorrector.Parsers;
 internal interface IParser
 {
     string Name { get; }
-    bool Parse(string raw, ref Receipt receipt);
+    bool Parse(string raw, out Receipt receipt);
 }

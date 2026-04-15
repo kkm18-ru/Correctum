@@ -1,5 +1,4 @@
-﻿using System.Windows.Media;
-using RetailCorrector.Utils;
+﻿using RetailCorrector.Utils;
 using Correctum.Core.Models;
 
 namespace RetailCorrector.Data

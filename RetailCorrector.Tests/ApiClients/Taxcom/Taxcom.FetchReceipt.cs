@@ -85,7 +85,7 @@ partial class Taxcom
                 .WithPath("/API/v2/DocumentInfo").WithParam("fd", documentNumber.ToString()))
             .RespondWith(Response.Create().WithBodyAsJson(documentInfo, Encoding.UTF8));
         _client.SessionToken = token;
-        var doc = await _client.FetchReceiptAsync(fnNumber, documentNumber, Guid.Empty);
+        var doc = await _client.FetchReceiptAsync(fnNumber, documentNumber);
         using (Assert.EnterMultipleScope())
         {
             Assert.That(doc, Is.Not.Null);

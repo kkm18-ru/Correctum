@@ -50,7 +50,7 @@ internal sealed class OfdRuClient() : ApiClient<OfdRuClient>(Host)
     /// <param name="cancel">Токен, позволяющий отменить получение данных о ККТ.</param>
     /// <returns>Список чеков.</returns>
     public async Task<Receipt[]> FetchReceiptsAsync
-        (Guid parseId, OfdRuDevice device, DateOnly date, CancellationToken cancel = default)
+        (OfdRuDevice device, DateOnly date, CancellationToken cancel = default)
     {
         ThrowIfDisposed();
         var uri = $"inn/{device.INN}/kkt/{device.KktRegId}/receipts-info?AuthToken={_token}" +
@@ -60,7 +60,7 @@ internal sealed class OfdRuClient() : ApiClient<OfdRuClient>(Host)
         var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
         var json = await JsonSerializer.DeserializeAsync<Response<Document>>(stream, cancellationToken: cancel).ConfigureAwait(false);
         if (json.Status != 0) throw json.ToException();
-        return [.. json.Data.Select(d => d.ToReceipt(parseId))];
+        return [.. json.Data.Select(d => d.ToReceipt())];
     }
 }
 
@@ -108,9 +108,8 @@ file struct Document
     public ulong CreditSumm { get; set; }
     public ulong ProvisionSumm { get; set; }
 
-    public Receipt ToReceipt(Guid ParseId) => new()
+    public Receipt ToReceipt() => new()
     {
-        //ParseId = ParseId,
         RegId = KktRegNumber,
         StorageId = FnNumber,
         DocNumber = DocNumber,

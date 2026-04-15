@@ -94,7 +94,7 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
         var json = await JsonSerializer.DeserializeAsync<DocumentResponse[]>(stream, cancellationToken: cancel) ?? [];
         return json.Length == 0 ? null :
             [..json.Where(i => i.GenericReceipt is not null)
-                .Select(i => i.GenericReceipt!.Value.ToReceipt(args.ParseId))];
+                .Select(i => i.GenericReceipt!.Value.ToReceipt())];
     }
 }
 
@@ -105,11 +105,8 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
 /// <param name="inn">ИНН организации-владельца ККТ.</param>
 /// <param name="regId">Регистрационный номер ККТ, выданный ФНС.</param>
 /// <param name="driveId">Номер фискального накопителя.</param>
-public readonly struct SabyReceiptsRequest (Guid parseId, Inn inn, string regId, string driveId)
-{
-    /// <summary>Идентификатор сессии парсера.</summary>
-    public Guid ParseId { get; } = parseId;
-    
+public readonly struct SabyReceiptsRequest (Inn inn, string regId, string driveId)
+{   
     /// <summary>ИНН организации-владельца ККТ.</summary>
     private Inn Inn { get; } = inn;
     
@@ -241,9 +238,8 @@ file struct ReceiptResponse
     [JsonPropertyName("fiscalDocumentNumber")]
     public uint Number { get; set; }
 
-    public Receipt ToReceipt(Guid parseId) => new()
+    public Receipt ToReceipt() => new()
     {
-        //ParseId = parseId,
         RegId = RegId,
         StorageId = StorageId,
         DocInSession = DocInSession,

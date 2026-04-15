@@ -17,8 +17,9 @@ internal sealed class PlatformOfd : IParser
     private delegate void UpdatePaymentDelegate(ref Payment payment, ulong sum);
     private delegate void UpdatePositionDelegate(ref Position position, ReadOnlySpan<char> value);
     
-    public bool Parse(string raw, ref Receipt receipt)
+    public bool Parse(string raw, out Receipt receipt)
     {
+        receipt = new();
         var span = raw.AsSpan();
         Span<char> rawValue = stackalloc char[256];
         foreach (var range in span.Split('\n'))

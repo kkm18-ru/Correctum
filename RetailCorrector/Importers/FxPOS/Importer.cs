@@ -2,7 +2,6 @@
 using Microsoft.Data.Sqlite;
 using Correctum.Core.Models;
 using Correctum.Core.Enums;
-using RetailCorrector.Data;
 using RetailCorrector.Utils;
 using System.Runtime.CompilerServices;
 
@@ -11,9 +10,6 @@ namespace RetailCorrector.Importers;
 internal partial class FxPOS : ImporterBase<FxPOS, FxPOS.View>
 {
     public override string Name => "Frontol xPOS";
-
-    public override ImportSession GenerateInfo() =>
-        parseInfo = new ImportSession("Frontol xPOS", ("Путь", Path));
 
     public override async IAsyncEnumerable<Receipt> Import(BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
@@ -31,7 +27,6 @@ internal partial class FxPOS : ImporterBase<FxPOS, FxPOS.View>
 
                     yield return new()
                     {
-                        //ParseId = parseInfo.Id,
                         Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => (Position)i)],
                         Created = docs[j].Date,
                         DocSign = docs[j].Sign,

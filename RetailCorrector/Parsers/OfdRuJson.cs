@@ -12,8 +12,9 @@ internal sealed class OfdRuJson : IParser
 
     const string DATE_FORMAT = "yyyy-MM-ddTHH:mm:ss";
 
-    public bool Parse(string raw, ref Receipt receipt)
+    public bool Parse(string raw, out Receipt receipt)
     {
+        receipt = new();
         try
         {
             var json = JsonSerializer.Deserialize<OfdRuJsonDocument>(raw);

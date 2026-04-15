@@ -13,9 +13,6 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
 {
     public override string Name => "Mock [для ОТЛАДКИ]";
 
-    public override ImportSession GenerateInfo() =>
-        parseInfo = new ImportSession("Mock");
-
     public override async IAsyncEnumerable<Receipt> Import(BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var faker = new Faker();
@@ -73,7 +70,6 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
                 Type = faker.Random.Enum<ReceiptType>(),
                 Payment = payment,
                 TotalSum = sum,
-                //ParseId = parseInfo.Id,
                 TaxationSystem = faker.Random.Enum<TaxationSystems>()
             };
             await Task.Delay(50, cancellationToken);

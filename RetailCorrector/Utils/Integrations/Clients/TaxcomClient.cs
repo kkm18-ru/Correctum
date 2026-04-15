@@ -184,12 +184,12 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : ApiCli
     /// <returns>Объект задачи, представляющий асинхронную операцию.</returns>
     /// <exception cref="HttpRequestException">Вызывается, если статус-код является не успешным</exception>
     public async Task<Receipt?> FetchReceiptAsync
-        (string fn, uint fd, Guid importId, CancellationToken cancellationToken = default)
+        (string fn, uint fd, CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
         using var request = new HttpRequestMessage(HttpMethod.Get, $"/API/v2/DocumentInfo?fn={fn}&fd={fd}");
         var document = await SendAsync<TaxcomDocumentResponse>(request, cancellationToken).ConfigureAwait(false);
-        return document.ParseReceipt(importId);
+        return document.ParseReceipt();
     }
 }
 
@@ -212,13 +212,12 @@ file readonly struct TaxcomDocumentResponse
     [JsonPropertyName("documentType")] public string DocType { get; init; }
     [JsonPropertyName("document")] public JsonNode Details { get; init; }
 
-    public Receipt? ParseReceipt(Guid importId)
+    public Receipt? ParseReceipt()
     {
         if (DocType is not ("3" or "31")) return null;
         var receipt = new Receipt
         {
             BuyerContact = Details["1008"]?.GetValue<string>() ?? "",
-            //ParseId = importId,
             StorageId = Details["1041"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
             RegId = Details["1037"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
             DocNumber = Details["1040"]?.GetValue<uint>() ?? 0,

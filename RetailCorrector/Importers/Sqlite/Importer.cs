@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
-using RetailCorrector.Data;
 using Correctum.Core.Models;
 using Correctum.Core.Enums;
 using RetailCorrector.Utils;
@@ -12,9 +11,6 @@ namespace RetailCorrector.Importers;
 internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
 {
     public override string Name => "SQLite";
-
-    public override ImportSession GenerateInfo() =>
-        parseInfo = new ImportSession("SQLite", ("Путь", Path));
 
     public override async IAsyncEnumerable<Receipt> Import(BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
@@ -32,7 +28,6 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
 
                     yield return new()
                     {
-                        //ParseId = parseInfo.Id,
                         Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => new Position {
                             Name = i.name,
                             Cost = i.total,

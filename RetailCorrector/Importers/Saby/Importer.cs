@@ -1,4 +1,3 @@
-using RetailCorrector.Data;
 using Correctum.Core.Models;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
@@ -10,11 +9,6 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
 {
     public override string Name => "SabyOFD";
     private readonly SabyClient _client = new();
-
-    public override ImportSession GenerateInfo() =>
-        parseInfo = new ImportSession(Name, ("ИНН", Inn), 
-            ("Старт", DateRange.BeginDate.ToString("dd'.'MM'.'yyyy")), 
-            ("Конец", DateRange.EndDate.ToString("dd'.'MM'.'yyyy")));
 
     public override async IAsyncEnumerable<Receipt> Import
         (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -42,7 +36,7 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
     private async IAsyncEnumerable<Receipt> ParseByStorage
         (string regId, SabyDriveResponse drive, BoundedProgress<uint> progress,  [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var baseRequest = new SabyReceiptsRequest(parseInfo.Id, Inn, regId, drive.Id);
+        var baseRequest = new SabyReceiptsRequest(Inn, regId, drive.Id);
         var (start, end) = GetAvailablePeriod(drive);
         for(var day = start; day <= end; day = day.AddDays(1))
         {

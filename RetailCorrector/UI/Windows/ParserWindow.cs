@@ -1,6 +1,4 @@
-﻿using RetailCorrector.Data;
-using Correctum.Core.Models;
-using RetailCorrector.Parsers;
+﻿using RetailCorrector.Parsers;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
 using System.ComponentModel;
@@ -86,13 +84,7 @@ namespace RetailCorrector.UI.Windows
 
         private void Submit(object? sender, RoutedEventArgs args)
         {
-            Workspace.Instance.ImportHistory.Add(new ImportSession($"Вставка из {Current.Name}"));
-            var receipt = new Receipt
-            {
-                //ParseId = Workspace.Instance.ImportHistory[^1].Id,
-                Payment = new Payment()
-            };
-            if (Current.Parse(Text, ref receipt))
+            if (Current.Parse(Text, out var receipt))
             {
                 Workspace.Instance.Receipts.Add(receipt);
                 ReceiptPanel.UpdateReceiptList();
