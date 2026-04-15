@@ -1,8 +1,8 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 using RetailCorrector.ViewModels.Exports;
 
 namespace RetailCorrector.Tests.ViewModels.Exports;
@@ -15,36 +15,34 @@ public class SqliteExportViewModelTests :
         var viewModel = new SqliteExportViewModel();
         var receipt = new Receipt
         {
-            ParseId = Guid.Empty,
             BuyerContact = "client@mail.ru",
             RegId = "1234567980123456",
             StorageId = "6453210987654321",
-            Type = Operation.Income,
+            Type = ReceiptType.Income,
             SessionId = 2,
             DocNumber = 3,
-            EditsCount = 5,
             Payment = new()
             {
-                Cash = 6UL,
-                ECash = 7UL,
-                Pre = 8UL,
-                Post = 9UL,
-                Provision = 10UL,
+                CashSum = 6UL,
+                NonCashSum = 7UL,
+                AdvanceSum = 8UL,
+                CreditSum = 9UL,
+                ProvisionSum = 10UL,
             },
             TotalSum = 11UL,
             Created = new DateTime(2023,12,30,15,35,29),
             DocInSession = 13,
-            DocSign = new(16),
-            TaxationSystem = TaxationSystem.Patent,
+            DocSign = 16,
+            TaxationSystem = TaxationSystems.Patent,
             Items = [new() {
                 Name = "Товар",
-                PayMethod = PayMethod.FullPayment,
+                CalcMethod = CalculationMethod.FullPayment,
                 Type = PositionType.OtherPayment,
-                TaxRate = TaxRate.Calc22,
+                TaxRate = NDSRate.NDS122,
                 Quantity = 17,
                 Cost = 18UL,
                 Price = 19UL,
-                Unit = PositionUnit.Other
+                Unit = UnitOfMeasure.Other
             }]
         };
         var path = GenPath();
@@ -68,11 +66,11 @@ public class SqliteExportViewModelTests :
                 Assert.That(receipts[0].taxation, Is.EqualTo((byte)receipt.TaxationSystem));
                 Assert.That(FiscalSign.Parse(receipts[0].sign), Is.EqualTo(receipt.DocSign));
                 Assert.That(receipts[0].buyer, Is.EqualTo(receipt.BuyerContact));
-                Assert.That((Currency)receipts[0].cash, Is.EqualTo(receipt.Payment.Cash));
-                Assert.That((Currency)receipts[0].ecash, Is.EqualTo(receipt.Payment.ECash));
-                Assert.That((Currency)receipts[0].pre, Is.EqualTo(receipt.Payment.Pre));
-                Assert.That((Currency)receipts[0].post, Is.EqualTo(receipt.Payment.Post));
-                Assert.That((Currency)receipts[0].other, Is.EqualTo(receipt.Payment.Provision));
+                Assert.That((Currency)receipts[0].cash, Is.EqualTo(receipt.Payment.CashSum));
+                Assert.That((Currency)receipts[0].ecash, Is.EqualTo(receipt.Payment.NonCashSum));
+                Assert.That((Currency)receipts[0].pre, Is.EqualTo(receipt.Payment.AdvanceSum));
+                Assert.That((Currency)receipts[0].post, Is.EqualTo(receipt.Payment.CreditSum));
+                Assert.That((Currency)receipts[0].other, Is.EqualTo(receipt.Payment.ProvisionSum));
                 Assert.That((Currency)receipts[0].total, Is.EqualTo(receipt.TotalSum));
             }
 
@@ -82,7 +80,7 @@ public class SqliteExportViewModelTests :
             {
                 Assert.That(positions[0].id, Is.EqualTo(1));
                 Assert.That(positions[0].name, Is.EqualTo(receipt.Items[0].Name));
-                Assert.That(positions[0].payment, Is.EqualTo((byte?)receipt.Items[0].PayMethod));
+                Assert.That(positions[0].payment, Is.EqualTo((byte?)receipt.Items[0].CalcMethod));
                 Assert.That(positions[0].type, Is.EqualTo((byte?)receipt.Items[0].Type));
                 Assert.That(positions[0].tax, Is.EqualTo((byte?)receipt.Items[0].TaxRate));
                 Assert.That(positions[0].unit, Is.EqualTo((byte?)receipt.Items[0].Unit));

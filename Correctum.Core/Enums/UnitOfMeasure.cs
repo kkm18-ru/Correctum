@@ -1,9 +1,9 @@
-﻿namespace RetailCorrector.Enums
+﻿namespace Correctum.Core.Enums
 {
     /// <summary>
-    /// Единица измерения
+    /// Указывает меру количества предмета расчета
     /// </summary>
-    public enum PositionUnit : byte
+    public enum UnitOfMeasure : byte
     {
         /// <summary>
         /// Штук/Единиц

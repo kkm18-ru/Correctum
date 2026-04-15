@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using RetailCorrector.Enums;
+using Correctum.Core.Enums;
 
 namespace RetailCorrector.Utils;
 
@@ -7,68 +7,68 @@ public record EnumLocale<TEnum>(TEnum Value, string Locale) where TEnum : Enum;
 
 public static class EnumLocales
 {
-    public static readonly ReadOnlyCollection<EnumLocale<TaxationSystem>> TaxationSystems =
+    public static readonly ReadOnlyCollection<EnumLocale<TaxationSystems>> TaxationSystems =
     [
-        new(TaxationSystem.OSN, "ОСН"),
-        new(TaxationSystem.USNIncome, "УСН доход"),
-        new(TaxationSystem.USNIncomeExpenditure, "УСН доход-расход"),
-        new(TaxationSystem.ENVD, "ЕНВД"),
-        new(TaxationSystem.ESHN, "ЕСХН"),
-        new(TaxationSystem.Patent, "Патент"),
+        new(Correctum.Core.Enums.TaxationSystems.General, "ОСН"),
+        new(Correctum.Core.Enums.TaxationSystems.SimplifiedIncome, "УСН доход"),
+        new(Correctum.Core.Enums.TaxationSystems.SimplifiedIncomeMinusExpense, "УСН доход-расход"),
+        new(Correctum.Core.Enums.TaxationSystems.ImputedIncome, "ЕНВД"),
+        new(Correctum.Core.Enums.TaxationSystems.Agricultural, "ЕСХН"),
+        new(Correctum.Core.Enums.TaxationSystems.Patent, "Патент"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<Operation>> ReceiptTypes =
+    public static readonly ReadOnlyCollection<EnumLocale<ReceiptType>> ReceiptTypes =
     [
-        new(Operation.Income, "Приход"),
-        new(Operation.Outcome, "Расход"),
-        new(Operation.RefundIncome, "Возврат прихода"),
-        new(Operation.RefundOutcome, "Возврат расхода"),
+        new(ReceiptType.Income, "Приход"),
+        new(ReceiptType.Outcome, "Расход"),
+        new(ReceiptType.RefundIncome, "Возврат прихода"),
+        new(ReceiptType.RefundOutcome, "Возврат расхода"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<PositionUnit>> PositionUnits =
+    public static readonly ReadOnlyCollection<EnumLocale<UnitOfMeasure>> PositionUnits =
     [
-        new(PositionUnit.Piece, "шт."),
-        new(PositionUnit.Gram, "гр."),
-        new(PositionUnit.Kilogram, "кг"),
-        new(PositionUnit.Ton, "т"),
-        new(PositionUnit.Centimeter, "см"),
-        new(PositionUnit.Decimeter, "дм"),
-        new(PositionUnit.Meter, "м"),
-        new(PositionUnit.SquareCentimeter, "кв. см"),
-        new(PositionUnit.SquareDecimeter, "кв. дм"),
-        new(PositionUnit.SquareMeter, "кв. м"),
-        new(PositionUnit.Milliliter, "мл"),
-        new(PositionUnit.Liter, "л"),
-        new(PositionUnit.CubicMeter, "куб. м"),
-        new(PositionUnit.KilowattHour, "кВт·ч"),
-        new(PositionUnit.Gigacalories, "ГКал"),
-        new(PositionUnit.Days, "дн."),
-        new(PositionUnit.Hours, "ч"),
-        new(PositionUnit.Minutes, "мин."),
-        new(PositionUnit.Seconds, "сек."),
-        new(PositionUnit.Kilobyte, "КБ"),
-        new(PositionUnit.Megabyte, "МБ"),
-        new(PositionUnit.Gigabyte, "ГБ"),
-        new(PositionUnit.Terabyte, "ТБ"),
-        new(PositionUnit.Other, "др."),
+        new(UnitOfMeasure.Piece, "шт."),
+        new(UnitOfMeasure.Gram, "гр."),
+        new(UnitOfMeasure.Kilogram, "кг"),
+        new(UnitOfMeasure.Ton, "т"),
+        new(UnitOfMeasure.Centimeter, "см"),
+        new(UnitOfMeasure.Decimeter, "дм"),
+        new(UnitOfMeasure.Meter, "м"),
+        new(UnitOfMeasure.SquareCentimeter, "кв. см"),
+        new(UnitOfMeasure.SquareDecimeter, "кв. дм"),
+        new(UnitOfMeasure.SquareMeter, "кв. м"),
+        new(UnitOfMeasure.Milliliter, "мл"),
+        new(UnitOfMeasure.Liter, "л"),
+        new(UnitOfMeasure.CubicMeter, "куб. м"),
+        new(UnitOfMeasure.KilowattHour, "кВт·ч"),
+        new(UnitOfMeasure.Gigacalories, "ГКал"),
+        new(UnitOfMeasure.Days, "дн."),
+        new(UnitOfMeasure.Hours, "ч"),
+        new(UnitOfMeasure.Minutes, "мин."),
+        new(UnitOfMeasure.Seconds, "сек."),
+        new(UnitOfMeasure.Kilobyte, "КБ"),
+        new(UnitOfMeasure.Megabyte, "МБ"),
+        new(UnitOfMeasure.Gigabyte, "ГБ"),
+        new(UnitOfMeasure.Terabyte, "ТБ"),
+        new(UnitOfMeasure.Other, "др."),
     ];
     
-    public static readonly ReadOnlyCollection<EnumLocale<TaxRate>> TaxRates =
+    public static readonly ReadOnlyCollection<EnumLocale<NDSRate>> TaxRates =
     [
-        new(TaxRate.Tax18, "НДС 18%"),
-        new(TaxRate.Tax10, "НДС 10%"),
-        new(TaxRate.Calc18, "НДС 18/118"),
-        new(TaxRate.Calc10, "НДС 10/110"),
-        new(TaxRate.Tax0, "НДС 0%"),
-        new(TaxRate.Without, "Не облагается"),
-        new(TaxRate.Tax20, "НДС 20%"),
-        new(TaxRate.Calc20, "НДС 20/120"),
-        new(TaxRate.Tax5, "НДС 5%"),
-        new(TaxRate.Tax7, "НДС 7%"),
-        new(TaxRate.Calc5, "НДС 5/105"),
-        new(TaxRate.Calc7, "НДС 7/107"),
-        new(TaxRate.Tax22, "НДС 22%"),
-        new(TaxRate.Calc22, "НДС 22/122"),
+        new(NDSRate.NDS18, "НДС 18%"),
+        new(NDSRate.NDS10, "НДС 10%"),
+        new(NDSRate.NDS118, "НДС 18/118"),
+        new(NDSRate.NDS110, "НДС 10/110"),
+        new(NDSRate.NDS0, "НДС 0%"),
+        new(NDSRate.NoNDS, "Не облагается"),
+        new(NDSRate.NDS20, "НДС 20%"),
+        new(NDSRate.NDS120, "НДС 20/120"),
+        new(NDSRate.NDS5, "НДС 5%"),
+        new(NDSRate.NDS7, "НДС 7%"),
+        new(NDSRate.NDS105, "НДС 5/105"),
+        new(NDSRate.NDS107, "НДС 7/107"),
+        new(NDSRate.NDS22, "НДС 22%"),
+        new(NDSRate.NDS122, "НДС 22/122"),
     ];
 
     public static readonly ReadOnlyCollection<EnumLocale<PositionType>> PositionTypes =
@@ -106,15 +106,15 @@ public static class EnumLocales
         new(PositionType.Mark, "ТМ"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<PayMethod>> PositionPayments =
+    public static readonly ReadOnlyCollection<EnumLocale<CalculationMethod>> PositionPayments =
     [
-        new(PayMethod.FullPrepaid, "Полная предоплата"),
-        new(PayMethod.PartPrepaid, "Частичная предоплата"),
-        new(PayMethod.Advance, "Аванс"),
-        new(PayMethod.FullPayment, "Полная оплата"),
-        new(PayMethod.PartPayment, "Частичная оплата"),
-        new(PayMethod.ToCredit, "Передача в кредит"),
-        new(PayMethod.Postpaid, "Оплата кредита"),
+        new(CalculationMethod.FullPrepaid, "Полная предоплата"),
+        new(CalculationMethod.PartPrepaid, "Частичная предоплата"),
+        new(CalculationMethod.Advance, "Аванс"),
+        new(CalculationMethod.FullPayment, "Полная оплата"),
+        new(CalculationMethod.PartPayment, "Частичная оплата"),
+        new(CalculationMethod.ToCredit, "Передача в кредит"),
+        new(CalculationMethod.Postpaid, "Оплата кредита"),
     ];
 
     public static string GetLocale<TEnum>(this ReadOnlyCollection<EnumLocale<TEnum>> collection, TEnum? value,

@@ -1,9 +1,9 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
 using RetailCorrector.Utils;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.ValueObjects;
 using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Importers;
@@ -11,9 +11,6 @@ namespace RetailCorrector.Importers;
 internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
 {
     public override string Name => "SQLite";
-
-    public override ImportSession GenerateInfo() =>
-        parseInfo = new ImportSession("SQLite", ("Путь", Path));
 
     public override async IAsyncEnumerable<Receipt> Import(BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
@@ -31,12 +28,11 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
 
                     yield return new()
                     {
-                        ParseId = parseInfo.Id,
                         Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => new Position {
                             Name = i.name,
                             Cost = i.total,
                             Unit = i.unit,
-                            PayMethod = i.payment,
+                            CalcMethod = i.payment,
                             Price = i.price,
                             Quantity = i.quantity,
                             TaxRate = EnumUtils.ToTaxRate(i.tax),
@@ -52,15 +48,15 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                         TotalSum = docs[j].total,
                         Payment = new Payment
                         {
-                            Cash = docs[j].cash,
-                            ECash = docs[j].ecash,
-                            Pre = docs[j].pre,
-                            Post = docs[j].post,
-                            Provision = docs[j].other,
+                            CashSum = docs[j].cash,
+                            NonCashSum = docs[j].ecash,
+                            AdvanceSum = docs[j].pre,
+                            CreditSum = docs[j].post,
+                            ProvisionSum = docs[j].other,
                         },
                         Type = docs[j].type,
                         BuyerContact = docs[j].buyer,
-                        TaxationSystem = (TaxationSystem)docs[j].taxation
+                        TaxationSystem = (TaxationSystems)docs[j].taxation
                     };
                     progress.ReportIncrement();
                 }

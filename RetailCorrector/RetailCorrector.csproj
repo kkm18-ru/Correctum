@@ -43,6 +43,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Correctum.Core\Correctum.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Update="Assets\Fonts\JetBrainsMono.ttf">
 			<Link>assets\fonts\JetBrainsMono.ttf</Link>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>

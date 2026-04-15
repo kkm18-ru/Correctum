@@ -1,5 +1,5 @@
-﻿using RetailCorrector.Data;
-using RetailCorrector.Enums;
+﻿using Correctum.Core.Models;
+using Correctum.Core.Enums;
 
 namespace RetailCorrector.Importers;
 
@@ -34,32 +34,32 @@ internal partial class FxPOS
             Cost = raw.Cost,
             Unit = raw.Unit switch
             {
-                0 => PositionUnit.Piece,
-                1 => PositionUnit.Gram,
-                2 => PositionUnit.Kilogram,
-                3 => PositionUnit.Ton,
-                4 => PositionUnit.Centimeter,
-                5 => PositionUnit.Decimeter,
-                6 => PositionUnit.Meter,
-                7 => PositionUnit.SquareCentimeter,
-                8 => PositionUnit.SquareDecimeter,
-                9 => PositionUnit.SquareMeter,
-                10 => PositionUnit.Milliliter,
-                11 => PositionUnit.Liter,
-                12 => PositionUnit.CubicMeter,
-                13 => PositionUnit.KilowattHour,
-                14 => PositionUnit.Gigacalories,
-                15 => PositionUnit.Days,
-                16 => PositionUnit.Hours,
-                17 => PositionUnit.Minutes,
-                18 => PositionUnit.Seconds,
-                19 => PositionUnit.Kilobyte,
-                20 => PositionUnit.Megabyte,
-                21 => PositionUnit.Gigabyte,
-                22 => PositionUnit.Terabyte,
-                23 => PositionUnit.Other,
+                0 => UnitOfMeasure.Piece,
+                1 => UnitOfMeasure.Gram,
+                2 => UnitOfMeasure.Kilogram,
+                3 => UnitOfMeasure.Ton,
+                4 => UnitOfMeasure.Centimeter,
+                5 => UnitOfMeasure.Decimeter,
+                6 => UnitOfMeasure.Meter,
+                7 => UnitOfMeasure.SquareCentimeter,
+                8 => UnitOfMeasure.SquareDecimeter,
+                9 => UnitOfMeasure.SquareMeter,
+                10 => UnitOfMeasure.Milliliter,
+                11 => UnitOfMeasure.Liter,
+                12 => UnitOfMeasure.CubicMeter,
+                13 => UnitOfMeasure.KilowattHour,
+                14 => UnitOfMeasure.Gigacalories,
+                15 => UnitOfMeasure.Days,
+                16 => UnitOfMeasure.Hours,
+                17 => UnitOfMeasure.Minutes,
+                18 => UnitOfMeasure.Seconds,
+                19 => UnitOfMeasure.Kilobyte,
+                20 => UnitOfMeasure.Megabyte,
+                21 => UnitOfMeasure.Gigabyte,
+                22 => UnitOfMeasure.Terabyte,
+                23 => UnitOfMeasure.Other,
             },
-            PayMethod = (PayMethod)raw.PayMethod,
+            CalcMethod = (CalculationMethod)raw.PayMethod,
             Type = (raw.Type, raw.HasMark) switch
             {
                 (1, false) => PositionType.Product,
@@ -79,12 +79,12 @@ internal partial class FxPOS
             },
             TaxRate = raw.TaxRate switch
             {
-                0 => Enums.TaxRate.Without,
-                5 => Enums.TaxRate.Tax5,
-                7 => Enums.TaxRate.Tax7,
-                10 => Enums.TaxRate.Tax10,
-                18 => Enums.TaxRate.Tax20,
-                20 => Enums.TaxRate.Tax20,
+                0 => NDSRate.NoNDS,
+                5 => NDSRate.NDS5,
+                7 => NDSRate.NDS7,
+                10 => NDSRate.NDS10,
+                18 => NDSRate.NDS20,
+                20 => NDSRate.NDS20,
             }
         };
     }

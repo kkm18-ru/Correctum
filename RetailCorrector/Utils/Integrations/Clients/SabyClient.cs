@@ -6,9 +6,9 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using RetailCorrector.Exceptions.Saby;
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
 
@@ -45,7 +45,7 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
     /// <param name="cancel">Токен, позволяющий отменить выгрузку ККТ.</param>
     /// <returns>Асинхронное перечисление зарегистрированных ККТ.</returns>
     public async IAsyncEnumerable<string> EnumerateDevicesAsync
-        (INN inn, [EnumeratorCancellation] CancellationToken cancel = default)
+        (Inn inn, [EnumeratorCancellation] CancellationToken cancel = default)
     {
         ThrowIfDisposed();
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/ofd/v1/orgs/{inn}/kkts");
@@ -66,7 +66,7 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
     /// <param name="cancel">Токен, позволяющий отменить выгрузку фискальных накопителей.</param>
     /// <returns>Массив фискальных накопителей по ККТ</returns>
     public async Task<SabyDriveResponse[]> FetchDrivesAsync
-        (INN inn, string regId, DateTime dateFrom, DateTime dateTo, CancellationToken cancel = default)
+        (Inn inn, string regId, DateTime dateFrom, DateTime dateTo, CancellationToken cancel = default)
     {
         ThrowIfDisposed();
         using var req = new HttpRequestMessage(HttpMethod.Get, $"/ofd/v1/orgs/{inn}/kkts/{regId}/storages");
@@ -94,7 +94,7 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
         var json = await JsonSerializer.DeserializeAsync<DocumentResponse[]>(stream, cancellationToken: cancel) ?? [];
         return json.Length == 0 ? null :
             [..json.Where(i => i.GenericReceipt is not null)
-                .Select(i => i.GenericReceipt!.Value.ToReceipt(args.ParseId))];
+                .Select(i => i.GenericReceipt!.Value.ToReceipt())];
     }
 }
 
@@ -105,13 +105,10 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
 /// <param name="inn">ИНН организации-владельца ККТ.</param>
 /// <param name="regId">Регистрационный номер ККТ, выданный ФНС.</param>
 /// <param name="driveId">Номер фискального накопителя.</param>
-public readonly struct SabyReceiptsRequest (Guid parseId, INN inn, string regId, string driveId)
-{
-    /// <summary>Идентификатор сессии парсера.</summary>
-    public Guid ParseId { get; } = parseId;
-    
+public readonly struct SabyReceiptsRequest (Inn inn, string regId, string driveId)
+{   
     /// <summary>ИНН организации-владельца ККТ.</summary>
-    private INN Inn { get; } = inn;
+    private Inn Inn { get; } = inn;
     
     /// <summary>Регистрационный номер ККТ, выданный ФНС.</summary>
     private string RegId { get; } = regId;
@@ -215,7 +212,7 @@ file struct ReceiptResponse
     public ulong Cash { get; set; }
     
     [JsonPropertyName("operationType")]
-    public Operation Operation { get; set; }
+    public ReceiptType Operation { get; set; }
 
     [JsonPropertyName("items")]
     public ItemResponse[] Items { get; set; }
@@ -233,7 +230,7 @@ file struct ReceiptResponse
     public ulong Credit { get; set; }
     
     [JsonPropertyName("taxationType")]
-    public TaxationSystem Taxation { get; set; }
+    public TaxationSystems Taxation { get; set; }
     
     [JsonPropertyName("provisionSum")]
     public ulong Provision { get; set; }
@@ -241,9 +238,8 @@ file struct ReceiptResponse
     [JsonPropertyName("fiscalDocumentNumber")]
     public uint Number { get; set; }
 
-    public Receipt ToReceipt(Guid parseId) => new()
+    public Receipt ToReceipt() => new()
     {
-        ParseId = parseId,
         RegId = RegId,
         StorageId = StorageId,
         DocInSession = DocInSession,
@@ -251,15 +247,15 @@ file struct ReceiptResponse
         Items = Items.Select(ToPosition).ToArray(),
         Payment = new Payment
         {
-            Cash = Cash,
-            ECash = Ecash,
-            Pre = Prepaid,
-            Post = Credit,
-            Provision = Provision
+            CashSum = Cash,
+            NonCashSum = Ecash,
+            AdvanceSum = Prepaid,
+            CreditSum = Credit,
+            ProvisionSum = Provision
         },
         Type = Operation,
         BuyerContact = Buyer,
-        DocSign = new(Sign),
+        DocSign = Sign,
         TotalSum = Total,
         TaxationSystem = Taxation,
         DocNumber = Number,
@@ -275,7 +271,7 @@ file struct ReceiptResponse
         Unit = item.Measure,
         TaxRate = EnumUtils.ToTaxRate(item.Vat ?? 0),
         Type = item.Type ?? 0,
-        PayMethod = item.Payment ?? 0
+        CalcMethod = item.Payment ?? 0
     };
 }
 
@@ -294,7 +290,7 @@ file struct ItemResponse
     public ulong Price { get; set; }
     
     [JsonPropertyName("itemsQuantityMeasure")]
-    public PositionUnit? Measure { get; set; }
+    public UnitOfMeasure? Measure { get; set; }
     
     [JsonPropertyName("nds")]
     public byte? Vat { get; set; }
@@ -303,7 +299,7 @@ file struct ItemResponse
     public PositionType? Type { get; set; }
 
     [JsonPropertyName("paymentType")]
-    public PayMethod? Payment { get; set; }
+    public CalculationMethod? Payment { get; set; }
 
 }
 

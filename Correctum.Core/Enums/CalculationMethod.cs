@@ -1,9 +1,9 @@
-﻿namespace RetailCorrector.Enums
+﻿namespace Correctum.Core.Enums
 {
     /// <summary>
-    /// Тип оплаты позиции
+    /// Определяет признак способа расчета 
     /// </summary>
-    public enum PayMethod : byte
+    public enum CalculationMethod : byte
     {
         /// <summary>
         /// Полная предварительная оплата

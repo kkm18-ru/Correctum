@@ -1,9 +1,9 @@
-﻿namespace RetailCorrector.Enums
+﻿namespace Correctum.Core.Enums
 {
     /// <summary>
-    /// Операция чека
+    /// Определяет признак расчета
     /// </summary>
-    public enum Operation : byte
+    public enum ReceiptType : byte
     {
         /// <summary>
         /// Приход

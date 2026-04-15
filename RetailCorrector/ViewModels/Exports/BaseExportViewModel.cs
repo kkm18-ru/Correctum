@@ -1,5 +1,5 @@
 ﻿using Microsoft.Win32;
-using RetailCorrector.Data;
+using Correctum.Core.Models;
 using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Input;

@@ -1,4 +1,4 @@
-﻿using Bogus.Bson;
+﻿using Correctum.Core.Models;
 using RetailCorrector.Importers;
 using RetailCorrector.UI.Controls;
 using RetailCorrector.Utils;
@@ -13,6 +13,8 @@ namespace RetailCorrector.UI.Windows
         private CancellationTokenSource? cts;
         private readonly BoundedProgress<uint> progress;
         private readonly IImporter importer;
+
+        private readonly List<Receipt> buffer = [];
 
         private readonly Button btnStart;
         private readonly Button btnCancel;
@@ -101,33 +103,25 @@ namespace RetailCorrector.UI.Windows
             btnCancel.IsEnabled = true;
             btnStart.IsEnabled = false;
             cts = new CancellationTokenSource();
-            Workspace.Instance.ImportHistory.Add(importer.GenerateInfo());
             try
             {
                 await foreach (var receipt in importer.Import(progress, cts.Token))
-                    Workspace.Instance.Receipts.Add(receipt);
+                    buffer.Add(receipt);
                 btnCancel.IsEnabled = false;
                 btnStart.IsEnabled = true;
                 cts.Dispose();
+                buffer.ForEach(Workspace.Instance.Receipts.Add);                
                 Close();
                 ReceiptPanel.UpdateReceiptList();
             }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Выгрузка чеков была отменена пользователем", "", 0, MessageBoxImage.Hand);
+            }
             catch (Exception ex)
             {
-                var lastParse = Workspace.Instance.ImportHistory[^1];
-                for (var i = Workspace.Instance.Receipts.Count - 1; i >= 0; i--)
-                {
-                    if (Workspace.Instance.Receipts[i].ParseId == lastParse.Id)
-                        Workspace.Instance.Receipts.RemoveAt(i);
-                }
-                Workspace.Instance.ImportHistory.Remove(lastParse);
-                if (ex is (OperationCanceledException or TaskCanceledException))
-                    MessageBox.Show("Выгрузка чеков была отменена пользователем", "", 0, MessageBoxImage.Hand);
-                else 
-                {
-                    MessageBox.Show(ex.Message, "Ошибка выгрузки чеков", 0, MessageBoxImage.Error);
-                    CancelParse(null, null!);
-                }
+                MessageBox.Show(ex.Message, "Ошибка выгрузки чеков", 0, MessageBoxImage.Error);
+                CancelParse(null, null!);
             }
         }
 

@@ -34,23 +34,4 @@
         <DataGridTextColumn Header="Иная оплата" Binding="{Binding OtherPay}" Width="158"/>
         <DataGridTextColumn Header="Итог" Binding="{Binding Total}" Width="158"/>
     </DataGrid.Columns>
-    <DataGrid.GroupStyle>
-        <GroupStyle>
-            <GroupStyle.Panel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel/>
-                </ItemsPanelTemplate>
-            </GroupStyle.Panel>
-            <GroupStyle.HeaderTemplate>
-                <DataTemplate>
-                    <TextBlock FontSize="14" Margin="3" FontWeight="Bold" Text="{Binding Name}"/>
-                </DataTemplate>
-            </GroupStyle.HeaderTemplate>
-        </GroupStyle>
-    </DataGrid.GroupStyle>
-    <DataGrid.RowStyle>
-        <Style TargetType="DataGridRow">
-            <Setter Property="Background" Value="{Binding Background}"/>
-        </Style>
-    </DataGrid.RowStyle>
 </DataGrid>

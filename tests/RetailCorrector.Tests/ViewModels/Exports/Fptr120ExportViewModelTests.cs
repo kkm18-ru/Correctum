@@ -1,5 +1,5 @@
-﻿using RetailCorrector.Data;
-using RetailCorrector.Enums;
+﻿using Correctum.Core.Models;
+using Correctum.Core.Enums;
 using RetailCorrector.ViewModels.Exports;
 
 namespace RetailCorrector.Tests.ViewModels.Exports;
@@ -41,16 +41,16 @@ public class Fptr120ExportViewModelTests :
         }
     }
 
-    private static IEnumerable<(Operation, string)> Operations2AtolConstants()
+    private static IEnumerable<(ReceiptType, string)> Operations2AtolConstants()
     {
-        yield return (Operation.Income, "LIBFPTR_RT_SELL_CORRECTION");
-        yield return (Operation.RefundIncome, "LIBFPTR_RT_SELL_RETURN_CORRECTION");
-        yield return (Operation.Outcome, "LIBFPTR_RT_BUY_CORRECTION");
-        yield return (Operation.RefundOutcome, "LIBFPTR_RT_BUY_RETURN_CORRECTION");
+        yield return (ReceiptType.Income, "LIBFPTR_RT_SELL_CORRECTION");
+        yield return (ReceiptType.RefundIncome, "LIBFPTR_RT_SELL_RETURN_CORRECTION");
+        yield return (ReceiptType.Outcome, "LIBFPTR_RT_BUY_CORRECTION");
+        yield return (ReceiptType.RefundOutcome, "LIBFPTR_RT_BUY_RETURN_CORRECTION");
     }
 
-    private static IEnumerable<Operation> InvalidOperations() => Enumerable
-        .Sequence<byte>(byte.MinValue, byte.MaxValue, 1).Cast<Operation>()
+    private static IEnumerable<ReceiptType> InvalidOperations() => Enumerable
+        .Sequence<byte>(byte.MinValue, byte.MaxValue, 1).Cast<ReceiptType>()
         .Where(o => !Operations2AtolConstants().Select(i => i.Item1).Contains(o));
 
     #endregion
@@ -82,7 +82,7 @@ public class Fptr120ExportViewModelTests :
         using var stream = new MemoryStream();
         using (var writer = new StreamWriter(stream, leaveOpen: true))
         {
-            var task = Fptr120ExportViewModel.SetCorrectionDataAsync(writer, new(1));
+            var task = Fptr120ExportViewModel.SetCorrectionDataAsync(writer, 1);
             Assert.DoesNotThrowAsync(async () => await task);
         }
         stream.Position = 0;
@@ -141,7 +141,7 @@ public class Fptr120ExportViewModelTests :
         var position = default(Position) with
         {
             Name = "Товар",
-            Unit = (PositionUnit)1,
+            Unit = (UnitOfMeasure)1,
         };
         using var stream = new MemoryStream();
         using var writer = new StreamWriter(stream, leaveOpen: true);
@@ -151,12 +151,28 @@ public class Fptr120ExportViewModelTests :
             Is.EqualTo("Найдена позиция чека с некорректной единицей измерения."));
     }
 
+    [Test] public void PositionWithoutType()
+    {
+        var position = default(Position) with
+        {
+            Name = "Товар",
+            Unit = UnitOfMeasure.Piece,
+        };
+        using var stream = new MemoryStream();
+        using var writer = new StreamWriter(stream, leaveOpen: true);
+        var task = Fptr120ExportViewModel.PositionAsync(writer, position);
+        var exc = Assert.ThrowsAsync<FormatException>(async () => await task);
+        Assert.That(exc.Message,
+            Is.EqualTo("Найдена позиция чека без типа."));
+    }
+
     [Test] public void InvalidPositionType()
     {
         var position = default(Position) with
         {
             Name = "Товар",
-            Unit = PositionUnit.Piece,
+            Unit = UnitOfMeasure.Piece,
+            Type = (PositionType)255
         };
         using var stream = new MemoryStream();
         using var writer = new StreamWriter(stream, leaveOpen: true);
@@ -166,13 +182,30 @@ public class Fptr120ExportViewModelTests :
             Is.EqualTo("Найдена позиция чека с некорректным типом."));
     }
 
+    [Test] public void PositionWithoutCalcMethod()
+    {
+        var position = default(Position) with
+        {
+            Name = "Товар",
+            Unit = UnitOfMeasure.Piece,
+            Type = PositionType.Product,
+        };
+        using var stream = new MemoryStream();
+        using var writer = new StreamWriter(stream, leaveOpen: true);
+        var task = Fptr120ExportViewModel.PositionAsync(writer, position);
+        var exc = Assert.ThrowsAsync<FormatException>(async () => await task);
+        Assert.That(exc.Message,
+            Is.EqualTo("Найдена позиция чека без способа расчета."));
+    }
+
     [Test] public void InvalidPositionCalcMethod()
     {
         var position = default(Position) with
         {
             Name = "Товар",
-            Unit = PositionUnit.Piece,
+            Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
+            CalcMethod = (CalculationMethod)255
         };
         using var stream = new MemoryStream();
         using var writer = new StreamWriter(stream, leaveOpen: true);
@@ -182,14 +215,32 @@ public class Fptr120ExportViewModelTests :
             Is.EqualTo("Найдена позиция чека с некорректным способом расчета."));
     }
 
+    [Test] public void PositionWithoutTaxRate()
+    {
+        var position = default(Position) with
+        {
+            Name = "Товар",
+            Unit = UnitOfMeasure.Piece,
+            Type = PositionType.Product,
+            CalcMethod = CalculationMethod.FullPrepaid,
+        };
+        using var stream = new MemoryStream();
+        using var writer = new StreamWriter(stream, leaveOpen: true);
+        var task = Fptr120ExportViewModel.PositionAsync(writer, position);
+        var exc = Assert.ThrowsAsync<FormatException>(async () => await task);
+        Assert.That(exc.Message,
+            Is.EqualTo("Найдена позиция чека без ставки НДС."));
+    }
+
     [Test] public void InvalidPositionTaxRate()
     {
         var position = default(Position) with
         {
             Name = "Товар",
-            Unit = PositionUnit.Piece,
+            Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
-            PayMethod = PayMethod.FullPrepaid,
+            CalcMethod = CalculationMethod.FullPrepaid,
+            TaxRate = (NDSRate)255
         };
         using var stream = new MemoryStream();
         using var writer = new StreamWriter(stream, leaveOpen: true);
@@ -205,10 +256,10 @@ public class Fptr120ExportViewModelTests :
         var position = new Position
         {
             Name = "Товар \"Хлеб\"",
-            Unit = PositionUnit.Piece,
+            Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
-            PayMethod = PayMethod.FullPayment,
-            TaxRate = TaxRate.Without,
+            CalcMethod = CalculationMethod.FullPayment,
+            TaxRate = NDSRate.NoNDS,
             Price = 10010UL,
             Quantity = 1234,
             Cost = 12300UL
@@ -224,9 +275,9 @@ public class Fptr120ExportViewModelTests :
         {
             var expectedScript = """
                 Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, "Товар \"Хлеб\"");
-                Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, 100.1);
+                Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, 100.10);
                 Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, 1.234);
-                Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, 123);
+                Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, 123.00);
                 Fptr.setParam(Fptr.LIBFPTR_PARAM_TAX_TYPE, 6);
                 Fptr.setParam(2108, 0);
                 Fptr.setParam(1212, 1);
@@ -270,11 +321,11 @@ public class Fptr120ExportViewModelTests :
     {
         var payment = new Payment
         {
-            Cash = 100UL,
-            ECash = 120UL,
-            Pre = 0UL,
-            Post = 12UL,
-            Provision = 12345UL,
+            CashSum = 100UL,
+            NonCashSum = 120UL,
+            AdvanceSum = 0UL,
+            CreditSum = 12UL,
+            ProvisionSum = 12345UL,
         };
 
         using var stream = new MemoryStream();
@@ -288,10 +339,10 @@ public class Fptr120ExportViewModelTests :
         {
             var expectedScript = $"""
                     Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_CASH);
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 1);
+                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 1.00);
                     Fptr.payment();
                     Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_ELECTRONICALLY);
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 1.2);
+                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 1.20);
                     Fptr.payment();
                     Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_CREDIT);
                     Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 0.12);
@@ -312,10 +363,10 @@ public class Fptr120ExportViewModelTests :
         var position1 = new Position
         {
             Name = "Хлеб",
-            Unit = PositionUnit.Piece,
+            Unit = UnitOfMeasure.Piece,
             Type = PositionType.Product,
-            PayMethod = PayMethod.FullPayment,
-            TaxRate = TaxRate.Tax20,
+            CalcMethod = CalculationMethod.FullPayment,
+            TaxRate = NDSRate.NDS20,
             Price = 5000UL,
             Quantity = 2000,
             Cost = 10000UL
@@ -323,28 +374,27 @@ public class Fptr120ExportViewModelTests :
         var position2 = new Position
         {
             Name = "Молоко",
-            Unit = PositionUnit.Liter,
+            Unit = UnitOfMeasure.Liter,
             Type = PositionType.Product,
-            PayMethod = PayMethod.FullPayment,
-            TaxRate = TaxRate.Tax10,
+            CalcMethod = CalculationMethod.FullPayment,
+            TaxRate = NDSRate.NDS10,
             Price = 6500UL,
             Quantity = 1000,
             Cost = 6500UL
         };
         var receipt = new Receipt
         {
-            ParseId = Guid.Empty,
             Created = new DateTime(2020, 12, 31, 13, 35, 59),
             BuyerContact = "client@mail.ru",
-            Type = Operation.Income,
-            TaxationSystem = TaxationSystem.USNIncomeExpenditure,
+            Type = ReceiptType.Income,
+            TaxationSystem = TaxationSystems.SimplifiedIncomeMinusExpense,
             DocSign = null,
             Items = [position1, position2],
             TotalSum = 16500UL,
             Payment = new()
             {
-                Cash = 5000UL,
-                ECash = 11500UL
+                CashSum = 5000UL,
+                NonCashSum = 11500UL
             }
         };
 
@@ -366,30 +416,30 @@ public class Fptr120ExportViewModelTests :
             Fptr.setParam(1174, correctionInfo);
             Fptr.openReceipt();
             Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, "Хлеб");
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, 50);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, 50.00);
             Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, 2);
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, 100);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, 100.00);
             Fptr.setParam(Fptr.LIBFPTR_PARAM_TAX_TYPE, 7);
             Fptr.setParam(2108, 0);
             Fptr.setParam(1212, 1);
             Fptr.setParam(1214, 4);
             Fptr.registration();
             Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, "Молоко");
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, 65);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, 65.00);
             Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, 1);
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, 65);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, 65.00);
             Fptr.setParam(Fptr.LIBFPTR_PARAM_TAX_TYPE, 2);
             Fptr.setParam(2108, 41);
             Fptr.setParam(1212, 1);
             Fptr.setParam(1214, 4);
             Fptr.registration();
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_SUM, 165);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_SUM, 165.00);
             Fptr.receiptTotal();
             Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_CASH);
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 50);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 50.00);
             Fptr.payment();
             Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_ELECTRONICALLY);
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 115);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 115.00);
             Fptr.payment();
             Fptr.closeReceipt();
             

@@ -1,7 +1,7 @@
-﻿namespace RetailCorrector.Enums
+﻿namespace Correctum.Core.Enums
 {
     /// <summary>
-    /// Тип позиции
+    /// Определяет признак предмета расчета
     /// </summary>
     public enum PositionType : byte
     {

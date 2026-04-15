@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Data;
+﻿using Correctum.Core.Models;
 using RetailCorrector.Parsers;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -101,7 +101,7 @@ internal sealed partial class PlatformaOfdClient() : ApiClient<PlatformaOfdClien
     /// <param name="parseId">Идентификтор сессии парсера.</param>
     /// <param name="cancel">Токен, позволяющий отменить получение информации о чеке.</param>
     /// <returns>Информация о чеке.</returns>
-    public async Task<Receipt?> FetchReceiptAsync(PlatformaOfdReceiptReference reference, Guid parseId = default, CancellationToken cancel = default)
+    public async Task<Receipt?> FetchReceiptAsync(PlatformaOfdReceiptReference reference, CancellationToken cancel = default)
     {
         ThrowIfDisposed();
         using var req = new HttpRequestMessage(HttpMethod.Get, reference.ToString());
@@ -109,8 +109,7 @@ internal sealed partial class PlatformaOfdClient() : ApiClient<PlatformaOfdClien
         Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
         var raw = HttpUtility.HtmlDecode(html.Split(@"<pre>")[1].Split(@"</pre>")[0]);
-        var receipt = new Receipt { ParseId = parseId };
-        return PlatformOfd.Instance.Parse(raw, ref receipt) ? receipt : null;
+        return PlatformOfd.Instance.Parse(raw, out var receipt) ? receipt : null;
     }
 
     [GeneratedRegex(@"terminal_(?<id>\d+)_id", 0, 250)]

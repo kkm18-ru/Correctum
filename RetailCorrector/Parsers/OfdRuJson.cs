@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 
 namespace RetailCorrector.Parsers;
 
@@ -12,8 +12,9 @@ internal sealed class OfdRuJson : IParser
 
     const string DATE_FORMAT = "yyyy-MM-ddTHH:mm:ss";
 
-    public bool Parse(string raw, ref Receipt receipt)
+    public bool Parse(string raw, out Receipt receipt)
     {
+        receipt = new();
         try
         {
             var json = JsonSerializer.Deserialize<OfdRuJsonDocument>(raw);
@@ -26,15 +27,15 @@ internal sealed class OfdRuJson : IParser
             receipt.SessionId = json.Document.ShiftNumber;
             receipt.Created = DateTime.ParseExact(json.Document.DateTime, DATE_FORMAT, 
                 Thread.CurrentThread.CurrentUICulture);
-            receipt.Type = (Operation)json.Document.OperationType;
+            receipt.Type = (ReceiptType)json.Document.OperationType;
             receipt.TotalSum = json.Document.Amount_Total;
             receipt.Payment = new Payment
             {
-                Cash = json.Document.Amount_Cash,
-                ECash = json.Document.Amount_ECash,
-                Pre = json.Document.Amount_Advance,
-                Post = json.Document.Amount_Loan,
-                Provision = json.Document.Amount_Granting,
+                CashSum = json.Document.Amount_Cash,
+                NonCashSum = json.Document.Amount_ECash,
+                AdvanceSum = json.Document.Amount_Advance,
+                CreditSum = json.Document.Amount_Loan,
+                ProvisionSum = json.Document.Amount_Granting,
             };
             receipt.Items = new Position[json.Document.Items.Length];
             for (var i = 0; i < receipt.Items.Length; i++)
@@ -91,9 +92,9 @@ file readonly struct OfdRuJsonPosition
         Price = json.Price,
         Quantity = (ulong)(json.Quantity * 1000),
         Cost = json.Total,
-        Unit = (PositionUnit)json.ProductUnitOfMeasure,
-        PayMethod = (PayMethod)json.CalculationMethod,
-        TaxRate = (TaxRate)json.NDS_Rate,
+        Unit = (UnitOfMeasure)json.ProductUnitOfMeasure,
+        CalcMethod = (CalculationMethod)json.CalculationMethod,
+        TaxRate = (NDSRate)json.NDS_Rate,
         Type = (PositionType)json.SubjectType,
     };
 }

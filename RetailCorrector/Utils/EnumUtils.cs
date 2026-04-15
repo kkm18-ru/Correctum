@@ -1,23 +1,23 @@
-using RetailCorrector.Enums;
+using Correctum.Core.Enums;
 
 namespace RetailCorrector.Utils;
 
 public static class EnumUtils
 {
-    public static TaxRate ToTaxRate(byte rawTaxRate) => rawTaxRate switch
+    public static NDSRate ToTaxRate(byte rawTaxRate) => rawTaxRate switch
     {
-        1 => TaxRate.Tax20,
-        2 => TaxRate.Tax10,
-        3 => TaxRate.Calc20,
-        4 => TaxRate.Calc10,
-        5 => TaxRate.Tax0,
-        6 => TaxRate.Without,
-        7 => TaxRate.Tax5,
-        8 => TaxRate.Tax7,
-        9 => TaxRate.Calc5,
-        10 => TaxRate.Calc7,
-        11 => TaxRate.Tax22,
-        12 => TaxRate.Calc22,
-        _ => TaxRate.Unknown
+        1 => NDSRate.NDS20,
+        2 => NDSRate.NDS10,
+        3 => NDSRate.NDS120,
+        4 => NDSRate.NDS110,
+        5 => NDSRate.NDS0,
+        6 => NDSRate.NoNDS,
+        7 => NDSRate.NDS5,
+        8 => NDSRate.NDS7,
+        9 => NDSRate.NDS105,
+        10 => NDSRate.NDS107,
+        11 => NDSRate.NDS22,
+        12 => NDSRate.NDS122,
+        _ => 0
     };
 }

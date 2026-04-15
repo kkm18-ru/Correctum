@@ -1,5 +1,4 @@
-using RetailCorrector.Data;
-using RetailCorrector.Exceptions;
+using Correctum.Core.Models;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
 using System.Runtime.CompilerServices;
@@ -12,9 +11,6 @@ internal partial class Taxcom : ImporterBase<Taxcom, Taxcom.View>
     public override string Name => "Такском-Касса";
     private readonly TaxcomClient _client = new();
 
-    public override ImportSession GenerateInfo() =>
-        parseInfo = new ImportSession(Name);
-
     public override async IAsyncEnumerable<Receipt> Import
         (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
@@ -26,7 +22,7 @@ internal partial class Taxcom : ImporterBase<Taxcom, Taxcom.View>
         {
             for (var j = range.min; j <= range.max; j++)
             {
-                if (await _client.FetchReceiptAsync(range.drive, j, parseInfo.Id, cancellationToken) is { } receipt)
+                if (await _client.FetchReceiptAsync(range.drive, j, cancellationToken) is { } receipt)
                     yield return receipt;
                 progress.ReportIncrement();
             }

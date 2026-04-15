@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using RetailCorrector.Enums;
+using Correctum.Core.Enums;
 
 namespace RetailCorrector.Importers;
 
@@ -109,7 +109,7 @@ partial class Acquirer : INotifyPropertyChanged
         }
     } = "Возврат";
 
-    public TaxRate ItemVat
+    public NDSRate ItemVat
     {
         get;
         set
@@ -118,7 +118,7 @@ partial class Acquirer : INotifyPropertyChanged
             field = value;
             PropertyChanged?.Invoke(this, ItemVatEventArg);
         }
-    } = TaxRate.Without;
+    } = NDSRate.NoNDS;
 
     public ObservableCollection<string> Headers { get; } = [];
 

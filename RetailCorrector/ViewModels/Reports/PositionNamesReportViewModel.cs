@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Enums;
+﻿using Correctum.Core.Enums;
 using RetailCorrector.Utils;
 using System.IO;
 using System.Text;
@@ -34,10 +34,10 @@ public class PositionNamesReportViewModel : BaseReportViewModel
             .Cast<object>()
             .ToList());
 
-    public readonly struct ReportItem(string name, PositionType type, int numReceipts)
+    public readonly struct ReportItem(string? name, PositionType? type, int numReceipts)
     {
-        public string Name { get; } = name;
-        public string TypeName { get; } = EnumLocales.PositionTypes.GetLocale(type);
+        public string Name { get; } = name ?? "";
+        public string TypeName { get; } = EnumLocales.PositionTypes.GetLocale(type, "");
         public int CountReceipts { get; } = numReceipts;
     }
 }

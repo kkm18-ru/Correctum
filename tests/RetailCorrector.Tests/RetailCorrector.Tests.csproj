@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\RetailCorrector\RetailCorrector.csproj" />
+		<ProjectReference Include="..\..\RetailCorrector\RetailCorrector.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

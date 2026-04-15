@@ -1,7 +1,7 @@
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
 using RetailCorrector.Utils;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.ValueObjects;
 using System.Globalization;
 
 namespace RetailCorrector.Parsers;
@@ -17,8 +17,9 @@ internal sealed class PlatformOfd : IParser
     private delegate void UpdatePaymentDelegate(ref Payment payment, ulong sum);
     private delegate void UpdatePositionDelegate(ref Position position, ReadOnlySpan<char> value);
     
-    public bool Parse(string raw, ref Receipt receipt)
+    public bool Parse(string raw, out Receipt receipt)
     {
+        receipt = new();
         var span = raw.AsSpan();
         Span<char> rawValue = stackalloc char[256];
         foreach (var range in span.Split('\n'))
@@ -69,23 +70,23 @@ internal sealed class PlatformOfd : IParser
             case 1037: receipt.RegId = value.ToString(); break;
             case 1038: receipt.SessionId = uint.Parse(value); break;
             case 1020: receipt.TotalSum = ulong.Parse(value); break;
-            case 1055: receipt.TaxationSystem = (TaxationSystem)int.Parse(value); break;
+            case 1055: receipt.TaxationSystem = (TaxationSystems)int.Parse(value); break;
             case 1008: receipt.BuyerContact = value.ToString(); break;
             case 1042: receipt.DocInSession = uint.Parse(value); break;
             case 1040: receipt.DocNumber = uint.Parse(value); break;
-            case 1054: receipt.Type = (Operation)byte.Parse(value); break;
+            case 1054: receipt.Type = (ReceiptType)byte.Parse(value); break;
             // Суммы способов оплаты
-            case 1031: UpdatePayment((ref p, sum) => p.Cash = sum, value, ref receipt); break;
-            case 1081: UpdatePayment((ref p, sum) => p.ECash = sum, value, ref receipt); break;
-            case 1215: UpdatePayment((ref p, sum) => p.Pre = sum, value, ref receipt); break;
-            case 1216: UpdatePayment((ref p, sum) => p.Post = sum, value, ref receipt); break;
-            case 1217: UpdatePayment((ref p, sum) => p.Provision = sum, value, ref receipt); break;
+            case 1031: UpdatePayment((ref p, sum) => p.CashSum = sum, value, ref receipt); break;
+            case 1081: UpdatePayment((ref p, sum) => p.NonCashSum = sum, value, ref receipt); break;
+            case 1215: UpdatePayment((ref p, sum) => p.AdvanceSum = sum, value, ref receipt); break;
+            case 1216: UpdatePayment((ref p, sum) => p.CreditSum = sum, value, ref receipt); break;
+            case 1217: UpdatePayment((ref p, sum) => p.ProvisionSum = sum, value, ref receipt); break;
             // Позиции
-            case 2108: UpdatePosition((ref p, v) => p.Unit = (PositionUnit)byte.Parse(v), value, ref receipt); break;
+            case 2108: UpdatePosition((ref p, v) => p.Unit = (UnitOfMeasure)byte.Parse(v), value, ref receipt); break;
             case 1079: UpdatePosition((ref p, v) => p.Price = ulong.Parse(v), value, ref receipt); break;
             case 1043: UpdatePosition((ref p, v) => p.Cost = ulong.Parse(v), value, ref receipt); break;
             case 1199: UpdatePosition((ref p, v) => p.TaxRate = EnumUtils.ToTaxRate(byte.Parse(v)), value, ref receipt); break;
-            case 1214: UpdatePosition((ref p, v) => p.PayMethod = (PayMethod)byte.Parse(v), value, ref receipt); break;
+            case 1214: UpdatePosition((ref p, v) => p.CalcMethod = (CalculationMethod)byte.Parse(v), value, ref receipt); break;
             case 1212: UpdatePosition((ref p, v) => p.Type = (PositionType)byte.Parse(v), value, ref receipt); break;
             case 1023: UpdatePosition((ref p, v) => p.Quantity = (ulong)Math.Round(double.Parse(v, CultureInfo.InvariantCulture) * 1000, 0), value, ref receipt); break;
             case 1030: UpdatePosition((ref p, v) => p.Name = v.ToString(), value, ref receipt); break;

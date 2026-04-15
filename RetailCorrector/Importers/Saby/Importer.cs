@@ -1,4 +1,4 @@
-using RetailCorrector.Data;
+using Correctum.Core.Models;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
 using System.Runtime.CompilerServices;
@@ -9,11 +9,6 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
 {
     public override string Name => "SabyOFD";
     private readonly SabyClient _client = new();
-
-    public override ImportSession GenerateInfo() =>
-        parseInfo = new ImportSession(Name, ("ИНН", Inn), 
-            ("Старт", DateRange.BeginDate.ToString("dd'.'MM'.'yyyy")), 
-            ("Конец", DateRange.EndDate.ToString("dd'.'MM'.'yyyy")));
 
     public override async IAsyncEnumerable<Receipt> Import
         (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -41,7 +36,7 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
     private async IAsyncEnumerable<Receipt> ParseByStorage
         (string regId, SabyDriveResponse drive, BoundedProgress<uint> progress,  [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var baseRequest = new SabyReceiptsRequest(parseInfo.Id, Inn, regId, drive.Id);
+        var baseRequest = new SabyReceiptsRequest(Inn, regId, drive.Id);
         var (start, end) = GetAvailablePeriod(drive);
         for(var day = start; day <= end; day = day.AddDays(1))
         {
@@ -61,7 +56,7 @@ internal partial class Saby : ImporterBase<Saby, Saby.View>
         {
             var receipts = await _client.FetchReceiptsAsync(args, offset, cancellationToken);
             if (receipts is null || receipts.Length == 0) break;
-            offset = receipts[^1].DocNumber;
+            offset = receipts[^1].DocNumber.Value;
             foreach (var receipt in receipts) yield return receipt;
         }
     }

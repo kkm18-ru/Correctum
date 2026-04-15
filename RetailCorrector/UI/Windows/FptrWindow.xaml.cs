@@ -2,12 +2,13 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
-using RetailCorrector.Data;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
 using RetailCorrector.Enums;
 using RetailCorrector.UI.Windows.Types;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.ValueObjects;
 
 namespace RetailCorrector.UI.Windows;
 
@@ -279,10 +280,10 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                     Created = info.Item2,
                     Type = slice[i].Type switch
                     {
-                        Operation.Income => Operation.RefundIncome,
-                        Operation.RefundIncome => Operation.Income,
-                        Operation.Outcome => Operation.RefundOutcome,
-                        Operation.RefundOutcome => Operation.Outcome,
+                        ReceiptType.Income => ReceiptType.RefundIncome,
+                        ReceiptType.RefundIncome => ReceiptType.Income,
+                        ReceiptType.Outcome => ReceiptType.RefundOutcome,
+                        ReceiptType.RefundOutcome => ReceiptType.Outcome,
                         _ => throw new NotImplementedException()
                     }
                 };

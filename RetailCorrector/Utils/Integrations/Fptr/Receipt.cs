@@ -1,5 +1,5 @@
-﻿using RetailCorrector.Data;
-using RetailCorrector.ValueObjects;
+﻿using Correctum.Core.Models;
+using Correctum.Core.ValueObjects;
 using System.Windows;
 
 namespace RetailCorrector.Utils.Integrations
@@ -75,7 +75,7 @@ namespace RetailCorrector.Utils.Integrations
             SetDouble(65634, (double)pos.Cost);
             SetInteger(65569, (uint)pos.TaxRate);
             SetInteger(1212, (uint)pos.Type);
-            SetInteger(1214, (uint)pos.PayMethod);
+            SetInteger(1214, (uint)pos.CalcMethod);
             if (DocFormat == 120)
                 SetInteger(2108, (uint)pos.Unit!);
             return registration(handle) == 0;
@@ -89,18 +89,18 @@ namespace RetailCorrector.Utils.Integrations
 
         public bool Payment(uint type, Currency sum)
         {
-            if (sum.IsZero) return true;
+            if ((ulong)sum == 0) return true;
             SetInteger(65564, type);
             SetDouble(65565, (double)sum);
             return payment(handle) == 0;
         }
 
         public bool Payment(Payment pay) =>
-            Payment(0, pay.Cash) &&
-            Payment(1, pay.ECash) &&
-            Payment(2, pay.Pre) &&
-            Payment(3, pay.Post) &&
-            Payment(4, pay.Provision);
+            Payment(0, pay.CashSum) &&
+            Payment(1, pay.NonCashSum) &&
+            Payment(2, pay.AdvanceSum) &&
+            Payment(3, pay.CreditSum) &&
+            Payment(4, pay.ProvisionSum);
 
         public bool CloseReceipt() => closeReceipt(handle) == 0;
 

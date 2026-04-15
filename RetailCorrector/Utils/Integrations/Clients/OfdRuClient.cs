@@ -1,6 +1,6 @@
-﻿using RetailCorrector.Data;
-using RetailCorrector.Enums;
-using RetailCorrector.ValueObjects;
+﻿using Correctum.Core.Models;
+using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -50,7 +50,7 @@ internal sealed class OfdRuClient() : ApiClient<OfdRuClient>(Host)
     /// <param name="cancel">Токен, позволяющий отменить получение данных о ККТ.</param>
     /// <returns>Список чеков.</returns>
     public async Task<Receipt[]> FetchReceiptsAsync
-        (Guid parseId, OfdRuDevice device, DateOnly date, CancellationToken cancel = default)
+        (OfdRuDevice device, DateOnly date, CancellationToken cancel = default)
     {
         ThrowIfDisposed();
         var uri = $"inn/{device.INN}/kkt/{device.KktRegId}/receipts-info?AuthToken={_token}" +
@@ -60,7 +60,7 @@ internal sealed class OfdRuClient() : ApiClient<OfdRuClient>(Host)
         var stream = await resp.Content.ReadAsStreamAsync(cancel).ConfigureAwait(false);
         var json = await JsonSerializer.DeserializeAsync<Response<Document>>(stream, cancellationToken: cancel).ConfigureAwait(false);
         if (json.Status != 0) throw json.ToException();
-        return [.. json.Data.Select(d => d.ToReceipt(parseId))];
+        return [.. json.Data.Select(d => d.ToReceipt())];
     }
 }
 
@@ -100,7 +100,7 @@ file struct Document
     public string ReceiptNumber { get; set; }
     public ulong TotalSumm { get; set; }
     public string OperationType { get; set; }
-    public TaxationSystem TaxationType { get; set; }
+    public TaxationSystems TaxationType { get; set; }
     public DocumentItem[] Items { get; set; }
     public ulong CashSumm { get; set; }
     public ulong ECashSumm { get; set; }
@@ -108,9 +108,8 @@ file struct Document
     public ulong CreditSumm { get; set; }
     public ulong ProvisionSumm { get; set; }
 
-    public Receipt ToReceipt(Guid ParseId) => new()
+    public Receipt ToReceipt() => new()
     {
-        ParseId = ParseId,
         RegId = KktRegNumber,
         StorageId = FnNumber,
         DocNumber = DocNumber,
@@ -120,20 +119,20 @@ file struct Document
         DocSign = FiscalSign.Parse(DecimalFiscalSign),
         Type = OperationType.ToLowerInvariant() switch
         {
-            "income" => Operation.Income,
-            "outcome" => Operation.Outcome,
-            "refund income" => Operation.RefundIncome,
-            "refund outcome" => Operation.RefundOutcome,
+            "income" => ReceiptType.Income,
+            "outcome" => ReceiptType.Outcome,
+            "refund income" => ReceiptType.RefundIncome,
+            "refund outcome" => ReceiptType.RefundOutcome,
             _ => throw new NotSupportedException($"Тип операции '{OperationType}' не поддерживается.")
         },
         Items = [.. Items.Select(i => i.ToPosition())],
         Payment = new Payment
         {
-            Cash = CashSumm,
-            ECash = ECashSumm,
-            Pre = PrepaidSumm,
-            Post = CreditSumm,
-            Provision = ProvisionSumm
+            CashSum = CashSumm,
+            NonCashSum = ECashSumm,
+            AdvanceSum = PrepaidSumm,
+            CreditSum = CreditSumm,
+            ProvisionSum = ProvisionSumm
         },
         TotalSum = TotalSumm,
         TaxationSystem = TaxationType
@@ -145,16 +144,16 @@ file struct DocumentItem
     public ulong Price { get; set; }
     public double Quantity { get; set; }
     public ulong Total { get; set; }
-    public PayMethod CalculationMethod { get; set; }
+    public CalculationMethod CalculationMethod { get; set; }
     public string? ProductUnitOfMeasure { get; set; }
     public byte NDS_Rate { get; set; }
     public PositionType SubjectType { get; set; }
 
     public Position ToPosition()
     {
-        PositionUnit? mu = null;
+        UnitOfMeasure? mu = null;
         if (ProductUnitOfMeasure is not null)
-            mu = (PositionUnit)int.Parse(ProductUnitOfMeasure);
+            mu = (UnitOfMeasure)int.Parse(ProductUnitOfMeasure);
 
         return new Position
         {
@@ -162,7 +161,7 @@ file struct DocumentItem
             Price = Price,
             Quantity = (ulong)(Quantity * 1000),
             Cost = Total,
-            PayMethod = CalculationMethod,
+            CalcMethod = CalculationMethod,
             Unit = mu,
             TaxRate = EnumUtils.ToTaxRate(NDS_Rate),
             Type = SubjectType

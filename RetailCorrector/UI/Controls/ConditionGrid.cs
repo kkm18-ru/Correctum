@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Data;
+using Correctum.Core.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -87,7 +88,7 @@ namespace RetailCorrector.UI.Controls
                             0 => pos.Name,
                             1 => ((int?)pos.Unit) ?? -1,
                             2 => pos.Type,
-                            3 => pos.PayMethod,
+                            3 => pos.CalcMethod,
                             4 => pos.TaxRate,
                             5 => (double)pos.Price,
                             6 => pos.Quantity * 0.001,
@@ -101,11 +102,11 @@ namespace RetailCorrector.UI.Controls
                 {
                     object src = cond.PartId switch
                     {
-                        0 => (double)item.Payment.Cash,
-                        1 => (double)item.Payment.ECash,
-                        2 => (double)item.Payment.Pre,
-                        3 => (double)item.Payment.Post,
-                        4 => (double)item.Payment.Provision,
+                        0 => (double)item.Payment.CashSum,
+                        1 => (double)item.Payment.NonCashSum,
+                        2 => (double)item.Payment.AdvanceSum,
+                        3 => (double)item.Payment.CashSum,
+                        4 => (double)item.Payment.ProvisionSum,
                         5 => (double)item.TotalSum,
                     };
                     if(!o.Action.Invoke(src, val))

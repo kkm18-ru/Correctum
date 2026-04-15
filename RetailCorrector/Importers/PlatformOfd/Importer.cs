@@ -1,4 +1,4 @@
-﻿using RetailCorrector.Data;
+﻿using Correctum.Core.Models;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations.Clients;
 using System.Runtime.CompilerServices;
@@ -11,9 +11,6 @@ internal sealed partial class PlatformOfd : ImporterBase<PlatformOfd, PlatformOf
 
     public override string Name => "Платформа ОФД";
 
-    public override ImportSession GenerateInfo() =>
-        parseInfo = new ImportSession(Name);
-
     public override async IAsyncEnumerable<Receipt> Import
         (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
@@ -24,7 +21,7 @@ internal sealed partial class PlatformOfd : ImporterBase<PlatformOfd, PlatformOf
             {
                 var references = await Client.FetchReceiptsAsync(date, Device, cancellationToken);
                 foreach (var @ref in references)
-                    if(await Client.FetchReceiptAsync(@ref, parseInfo.Id, cancellationToken) is {} receipt)
+                    if(await Client.FetchReceiptAsync(@ref, cancellationToken) is {} receipt)
                         yield return receipt;
                 progress.ReportIncrement();
             }

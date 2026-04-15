@@ -1,9 +1,6 @@
 ﻿using System.Text;
 using System.Windows;
 using System.Windows.Interop;
-using RetailCorrector.Converters;
-using RetailCorrector.Enums;
-using RetailCorrector.Utils.Integrations.Clients;
 using FnInfo = (string Model, string SerialNumber);
 
 namespace RetailCorrector.Utils.Integrations

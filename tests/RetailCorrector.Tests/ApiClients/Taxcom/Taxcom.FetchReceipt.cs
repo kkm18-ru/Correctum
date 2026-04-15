@@ -1,11 +1,10 @@
 using System.Globalization;
 using System.Text;
 using Bogus;
-using HandlebarsDotNet.MemberAccessors;
 using Newtonsoft.Json.Linq;
-using RetailCorrector.Data;
-using RetailCorrector.Enums;
-using RetailCorrector.ValueObjects;
+using Correctum.Core.Models;
+using Correctum.Core.Enums;
+using Correctum.Core.ValueObjects;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -39,9 +38,9 @@ partial class Taxcom
                 { "1079", new JValue(faker.Random.Int(1)) },
                 { "1043", new JValue(faker.Random.Int(1)) },
                 { "1023", new JValue(faker.Random.Double(1,5).ToString("F3", CultureInfo.InvariantCulture)+"000") },
-                { "1199", new JValue((int)faker.Random.Enum<TaxRate>()) },
-                { "2108", new JValue((int)faker.Random.Enum<PositionUnit>()) },
-                { "1214", new JValue((int)faker.Random.Enum<PayMethod>()) },
+                { "1199", new JValue((int)faker.Random.Enum<NDSRate>()) },
+                { "2108", new JValue((int)faker.Random.Enum<UnitOfMeasure>()) },
+                { "1214", new JValue((int)faker.Random.Enum<CalculationMethod>()) },
                 { "1212", new JValue((int)faker.Random.Enum<PositionType>()) }
             });
         }
@@ -60,7 +59,7 @@ partial class Taxcom
             { "1041", new JValue(faker.Random.ULong().ToString("D16")) },                            // номер ФН
             { "1042", new JValue(faker.Random.UInt()) },                                                    // номер чека за смену
             { "1048", new JValue(faker.Name.JobTitle()) },                                                  // наименование пользователя
-            { "1054", new JValue((int)faker.Random.Enum<Operation>()) },                                    // признак расчета
+            { "1054", new JValue((int)faker.Random.Enum<ReceiptType>()) },                                    // признак расчета
             { "1055", new JValue(faker.Random.Int(1,63)) },                                                 // применяемая система налогообложения
             { "1059", new JArray(positions) },                                                              // предмет расчета
             { "1060", new JValue("www.nalog.gov.ru") },                                                     // адрес сайта ФНС
@@ -86,7 +85,7 @@ partial class Taxcom
                 .WithPath("/API/v2/DocumentInfo").WithParam("fd", documentNumber.ToString()))
             .RespondWith(Response.Create().WithBodyAsJson(documentInfo, Encoding.UTF8));
         _client.SessionToken = token;
-        var doc = await _client.FetchReceiptAsync(fnNumber, documentNumber, Guid.Empty);
+        var doc = await _client.FetchReceiptAsync(fnNumber, documentNumber);
         using (Assert.EnterMultipleScope())
         {
             Assert.That(doc, Is.Not.Null);
@@ -98,14 +97,13 @@ partial class Taxcom
             Assert.That(receipt.SessionId, Is.EqualTo(document["1038"]?.Value<uint>()));
             Assert.That(receipt.DocNumber, Is.EqualTo(document["1040"]?.Value<uint>()));
             Assert.That(receipt.DocSign, Is.EqualTo(FiscalSign.Parse(document["1077"]?.Value<string>())));
-            Assert.That(receipt.ParseId, Is.EqualTo(Guid.Empty));
             Assert.That(receipt.Created.ToString("s"), Is.EqualTo(document["1012"]?.Value<string>()));
             Assert.That((int)receipt.Type, Is.EqualTo(document["1054"]?.Value<int>()));
-            Assert.That((ulong)receipt.Payment.Cash, Is.EqualTo(document["1031"]?.Value<ulong>()));
-            Assert.That((ulong)receipt.Payment.ECash, Is.EqualTo(document["1081"]?.Value<ulong>()));
-            Assert.That((ulong)receipt.Payment.Pre, Is.EqualTo(document["1215"]?.Value<ulong>()));
-            Assert.That((ulong)receipt.Payment.Post, Is.EqualTo(document["1216"]?.Value<ulong>()));
-            Assert.That((ulong)receipt.Payment.Provision, Is.EqualTo(document["1217"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.CashSum, Is.EqualTo(document["1031"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.NonCashSum, Is.EqualTo(document["1081"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.AdvanceSum, Is.EqualTo(document["1215"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.CreditSum, Is.EqualTo(document["1216"]?.Value<ulong>()));
+            Assert.That((ulong)receipt.Payment.ProvisionSum, Is.EqualTo(document["1217"]?.Value<ulong>()));
             Assert.That((ulong)receipt.TotalSum, Is.EqualTo(document["1020"]?.Value<ulong>()));
             Assert.That(receipt.BuyerContact, Is.EqualTo(document["1008"]?.Value<string>()));
             Assert.That((int)receipt.TaxationSystem, Is.EqualTo(document["1055"]?.Value<int>()));
@@ -120,9 +118,9 @@ partial class Taxcom
                     Is.EqualTo(posObject["1023"]?.Value<string>()));
                 Assert.That((ulong)position.Cost, Is.EqualTo(posObject["1043"]?.Value<ulong>()));
                 Assert.That((int?)position.Unit, Is.EqualTo(posObject["2108"]?.Value<int>()));
-                Assert.That((int)position.PayMethod, Is.EqualTo(posObject["1214"]?.Value<int>()));
-                Assert.That((int)position.Type, Is.EqualTo(posObject["1212"]?.Value<int>()));
-                Assert.That((int)position.TaxRate, Is.EqualTo(posObject["1199"]?.Value<int>()));
+                Assert.That((int?)position.CalcMethod, Is.EqualTo(posObject["1214"]?.Value<int>()));
+                Assert.That((int?)position.Type, Is.EqualTo(posObject["1212"]?.Value<int>()));
+                Assert.That((int?)position.TaxRate, Is.EqualTo(posObject["1199"]?.Value<int>()));
             }
         }
     }
