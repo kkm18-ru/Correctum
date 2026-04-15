@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using RetailCorrector.Actions;
 using RetailCorrector.Importers;
 using RetailCorrector.Utils;
 
@@ -11,14 +10,5 @@ internal class ImportMenuItem : MenuItem
     {
         Header = importer.Name;
         Command = new RelayCommand(_ => importer.Show());
-    }
-}
-
-internal class ActionMenuItem : MenuItem
-{
-    public ActionMenuItem(IAction action)
-    {
-        Header = action.Name;
-        Command = new RelayCommand(_ => action.Show());
     }
 }

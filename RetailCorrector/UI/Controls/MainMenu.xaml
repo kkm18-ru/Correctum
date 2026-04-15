@@ -17,7 +17,6 @@
         <MenuItem Header="Настройки" Click="ShowConfigurationWindow"/>
         <MenuItem Header="Выход" Click="Quit"/>
     </MenuItem>
-    <MenuItem Header="Действия" ItemsSource="{x:Static u:ModuleRegistry.Actions}"/>
     <MenuItem Header="Отчеты">
         <MenuItem Header="Наименование позиций" Click="ShowPosNameReport"/>
     </MenuItem>
