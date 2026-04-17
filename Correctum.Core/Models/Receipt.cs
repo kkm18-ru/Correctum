@@ -35,7 +35,7 @@ namespace Correctum.Core.Models
         /// <summary>
         /// Дата и время проведения чека
         /// </summary>
-        public DateTime Created { get; init; }
+        public DateTime? Created { get; init; }
         /// <summary>
         /// Фискальный признак документа
         /// </summary>
@@ -43,19 +43,19 @@ namespace Correctum.Core.Models
         /// <summary>
         /// Признак расчета
         /// </summary>
-        public ReceiptType Type { get; init; }
+        public ReceiptType? Type { get; init; }
         /// <summary>
         /// Множество предметов расчета
         /// </summary>
-        public Position[] Items { get; init; }
+        public Position[]? Items { get; init; }
         /// <summary>
         /// Информация об оплате чека
         /// </summary>
-        public Payment Payment { get; init; }
+        public Payment? Payment { get; init; }
         /// <summary>
         /// Итоговая сумма расчета
         /// </summary>
-        public Currency TotalSum { get; init; }
+        public Currency? TotalSum { get; init; }
         /// <summary>
         /// Телефон/электронный адрес покупателя
         /// </summary>
@@ -63,6 +63,6 @@ namespace Correctum.Core.Models
         /// <summary>
         /// Применяемая система налогообложения
         /// </summary>
-        public TaxationSystems TaxationSystem { get; init; }
+        public TaxationSystems? TaxationSystem { get; init; }
     }
 }

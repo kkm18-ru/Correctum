@@ -31,14 +31,14 @@ namespace Correctum.Core.Models
         /// <summary>
         /// Цена за единицу предмета расчета с учетом скидок и наценок
         /// </summary>
-        public Currency Price { get; init; }
+        public Currency? Price { get; init; }
         /// <summary>
         /// Количество предмета расчета
         /// </summary>
-        public ulong Quantity { get; init; }
+        public ulong? Quantity { get; init; }
         /// <summary>
         /// Стоимость предмета расчета с учетом скидок и наценок
         /// </summary>
-        public Currency Cost { get; init; }
+        public Currency? Cost { get; init; }
     }
 }
