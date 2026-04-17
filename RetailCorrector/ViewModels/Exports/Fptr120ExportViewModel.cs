@@ -17,15 +17,15 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         using var writer = new StreamWriter(stream);
         foreach (var receipt in receipts)
         {
-            await CorrectionDataAsync(writer, receipt.Created);
-            await SetReceiptTypeAsync(writer, receipt.Type);            
+            await CorrectionDataAsync(writer, receipt.Created.Value);
+            await SetReceiptTypeAsync(writer, receipt.Type.Value);            
             await writer.WriteLineAsync($"Fptr.setParam(1055, {(int)receipt.TaxationSystem});");
             await ElectronicallyDocumentAsync(writer);
             await SetCorrectionDataAsync(writer, receipt.DocSign);
             await writer.WriteLineAsync("Fptr.openReceipt();");
             await PositionsAsync(writer, receipt.Items);
-            await TotalSumAsync(writer, receipt.TotalSum);
-            await PaymentAsync(writer, receipt.Payment);
+            await TotalSumAsync(writer, receipt.TotalSum.Value);
+            await PaymentAsync(writer, receipt.Payment.Value);
             await writer.WriteLineAsync("Fptr.closeReceipt();");
             await writer.WriteLineAsync();
         }
@@ -91,7 +91,7 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
 
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, \"{info.Name.Replace("\"", "\\\"")}\");");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, {info.Price});");
-        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, {RestoreDecimalAndToString(info.Quantity, 3)});");
+        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, {RestoreDecimalAndToString(info.Quantity.Value, 3)});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, {info.Cost});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_TAX_TYPE, {(int)info.TaxRate});");
         await writer.WriteLineAsync($"Fptr.setParam(2108, {(int)info.Unit});");
@@ -108,11 +108,11 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
 
     internal static async Task PaymentAsync(StreamWriter writer, Payment info)
     {
-        await PaymentAsync(writer, "LIBFPTR_PT_CASH", info.CashSum);
-        await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", info.NonCashSum);
-        await PaymentAsync(writer, "LIBFPTR_PT_PREPAID", info.AdvanceSum);
-        await PaymentAsync(writer, "LIBFPTR_PT_CREDIT", info.CreditSum);
-        await PaymentAsync(writer, "LIBFPTR_PT_OTHER", info.ProvisionSum);
+        await PaymentAsync(writer, "LIBFPTR_PT_CASH", info.CashSum.Value);
+        await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", info.NonCashSum.Value);
+        await PaymentAsync(writer, "LIBFPTR_PT_PREPAID", info.AdvanceSum.Value);
+        await PaymentAsync(writer, "LIBFPTR_PT_CREDIT", info.CreditSum.Value);
+        await PaymentAsync(writer, "LIBFPTR_PT_OTHER", info.ProvisionSum.Value);
     }
 
     private static async Task PaymentAsync(StreamWriter writer, string type, Currency sum)

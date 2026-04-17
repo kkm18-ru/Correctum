@@ -5,27 +5,27 @@ namespace Correctum.Core.Models
     /// <summary>
     /// Представляет информацию об оплате кассового чека
     /// </summary>
-    public struct Payment
+    public readonly struct Payment
     {
         /// <summary>
         /// Сумма оплаты наличным способом
         /// </summary>
-        public Currency CashSum { get; set; }
+        public Currency? CashSum { get; init; }
         /// <summary>
         /// Сумма оплаты безналичным способом
         /// </summary>
-        public Currency NonCashSum { get; set; }
+        public Currency? NonCashSum { get; init; }
         /// <summary>
         /// Сумма аванса
         /// </summary>
-        public Currency AdvanceSum { get; set; }
+        public Currency? AdvanceSum { get; init; }
         /// <summary>
         /// Сумма оплаты кредита
         /// </summary>
-        public Currency CreditSum { get; set; }
+        public Currency? CreditSum { get; init; }
         /// <summary>
         /// Встречное предоставление
         /// </summary>
-        public Currency ProvisionSum { get; set; }
+        public Currency? ProvisionSum { get; init; }
     }
 }

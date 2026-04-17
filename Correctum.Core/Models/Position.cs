@@ -6,39 +6,39 @@ namespace Correctum.Core.Models
     /// <summary>
     /// Представляет предмет расчета кассового чека
     /// </summary> 
-    public struct Position
+    public readonly struct Position
     {
         /// <summary>
         /// Наименование предмета расчета
         /// </summary>
-        public string? Name { get; set; }
+        public string? Name { get; init; }
         /// <summary>
         /// Признак предмета расчета
         /// </summary>
-        public PositionType? Type { get; set; }
+        public PositionType? Type { get; init; }
         /// <summary>
         /// Признак способа расчета
         /// </summary>
-        public CalculationMethod? CalcMethod { get; set; }
+        public CalculationMethod? CalcMethod { get; init; }
         /// <summary>
         /// Ставка НДС
         /// </summary>
-        public NDSRate? TaxRate { get; set; }
+        public NDSRate? TaxRate { get; init; }
         /// <summary>
         /// Мера количества предмера расчета
         /// </summary>
-        public UnitOfMeasure? Unit { get; set; }
+        public UnitOfMeasure? Unit { get; init; }
         /// <summary>
         /// Цена за единицу предмета расчета с учетом скидок и наценок
         /// </summary>
-        public Currency Price { get; set; }
+        public Currency? Price { get; init; }
         /// <summary>
         /// Количество предмета расчета
         /// </summary>
-        public ulong Quantity { get; set; }
+        public ulong? Quantity { get; init; }
         /// <summary>
         /// Стоимость предмета расчета с учетом скидок и наценок
         /// </summary>
-        public Currency Cost { get; set; }
+        public Currency? Cost { get; init; }
     }
 }

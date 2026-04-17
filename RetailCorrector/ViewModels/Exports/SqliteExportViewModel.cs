@@ -60,7 +60,7 @@ public sealed class SqliteExportViewModel : FileExportViewModel
             try
             {
                 var rid = await conn.AddReceiptAsync(receipt, tr);
-                foreach (var item in receipt.Items)
+                foreach (var item in receipt.Items ?? [])
                     await conn.AddPositionAsync(item, rid, tr);
                 await tr.CommitAsync();
             }
@@ -97,17 +97,17 @@ file static class SqliteExportViewModelTools
             parameters.Add("@Session", data.SessionId, DbType.UInt32);
             parameters.Add("@DocInSession", data.DocInSession, DbType.UInt32);
             parameters.Add("@DocId", data.DocNumber, DbType.UInt32);
-            parameters.Add("@DateTime", data.Created.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss"), DbType.String);
-            parameters.Add("@Operaion", (uint)data.Type, DbType.UInt32);
+            parameters.Add("@DateTime", data.Created?.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss"), DbType.String);
+            parameters.Add("@Operaion", (uint?)data.Type, DbType.UInt32);
             parameters.Add("@BuyerContact", string.IsNullOrWhiteSpace(data.BuyerContact) ? null : data.BuyerContact, DbType.String);
-            parameters.Add("@Taxation", (uint)data.TaxationSystem, DbType.UInt32);
+            parameters.Add("@Taxation", (uint?)data.TaxationSystem, DbType.UInt32);
             parameters.Add("@FiscalSign", data.DocSign?.ToString(), DbType.String);
-            parameters.Add("@CashSum", (ulong)data.Payment.CashSum, DbType.UInt64);
-            parameters.Add("@NonCashSum", (ulong)data.Payment.NonCashSum, DbType.UInt64);
-            parameters.Add("@AdvanceSum", (ulong)data.Payment.AdvanceSum, DbType.UInt64);
-            parameters.Add("@CreditSum", (ulong)data.Payment.CreditSum, DbType.UInt64);
-            parameters.Add("@OtherSum", (ulong)data.Payment.ProvisionSum, DbType.UInt64);
-            parameters.Add("@TotalSum", (ulong)data.TotalSum, DbType.UInt64);
+            parameters.Add("@CashSum", (ulong?)data.Payment?.CashSum, DbType.UInt64);
+            parameters.Add("@NonCashSum", (ulong?)data.Payment?.NonCashSum, DbType.UInt64);
+            parameters.Add("@AdvanceSum", (ulong?)data.Payment?.AdvanceSum, DbType.UInt64);
+            parameters.Add("@CreditSum", (ulong?)data.Payment?.CreditSum, DbType.UInt64);
+            parameters.Add("@OtherSum", (ulong?)data.Payment?.ProvisionSum, DbType.UInt64);
+            parameters.Add("@TotalSum", (ulong?)data.TotalSum, DbType.UInt64);
             return conn.QuerySingleAsync<uint>(Query, parameters, tr);
         }
         public Task AddPositionAsync(Position data, uint receiptId, IDbTransaction tr)
@@ -122,9 +122,9 @@ file static class SqliteExportViewModelTools
             parameters.Add("@Type", (uint?)data.Type, DbType.UInt32);
             parameters.Add("@TaxRate", (uint?)data.TaxRate, DbType.UInt32);
             parameters.Add("@Unit", (uint?)data.Unit, DbType.UInt32);
-            parameters.Add("@Price", (ulong)data.Price, DbType.UInt64);
+            parameters.Add("@Price", (ulong?)data.Price, DbType.UInt64);
             parameters.Add("@Quantity", data.Quantity, DbType.UInt64);
-            parameters.Add("@Cost", (ulong)data.Cost, DbType.UInt64);
+            parameters.Add("@Cost", (ulong?)data.Cost, DbType.UInt64);
             parameters.Add("@ReceiptId", receiptId, DbType.UInt32);
             return conn.ExecuteAsync(Query, parameters, tr);
         }

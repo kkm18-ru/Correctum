@@ -27,8 +27,8 @@ namespace RetailCorrector.Utils.Integrations
         public bool OpenReceipt(Receipt doc, OpenReceiptArgs args)
         {
             var corrData = Array.Empty<byte>();
-            if(DocFormat >= 110) GenerateCorrectionData(doc.Created, args.Act, out corrData);
-            var opcode = doc.Type.ToCorrection(DocFormat);
+            if(DocFormat >= 110) GenerateCorrectionData(doc.Created.Value, args.Act, out corrData);
+            var opcode = doc.Type.Value.ToCorrection(DocFormat);
             if (opcode is null) return false;
             SetInteger(65545, opcode.Value);
             SetBoolean(65572, true);
@@ -71,7 +71,7 @@ namespace RetailCorrector.Utils.Integrations
         {
             SetString(65631, pos.Name);
             SetDouble(65632, (double)pos.Price);
-            SetDouble(65633, pos.Quantity / 1000.0);
+            SetDouble(65633, pos.Quantity.Value / 1000.0);
             SetDouble(65634, (double)pos.Cost);
             SetInteger(65569, (uint)pos.TaxRate);
             SetInteger(1212, (uint)pos.Type);
@@ -96,11 +96,11 @@ namespace RetailCorrector.Utils.Integrations
         }
 
         public bool Payment(Payment pay) =>
-            Payment(0, pay.CashSum) &&
-            Payment(1, pay.NonCashSum) &&
-            Payment(2, pay.AdvanceSum) &&
-            Payment(3, pay.CreditSum) &&
-            Payment(4, pay.ProvisionSum);
+            Payment(0, pay.CashSum.Value) &&
+            Payment(1, pay.NonCashSum.Value) &&
+            Payment(2, pay.AdvanceSum.Value) &&
+            Payment(3, pay.CreditSum.Value) &&
+            Payment(4, pay.ProvisionSum.Value);
 
         public bool CloseReceipt() => closeReceipt(handle) == 0;
 

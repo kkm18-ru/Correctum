@@ -102,12 +102,12 @@ namespace RetailCorrector.UI.Controls
                 {
                     object src = cond.PartId switch
                     {
-                        0 => (double)item.Payment.CashSum,
-                        1 => (double)item.Payment.NonCashSum,
-                        2 => (double)item.Payment.AdvanceSum,
-                        3 => (double)item.Payment.CashSum,
-                        4 => (double)item.Payment.ProvisionSum,
-                        5 => (double)item.TotalSum,
+                        0 => (double?)item.Payment?.CashSum,
+                        1 => (double?)item.Payment?.NonCashSum,
+                        2 => (double?)item.Payment?.AdvanceSum,
+                        3 => (double?)item.Payment?.CashSum,
+                        4 => (double?)item.Payment?.ProvisionSum,
+                        5 => (double?)item.TotalSum,
                     };
                     if(!o.Action.Invoke(src, val))
                         return false;
