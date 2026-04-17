@@ -215,6 +215,11 @@ file readonly struct TaxcomDocumentResponse
     public Receipt? ParseReceipt()
     {
         if (DocType is not ("3" or "31")) return null;
+        var dt = Details["1012"]?.GetValue<string>() is { Length: 19 } s ?
+            DateTime.Parse(s, CultureInfo.InvariantCulture, 0) :
+            DateTime.MinValue;
+
+
         var receipt = new Receipt
         {
             BuyerContact = Details["1008"]?.GetValue<string>() ?? "",
@@ -228,10 +233,9 @@ file readonly struct TaxcomDocumentResponse
             DocSign = FiscalSign.Parse(Details["1077"]?.GetValue<string>()),
             Payment = ParsePayment(),
             TotalSum = Details["1020"]?.GetValue<ulong>() ?? 0,
-            TaxationSystem = (TaxationSystems?)Details["1055"]?.GetValue<int>()?? 0
+            TaxationSystem = (TaxationSystems?)Details["1055"]?.GetValue<int>()?? 0,
+            Created = dt
         };
-        if (Details["1012"]?.GetValue<string>() is { Length: 19 } s)
-            receipt.Created = DateTime.Parse(s, CultureInfo.InvariantCulture, 0);
         for (var i = 0; i < receipt.Items.Length; i++) receipt.Items[i] = ParsePosition(i);
         return receipt;
     }

@@ -25,38 +25,30 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
             ulong sum = 0;
             for(var j = 0; j < pos.Length; j++)
             {
+                var quantity = faker.Random.UInt(1, 10);
+                var price = faker.Random.ULong(100, 9999999);
                 pos[j] = new()
                 {
                     Name = faker.Commerce.ProductName(),
-                    Price = faker.Random.ULong(100,9999999),
-                    Quantity = 1000 * faker.Random.UInt(1,10),
+                    Price = price,
+                    Quantity = 1000 * quantity,
+                    Cost = price * quantity,
                     Unit = faker.Random.Enum<UnitOfMeasure>(),
                     CalcMethod = faker.Random.Enum<CalculationMethod>(),
                     TaxRate = faker.Random.Enum<NDSRate>(),
                     Type = faker.Random.Enum<PositionType>(),
                 };
-                pos[j].Cost = (ulong)pos[j].Price * pos[j].Quantity / 1000;
                 sum += (ulong)pos[j].Cost;
             }
-            var payment = new Payment();
-            switch(faker.Random.Byte(0, 4))
+            var payType = faker.Random.Byte(0, 4);
+            var payment = new Payment
             {
-                case 0:
-                    payment.CashSum = sum;
-                    break;
-                case 1:
-                    payment.NonCashSum = sum;
-                    break;
-                case 2:
-                    payment.AdvanceSum = sum;
-                    break;
-                case 3:
-                    payment.CreditSum = sum;
-                    break;
-                case 4:
-                    payment.ProvisionSum = sum;
-                    break;
-            }
+                CashSum = payType == 0 ? sum : 0,
+                NonCashSum = payType == 1 ? sum : 0,
+                AdvanceSum = payType == 2 ? sum : 0,
+                CreditSum = payType == 3 ? sum : 0,
+                ProvisionSum = payType == 4 ? sum : 0,
+            };
             yield return new()
             {
                 Items = pos,

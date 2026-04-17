@@ -3,6 +3,7 @@ using Correctum.Core.Enums;
 using RetailCorrector.Utils;
 using Correctum.Core.ValueObjects;
 using System.Globalization;
+using Correctum.Core.Builders;
 
 namespace RetailCorrector.Parsers;
 
@@ -14,12 +15,10 @@ internal sealed class PlatformOfd : IParser
 
     private readonly Stack<ushort> _propStack = new(5);
     
-    private delegate void UpdatePaymentDelegate(ref Payment payment, ulong sum);
-    private delegate void UpdatePositionDelegate(ref Position position, ReadOnlySpan<char> value);
-    
     public bool Parse(string raw, out Receipt receipt)
     {
-        receipt = new();
+        var builder = new ReceiptBuilder();
+        PositionBuilder currPosition = null!;
         var span = raw.AsSpan();
         Span<char> rawValue = stackalloc char[256];
         foreach (var range in span.Split('\n'))
@@ -38,7 +37,8 @@ internal sealed class PlatformOfd : IParser
             if (line.Length < 43)
             {
                 _propStack.Push(tag);
-                if (tag == 1059) AddPosition(ref receipt);
+                if (tag == 1059)
+                    currPosition = builder.AddItem();
                 continue;
             }
             rawValue.Clear();
@@ -47,74 +47,63 @@ internal sealed class PlatformOfd : IParser
 
             try
             {
-                ChangeReceipt(tag, value, ref receipt);
+                ChangeReceipt(tag, value, builder);
+                ChangePosition(tag, value, currPosition);
             }
             catch(Exception ex)
             {
+                receipt = default;
                 Logger.Error(ex, "Не удалось обработать тег {Tag} со значением {Value}", tag, value.ToString());
                 return false;
             }
         }
-
+        receipt = builder.Build();
         return true;
     }
 
-    private void ChangeReceipt(ushort tag, ReadOnlySpan<char> value, ref Receipt receipt)
+    private void ChangeReceipt(ushort tag, ReadOnlySpan<char> value, ReceiptBuilder builder)
     {
+        if (_propStack.Count > 0 && _propStack.Peek() == 1059) return;
         switch (tag)
         {
             // Простые реквизиты чека
-            case 1077: receipt.DocSign = FiscalSign.Parse(value); break;
-            case 1012: receipt.Created = DateTimeOffset.UnixEpoch.AddSeconds(ulong.Parse(value)).DateTime; break;
-            case 1041: receipt.StorageId = value.ToString(); break;
-            case 1037: receipt.RegId = value.ToString(); break;
-            case 1038: receipt.SessionId = uint.Parse(value); break;
-            case 1020: receipt.TotalSum = ulong.Parse(value); break;
-            case 1055: receipt.TaxationSystem = (TaxationSystems)int.Parse(value); break;
-            case 1008: receipt.BuyerContact = value.ToString(); break;
-            case 1042: receipt.DocInSession = uint.Parse(value); break;
-            case 1040: receipt.DocNumber = uint.Parse(value); break;
-            case 1054: receipt.Type = (ReceiptType)byte.Parse(value); break;
+            case 1077: builder.SetDocSign(FiscalSign.Parse(value)); break;
+            case 1012: builder.SetCreated(DateTimeOffset.UnixEpoch.AddSeconds(ulong.Parse(value)).DateTime); break;
+            case 1041: builder.SetStorageId(value.ToString()); break;
+            case 1037: builder.SetRegId(value.ToString()); break;
+            case 1038: builder.SetSessionId(uint.Parse(value)); break;
+            case 1020: builder.SetTotalSum(ulong.Parse(value)); break;
+            case 1055: builder.SetTaxationSystem((TaxationSystems)int.Parse(value)); break;
+            case 1008: builder.SetBuyerContact(value.ToString()); break;
+            case 1042: builder.SetDocInSession(uint.Parse(value)); break;
+            case 1040: builder.SetDocNumber(uint.Parse(value)); break;
+            case 1054: builder.SetOperation((ReceiptType)byte.Parse(value)); break;
             // Суммы способов оплаты
-            case 1031: UpdatePayment((ref p, sum) => p.CashSum = sum, value, ref receipt); break;
-            case 1081: UpdatePayment((ref p, sum) => p.NonCashSum = sum, value, ref receipt); break;
-            case 1215: UpdatePayment((ref p, sum) => p.AdvanceSum = sum, value, ref receipt); break;
-            case 1216: UpdatePayment((ref p, sum) => p.CreditSum = sum, value, ref receipt); break;
-            case 1217: UpdatePayment((ref p, sum) => p.ProvisionSum = sum, value, ref receipt); break;
-            // Позиции
-            case 2108: UpdatePosition((ref p, v) => p.Unit = (UnitOfMeasure)byte.Parse(v), value, ref receipt); break;
-            case 1079: UpdatePosition((ref p, v) => p.Price = ulong.Parse(v), value, ref receipt); break;
-            case 1043: UpdatePosition((ref p, v) => p.Cost = ulong.Parse(v), value, ref receipt); break;
-            case 1199: UpdatePosition((ref p, v) => p.TaxRate = EnumUtils.ToTaxRate(byte.Parse(v)), value, ref receipt); break;
-            case 1214: UpdatePosition((ref p, v) => p.CalcMethod = (CalculationMethod)byte.Parse(v), value, ref receipt); break;
-            case 1212: UpdatePosition((ref p, v) => p.Type = (PositionType)byte.Parse(v), value, ref receipt); break;
-            case 1023: UpdatePosition((ref p, v) => p.Quantity = (ulong)Math.Round(double.Parse(v, CultureInfo.InvariantCulture) * 1000, 0), value, ref receipt); break;
-            case 1030: UpdatePosition((ref p, v) => p.Name = v.ToString(), value, ref receipt); break;
-            
+            case 1031: builder.SetCashSum(ulong.Parse(value)); break;
+            case 1081: builder.SetNonCashSum(ulong.Parse(value)); break;
+            case 1215: builder.SetAdvanceSum(ulong.Parse(value)); break;
+            case 1216: builder.SetCreditSum(ulong.Parse(value)); break;
+            case 1217: builder.SetProvisionSum(ulong.Parse(value)); break;
+
             default: break;
         }
     }
 
-    private static void AddPosition(ref Receipt receipt)
-    {
-        var positions = receipt.Items ?? [];
-        Array.Resize(ref positions, positions.Length+1);
-        receipt.Items = positions;
-    }
-    
-    private static void UpdatePayment(UpdatePaymentDelegate setter, ReadOnlySpan<char> sum, ref Receipt receipt)
-    {
-        var payment = receipt.Payment;
-        setter(ref payment, ulong.Parse(sum));
-        receipt.Payment = payment;
-    }
-    
-    private void UpdatePosition(UpdatePositionDelegate setter, ReadOnlySpan<char> value, ref Receipt receipt)
+    private void ChangePosition(ushort tag, ReadOnlySpan<char> value, PositionBuilder builder)
     {
         if (_propStack.Count != 1 || _propStack.Peek() != 1059) return;
-        
-        var position = receipt.Items[^1];
-        setter(ref position, value);
-        receipt.Items[^1] = position;
+        switch (tag)
+        {
+            case 2108: builder.SetUnit((UnitOfMeasure)byte.Parse(value)); break;
+            case 1079: builder.SetPrice(ulong.Parse(value)); break;
+            case 1043: builder.SetCost(ulong.Parse(value)); break;
+            case 1199: builder.SetTaxRate(EnumUtils.ToTaxRate(byte.Parse(value))); break;
+            case 1214: builder.SetCalcMethod((CalculationMethod)byte.Parse(value)); break;
+            case 1212: builder.SetSubjectType((PositionType)byte.Parse(value)); break;
+            case 1023: builder.SetQuantity((ulong)Math.Round(double.Parse(value, CultureInfo.InvariantCulture) * 1000, 0)); break;
+            case 1030: builder.SetName(value.ToString()); break;
+
+            default: break;
+        }
     }
 }
