@@ -61,16 +61,16 @@ public class SqliteExportViewModelTests :
                 Assert.That(receipts[0].shift, Is.EqualTo(receipt.SessionId));
                 Assert.That(receipts[0].doc, Is.EqualTo(receipt.DocNumber));
                 Assert.That(receipts[0].req, Is.EqualTo(receipt.DocInSession));
-                Assert.That(receipts[0].date, Is.EqualTo(receipt.Created.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")));
+                Assert.That(receipts[0].date, Is.EqualTo(receipt.Created?.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")));
                 Assert.That(receipts[0].type, Is.EqualTo((byte)receipt.Type));
                 Assert.That(receipts[0].taxation, Is.EqualTo((byte)receipt.TaxationSystem));
                 Assert.That(FiscalSign.Parse(receipts[0].sign), Is.EqualTo(receipt.DocSign));
                 Assert.That(receipts[0].buyer, Is.EqualTo(receipt.BuyerContact));
-                Assert.That((Currency)receipts[0].cash, Is.EqualTo(receipt.Payment.CashSum));
-                Assert.That((Currency)receipts[0].ecash, Is.EqualTo(receipt.Payment.NonCashSum));
-                Assert.That((Currency)receipts[0].pre, Is.EqualTo(receipt.Payment.AdvanceSum));
-                Assert.That((Currency)receipts[0].post, Is.EqualTo(receipt.Payment.CreditSum));
-                Assert.That((Currency)receipts[0].other, Is.EqualTo(receipt.Payment.ProvisionSum));
+                Assert.That((Currency)receipts[0].cash, Is.EqualTo(receipt.Payment?.CashSum));
+                Assert.That((Currency)receipts[0].ecash, Is.EqualTo(receipt.Payment?.NonCashSum));
+                Assert.That((Currency)receipts[0].pre, Is.EqualTo(receipt.Payment?.AdvanceSum));
+                Assert.That((Currency)receipts[0].post, Is.EqualTo(receipt.Payment?.CreditSum));
+                Assert.That((Currency)receipts[0].other, Is.EqualTo(receipt.Payment?.ProvisionSum));
                 Assert.That((Currency)receipts[0].total, Is.EqualTo(receipt.TotalSum));
             }
 
