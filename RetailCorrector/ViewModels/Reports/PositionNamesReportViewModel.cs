@@ -23,7 +23,7 @@ public class PositionNamesReportViewModel : BaseReportViewModel
     }
 
     protected override Task<List<object>> InternalRefresh() =>
-        Task.Run(() => Workspace.Instance.Receipts
+        Task.Run(() => Storage.Instance.Receipts
             .SelectMany(r => r.Items.Select(i => new { i.Name, i.Type, r, }))
             .GroupBy(x => (x.Name, x.Type))
             .Select(n => new ReportItem(n.Key.Name, n.Key.Type, n

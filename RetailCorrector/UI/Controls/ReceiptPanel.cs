@@ -161,7 +161,7 @@ namespace RetailCorrector.UI.Controls
 
         private void Grid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            var @ref = Workspace.Instance.Receipts;
+            var @ref = Storage.Instance.Receipts;
             var columnCount = ((DataGrid)sender).Columns.Count;
 
             var addedCount = e.AddedCells.Count / columnCount;
@@ -188,8 +188,8 @@ namespace RetailCorrector.UI.Controls
             PositionGrid.Instance.Collection.Clear();
             grid.Collection.Clear();
             if (CachedCountPages == 0) return;
-            if (Workspace.Instance.Receipts.Count == 0) return;
-            var page = Workspace.Instance.Receipts.Skip(MaxCountReceipts * (IndexPage - 1)).Take(MaxCountReceipts);
+            if (Storage.Instance.Receipts.Count == 0) return;
+            var page = Storage.Instance.Receipts.Skip(MaxCountReceipts * (IndexPage - 1)).Take(MaxCountReceipts);
             foreach (var item in page)
                 grid.Collection.Add(new DisplayReceipt(item));
             ((ListCollectionView)CollectionViewSource.GetDefaultView(grid.Collection)).Refresh();
@@ -197,7 +197,7 @@ namespace RetailCorrector.UI.Controls
 
         public static void UpdateReceiptList()
         {
-            Instance.CachedCountPages = Workspace.Instance.Receipts.Chunk(Instance.MaxCountReceipts).Count();
+            Instance.CachedCountPages = Storage.Instance.Receipts.Chunk(Instance.MaxCountReceipts).Count();
             Instance.Refresh(); 
             Logger.Info("Список чеков обновлен");
         }

@@ -91,7 +91,7 @@
         <controls:TextProgressBar 
             Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="3" 
             Value="{Binding CurrentIndex, Mode=OneWay}"
-            Maximum="{Binding Source={x:Static rc:Workspace.Instance}, Path=Receipts.Count}"/>
+            Maximum="{Binding Source={x:Static rc:Storage.Instance}, Path=Receipts.Count}"/>
         
         <StackPanel Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
             <Button Content="{Binding RunButtonText, Mode=OneWay}" 
@@ -103,7 +103,7 @@
                     IsEnabled="{Binding CanSettings, Mode=OneWay}"/>
             <tk:IntegerUpDown
                 Value="{Binding SettingIndex}" IsEnabled="{Binding CanSettings, Mode=OneWay}"
-                Maximum="{Binding Source={x:Static rc:Workspace.Instance}, Path=Receipts.Count}"
+                Maximum="{Binding Source={x:Static rc:Storage.Instance}, Path=Receipts.Count}"
                 Minimum="0" Margin="2.5,0,0,0" Width="70"/>
         </StackPanel>
         

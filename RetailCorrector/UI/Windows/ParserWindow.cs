@@ -86,7 +86,7 @@ namespace RetailCorrector.UI.Windows
         {
             if (Current.Parse(Text, out var receipt))
             {
-                Workspace.Instance.Receipts.Add(receipt);
+                Storage.Instance.Receipts.Add(receipt);
                 ReceiptPanel.UpdateReceiptList();
             } 
             else 

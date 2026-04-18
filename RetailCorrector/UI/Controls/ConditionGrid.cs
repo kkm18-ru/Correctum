@@ -38,7 +38,7 @@ namespace RetailCorrector.UI.Controls
                 return -1;
             }
             var count = 0;
-            foreach (var item in Workspace.Instance.Receipts)
+            foreach (var item in Storage.Instance.Receipts)
             {
                 if (!Check(item)) continue;
                 action.Invoke(item);
@@ -55,7 +55,7 @@ namespace RetailCorrector.UI.Controls
                 return -1;
             }
             var count = 0;
-            var @ref = Workspace.Instance.Receipts;
+            var @ref = Storage.Instance.Receipts;
             for (var i = @ref.Count - 1; i >= 0; i--)
             {
                 var item = @ref[i];

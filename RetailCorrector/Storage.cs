@@ -3,15 +3,15 @@ using System.Collections.ObjectModel;
 
 namespace RetailCorrector
 {
-    internal partial class Workspace
+    internal partial class Storage
     {
-        public static Workspace Instance => field ??= new Workspace();
+        public static Storage Instance => field ??= new Storage();
 
         public Guid Id { get; }
         public ObservableCollection<Receipt> Receipts { get; }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private Workspace()
+        private Storage()
         {
             Id = Guid.CreateVersion7();
             Receipts = [];
