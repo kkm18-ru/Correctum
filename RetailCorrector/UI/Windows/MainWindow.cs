@@ -8,6 +8,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
+using MessageDialog;
+using Microsoft.Win32;
 
 namespace RetailCorrector.UI.Windows;
 
@@ -18,7 +20,7 @@ public partial class MainWindow : Window
     private MainWindow()
     {
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
-        
+                
         Title = "RetailCorrector";
         InputBindings.Add(new KeyBinding(new RelayCommand(ShowPaste), Key.V, ModifierKeys.Control));
 
@@ -61,6 +63,52 @@ public partial class MainWindow : Window
         dock.Children.Add(content);
 
         Content = dock;
+    }
+
+    protected override void OnContentRendered(EventArgs e)
+    {
+        if (Storage.Instance == null!)
+        {
+            var createBase = () =>
+            {
+                var dialog = new SaveFileDialog
+                {
+                    Filter = "База данных Correctum|*.cdb",
+                    AddExtension = true,
+                };
+                if (!dialog.ShowDialog() ?? false)
+                {
+                    MessageBox.Show("Путь к базе данных не выбран. Приложение закрывается.");
+                    Close();
+                }
+                Storage.Create(dialog.FileName);
+            };
+            var loadBase = () =>
+            {
+                var dialog = new OpenFileDialog
+                {
+                    Filter = "База данных Correctum|*.cdb",
+                };
+                if (!dialog.ShowDialog() ?? false)
+                {
+                    MessageBox.Show("Путь к базе данных не выбран. Приложение закрывается.");
+                    Close();
+                }
+                Storage.Load(dialog.FileName);
+            };
+            var options = new MessageDialogOptions
+            {
+                Title = "Хранилище не проинициализировано!",
+                Message = "Для инициализации хранилища необходимо открыть существующую базу Correctum или создать новую.",
+                Buttons = [
+                    new MessageDialogButtonOptions("Создать", createBase),
+                    new MessageDialogButtonOptions("Загрузить", loadBase),
+                    new MessageDialogButtonOptions("Закрыть", Close, MessageDialogButtonType.Cancel)
+                    ]
+            };
+            new MessageDialog.MessageDialog(this, options).ShowDialog();
+        }
+        base.OnContentRendered(e);
     }
 
     private static void ShowPaste(object? obj)

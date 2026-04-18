@@ -24,6 +24,12 @@ namespace RetailCorrector
             Instance = new Storage();
         }
 
+        public static void Create(string filepath)
+        {
+            throw new NotImplementedException();
+            Instance = new Storage();
+        }
+
         public void Save(string filepath)
         {
             throw new NotImplementedException();
