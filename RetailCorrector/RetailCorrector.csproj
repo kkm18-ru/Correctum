@@ -44,6 +44,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Correctum.Core\Correctum.Core.csproj" />
+	  <ProjectReference Include="..\libs\MessageDialog\MessageDialog.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
