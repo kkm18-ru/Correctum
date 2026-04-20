@@ -30,14 +30,11 @@ internal sealed class OfdRuJson : IParser
                     Thread.CurrentThread.CurrentUICulture),
                 Type = (ReceiptType)json.Document.OperationType,
                 TotalSum = json.Document.Amount_Total,
-                Payment = new Payment
-                {
-                    CashSum = json.Document.Amount_Cash,
-                    NonCashSum = json.Document.Amount_ECash,
-                    AdvanceSum = json.Document.Amount_Advance,
-                    CreditSum = json.Document.Amount_Loan,
-                    ProvisionSum = json.Document.Amount_Granting,
-                },
+                CashSum = json.Document.Amount_Cash,
+                NonCashSum = json.Document.Amount_ECash,
+                AdvanceSum = json.Document.Amount_Advance,
+                CreditSum = json.Document.Amount_Loan,
+                ProvisionSum = json.Document.Amount_Granting,
                 Items = new Position[json.Document.Items.Length]
             };
             for (var i = 0; i < receipt.Items.Length; i++)

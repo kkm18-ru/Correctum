@@ -49,9 +49,25 @@ namespace Correctum.Core.Models
         /// </summary>
         public Position[]? Items { get; init; }
         /// <summary>
-        /// Информация об оплате чека
+        /// Сумма оплаты наличным способом
         /// </summary>
-        public Payment? Payment { get; init; }
+        public Currency? CashSum { get; init; }
+        /// <summary>
+        /// Сумма оплаты безналичным способом
+        /// </summary>
+        public Currency? NonCashSum { get; init; }
+        /// <summary>
+        /// Сумма аванса
+        /// </summary>
+        public Currency? AdvanceSum { get; init; }
+        /// <summary>
+        /// Сумма оплаты кредита
+        /// </summary>
+        public Currency? CreditSum { get; init; }
+        /// <summary>
+        /// Встречное предоставление
+        /// </summary>
+        public Currency? ProvisionSum { get; init; }
         /// <summary>
         /// Итоговая сумма расчета
         /// </summary>

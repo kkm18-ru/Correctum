@@ -41,14 +41,6 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
                 sum += (ulong)pos[j].Cost;
             }
             var payType = faker.Random.Byte(0, 4);
-            var payment = new Payment
-            {
-                CashSum = payType == 0 ? sum : 0,
-                NonCashSum = payType == 1 ? sum : 0,
-                AdvanceSum = payType == 2 ? sum : 0,
-                CreditSum = payType == 3 ? sum : 0,
-                ProvisionSum = payType == 4 ? sum : 0,
-            };
             yield return new()
             {
                 Items = pos,
@@ -60,7 +52,11 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
                 Created = faker.Date.Past(),
                 DocSign = faker.Random.UInt(),
                 Type = faker.Random.Enum<ReceiptType>(),
-                Payment = payment,
+                CashSum = payType == 0 ? sum : 0,
+                NonCashSum = payType == 1 ? sum : 0,
+                AdvanceSum = payType == 2 ? sum : 0,
+                CreditSum = payType == 3 ? sum : 0,
+                ProvisionSum = payType == 4 ? sum : 0,
                 TotalSum = sum,
                 TaxationSystem = faker.Random.Enum<TaxationSystems>()
             };

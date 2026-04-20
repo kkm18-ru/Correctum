@@ -231,7 +231,11 @@ file readonly struct TaxcomDocumentResponse
             Items = new Position[Details["1059"]?.AsArray().Count ?? 0],
             Type = (ReceiptType?)Details["1054"]?.GetValue<int>() ?? 0,
             DocSign = FiscalSign.Parse(Details["1077"]?.GetValue<string>()),
-            Payment = ParsePayment(),
+            CashSum = Details["1031"]?.GetValue<ulong>() ?? 0,
+            NonCashSum = Details["1081"]?.GetValue<ulong>() ?? 0,
+            AdvanceSum = Details["1215"]?.GetValue<ulong>() ?? 0,
+            CreditSum = Details["1216"]?.GetValue<ulong>() ?? 0,
+            ProvisionSum = Details["1217"]?.GetValue<ulong>() ?? 0,
             TotalSum = Details["1020"]?.GetValue<ulong>() ?? 0,
             TaxationSystem = (TaxationSystems?)Details["1055"]?.GetValue<int>()?? 0,
             Created = dt
@@ -251,15 +255,6 @@ file readonly struct TaxcomDocumentResponse
         CalcMethod = (CalculationMethod?)Details["1059"]?[index]?["1214"]?.GetValue<int>() ?? 0,
         TaxRate = (NDSRate?)Details["1059"]?[index]?["1199"]?.GetValue<int>() ?? 0,
         Unit = (UnitOfMeasure?)Details["1059"]?[index]?["2108"]?.GetValue<int>()
-    };
-
-    private Payment ParsePayment() => new()
-    {
-        CashSum = Details["1031"]?.GetValue<ulong>() ?? 0,
-        NonCashSum = Details["1081"]?.GetValue<ulong>() ?? 0,
-        AdvanceSum = Details["1215"]?.GetValue<ulong>() ?? 0,
-        CreditSum = Details["1216"]?.GetValue<ulong>() ?? 0,
-        ProvisionSum = Details["1217"]?.GetValue<ulong>() ?? 0,
     };
 }
 

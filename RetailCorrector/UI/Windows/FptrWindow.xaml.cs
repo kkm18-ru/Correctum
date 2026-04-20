@@ -112,7 +112,11 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
         if (!_handle.SetTotal(data.TotalSum.Value)) return false;
         
         token.ThrowIfCancellationRequested();
-        if (!_handle.Payment(data.Payment.Value)) return false;
+        if (!_handle.Payment(0, data.CashSum)) return false;
+        if (!_handle.Payment(1, data.NonCashSum)) return false;
+        if (!_handle.Payment(2, data.AdvanceSum)) return false;
+        if (!_handle.Payment(3, data.CreditSum)) return false;
+        if (!_handle.Payment(4, data.ProvisionSum)) return false;
         
         token.ThrowIfCancellationRequested();
         return _handle.CloseReceipt();

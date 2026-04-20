@@ -63,11 +63,11 @@ namespace Correctum.Core.Builders
         public ReceiptBuilder(Receipt receipt)
         {
             _positions = [..receipt.Items?.Select(i => new PositionBuilder(i)) ?? []];
-            _cash = receipt.Payment is null ? null : (ulong?)receipt.Payment.Value.CashSum;
-            _noncash = receipt.Payment is null ? null : (ulong?)receipt.Payment.Value.NonCashSum;
-            _advance = receipt.Payment is null ? null : (ulong?)receipt.Payment.Value.AdvanceSum;
-            _credit = receipt.Payment is null ? null : (ulong?)receipt.Payment.Value.CreditSum;
-            _provision = receipt.Payment is null ? null : (ulong?)receipt.Payment.Value.ProvisionSum;
+            _cash = (ulong?)receipt.CashSum;
+            _noncash = (ulong?)receipt.NonCashSum;
+            _advance = (ulong?)receipt.AdvanceSum;
+            _credit = (ulong?)receipt.CreditSum;
+            _provision = (ulong?)receipt.ProvisionSum;
             _buyer = receipt.BuyerContact;
             _createdAt = receipt.Created;
             _docShift = receipt.DocInSession;
@@ -287,14 +287,11 @@ namespace Correctum.Core.Builders
         public Receipt Build() => new()
         {
             Items = [.. _positions.Select(b => b.Build())],
-            Payment = new Payment()
-            {
-                CashSum = _cash,
-                NonCashSum = _noncash,
-                AdvanceSum = _advance,
-                CreditSum = _credit,
-                ProvisionSum = _provision,
-            },
+            CashSum = _cash,
+            NonCashSum = _noncash,
+            AdvanceSum = _advance,
+            CreditSum = _credit,
+            ProvisionSum = _provision,
             BuyerContact = _buyer,
             Created = _createdAt,
             DocInSession = _docShift,

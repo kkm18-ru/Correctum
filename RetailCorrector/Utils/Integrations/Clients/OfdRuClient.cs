@@ -126,14 +126,11 @@ file struct Document
             _ => throw new NotSupportedException($"Тип операции '{OperationType}' не поддерживается.")
         },
         Items = [.. Items.Select(i => i.ToPosition())],
-        Payment = new Payment
-        {
-            CashSum = CashSumm,
-            NonCashSum = ECashSumm,
-            AdvanceSum = PrepaidSumm,
-            CreditSum = CreditSumm,
-            ProvisionSum = ProvisionSumm
-        },
+        CashSum = CashSumm,
+        NonCashSum = ECashSumm,
+        AdvanceSum = PrepaidSumm,
+        CreditSum = CreditSumm,
+        ProvisionSum = ProvisionSumm,
         TotalSum = TotalSumm,
         TaxationSystem = TaxationType
     };

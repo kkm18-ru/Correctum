@@ -87,20 +87,14 @@ namespace RetailCorrector.Utils.Integrations
             return receiptTotal(handle) == 0;
         }
 
-        public bool Payment(uint type, Currency sum)
+        public bool Payment(uint type, Currency? sum)
         {
-            if ((ulong)sum == 0) return true;
+            if (sum is null) return true;
+            if ((ulong)sum.Value == 0) return true;
             SetInteger(65564, type);
             SetDouble(65565, (double)sum);
             return payment(handle) == 0;
         }
-
-        public bool Payment(Payment pay) =>
-            Payment(0, pay.CashSum.Value) &&
-            Payment(1, pay.NonCashSum.Value) &&
-            Payment(2, pay.AdvanceSum.Value) &&
-            Payment(3, pay.CreditSum.Value) &&
-            Payment(4, pay.ProvisionSum.Value);
 
         public bool CloseReceipt() => closeReceipt(handle) == 0;
 

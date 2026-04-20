@@ -43,7 +43,7 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
                         Type = PositionType.Product
                     }
                 ],
-                Payment = new Payment { NonCashSum = sum },
+                NonCashSum = sum,
                 TaxationSystem = 0,
                 DocSign = null
             };

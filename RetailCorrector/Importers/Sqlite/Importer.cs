@@ -46,14 +46,11 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
                         DocInSession = docs[j].req,
                         DocSign = FiscalSign.Parse(docs[j].sign),
                         TotalSum = docs[j].total,
-                        Payment = new Payment
-                        {
-                            CashSum = docs[j].cash,
-                            NonCashSum = docs[j].ecash,
-                            AdvanceSum = docs[j].pre,
-                            CreditSum = docs[j].post,
-                            ProvisionSum = docs[j].other,
-                        },
+                        CashSum = docs[j].cash,
+                        NonCashSum = docs[j].ecash,
+                        AdvanceSum = docs[j].pre,
+                        CreditSum = docs[j].post,
+                        ProvisionSum = docs[j].other,
                         Type = docs[j].type,
                         BuyerContact = docs[j].buyer,
                         TaxationSystem = (TaxationSystems)docs[j].taxation
