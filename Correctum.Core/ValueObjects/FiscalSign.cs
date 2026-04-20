@@ -7,7 +7,7 @@ namespace Correctum.Core.ValueObjects
     /// <summary>
     /// Представляет фискальный признак документа
     /// </summary>
-    public readonly struct FiscalSign : IUtf8SpanParsable<FiscalSign>, ISpanParsable<FiscalSign>
+    public readonly struct FiscalSign : IUtf8SpanParsable<FiscalSign>, ISpanParsable<FiscalSign>, IFormattable
     {
         private readonly uint _value;
 
@@ -155,6 +155,28 @@ namespace Correctum.Core.ValueObjects
         /// Возвращает строковое представление значения этого экземпляра <see cref="FiscalSign"/> структуры.
         /// </summary>
         /// <returns>Значение этого <see cref="FiscalSign"/>.</returns>
-        public override string ToString() => _value.ToString();
+        public override string ToString() => ToString("D", null);
+
+        public string ToString(string? format, IFormatProvider? formatProvider)
+        {
+            switch (format)
+            {
+                case "r" or "R":
+                    Span<byte> bytes = stackalloc byte[6];
+                    BitConverter.TryWriteBytes(bytes, _value);
+                    bytes[4] = 0b00000100;
+                    bytes[5] = 0b00110001;
+                    bytes.Reverse();
+
+                    Span<char> chars = stackalloc char[8];
+                    Convert.TryToBase64Chars(bytes, chars, out _);
+
+                    var textSign = new string(chars);
+                    return textSign;
+                case "d" or "D":
+                    return _value.ToString();
+                default: return "";
+            }
+        }
     }
 }
