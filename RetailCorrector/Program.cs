@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using Dapper;
+using RetailCorrector.Utils.Mapper;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
@@ -14,6 +16,9 @@ namespace RetailCorrector
         [STAThread]
         public static void Main()
         {
+            SqlMapper.AddTypeHandler(new CurrencyTypeHandler());
+            SqlMapper.AddTypeHandler(new FiscalSignTypeHandler());
+
             Utils.Configurations.LogSection.ReloadLoggingConfiguration(false);
             AppContext.SetSwitch("System.Net.DisableIPv6", true);
 
