@@ -152,6 +152,12 @@ namespace Correctum.Core.ValueObjects
         public static implicit operator FiscalSign(uint value) => new(value);
 
         /// <summary>
+        /// Преобразует число <see cref="FiscalSign"/> в целочисленное число без знака.
+        /// </summary>
+        /// <param name="value">Преобразуемое число <see cref="FiscalSign"/>.</param>
+        public static implicit operator uint(FiscalSign value) => value._value;
+
+        /// <summary>
         /// Возвращает строковое представление значения этого экземпляра <see cref="FiscalSign"/> структуры.
         /// </summary>
         /// <returns>Значение этого <see cref="FiscalSign"/>.</returns>
