@@ -110,9 +110,9 @@ namespace RetailCorrector.UI.Windows
                 btnCancel.IsEnabled = false;
                 btnStart.IsEnabled = true;
                 cts.Dispose();
-                buffer.ForEach(Storage.Instance.Receipts.Add);                
+                foreach (var receipt in buffer)
+                    Storage.Instance.AddReceipt(receipt);
                 Close();
-                ReceiptPanel.UpdateReceiptList();
             }
             catch (OperationCanceledException)
             {

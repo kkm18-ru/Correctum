@@ -85,10 +85,7 @@ namespace RetailCorrector.UI.Windows
         private void Submit(object? sender, RoutedEventArgs args)
         {
             if (Current.Parse(Text, out var receipt))
-            {
-                Storage.Instance.Receipts.Add(receipt);
-                ReceiptPanel.UpdateReceiptList();
-            } 
+                Storage.Instance.AddReceipt(receipt);
             else 
                 MessageBox.Show("Не удалось спарсить чек. Подробная запись в журнале.",
                     "", 0, MessageBoxImage.Error);
