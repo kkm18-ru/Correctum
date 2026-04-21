@@ -9,6 +9,10 @@ namespace Correctum.Core.Models
     public readonly struct Position
     {
         /// <summary>
+        /// Внутренний идентификатор
+        /// </summary>
+        public uint Id { get; init; }
+        /// <summary>
         /// Наименование предмета расчета
         /// </summary>
         public string? Name { get; init; }
@@ -40,5 +44,9 @@ namespace Correctum.Core.Models
         /// Стоимость предмета расчета с учетом скидок и наценок
         /// </summary>
         public Currency? Cost { get; init; }
+        /// <summary>
+        /// Внутренний идентификатор кассового чека
+        /// </summary>
+        public uint ReceiptId { get; init; }
     }
 }

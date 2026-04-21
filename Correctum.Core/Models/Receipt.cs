@@ -6,12 +6,12 @@ namespace Correctum.Core.Models
     /// <summary>
     /// Представляет кассовый чек
     /// </summary>
-    public readonly struct Receipt()
+    public readonly struct Receipt
     {
         /// <summary>
         /// Внутренний идентификатор
         /// </summary>
-        public Guid Id { get; } = Guid.CreateVersion7();
+        public uint Id { get; init; }
         /// <summary>
         /// Регистрационный номер ККТ
         /// </summary>
