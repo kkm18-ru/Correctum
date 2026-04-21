@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using RetailCorrector.UI.Windows;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -30,7 +29,7 @@ internal partial class Sqlite
             btn.Click += (_, _) =>
             {
                 var dialog = new OpenFileDialog();
-                if (dialog.ShowDialog(MainWindow.Instance) == true)
+                if (dialog.ShowDialog(Application.Current.MainWindow) == true)
                     Presenter.Path = dialog.FileName;
             };
             content.AddChild(btn, 4);

@@ -25,7 +25,7 @@ namespace RetailCorrector
             var info = Assembly.GetExecutingAssembly().GetName();
             Logger.Info("Запуск {Name} {Version}", info.Name, info.Version);
 
-            App.Instance.Run(UI.Windows.MainWindow.Instance);
+            App.Instance.Run(new Views.Windows.MainWindow());
         }
     }
 }

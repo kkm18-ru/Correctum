@@ -1,0 +1,47 @@
+﻿<DataGrid x:Class="RetailCorrector.Views.Controls.PositionGrid"
+          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:utils="clr-namespace:RetailCorrector.Utils"
+          xmlns:local="clr-namespace:RetailCorrector.Views.Controls"
+          xmlns:conv="clr-namespace:RetailCorrector.Converters"
+          CanUserDeleteRows="false" CanUserSortColumns="false" CanUserReorderColumns="false"
+          CanUserResizeColumns="false" CanUserResizeRows="false" AutoGenerateColumns="false"
+          HeadersVisibility="Column" IsReadOnly="True"
+          EnableColumnVirtualization="true" EnableRowVirtualization="true"
+          ScrollViewer.CanContentScroll="true"
+          ScrollViewer.IsDeferredScrollingEnabled="true"
+          VirtualizingPanel.IsVirtualizing="true"
+          VirtualizingPanel.IsVirtualizingWhenGrouping="true"
+          VirtualizingPanel.VirtualizationMode="Recycling"
+          FontFamily="{StaticResource jbmono}">
+    <DataGrid.Resources>
+        <conv:QuantityTextConverter x:Key="quantity"/>
+    </DataGrid.Resources>
+    <DataGrid.Columns>
+        <DataGridTextColumn Header="Наименование" Binding="{Binding Name}"/>
+        <DataGridComboBoxColumn Header="Тип субъекта" SelectedValueBinding="{Binding Type}"
+                                ItemsSource="{x:Static utils:EnumLocales.PositionTypes}"
+                                SelectedValuePath="Value" DisplayMemberPath="Locale"
+                                Width="172"/>
+        <DataGridComboBoxColumn Header="Метод расчета" SelectedValueBinding="{Binding CalcMethod}"
+                                ItemsSource="{x:Static utils:EnumLocales.PositionPayments}"
+                                SelectedValuePath="Value" DisplayMemberPath="Locale"
+                                Width="150"/>
+        <DataGridComboBoxColumn Header="Ставка НДС" SelectedValueBinding="{Binding TaxRate}"
+                                ItemsSource="{x:Static utils:EnumLocales.TaxRates}"
+                                SelectedValuePath="Value" DisplayMemberPath="Locale"
+                                Width="100"/>
+        <DataGridTextColumn Header="Цена"  Width="120"
+                            Binding="{Binding Price, StringFormat={}{0} руб.}"/>
+        <DataGridTextColumn Header="Количество" Width="120">
+            <DataGridTextColumn.Binding>
+                <MultiBinding Converter="{StaticResource quantity}">
+                    <Binding Path="Quantity"/>
+                    <Binding Path="Unit"/>
+                </MultiBinding>
+            </DataGridTextColumn.Binding>
+        </DataGridTextColumn>
+        <DataGridTextColumn Header="Стоимость"  Width="120"
+                            Binding="{Binding Cost, StringFormat={}{0} руб.}"/>
+    </DataGrid.Columns>
+</DataGrid>
