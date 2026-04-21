@@ -95,7 +95,7 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
 
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, \"{info.Name.Replace("\"", "\\\"")}\");");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, {info.Price});");
-        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, {RestoreDecimalAndToString(info.Quantity.Value, 3)});");
+        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, {info.Quantity:F3});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, {info.Cost});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_TAX_TYPE, {(int)info.TaxRate});");
         await writer.WriteLineAsync($"Fptr.setParam(2108, {(int)info.Unit});");
@@ -126,7 +126,4 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, {sum});");
         await writer.WriteLineAsync("Fptr.payment();");
     }
-
-    private static string RestoreDecimalAndToString(ulong optimized, int power) =>
-        Math.Round(optimized / Math.Pow(10.0, power), power).ToString(CultureInfo.InvariantCulture);
 }

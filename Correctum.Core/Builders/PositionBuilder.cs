@@ -27,7 +27,7 @@ namespace Correctum.Core.Builders
         private NDSRate? _ndsRate;
         private UnitOfMeasure? _uom;
         private Currency? _price;
-        private ulong? _quantity;
+        private decimal? _quantity;
         private Currency? _cost;
 
         /// <summary>

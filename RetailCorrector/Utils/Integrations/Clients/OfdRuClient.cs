@@ -139,7 +139,7 @@ file struct DocumentItem
 {
     public string Name { get; set; }
     public ulong Price { get; set; }
-    public double Quantity { get; set; }
+    public decimal Quantity { get; set; }
     public ulong Total { get; set; }
     public CalculationMethod CalculationMethod { get; set; }
     public string? ProductUnitOfMeasure { get; set; }
@@ -156,7 +156,7 @@ file struct DocumentItem
         {
             Name = Name,
             Price = Price,
-            Quantity = (ulong)(Quantity * 1000),
+            Quantity = Quantity,
             Cost = Total,
             CalcMethod = CalculationMethod,
             Unit = mu,

@@ -123,7 +123,7 @@ file static class SqliteExportViewModelTools
             parameters.Add("@TaxRate", (uint?)data.TaxRate, DbType.UInt32);
             parameters.Add("@Unit", (uint?)data.Unit, DbType.UInt32);
             parameters.Add("@Price", (ulong?)data.Price, DbType.UInt64);
-            parameters.Add("@Quantity", data.Quantity, DbType.UInt64);
+            parameters.Add("@Quantity", (ulong?)(data.Quantity*1000), DbType.UInt64);
             parameters.Add("@Cost", (ulong?)data.Cost, DbType.UInt64);
             parameters.Add("@ReceiptId", receiptId, DbType.UInt32);
             return conn.ExecuteAsync(Query, parameters, tr);

@@ -79,7 +79,7 @@ file readonly struct OfdRuJsonPosition
 {
     public string Name { get; init; }
     public ulong Price { get; init; }
-    public double Quantity { get; init; }
+    public decimal Quantity { get; init; }
     public ulong Total { get; init; }
     public int ProductUnitOfMeasure { get; init; }
     public int CalculationMethod { get; init; }
@@ -90,7 +90,7 @@ file readonly struct OfdRuJsonPosition
     {
         Name = json.Name,
         Price = json.Price,
-        Quantity = (ulong)(json.Quantity * 1000),
+        Quantity = json.Quantity,
         Cost = json.Total,
         Unit = (UnitOfMeasure)json.ProductUnitOfMeasure,
         CalcMethod = (CalculationMethod)json.CalculationMethod,

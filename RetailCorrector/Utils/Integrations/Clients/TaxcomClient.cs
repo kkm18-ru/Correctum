@@ -247,8 +247,8 @@ file readonly struct TaxcomDocumentResponse
     private Position ParsePosition(int index) => new()
     {
         Name = Details["1059"]?[index]?["1030"]?.GetValue<string>() ?? "",
-        Quantity = (ulong)Math.Round(double.Parse(Details["1059"]?[index]?["1023"]?.GetValue<string>() ?? "0",
-            NumberStyles.Float, CultureInfo.InvariantCulture) * 1000),
+        Quantity = decimal.Parse(Details["1059"]?[index]?["1023"]?.GetValue<string>() ?? "0",
+            NumberStyles.Float, CultureInfo.InvariantCulture),
         Price = Details["1059"]?[index]?["1079"]?.GetValue<ulong>() ?? 0,
         Cost = Details["1059"]?[index]?["1043"]?.GetValue<ulong>() ?? 0,
         Type = (PositionType?)Details["1059"]?[index]?["1212"]?.GetValue<int>() ?? 0,
