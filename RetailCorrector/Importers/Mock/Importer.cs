@@ -25,7 +25,7 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
             for(var j = 0; j < pos.Length; j++)
             {
                 var quantity = Math.Round(faker.Random.Decimal(1, 10), 3);
-                var price = faker.Random.ULong(100, 9999999);
+                var price = faker.Random.Decimal(1, 99999.99M);
                 pos[j] = new()
                 {
                     Name = faker.Commerce.ProductName(),
