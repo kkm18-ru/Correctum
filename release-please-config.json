@@ -7,6 +7,7 @@
         { "type": "fix", "hidden": false, "section": "🐞 Исправления" },
         { "type": "perf", "hidden": false, "section": "⚡ Улучшение производительности" },
         { "type": "revert", "hidden": false, "section": "⏪ Отмена изменений" },
+        { "type": "update", "hidden": false, "section": "⬆️ Обновления зависимостей" },
         { "type": "chore", "hidden": true, "section": "🔧 Прочее" },
         { "type": "test", "hidden": true, "section": "✅ Тесты" },
         { "type": "ci", "hidden": true, "section": "🤖 CI" },
