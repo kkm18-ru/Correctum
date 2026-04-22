@@ -4,6 +4,8 @@ using Correctum.Core.ValueObjects;
 using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -20,6 +22,39 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         using var resp = await Client.SendAsync(req, cancellationToken);
         await ThrowIfFailedStatusCodeAsync(resp);
     }
+
+    public async IAsyncEnumerable<Transaction> GetTransactionsAsync
+        (int kktId, DateTime fromDate, DateTime toDate, string drive, int size, 
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var builder = new StringBuilder();
+        builder.AppendFormat("/api/cp-ofd/kkms/{0}/transactions", kktId);
+        builder.AppendFormat("?fromDate={0}", fromDate.UnixTimestampMilliseconds);
+        builder.AppendFormat("&toDate={0}", toDate.UnixTimestampMilliseconds);
+        builder.AppendFormat("&fiscalDriveNumber={0}", drive);
+        builder.Append("&transactionTypes=TICKET,RECEIPT_CORRECTION");
+        builder.AppendFormat("&pageSize={0}", size);
+        var uri = builder.ToString();
+        int currPage = 1, countPages = 1;
+        bool needCalcPages = true;
+        while(currPage <= countPages)
+        {
+            using var resp = await Client.GetAsync($"{uri}&page={currPage}", cancellationToken);
+            await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
+            var data = await JsonSerializer.DeserializeAsync<TransactionInformation>
+                (stream, cancellationToken: cancellationToken);
+            foreach (var tr in data.transactions) yield return tr;
+            if (needCalcPages)
+            {
+                countPages = (int)Math.Ceiling(data.pagination.totalItems / (decimal)size);
+                needCalcPages = false;
+            }
+            currPage++;
+        }
+    }
+
+    public Task<Receipt> GetReceiptAsync(Transaction tr, CancellationToken cancellationToken = default) =>
+        GetReceiptAsync(tr.kkmId, tr.fiscalDriveNumber, tr.fiscalDocumentNumber, cancellationToken);
 
     public async Task<Receipt> GetReceiptAsync(string kktRegId, string fnId, uint docId, CancellationToken cancellationToken = default)
     {
@@ -56,7 +91,16 @@ public class FirstOfdException : HttpRequestException
 }
 
 [method: JsonConstructor]
-internal readonly record struct TicketInformation(Ticket ticket, string ticketDescription, string orgTitle, string orgId, string retailPlaceAddress, string kkmSerialNumber, string kkmFnsId, object kkmExtraInfo, string fnsFlcStatus);
+public readonly record struct TransactionInformation(TransactionPagination pagination, Transaction[] transactions);
+
+[method: JsonConstructor]
+public readonly record struct TransactionPagination(uint totalItems);
+
+[method: JsonConstructor]
+public readonly record struct Transaction(string kkmId, string fiscalDriveNumber, uint fiscalDocumentNumber);
+
+[method: JsonConstructor]
+internal readonly record struct TicketInformation(Ticket ticket);
 
 [method: JsonConstructor]
 internal readonly record struct Ticket(
