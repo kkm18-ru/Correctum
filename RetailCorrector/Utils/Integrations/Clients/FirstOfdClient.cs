@@ -23,12 +23,26 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         await ThrowIfFailedStatusCodeAsync(resp);
     }
 
-    public async IAsyncEnumerable<Transaction> GetTransactionsAsync
-        (int kktId, DateTime fromDate, DateTime toDate, string drive, int size, 
+    public async Task<FirstOfdKkt[]> GetKktsAsync(int orgId, CancellationToken cancellationToken = default)
+    {
+        using var req = new HttpRequestMessage(HttpMethod.Post, $"/api/cp-ofd/retail-places/filter-retail-place/{orgId}")
+        {
+            Content = new StringContent("{}")
+        };
+        using var resp = await Client.SendAsync(req, cancellationToken);
+        await ThrowIfFailedStatusCodeAsync(resp);
+        await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
+        var content = await JsonSerializer.DeserializeAsync<RetailPlaceDetails>
+            (stream, cancellationToken: cancellationToken);
+        return content.kkms;
+    }
+
+    public async IAsyncEnumerable<FirstOfdTransaction> GetTransactionsAsync
+        (FirstOfdKkt kktId, DateTime fromDate, DateTime toDate, string drive, int size, 
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var builder = new StringBuilder();
-        builder.AppendFormat("/api/cp-ofd/kkms/{0}/transactions", kktId);
+        builder.AppendFormat("/api/cp-ofd/kkms/{0}/transactions", kktId.id);
         builder.AppendFormat("?fromDate={0}", fromDate.UnixTimestampMilliseconds);
         builder.AppendFormat("&toDate={0}", toDate.UnixTimestampMilliseconds);
         builder.AppendFormat("&fiscalDriveNumber={0}", drive);
@@ -40,6 +54,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         while(currPage <= countPages)
         {
             using var resp = await Client.GetAsync($"{uri}&page={currPage}", cancellationToken);
+            await ThrowIfFailedStatusCodeAsync(resp);
             await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
             var data = await JsonSerializer.DeserializeAsync<TransactionInformation>
                 (stream, cancellationToken: cancellationToken);
@@ -53,7 +68,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         }
     }
 
-    public Task<Receipt> GetReceiptAsync(Transaction tr, CancellationToken cancellationToken = default) =>
+    public Task<Receipt> GetReceiptAsync(FirstOfdTransaction tr, CancellationToken cancellationToken = default) =>
         GetReceiptAsync(tr.kkmId, tr.fiscalDriveNumber, tr.fiscalDocumentNumber, cancellationToken);
 
     public async Task<Receipt> GetReceiptAsync(string kktRegId, string fnId, uint docId, CancellationToken cancellationToken = default)
@@ -76,6 +91,15 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
     }
 }
 
+[method: JsonConstructor]
+internal readonly record struct RetailPlaceDetails(FirstOfdKkt[] kkms);
+
+[method: JsonConstructor]
+public readonly record struct FirstOfdKkt(int id, string fnsKkmId)
+{
+    public override string ToString() => fnsKkmId;
+}
+
 internal readonly record struct FirstOfdAuthRequest(string login, string password);
 
 public class FirstOfdException : HttpRequestException
@@ -91,13 +115,13 @@ public class FirstOfdException : HttpRequestException
 }
 
 [method: JsonConstructor]
-public readonly record struct TransactionInformation(TransactionPagination pagination, Transaction[] transactions);
+internal readonly record struct TransactionInformation(TransactionPagination pagination, FirstOfdTransaction[] transactions);
 
 [method: JsonConstructor]
-public readonly record struct TransactionPagination(uint totalItems);
+internal readonly record struct TransactionPagination(uint totalItems);
 
 [method: JsonConstructor]
-public readonly record struct Transaction(string kkmId, string fiscalDriveNumber, uint fiscalDocumentNumber);
+public readonly record struct FirstOfdTransaction(string kkmId, string fiscalDriveNumber, uint fiscalDocumentNumber);
 
 [method: JsonConstructor]
 internal readonly record struct TicketInformation(Ticket ticket);
