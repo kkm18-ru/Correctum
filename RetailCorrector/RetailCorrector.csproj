@@ -32,7 +32,7 @@
 		<PackageReference Include="Dapper" Version="2.1.72" />
 		<PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.5.0" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
 		<PackageReference Include="NLog" Version="6.1.2" />
 		<PackageReference Include="NLog.Targets.Loki" Version="2.4.0" />
