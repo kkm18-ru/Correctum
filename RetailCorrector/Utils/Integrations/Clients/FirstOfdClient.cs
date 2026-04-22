@@ -47,15 +47,25 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         return content.kkms;
     }
 
+    public async Task<FirstOfdFiscalDrive[]> GetFiscalDrivesAsync(FirstOfdKkt kkt, CancellationToken cancellationToken = default)
+    {
+        using var resp = await Client.GetAsync($"/api/cp-ofd/kkms/{kkt.id}/fiscal-drives", cancellationToken);
+        await ThrowIfFailedStatusCodeAsync(resp);
+        await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
+        var content = JsonSerializer.DeserializeAsyncEnumerable<FirstOfdFiscalDrive>
+            (stream, cancellationToken: cancellationToken);
+        return await content.ToArrayAsync(cancellationToken);
+    }
+
     public async IAsyncEnumerable<FirstOfdTransaction> GetTransactionsAsync
-        (FirstOfdKkt kktId, DateTime fromDate, DateTime toDate, string drive, int size, 
+        (FirstOfdKkt kkt, DateTime fromDate, DateTime toDate, FirstOfdFiscalDrive drive, int size, 
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var builder = new StringBuilder();
-        builder.AppendFormat("/api/cp-ofd/kkms/{0}/transactions", kktId.id);
+        builder.AppendFormat("/api/cp-ofd/kkms/{0}/transactions", kkt.id);
         builder.AppendFormat("?fromDate={0}", fromDate.UnixTimestampMilliseconds);
         builder.AppendFormat("&toDate={0}", toDate.UnixTimestampMilliseconds);
-        builder.AppendFormat("&fiscalDriveNumber={0}", drive);
+        builder.AppendFormat("&fiscalDriveNumber={0}", drive.number);
         builder.Append("&transactionTypes=TICKET,RECEIPT_CORRECTION");
         builder.AppendFormat("&pageSize={0}", size);
         var uri = builder.ToString();
@@ -100,6 +110,9 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         throw exc ?? new HttpRequestException("Неизвестная ошибка сервера.", null, resp.StatusCode);
     }
 }
+
+[method: JsonConstructor]
+public readonly record struct FirstOfdFiscalDrive(string number, DateTime? activationDate, DateTime? expireDate, DateTime? closeArchiveDate);
 
 [method: JsonConstructor]
 internal readonly record struct FirstOfdRetailPlace(int id);
