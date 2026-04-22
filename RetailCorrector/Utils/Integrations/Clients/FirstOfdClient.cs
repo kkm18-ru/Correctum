@@ -23,9 +23,19 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         await ThrowIfFailedStatusCodeAsync(resp);
     }
 
-    public async Task<FirstOfdKkt[]> GetKktsAsync(int orgId, CancellationToken cancellationToken = default)
+    public async Task<int[]> GetRetailPlaceIdsAsync(CancellationToken cancellationToken = default)
     {
-        using var req = new HttpRequestMessage(HttpMethod.Post, $"/api/cp-ofd/retail-places/filter-retail-place/{orgId}")
+        using var resp = await Client.GetAsync("/api/cp-ofd/retail-places/without-group", cancellationToken);
+        await ThrowIfFailedStatusCodeAsync(resp);
+        await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
+        var content = JsonSerializer.DeserializeAsyncEnumerable<RetailPlace>
+            (stream, cancellationToken: cancellationToken);
+        return await content.Select(c => c.id).ToArrayAsync();
+    }
+
+    public async Task<FirstOfdKkt[]> GetKktsAsync(int placeId, CancellationToken cancellationToken = default)
+    {
+        using var req = new HttpRequestMessage(HttpMethod.Post, $"/api/cp-ofd/retail-places/filter-retail-place/{placeId}")
         {
             Content = new StringContent("{}")
         };
@@ -90,6 +100,9 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         throw exc ?? new HttpRequestException("Неизвестная ошибка сервера.", null, resp.StatusCode);
     }
 }
+
+[method: JsonConstructor]
+internal readonly record struct RetailPlace(int id);
 
 [method: JsonConstructor]
 internal readonly record struct RetailPlaceDetails(FirstOfdKkt[] kkms);
