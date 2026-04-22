@@ -37,7 +37,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
     {
         using var req = new HttpRequestMessage(HttpMethod.Post, $"/api/cp-ofd/retail-places/filter-retail-place/{placeId}")
         {
-            Content = new StringContent("{}")
+            Content = new StringContent("{}", Encoding.UTF8, "application/json")
         };
         using var resp = await Client.SendAsync(req, cancellationToken);
         await ThrowIfFailedStatusCodeAsync(resp);
