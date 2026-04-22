@@ -10,16 +10,16 @@ namespace RetailCorrector.Utils
         {
             get
             {
-                if(field is not null) return field;
+                if (field is not null) return field;
                 if (!File.Exists(FileName))
                 {
                     Logger.Warn("Файл конфигурации отсутствует!");
-                    return field = new Configuration(); 
+                    return field = new Configuration();
                 }
-                if (!Toml.TryToModel<Configuration>(File.ReadAllText(FileName), out var conf, out var errors))
+                if (!TomlSerializer.TryDeserialize<Configuration>(File.ReadAllText(FileName), out var conf))
                 {
-                    Logger.Error("Не удалось выполнить загрузку конфигурации: {Errors}", errors);
-                    return field = new Configuration(); 
+                    Logger.Error("Не удалось выполнить загрузку конфигурации.");
+                    return field = new Configuration();
                 }
                 Logger.Info("Файл конфигурации загружен!");
                 return field = conf;
@@ -38,7 +38,7 @@ namespace RetailCorrector.Utils
 
         public void Save()
         {
-            File.WriteAllText(FileName, Toml.FromModel(this));
+            File.WriteAllText(FileName, TomlSerializer.Serialize(this));
             Logger.Info("Конфигурация сохранена!");
         }
     }
