@@ -18,7 +18,9 @@ public abstract class ResilienceApiClient
             }).Build();
         var httpHandler = new SocketsHttpHandler
         {
-            PooledConnectionLifetime = TimeSpan.FromMinutes(10)
+            PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+            CookieContainer = new(),
+            UseCookies = true
         };
         return new ResilienceHandler(retryPipeline) { InnerHandler = httpHandler };
     }
