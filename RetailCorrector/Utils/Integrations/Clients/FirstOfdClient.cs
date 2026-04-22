@@ -28,7 +28,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         using var resp = await Client.GetAsync("/api/cp-ofd/retail-places/without-group", cancellationToken);
         await ThrowIfFailedStatusCodeAsync(resp);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
-        var content = JsonSerializer.DeserializeAsyncEnumerable<RetailPlace>
+        var content = JsonSerializer.DeserializeAsyncEnumerable<FirstOfdRetailPlace>
             (stream, cancellationToken: cancellationToken);
         return await content.Select(c => c.id).ToArrayAsync();
     }
@@ -42,7 +42,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         using var resp = await Client.SendAsync(req, cancellationToken);
         await ThrowIfFailedStatusCodeAsync(resp);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
-        var content = await JsonSerializer.DeserializeAsync<RetailPlaceDetails>
+        var content = await JsonSerializer.DeserializeAsync<FirstOfdRetailPlaceDetails>
             (stream, cancellationToken: cancellationToken);
         return content.kkms;
     }
@@ -66,7 +66,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
             using var resp = await Client.GetAsync($"{uri}&page={currPage}", cancellationToken);
             await ThrowIfFailedStatusCodeAsync(resp);
             await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
-            var data = await JsonSerializer.DeserializeAsync<TransactionInformation>
+            var data = await JsonSerializer.DeserializeAsync<FirstOfdTransactionInformation>
                 (stream, cancellationToken: cancellationToken);
             foreach (var tr in data.transactions) yield return tr;
             if (needCalcPages)
@@ -87,7 +87,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         using var resp = await Client.GetAsync(path, cancellationToken);
         await ThrowIfFailedStatusCodeAsync(resp);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
-        var data = await JsonSerializer.DeserializeAsync<TicketInformation>
+        var data = await JsonSerializer.DeserializeAsync<FirstOfdTicketInformation>
             (stream, cancellationToken: cancellationToken);
         return FirstOfdHelper.ToReceipt(data.ticket);
     }
@@ -102,10 +102,10 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
 }
 
 [method: JsonConstructor]
-internal readonly record struct RetailPlace(int id);
+internal readonly record struct FirstOfdRetailPlace(int id);
 
 [method: JsonConstructor]
-internal readonly record struct RetailPlaceDetails(FirstOfdKkt[] kkms);
+internal readonly record struct FirstOfdRetailPlaceDetails(FirstOfdKkt[] kkms);
 
 [method: JsonConstructor]
 public readonly record struct FirstOfdKkt(int id, string fnsKkmId)
@@ -128,20 +128,20 @@ public class FirstOfdException : HttpRequestException
 }
 
 [method: JsonConstructor]
-internal readonly record struct TransactionInformation(TransactionPagination pagination, FirstOfdTransaction[] transactions);
+internal readonly record struct FirstOfdTransactionInformation(FirstOfdTransactionPagination pagination, FirstOfdTransaction[] transactions);
 
 [method: JsonConstructor]
-internal readonly record struct TransactionPagination(uint totalItems);
+internal readonly record struct FirstOfdTransactionPagination(uint totalItems);
 
 [method: JsonConstructor]
 public readonly record struct FirstOfdTransaction(string kkmId, string fiscalDriveNumber, uint fiscalDocumentNumber);
 
 [method: JsonConstructor]
-internal readonly record struct TicketInformation(Ticket ticket);
+internal readonly record struct FirstOfdTicketInformation(FirstOfdTicket ticket);
 
 [method: JsonConstructor]
-internal readonly record struct Ticket(
-    TicketItem[] items,
+internal readonly record struct FirstOfdTicket(
+    FirstOfdTicketItem[] items,
     int taxationType,
     int requestNumber,
     //int operationType, todo использовать его когда будут лучше известны значение (2 - приход)
@@ -160,7 +160,7 @@ internal readonly record struct Ticket(
     JsonElement options);
 
 [method: JsonConstructor]
-internal readonly record struct TicketItem(
+internal readonly record struct FirstOfdTicketItem(
     string name,
     int calculationSubjectSign,
     int calculationTypeSign,
@@ -172,7 +172,7 @@ internal readonly record struct TicketItem(
 
 internal static class FirstOfdHelper
 {
-    public static Receipt ToReceipt(Ticket ticket) => new()
+    public static Receipt ToReceipt(FirstOfdTicket ticket) => new()
     {
         /* todo
         Type = ticket.operationType switch
@@ -203,11 +203,11 @@ internal static class FirstOfdHelper
         BuyerContact = ""
     };
 
-    public static Position ToPosition(TicketItem item)
+    public static Position ToPosition(FirstOfdTicketItem item)
     {
         if (item.quantity < 0)
             throw new ArgumentOutOfRangeException
-                ($"{nameof(item)}.{nameof(TicketItem.quantity)}");
+                ($"{nameof(item)}.{nameof(FirstOfdTicketItem.quantity)}");
         return new()
         {
             Name = item.name,
