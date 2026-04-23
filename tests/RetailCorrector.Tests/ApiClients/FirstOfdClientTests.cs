@@ -11,6 +11,8 @@ public sealed partial class FirstOfdClientTests
     const string Login = "admin";
     const string Password = "passwd";
 
+    const int RetailPlaceId = 1;
+
     [OneTimeSetUp] public static void Setup()
     {
         _server = WireMockServer.Start();

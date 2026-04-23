@@ -1,5 +1,4 @@
 ﻿using RetailCorrector.Utils.Integrations.Clients;
-using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -19,7 +18,7 @@ partial class FirstOfdClientTests
             .WithBody($$"""
                 [
                   {
-                    "id": 123,
+                    "id": {{RetailPlaceId}},
                     "title": "",
                     "address": "",
                     "addressObj": {
@@ -66,7 +65,7 @@ partial class FirstOfdClientTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(ids, Has.Length.EqualTo(1));
-            Assert.That(ids[0], Is.EqualTo(123));
+            Assert.That(ids[0], Is.EqualTo(RetailPlaceId));
         }
     }
 
