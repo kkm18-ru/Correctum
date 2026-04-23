@@ -108,16 +108,16 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
 
     internal static async Task PaymentAsync(StreamWriter writer, Payment info)
     {
-        await PaymentAsync(writer, "LIBFPTR_PT_CASH", info.CashSum.Value);
-        await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", info.NonCashSum.Value);
-        await PaymentAsync(writer, "LIBFPTR_PT_PREPAID", info.AdvanceSum.Value);
-        await PaymentAsync(writer, "LIBFPTR_PT_CREDIT", info.CreditSum.Value);
-        await PaymentAsync(writer, "LIBFPTR_PT_OTHER", info.ProvisionSum.Value);
+        await PaymentAsync(writer, "LIBFPTR_PT_CASH", info.CashSum);
+        await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", info.NonCashSum);
+        await PaymentAsync(writer, "LIBFPTR_PT_PREPAID", info.AdvanceSum);
+        await PaymentAsync(writer, "LIBFPTR_PT_CREDIT", info.CreditSum);
+        await PaymentAsync(writer, "LIBFPTR_PT_OTHER", info.ProvisionSum);
     }
 
-    private static async Task PaymentAsync(StreamWriter writer, string type, Currency sum)
+    private static async Task PaymentAsync(StreamWriter writer, string type, Currency? sum)
     {
-        if ((ulong)sum == 0) return;
+        if (sum is null || (ulong)sum == 0) return;
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.{type});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, {sum});");
         await writer.WriteLineAsync("Fptr.payment();");

@@ -358,7 +358,7 @@ public class Fptr120ExportViewModelTests :
 
     #endregion
 
-    [Test] public void CorrectReceipt()
+    [Test] public async Task CorrectReceipt()
     {
         var position1 = new Position
         {
@@ -399,8 +399,7 @@ public class Fptr120ExportViewModelTests :
         };
 
         var path = GenPath();
-        var task = ViewModel.Export(path, [receipt]);
-        Assert.DoesNotThrowAsync(task.AsTask);
+        await ViewModel.Export(path, [receipt]);
         var fileContent = File.ReadAllText(path);
         const string expectedScript = """            
             Fptr.setParam(1178, new Date("2020-12-31T13:35:59"));
