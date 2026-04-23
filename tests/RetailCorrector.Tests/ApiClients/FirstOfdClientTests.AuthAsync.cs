@@ -16,7 +16,7 @@ partial class FirstOfdClientTests
             .WithBodyAsJson(new FirstOfdAuthRequest(Login, Password)))
             .AtPriority(1)
             .RespondWith(Response.Create().WithStatusCode(200)
-            .WithHeader("Set-Cookie", $"PLAY_SESSION={SessionToken}")
+            .WithHeader("Set-Cookie", $"PLAY_SESSION={SessionToken}; Path=/; Domain=localhost")
             .WithBodyAsJson(new { authToken = SessionToken }));
 
         // Выдаёт ошибку (некорректные данные)
@@ -86,7 +86,7 @@ partial class FirstOfdClientTests
             Assert.That(exc.MessageId, Is.EqualTo("method.arguments.error"));
             Assert.That(exc.LocalizedMessage, Is.EqualTo("Проверьте правильность данных"));
             Assert.That(exc.Payload, Is.Not.Null);
-            Assert.That(exc.Payload?.fieldErrors.Length, Is.EqualTo(1));
+            Assert.That(exc.Payload?.fieldErrors, Has.Length.EqualTo(1));
             Assert.That(exc.Payload?.fieldErrors[0].field, Is.EqualTo("login"));
             Assert.That(exc.Payload?.fieldErrors[0].value, Is.EqualTo(""));
             Assert.That(exc.Payload?.fieldErrors[0].message, Is.EqualTo("NotBlank"));
@@ -104,7 +104,7 @@ partial class FirstOfdClientTests
             Assert.That(exc.MessageId, Is.EqualTo("method.arguments.error"));
             Assert.That(exc.LocalizedMessage, Is.EqualTo("Проверьте правильность данных"));
             Assert.That(exc.Payload, Is.Not.Null);
-            Assert.That(exc.Payload?.fieldErrors.Length, Is.EqualTo(1));
+            Assert.That(exc.Payload?.fieldErrors, Has.Length.EqualTo(1));
             Assert.That(exc.Payload?.fieldErrors[0].field, Is.EqualTo("password"));
             Assert.That(exc.Payload?.fieldErrors[0].value, Is.EqualTo(""));
             Assert.That(exc.Payload?.fieldErrors[0].message, Is.EqualTo("NotBlank"));
@@ -122,7 +122,7 @@ partial class FirstOfdClientTests
             Assert.That(exc.MessageId, Is.EqualTo("method.arguments.error"));
             Assert.That(exc.LocalizedMessage, Is.EqualTo("Проверьте правильность данных"));
             Assert.That(exc.Payload, Is.Not.Null);
-            Assert.That(exc.Payload?.fieldErrors.Length, Is.EqualTo(2));
+            Assert.That(exc.Payload?.fieldErrors, Has.Length.EqualTo(2));
             Assert.That(exc.Payload?.fieldErrors[0].field, Is.EqualTo("login"));
             Assert.That(exc.Payload?.fieldErrors[0].value, Is.EqualTo(""));
             Assert.That(exc.Payload?.fieldErrors[0].message, Is.EqualTo("NotBlank"));
