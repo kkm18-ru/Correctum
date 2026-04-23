@@ -15,6 +15,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
 {
     public async Task AuthAsync(string login, string password, CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         using var req = new HttpRequestMessage(HttpMethod.Post, "/api/cp-core/user/login")
         {
             Content = JsonContent.Create(new FirstOfdAuthRequest(login, password))
@@ -25,6 +26,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
 
     public async Task<int[]> GetRetailPlaceIdsAsync(CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         using var resp = await Client.GetAsync("/api/cp-ofd/retail-places/without-group", cancellationToken);
         await ThrowIfFailedStatusCodeAsync(resp);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
@@ -35,6 +37,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
 
     public async Task<FirstOfdKkt[]> GetKktsAsync(int placeId, CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         using var req = new HttpRequestMessage(HttpMethod.Post, $"/api/cp-ofd/retail-places/filter-retail-place/{placeId}")
         {
             Content = new StringContent("{}", Encoding.UTF8, "application/json")
@@ -49,6 +52,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
 
     public async Task<FirstOfdFiscalDrive[]> GetFiscalDrivesAsync(FirstOfdKkt kkt, CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         using var resp = await Client.GetAsync($"/api/cp-ofd/kkms/{kkt.id}/fiscal-drives", cancellationToken);
         await ThrowIfFailedStatusCodeAsync(resp);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
@@ -61,6 +65,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         (FirstOfdKkt kkt, DateTime fromDate, DateTime toDate, FirstOfdFiscalDrive drive, int size, 
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         var builder = new StringBuilder();
         builder.AppendFormat("/api/cp-ofd/kkms/{0}/transactions", kkt.id);
         builder.AppendFormat("?fromDate={0}", fromDate.UnixTimestampMilliseconds);
@@ -93,6 +98,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
 
     public async Task<Receipt> GetReceiptAsync(string kktRegId, string fnId, uint docId, CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         var path = string.Format("/api/cp-ofd/ticket/{0}_{1}_{2}", kktRegId, fnId, docId);
         using var resp = await Client.GetAsync(path, cancellationToken);
         await ThrowIfFailedStatusCodeAsync(resp);

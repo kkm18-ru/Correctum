@@ -31,7 +31,7 @@ public abstract class ApiClient<TClient>(string host): ResilienceApiClient, IDis
     where TClient: ApiClient<TClient>
 {
     protected readonly HttpClient Client = new(Handler, disposeHandler: false) { BaseAddress = new Uri(host) };
-    private bool _disposed;
+    protected bool _disposed;
 
 
     public void Dispose()
