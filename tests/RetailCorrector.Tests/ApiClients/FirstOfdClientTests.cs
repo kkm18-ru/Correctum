@@ -14,6 +14,8 @@ public sealed partial class FirstOfdClientTests
     const string Password = "passwd";
 
     const int RetailPlaceId = 1;
+    const int KktId = 2;
+    const string KktRegId = "1234567890123456";
 
     [OneTimeSetUp] public static void Setup()
     {
@@ -21,6 +23,7 @@ public sealed partial class FirstOfdClientTests
         _server = WireMockServer.Start();
         InitAuthAsync();
         InitGetRetailPlaceIdsAsync();
+        InitGetKktsAsync();
     }
 
     [OneTimeTearDown] public static void Teardown()

@@ -1,4 +1,5 @@
 ﻿using RetailCorrector.Utils.Integrations.Clients;
+using System.Globalization;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -33,15 +34,15 @@ partial class FirstOfdClientTests
                       "house": "{{_faker.Address.BuildingNumber()}}",
                       "housing": null,
                       "apartment": null,
-                      "latitude": {{_faker.Address.Latitude()}},
-                      "longitude": {{_faker.Address.Longitude()}},
+                      "latitude": {{_faker.Address.Latitude().ToString(CultureInfo.InvariantCulture)}},
+                      "longitude": {{_faker.Address.Longitude().ToString(CultureInfo.InvariantCulture)}},
                       "precision": "NUMBER",
                       "fiasLevel": "EMPTY",
                       "unparsedPart": null,
                       "strict": false
                     },
-                    "longitude": {{_faker.Address.Longitude()}},
-                    "latitude": {{_faker.Address.Latitude()}},
+                    "longitude": {{_faker.Address.Longitude().ToString(CultureInfo.InvariantCulture)}},
+                    "latitude": {{_faker.Address.Latitude().ToString(CultureInfo.InvariantCulture)}},
                     "kkms": [],
                     "kkmsOnlineCount": null,
                     "kkmsStats": null,
