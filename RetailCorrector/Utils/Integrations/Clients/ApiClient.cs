@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Http.Resilience;
 using Polly;
+using System.Net;
 using System.Net.Http;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
@@ -43,8 +44,18 @@ public abstract class ApiClient<TClient>(string host): ResilienceApiClient, IDis
     {
         if (_disposed) return;
         Client.Dispose();
-        if(disposing)
+        ClearCookies();
+        if (disposing)
             _disposed = true;
+    }
+
+    private static void ClearCookies()
+    {
+        var resilienceHandler = (ResilienceHandler)Handler;
+        var handler = (SocketsHttpHandler)resilienceHandler.InnerHandler!;
+        var container = handler.CookieContainer;
+        foreach (Cookie cookie in container.GetAllCookies())
+            cookie.Expired = true;
     }
 
     protected void ThrowIfDisposed()
