@@ -106,8 +106,8 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
     {
         if (resp.IsSuccessStatusCode) return;
         await using var stream = await resp.Content.ReadAsStreamAsync(CancellationToken.None);
-        var exc = await JsonSerializer.DeserializeAsync<FirstOfdException>(stream, cancellationToken: CancellationToken.None);
-        throw exc ?? new HttpRequestException("Неизвестная ошибка сервера.", null, resp.StatusCode);
+        var exc = await JsonSerializer.DeserializeAsync<FirstOfdError?>(stream, cancellationToken: CancellationToken.None);
+        throw exc?.ToException() ?? new HttpRequestException("Неизвестная ошибка сервера.", null, resp.StatusCode);
     }
 }
 
@@ -128,11 +128,22 @@ public readonly record struct FirstOfdKkt(int id, string fnsKkmId)
 
 internal readonly record struct FirstOfdAuthRequest(string login, string password);
 
+[method: JsonConstructor]
+internal readonly record struct FirstOfdError(string message, string localizedMessage, FirstOfdErrorPayload? payload)
+{
+    public FirstOfdException ToException() => new()
+    {
+        MessageId = message,
+        LocalizedMessage = localizedMessage,
+        Payload = payload
+    };
+}
+
 public class FirstOfdException : HttpRequestException
 {
-    [JsonPropertyName("message")] public string MessageId { get; set; }
-    [JsonPropertyName("localizedMessage")] public string LocalizedMessage { get; set; }
-    [JsonPropertyName("payload")] public object? Payload { get; set; }
+    public string MessageId { get; set; }
+    public string LocalizedMessage { get; set; }
+    internal FirstOfdErrorPayload? Payload { get; set; }
 
     public override string ToString() => 
         string.IsNullOrWhiteSpace(LocalizedMessage) 
@@ -234,3 +245,8 @@ internal static class FirstOfdHelper
         };
     }
 }
+
+[method: JsonConstructor]
+internal readonly record struct FirstOfdErrorPayload(FirstOfdFieldError[] fieldErrors);
+[method: JsonConstructor]
+internal readonly record struct FirstOfdFieldError(string field, string value, string message, string localizedMessage);
