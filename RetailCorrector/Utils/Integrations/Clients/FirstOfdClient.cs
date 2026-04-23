@@ -32,7 +32,7 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
         await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken);
         var content = JsonSerializer.DeserializeAsyncEnumerable<FirstOfdRetailPlace>
             (stream, cancellationToken: cancellationToken);
-        return await content.Select(c => c.id).ToArrayAsync();
+        return await content.Select(c => c.id).ToArrayAsync(cancellationToken);
     }
 
     public async Task<FirstOfdKkt[]> GetKktsAsync(int placeId, CancellationToken cancellationToken = default)
