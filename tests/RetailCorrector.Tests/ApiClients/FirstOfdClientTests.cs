@@ -16,6 +16,10 @@ public sealed partial class FirstOfdClientTests
     const int RetailPlaceId = 1;
     const int KktId = 2;
     const string KktRegId = "1234567890123456";
+    const string DriveNum = "2345678901234561";
+    const string DriveActivation = "2021-01-04T07:10:13";
+    const string DriveArchive = "2022-02-05T08:11:14";
+    const string DriveExpire = "2023-03-06T09:12:15";
 
     [OneTimeSetUp] public static void Setup()
     {
@@ -24,6 +28,7 @@ public sealed partial class FirstOfdClientTests
         InitAuthAsync();
         InitGetRetailPlaceIdsAsync();
         InitGetKktsAsync();
+        InitGetFiscalDrivesAsync();
     }
 
     [OneTimeTearDown] public static void Teardown()
