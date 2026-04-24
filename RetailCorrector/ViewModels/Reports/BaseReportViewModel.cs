@@ -23,11 +23,10 @@ public abstract class BaseReportViewModel : BaseViewModel
 
     protected BaseReportViewModel()
     {
-        ExportCommand = new RelayCommand(_ => Export(), _ => Items.Count > 0 && !IsBusy);
-        RefreshCommand = new RelayCommand(_ => Refresh(), _ => !IsBusy);
-        AutoGeneratingColumnCommand = new RelayCommand(a =>
+        ExportCommand = new RelayCommand(Export, () => Items.Count > 0 && !IsBusy);
+        RefreshCommand = new RelayCommand(Refresh, () => !IsBusy);
+        AutoGeneratingColumnCommand = new RelayCommand<DataGridAutoGeneratingColumnEventArgs>(e =>
         {
-            var e = (DataGridAutoGeneratingColumnEventArgs)a!;
             if (ColumnDisplayNames.TryGetValue(e.PropertyName, out var header))
                 e.Column.Header = header;
         });

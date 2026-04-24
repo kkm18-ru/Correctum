@@ -7,10 +7,12 @@ namespace RetailCorrector.ViewModels
 {
     public sealed class MainWindowViewModel : BaseViewModel
     {
-        public ICommand PasteCommand { get; } = new RelayCommand(_ =>
+        public ICommand PasteCommand { get; } = new RelayCommand(ShowPasteReceipt);
+
+        private static void ShowPasteReceipt()
         {
             if (!Clipboard.ContainsText()) return;
             new ParserWindow(Clipboard.GetText()).Show();
-        });
+        }
     }
 }

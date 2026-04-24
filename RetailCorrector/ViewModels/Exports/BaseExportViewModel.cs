@@ -17,7 +17,7 @@ public abstract class BaseExportViewModel : BaseViewModel
 
     protected BaseExportViewModel()
     {
-        ExportCommand = new RelayCommand(async _ => await ExportAsync());
+        ExportCommand = new RelayCommand(Export);
     }
 
     protected void ShowNotification(string message, string caption = "", MessageBoxImage image = 0, MessageBoxButton button = 0) =>
@@ -25,7 +25,7 @@ public abstract class BaseExportViewModel : BaseViewModel
 
     protected abstract Task<bool> InternalExportAsync();
 
-    public async Task ExportAsync()
+    public async void Export()
     {
         try
         {

@@ -30,21 +30,21 @@ namespace RetailCorrector.ViewModels
 
         public ReceiptGridViewModel()
         {
-            RefreshCommand = new RelayCommand(_ => Storage.Instance.UpdateReceiptData(CurrentPage, 100), null);
-            FirstPageCommand = new RelayCommand(_ =>
+            RefreshCommand = new RelayCommand(() => Storage.Instance.UpdateReceiptData(CurrentPage, 100), null);
+            FirstPageCommand = new RelayCommand(() =>
             {
                 CurrentPage = 1;
                 Storage.Instance.UpdateReceiptData(CurrentPage, 100);
-            }, _ => CurrentPage > 1);
-            PrevPageCommand = new RelayCommand(_ => Storage.Instance.UpdateReceiptData(--CurrentPage, 100), 
-                _ => CurrentPage > 1);
-            NextPageCommand = new RelayCommand(_ => Storage.Instance.UpdateReceiptData(++CurrentPage, 100), 
-                _ => CurrentPage < CountPage);
-            LastPageCommand = new RelayCommand(_ =>
+            }, () => CurrentPage > 1);
+            PrevPageCommand = new RelayCommand(() => Storage.Instance.UpdateReceiptData(--CurrentPage, 100), 
+                () => CurrentPage > 1);
+            NextPageCommand = new RelayCommand(() => Storage.Instance.UpdateReceiptData(++CurrentPage, 100), 
+                () => CurrentPage < CountPage);
+            LastPageCommand = new RelayCommand(() =>
             {
                 CurrentPage = CountPage;
                 Storage.Instance.UpdateReceiptData(CurrentPage, 100);
-            }, _ => CurrentPage < CountPage);
+            }, () => CurrentPage < CountPage);
         }
     }
 }

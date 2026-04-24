@@ -9,6 +9,6 @@ internal class ImportMenuItem : MenuItem
     public ImportMenuItem(IImporter importer)
     {
         Header = importer.Name;
-        Command = new RelayCommand(_ => importer.Show());
+        Command = new RelayCommand(importer.Show);
     }
 }

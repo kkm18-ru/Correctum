@@ -19,10 +19,10 @@ internal partial class FirstOfd : ImporterBase<FirstOfd, FirstOfd.View>
     public FirstOfd()
     {
         Client = new FirstOfdClient();
-        AuthCommand = new RelayCommand(AuthAsync, _ => !(Authorizing || string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password)));
+        AuthCommand = new RelayCommand(AuthAsync, () => !(Authorizing || string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password)));
     }
 
-    protected internal async void AuthAsync(object? _)
+    protected internal async void AuthAsync()
     {
         try
         {
