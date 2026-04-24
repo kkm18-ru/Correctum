@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Http.Resilience;
 using Polly;
+using System.Net;
 using System.Net.Http;
 
 namespace RetailCorrector.Utils.Integrations.Clients;
@@ -18,7 +19,9 @@ public abstract class ResilienceApiClient
             }).Build();
         var httpHandler = new SocketsHttpHandler
         {
-            PooledConnectionLifetime = TimeSpan.FromMinutes(10)
+            PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+            CookieContainer = new(),
+            UseCookies = true
         };
         return new ResilienceHandler(retryPipeline) { InnerHandler = httpHandler };
     }
@@ -28,7 +31,7 @@ public abstract class ApiClient<TClient>(string host): ResilienceApiClient, IDis
     where TClient: ApiClient<TClient>
 {
     protected readonly HttpClient Client = new(Handler, disposeHandler: false) { BaseAddress = new Uri(host) };
-    private bool _disposed;
+    protected bool _disposed;
 
 
     public void Dispose()
@@ -41,8 +44,18 @@ public abstract class ApiClient<TClient>(string host): ResilienceApiClient, IDis
     {
         if (_disposed) return;
         Client.Dispose();
-        if(disposing)
+        ClearCookies();
+        if (disposing)
             _disposed = true;
+    }
+
+    private static void ClearCookies()
+    {
+        var resilienceHandler = (ResilienceHandler)Handler;
+        var handler = (SocketsHttpHandler)resilienceHandler.InnerHandler!;
+        var container = handler.CookieContainer;
+        foreach (Cookie cookie in container.GetAllCookies())
+            cookie.Expired = true;
     }
 
     protected void ThrowIfDisposed()
