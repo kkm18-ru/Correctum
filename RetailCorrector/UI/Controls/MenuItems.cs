@@ -10,5 +10,7 @@ internal class ImportMenuItem : MenuItem
     {
         Header = importer.Name;
         Command = new RelayCommand(importer.Show);
+        HorizontalContentAlignment = System.Windows.HorizontalAlignment.Left;
+        VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
     }
 }
