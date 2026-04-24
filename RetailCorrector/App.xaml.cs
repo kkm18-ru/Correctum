@@ -1,20 +1,20 @@
 ﻿using Dapper;
 using RetailCorrector.Utils.Mapper;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Windows;
-
-[assembly: InternalsVisibleTo("RetailCorrector.Tests")]
-[assembly: ThemeInfo(ResourceDictionaryLocation.None,
-    ResourceDictionaryLocation.SourceAssembly)]
 
 namespace RetailCorrector
 {
-    static class Program
+    public partial class App : Application
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        [STAThread]
-        public static void Main()
+
+        public App()
+        {
+            InitializeComponent();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
         {
             SqlMapper.AddTypeHandler(new CurrencyTypeHandler());
             SqlMapper.AddTypeHandler(new FiscalSignTypeHandler());
@@ -24,8 +24,6 @@ namespace RetailCorrector
 
             var info = Assembly.GetExecutingAssembly().GetName();
             Logger.Info("Запуск {Name} {Version}", info.Name, info.Version);
-
-            App.Instance.Run(new Views.Windows.MainWindow());
         }
     }
 }

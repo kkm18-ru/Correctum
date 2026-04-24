@@ -35,7 +35,7 @@
               VirtualizingPanel.IsVirtualizingWhenGrouping="true"
               SelectionChanged="OnSelectionChangedGrid"
               VirtualizingPanel.VirtualizationMode="Recycling"
-              FontFamily="{StaticResource jbmono}">
+              FontFamily="{StaticResource JBMono}">
         <DataGrid.RowDetailsTemplate>
             <DataTemplate>
                 <local:PositionGrid ItemsSource="{Binding Items, Mode=OneWay}"/>

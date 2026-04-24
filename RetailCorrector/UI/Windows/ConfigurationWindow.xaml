@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:tk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:utils="clr-namespace:RetailCorrector.Utils"
-        xmlns:conv="clr-namespace:RetailCorrector.Converters"
         xmlns:addons="clr-namespace:RetailCorrector.Utils.Integrations"
         xmlns:wintypes="clr-namespace:RetailCorrector.UI.Windows.Types"
         xmlns:nlog="clr-namespace:NLog;assembly=NLog"
@@ -14,7 +13,6 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <ObjectDataProvider x:Key="GetEoUPorts" ObjectType="{x:Type addons:EoU}" MethodName="GetAvailablePorts" />
-        <conv:MultiBooleanConverter x:Key="convMultiBoolean"/>
     </Window.Resources>
     <TabControl>
         <TabItem Header="Atol-драйвер">
@@ -169,7 +167,7 @@
                 <TextBox Grid.Column="2" Grid.Row="12" 
                          Text="{Binding Logging.LokiUsername, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.IsEnabled>
-                        <MultiBinding Converter="{StaticResource convMultiBoolean}">
+                        <MultiBinding Converter="{StaticResource unionBoolsConvert}">
                             <Binding Path="Logging.LokiEnabled"/>
                             <Binding Path="Logging.LokiAuthEnabled"/>
                         </MultiBinding>
@@ -177,7 +175,7 @@
                 </TextBox>
                 <PasswordBox Grid.Column="2" Grid.Row="14" Loaded="OnLokiPasswordLoaded" PasswordChanged="OnLokiPasswordChanged">
                     <PasswordBox.IsEnabled>
-                        <MultiBinding Converter="{StaticResource convMultiBoolean}">
+                        <MultiBinding Converter="{StaticResource unionBoolsConvert}">
                             <Binding Path="Logging.LokiEnabled"/>
                             <Binding Path="Logging.LokiAuthEnabled"/>
                         </MultiBinding>

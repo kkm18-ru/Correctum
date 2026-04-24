@@ -3,7 +3,6 @@
           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
           xmlns:utils="clr-namespace:RetailCorrector.Utils"
           xmlns:local="clr-namespace:RetailCorrector.Views.Controls"
-          xmlns:conv="clr-namespace:RetailCorrector.Converters"
           CanUserDeleteRows="false" CanUserSortColumns="false" CanUserReorderColumns="false"
           CanUserResizeColumns="false" CanUserResizeRows="false" AutoGenerateColumns="false"
           HeadersVisibility="Column" IsReadOnly="True"
@@ -13,10 +12,7 @@
           VirtualizingPanel.IsVirtualizing="true"
           VirtualizingPanel.IsVirtualizingWhenGrouping="true"
           VirtualizingPanel.VirtualizationMode="Recycling"
-          FontFamily="{StaticResource jbmono}">
-    <DataGrid.Resources>
-        <conv:QuantityTextConverter x:Key="quantity"/>
-    </DataGrid.Resources>
+          FontFamily="{StaticResource JBMono}">
     <DataGrid.Columns>
         <DataGridTextColumn Header="Наименование" Binding="{Binding Name}"/>
         <DataGridComboBoxColumn Header="Тип субъекта" SelectedValueBinding="{Binding Type}"
@@ -35,7 +31,7 @@
                             Binding="{Binding Price, StringFormat={}{0} руб.}"/>
         <DataGridTextColumn Header="Количество" Width="120">
             <DataGridTextColumn.Binding>
-                <MultiBinding Converter="{StaticResource quantity}">
+                <MultiBinding Converter="{StaticResource quantity2strConvert}">
                     <Binding Path="Quantity"/>
                     <Binding Path="Unit"/>
                 </MultiBinding>

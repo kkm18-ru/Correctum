@@ -4,7 +4,6 @@
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                        xmlns:wintypes="clr-namespace:RetailCorrector.UI.Windows.Types"
                        xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                       xmlns:conv="clr-namespace:RetailCorrector.Converters"
                        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                        xmlns:tk="http://schemas.xceed.com/wpf/xaml/toolkit"
                        xmlns:vmr="clr-namespace:RetailCorrector.ViewModels.Reports"
