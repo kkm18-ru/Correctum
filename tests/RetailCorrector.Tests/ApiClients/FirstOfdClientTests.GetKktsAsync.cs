@@ -99,12 +99,12 @@ partial class FirstOfdClientTests
             .WithPath(new RegexMatcher(@"\/api\/cp-ofd\/retail-places\/filter-retail-place\/\d+")))
             .AtPriority(200)
             .RespondWith(Response.Create().WithStatusCode(403)
-            .WithBodyAsJson(new FirstOfdError("kkms.retail.place.forbidden", "Нет доступа к торговой точке", null)));
+            .WithBodyAsJson(new FirstOfdError("kkms.retail.place.forbidden", "Нет доступа к торговой точке")));
 
         _server.Given(Request.Create().UsingPost().WithBody("{}").WithPath(path))
             .AtPriority(300)
             .RespondWith(Response.Create().WithStatusCode(401)
-            .WithBodyAsJson(new FirstOfdError("credentials.invalid", "Неверные параметры аутентификации", null)));
+            .WithBodyAsJson(new FirstOfdError("credentials.invalid", "Неверные параметры аутентификации")));
     }
 
     [Test] public async Task GetKktsAsync_Should_ReturnKkts()

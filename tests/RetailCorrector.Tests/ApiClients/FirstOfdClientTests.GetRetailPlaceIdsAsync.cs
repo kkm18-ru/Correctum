@@ -55,7 +55,7 @@ partial class FirstOfdClientTests
         _server.Given(Request.Create().WithPath(path).UsingGet())
             .AtPriority(100)
             .RespondWith(Response.Create().WithStatusCode(401)
-            .WithBodyAsJson(new FirstOfdError("credentials.invalid", "Неверные параметры аутентификации", null)));
+            .WithBodyAsJson(new FirstOfdError("credentials.invalid", "Неверные параметры аутентификации")));
     }
 
     [Test] public async Task GetRetailPlaceIdsAsync_Should_ReturnIds()

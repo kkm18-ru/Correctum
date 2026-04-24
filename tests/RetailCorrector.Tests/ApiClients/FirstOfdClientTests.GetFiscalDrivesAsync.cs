@@ -38,7 +38,7 @@ partial class FirstOfdClientTests
         _server.Given(Request.Create().UsingGet().WithPath(path))
             .AtPriority(300)
             .RespondWith(Response.Create().WithStatusCode(401)
-            .WithBodyAsJson(new FirstOfdError("credentials.invalid", "Неверные параметры аутентификации", null)));
+            .WithBodyAsJson(new FirstOfdError("credentials.invalid", "Неверные параметры аутентификации")));
     }
 
     [Test] public async Task GetFiscalDrivesAsync_Should_ReturnKkts()

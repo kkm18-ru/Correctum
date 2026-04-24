@@ -25,7 +25,7 @@ partial class FirstOfdClientTests
             .WithBody(new WildcardMatcher("*\"password\":\"*\"*")))
             .AtPriority(100)
             .RespondWith(Response.Create().WithStatusCode(400)
-            .WithBodyAsJson(new FirstOfdError("user.wrong.credentials", "Неверный логин или пароль", null)));
+            .WithBodyAsJson(new FirstOfdError("user.wrong.credentials", "Неверный логин или пароль")));
 
         // Выдаёт ошибку (логин пустой)
         _server.Given(Request.Create().WithPath(path).UsingPost()

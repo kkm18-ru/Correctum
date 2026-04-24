@@ -117,6 +117,8 @@ public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiCl
     }
 }
 
+#pragma warning disable IDE1006
+
 [method: JsonConstructor]
 public readonly record struct FirstOfdFiscalDrive(string number, DateTime? activationDate, DateTime? expireDate, DateTime? closeArchiveDate);
 
@@ -135,25 +137,27 @@ public readonly record struct FirstOfdKkt(int id, string fnsKkmId)
 internal readonly record struct FirstOfdAuthRequest(string login, string password);
 
 [method: JsonConstructor]
-internal readonly record struct FirstOfdError(string message, string localizedMessage, FirstOfdErrorPayload? payload)
+internal readonly record struct FirstOfdError(string message, string localizedMessage, FirstOfdErrorPayload? payload = null)
 {
-    public FirstOfdException ToException() => new()
-    {
-        MessageId = message,
-        LocalizedMessage = localizedMessage,
-        Payload = payload
-    };
+    public FirstOfdException ToException() => new(message, localizedMessage, payload);
 }
 
 public class FirstOfdException : HttpRequestException
 {
-    public string MessageId { get; set; }
-    public string LocalizedMessage { get; set; }
-    internal FirstOfdErrorPayload? Payload { get; set; }
+    internal string MessageId { get; init; }
+    internal string LocalizedMessage { get; init; }
+    internal FirstOfdErrorPayload? Payload { get; init; }
 
-    public override string ToString() => 
-        string.IsNullOrWhiteSpace(LocalizedMessage) 
-        ? MessageId 
+    internal FirstOfdException(string message, string localizedMessage, FirstOfdErrorPayload? payload)
+    {
+        Payload = payload;
+        MessageId = message;
+        LocalizedMessage = localizedMessage;
+    }
+
+    public override string ToString() =>
+        string.IsNullOrWhiteSpace(LocalizedMessage)
+        ? MessageId
         : LocalizedMessage;
 }
 
@@ -174,7 +178,6 @@ internal readonly record struct FirstOfdTicket(
     FirstOfdTicketItem[] items,
     int taxationType,
     int requestNumber,
-    //int operationType, todo использовать его когда будут лучше известны значение (2 - приход)
     string transactionDate,
     int fiscalDocumentNumber,
     string kktRegId,
@@ -204,14 +207,10 @@ internal static class FirstOfdHelper
 {
     public static Receipt ToReceipt(FirstOfdTicket ticket) => new()
     {
-        /* todo
-        Type = ticket.operationType switch
-        {
-            2 => ReceiptType.Income,
-            _ => throw new ArgumentOutOfRangeException
-                ($"{nameof(ticket)}.{nameof(Ticket.operationType)}")
-        },*/
-        Type = (ReceiptType)int.Parse(ticket.options.GetProperty("operationType").GetString()),
+        Type =
+            ticket.options.TryGetProperty("operationType", out var operationElement) &&
+            operationElement.GetString() is { } strOperation ?
+            (ReceiptType)int.Parse(strOperation) : null,
         Created = DateTime.ParseExact(ticket.transactionDate, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
         StorageId = ticket.fiscalDriveNumber.Trim(),
         RegId = ticket.kktRegId.Trim(),
@@ -256,3 +255,5 @@ internal static class FirstOfdHelper
 internal readonly record struct FirstOfdErrorPayload(FirstOfdFieldError[] fieldErrors);
 [method: JsonConstructor]
 internal readonly record struct FirstOfdFieldError(string field, string value, string message, string localizedMessage);
+
+#pragma warning restore IDE1006
