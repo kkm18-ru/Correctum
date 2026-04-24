@@ -179,7 +179,7 @@ namespace Correctum.Core.ValueObjects
 
                     var textSign = new string(chars);
                     return textSign;
-                case "d" or "D":
+                case "d" or "D" or null:
                     return _value.ToString();
                 default: return "";
             }

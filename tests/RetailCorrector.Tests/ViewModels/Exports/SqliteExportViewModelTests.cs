@@ -21,14 +21,11 @@ public class SqliteExportViewModelTests :
             Type = ReceiptType.Income,
             SessionId = 2,
             DocNumber = 3,
-            Payment = new()
-            {
-                CashSum = 6UL,
-                NonCashSum = 7UL,
-                AdvanceSum = 8UL,
-                CreditSum = 9UL,
-                ProvisionSum = 10UL,
-            },
+            CashSum = 6UL,
+            NonCashSum = 7UL,
+            AdvanceSum = 8UL,
+            CreditSum = 9UL,
+            ProvisionSum = 10UL,
             TotalSum = 11UL,
             Created = new DateTime(2023,12,30,15,35,29),
             DocInSession = 13,
@@ -66,11 +63,11 @@ public class SqliteExportViewModelTests :
                 Assert.That(receipts[0].taxation, Is.EqualTo((byte)receipt.TaxationSystem));
                 Assert.That(FiscalSign.Parse(receipts[0].sign), Is.EqualTo(receipt.DocSign));
                 Assert.That(receipts[0].buyer, Is.EqualTo(receipt.BuyerContact));
-                Assert.That((Currency)receipts[0].cash, Is.EqualTo(receipt.Payment?.CashSum));
-                Assert.That((Currency)receipts[0].ecash, Is.EqualTo(receipt.Payment?.NonCashSum));
-                Assert.That((Currency)receipts[0].pre, Is.EqualTo(receipt.Payment?.AdvanceSum));
-                Assert.That((Currency)receipts[0].post, Is.EqualTo(receipt.Payment?.CreditSum));
-                Assert.That((Currency)receipts[0].other, Is.EqualTo(receipt.Payment?.ProvisionSum));
+                Assert.That((Currency)receipts[0].cash, Is.EqualTo(receipt.CashSum));
+                Assert.That((Currency)receipts[0].ecash, Is.EqualTo(receipt.NonCashSum));
+                Assert.That((Currency)receipts[0].pre, Is.EqualTo(receipt.AdvanceSum));
+                Assert.That((Currency)receipts[0].post, Is.EqualTo(receipt.CreditSum));
+                Assert.That((Currency)receipts[0].other, Is.EqualTo(receipt.ProvisionSum));
                 Assert.That((Currency)receipts[0].total, Is.EqualTo(receipt.TotalSum));
             }
 
@@ -85,7 +82,7 @@ public class SqliteExportViewModelTests :
                 Assert.That(positions[0].tax, Is.EqualTo((byte?)receipt.Items[0].TaxRate));
                 Assert.That(positions[0].unit, Is.EqualTo((byte?)receipt.Items[0].Unit));
                 Assert.That((Currency)positions[0].price, Is.EqualTo(receipt.Items[0].Price));
-                Assert.That(positions[0].quantity, Is.EqualTo(receipt.Items[0].Quantity));
+                Assert.That(positions[0].quantity, Is.EqualTo(receipt.Items[0].Quantity*1000));
                 Assert.That((Currency)positions[0].total, Is.EqualTo(receipt.Items[0].Cost));
                 Assert.That(positions[0].receipt, Is.EqualTo(receipts[0].id));
             }

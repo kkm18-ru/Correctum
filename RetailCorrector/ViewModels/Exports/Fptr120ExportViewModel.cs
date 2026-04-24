@@ -25,11 +25,11 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
             await writer.WriteLineAsync("Fptr.openReceipt();");
             await PositionsAsync(writer, receipt.Items);
             await TotalSumAsync(writer, receipt.TotalSum.Value);
-            await PaymentAsync(writer, "LIBFPTR_PT_CASH", receipt.CashSum.Value);
-            await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", receipt.NonCashSum.Value);
-            await PaymentAsync(writer, "LIBFPTR_PT_PREPAID", receipt.AdvanceSum.Value);
-            await PaymentAsync(writer, "LIBFPTR_PT_CREDIT", receipt.CreditSum.Value);
-            await PaymentAsync(writer, "LIBFPTR_PT_OTHER", receipt.ProvisionSum.Value);
+            await PaymentAsync(writer, "LIBFPTR_PT_CASH", receipt.CashSum);
+            await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", receipt.NonCashSum);
+            await PaymentAsync(writer, "LIBFPTR_PT_PREPAID", receipt.AdvanceSum);
+            await PaymentAsync(writer, "LIBFPTR_PT_CREDIT", receipt.CreditSum);
+            await PaymentAsync(writer, "LIBFPTR_PT_OTHER", receipt.ProvisionSum);
             await writer.WriteLineAsync("Fptr.closeReceipt();");
             await writer.WriteLineAsync();
         }
@@ -50,7 +50,7 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
     {
         await writer.WriteLineAsync("Fptr.setParam(1173, 0);");
         await writer.WriteLineAsync("Fptr.setParam(1174, correctionInfo);");
-        if (sign is not null) await writer.WriteLineAsync($"Fptr.setParam(1192, \"{sign}\");");
+        if (sign is not null) await writer.WriteLineAsync($"Fptr.setParam(1192, \"{sign.Value}\");");
     }
 
     internal static async Task ElectronicallyDocumentAsync(StreamWriter writer)
@@ -95,7 +95,7 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
 
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, \"{info.Name.Replace("\"", "\\\"")}\");");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, {info.Price});");
-        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, {info.Quantity:F3});");
+        await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, {info.Quantity.Value.ToString("F3", CultureInfo.InvariantCulture)});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, {info.Cost});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_TAX_TYPE, {(int)info.TaxRate});");
         await writer.WriteLineAsync($"Fptr.setParam(2108, {(int)info.Unit});");
@@ -104,24 +104,16 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         await writer.WriteLineAsync("Fptr.registration();");
     }
 
-    internal static async Task TotalSumAsync(StreamWriter writer, Currency sum)
+    internal static async Task TotalSumAsync(StreamWriter writer, Currency? sum)
     {
+        if (sum is null) return;
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_SUM, {sum});");
         await writer.WriteLineAsync("Fptr.receiptTotal();");
     }
 
-    internal static async Task PaymentAsync(StreamWriter writer, Payment info)
-    {
-        await PaymentAsync(writer, "LIBFPTR_PT_CASH", info.CashSum);
-        await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", info.NonCashSum);
-        await PaymentAsync(writer, "LIBFPTR_PT_PREPAID", info.AdvanceSum);
-        await PaymentAsync(writer, "LIBFPTR_PT_CREDIT", info.CreditSum);
-        await PaymentAsync(writer, "LIBFPTR_PT_OTHER", info.ProvisionSum);
-    }
-
     private static async Task PaymentAsync(StreamWriter writer, string type, Currency? sum)
     {
-        if (sum is null || (ulong)sum == 0) return;
+        if (sum is null || (ulong)sum.Value == 0) return;
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.{type});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, {sum});");
         await writer.WriteLineAsync("Fptr.payment();");

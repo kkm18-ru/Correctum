@@ -99,11 +99,11 @@ partial class Taxcom
             Assert.That(receipt.DocSign, Is.EqualTo(FiscalSign.Parse(document["1077"]?.Value<string>())));
             Assert.That(receipt.Created?.ToString("s"), Is.EqualTo(document["1012"]?.Value<string>()));
             Assert.That((int?)receipt.Type, Is.EqualTo(document["1054"]?.Value<int>()));
-            Assert.That((ulong?)receipt.Payment?.CashSum, Is.EqualTo(document["1031"]?.Value<ulong>()));
-            Assert.That((ulong?)receipt.Payment?.NonCashSum, Is.EqualTo(document["1081"]?.Value<ulong>()));
-            Assert.That((ulong?)receipt.Payment?.AdvanceSum, Is.EqualTo(document["1215"]?.Value<ulong>()));
-            Assert.That((ulong?)receipt.Payment?.CreditSum, Is.EqualTo(document["1216"]?.Value<ulong>()));
-            Assert.That((ulong?)receipt.Payment?.ProvisionSum, Is.EqualTo(document["1217"]?.Value<ulong>()));
+            Assert.That((ulong?)receipt.CashSum, Is.EqualTo(document["1031"]?.Value<ulong>()));
+            Assert.That((ulong?)receipt.NonCashSum, Is.EqualTo(document["1081"]?.Value<ulong>()));
+            Assert.That((ulong?)receipt.AdvanceSum, Is.EqualTo(document["1215"]?.Value<ulong>()));
+            Assert.That((ulong?)receipt.CreditSum, Is.EqualTo(document["1216"]?.Value<ulong>()));
+            Assert.That((ulong?)receipt.ProvisionSum, Is.EqualTo(document["1217"]?.Value<ulong>()));
             Assert.That((ulong?)receipt.TotalSum, Is.EqualTo(document["1020"]?.Value<ulong>()));
             Assert.That(receipt.BuyerContact, Is.EqualTo(document["1008"]?.Value<string>()));
             Assert.That((int?)receipt.TaxationSystem, Is.EqualTo(document["1055"]?.Value<int>()));
@@ -114,7 +114,7 @@ partial class Taxcom
                 var posObject = document["1059"]?[i]!;
                 Assert.That(position.Name, Is.EqualTo(posObject["1030"]?.Value<string>()));
                 Assert.That((ulong)position.Price, Is.EqualTo(posObject["1079"]?.Value<ulong>()));
-                Assert.That((position.Quantity/1000.0)?.ToString("F6", CultureInfo.InvariantCulture), 
+                Assert.That((position.Quantity)?.ToString("F6", CultureInfo.InvariantCulture), 
                     Is.EqualTo(posObject["1023"]?.Value<string>()));
                 Assert.That((ulong)position.Cost, Is.EqualTo(posObject["1043"]?.Value<ulong>()));
                 Assert.That((int?)position.Unit, Is.EqualTo(posObject["2108"]?.Value<int>()));

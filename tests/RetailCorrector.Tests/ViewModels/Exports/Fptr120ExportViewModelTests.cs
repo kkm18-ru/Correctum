@@ -261,7 +261,7 @@ public class Fptr120ExportViewModelTests :
             CalcMethod = CalculationMethod.FullPayment,
             TaxRate = NDSRate.NoNDS,
             Price = 10010UL,
-            Quantity = 1234,
+            Quantity = 1.234M,
             Cost = 12300UL
         };
         using var stream = new MemoryStream();
@@ -315,49 +315,6 @@ public class Fptr120ExportViewModelTests :
 
     #endregion
 
-    #region Payment
-
-    [Test] public void PaymentTest()
-    {
-        var payment = new Payment
-        {
-            CashSum = 100UL,
-            NonCashSum = 120UL,
-            AdvanceSum = 0UL,
-            CreditSum = 12UL,
-            ProvisionSum = 12345UL,
-        };
-
-        using var stream = new MemoryStream();
-        using (var writer = new StreamWriter(stream, leaveOpen: true))
-        {
-            var task = Fptr120ExportViewModel.PaymentAsync(writer, payment);
-            Assert.DoesNotThrowAsync(async () => await task);
-        }
-        stream.Position = 0;
-        using (var reader = new StreamReader(stream, leaveOpen: true))
-        {
-            var expectedScript = $"""
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_CASH);
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 1.00);
-                    Fptr.payment();
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_ELECTRONICALLY);
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 1.20);
-                    Fptr.payment();
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_CREDIT);
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 0.12);
-                    Fptr.payment();
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_OTHER);
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 123.45);
-                    Fptr.payment();
-                    
-                    """;
-            Assert.That(reader.ReadToEnd(), Is.EqualTo(expectedScript));
-        }
-    }
-
-    #endregion
-
     [Test] public async Task CorrectReceipt()
     {
         var position1 = new Position
@@ -368,7 +325,7 @@ public class Fptr120ExportViewModelTests :
             CalcMethod = CalculationMethod.FullPayment,
             TaxRate = NDSRate.NDS20,
             Price = 5000UL,
-            Quantity = 2000,
+            Quantity = 2,
             Cost = 10000UL
         };
         var position2 = new Position
@@ -379,28 +336,28 @@ public class Fptr120ExportViewModelTests :
             CalcMethod = CalculationMethod.FullPayment,
             TaxRate = NDSRate.NDS10,
             Price = 6500UL,
-            Quantity = 1000,
+            Quantity = 1,
             Cost = 6500UL
         };
         var receipt = new Receipt
         {
-            Created = new DateTime(2020, 12, 31, 13, 35, 59),
+            Created = new DateTime(2020, 12, 31, 13, 35, 59, DateTimeKind.Unspecified),
             BuyerContact = "client@mail.ru",
             Type = ReceiptType.Income,
             TaxationSystem = TaxationSystems.SimplifiedIncomeMinusExpense,
             DocSign = null,
             Items = [position1, position2],
             TotalSum = 16500UL,
-            Payment = new()
-            {
-                CashSum = 5000UL,
-                NonCashSum = 11500UL
-            }
+            CashSum = 100UL,
+            NonCashSum = 120UL,
+            AdvanceSum = 0UL,
+            CreditSum = 12UL,
+            ProvisionSum = 12345UL,
         };
 
         var path = GenPath();
         await ViewModel.Export(path, [receipt]);
-        var fileContent = File.ReadAllText(path);
+        var fileContent = await File.ReadAllTextAsync(path);
         const string expectedScript = """            
             Fptr.setParam(1178, new Date("2020-12-31T13:35:59"));
             Fptr.setParam(1179, " ");
@@ -416,7 +373,7 @@ public class Fptr120ExportViewModelTests :
             Fptr.openReceipt();
             Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, "Хлеб");
             Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, 50.00);
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, 2);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, 2.000);
             Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, 100.00);
             Fptr.setParam(Fptr.LIBFPTR_PARAM_TAX_TYPE, 7);
             Fptr.setParam(2108, 0);
@@ -425,7 +382,7 @@ public class Fptr120ExportViewModelTests :
             Fptr.registration();
             Fptr.setParam(Fptr.LIBFPTR_PARAM_COMMODITY_NAME, "Молоко");
             Fptr.setParam(Fptr.LIBFPTR_PARAM_PRICE, 65.00);
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, 1);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_QUANTITY, 1.000);
             Fptr.setParam(Fptr.LIBFPTR_PARAM_POSITION_SUM, 65.00);
             Fptr.setParam(Fptr.LIBFPTR_PARAM_TAX_TYPE, 2);
             Fptr.setParam(2108, 41);
@@ -435,10 +392,16 @@ public class Fptr120ExportViewModelTests :
             Fptr.setParam(Fptr.LIBFPTR_PARAM_SUM, 165.00);
             Fptr.receiptTotal();
             Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_CASH);
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 50.00);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 1.00);
             Fptr.payment();
             Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_ELECTRONICALLY);
-            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 115.00);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 1.20);
+            Fptr.payment();
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_CREDIT);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 0.12);
+            Fptr.payment();
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_OTHER);
+            Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 123.45);
             Fptr.payment();
             Fptr.closeReceipt();
             
