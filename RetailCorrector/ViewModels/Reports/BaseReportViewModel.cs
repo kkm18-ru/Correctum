@@ -21,7 +21,7 @@ public abstract class BaseReportViewModel : BaseViewModel
     public ICommand RefreshCommand { get; }
     public ICommand AutoGeneratingColumnCommand { get; }
 
-    public BaseReportViewModel()
+    protected BaseReportViewModel()
     {
         ExportCommand = new RelayCommand(_ => Export(), _ => Items.Count > 0 && !IsBusy);
         RefreshCommand = new RelayCommand(_ => Refresh(), _ => !IsBusy);

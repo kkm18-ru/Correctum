@@ -151,7 +151,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Количество.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public PositionBuilder SetQuantity(ulong value)
+        public PositionBuilder SetQuantity(decimal value)
         {
             _quantity = value;
             return this;
