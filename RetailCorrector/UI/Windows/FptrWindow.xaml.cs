@@ -201,11 +201,11 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                 {
                     try
                     {
-                        while (CurrentIndex < Storage.Instance.Receipts.Count())
+                        while (CurrentIndex < Storage.Instance.AllReceipts.Count())
                         {
                             _cancelSource.Token.ThrowIfCancellationRequested();
                             _handle.ProcessSession(true);
-                            if (ConductingReceipt(Storage.Instance.Receipts.ToArray()[CurrentIndex], _cancelSource.Token))
+                            if (ConductingReceipt(Storage.Instance.AllReceipts.ToArray()[CurrentIndex], _cancelSource.Token))
                                 CurrentIndex++;
                             else _handle.CancelReceipt();
                             if (CurrentIndex > 0 && CurrentIndex % Configuration.Instance.Fptr.CountReceiptsBeforeDelay == 0)
@@ -256,8 +256,8 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
             "Отменить тестовые чеки?";
             
         CurrentIndex = 0;
-        var count = Math.Min(defaultCount, Storage.Instance.Receipts.Count());
-        var slice = Storage.Instance.Receipts.ToArray()[..count];
+        var count = Math.Min(defaultCount, Storage.Instance.AllReceipts.Count());
+        var slice = Storage.Instance.AllReceipts.ToArray()[..count];
         
         State = ConductingReceiptState.TestConducting;
 

@@ -63,7 +63,7 @@ public abstract class FileExportViewModel : BaseExportViewModel
         };
         if (!dialog.ShowDialog() ?? false) 
             return true;
-        await Export(dialog.FileName, Storage.Instance.Receipts).AsTask();
+        await Export(dialog.FileName, Storage.Instance.AllReceipts).AsTask();
         return false;
     }
 

@@ -1,4 +1,4 @@
-﻿namespace Correctum.Storage.SqlBuilder;
+﻿namespace Correctum.Storage.SqlBuilder.Create.Table;
 
 public sealed class CreateTableSqlBuilder<T> : CreateTableSqlBuilder
 {

@@ -20,7 +20,7 @@ namespace RetailCorrector.ViewModels
                 OnPropertyChanged();
             }
         } = 1;
-        public static uint CountPage => Storage.Instance is null ? 0 : (uint)Math.Ceiling(Storage.Instance.Receipts.Count() / 100D);
+        public static uint CountPage => Storage.Instance is null ? 0 : (uint)Math.Ceiling(Storage.Instance.AllReceipts.Count() / 100D);
 
         public ICommand RefreshCommand { get; }
         public ICommand FirstPageCommand { get; }

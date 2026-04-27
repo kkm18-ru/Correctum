@@ -1,9 +1,9 @@
 ﻿using System.Data;
 using System.Text;
 
-namespace Correctum.Storage.SqlBuilder;
+namespace Correctum.Storage.SqlBuilder.Create.Table;
 
-public class CreateTableSqlBuilder
+public class CreateTableSqlBuilder : ISqlBuilder
 {
     protected string _tableName;
     protected List<ColumnCreateTableSqlBuilder> _columns = [];
@@ -30,13 +30,5 @@ public class CreateTableSqlBuilder
         builder.AppendLine();
         builder.Append(");");
         return builder.ToString();
-    }
-
-    public void Execute(IDbConnection connection)
-    {
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = ToString();
-        cmd.CommandType = CommandType.Text;
-        cmd.ExecuteNonQuery();
     }
 }
