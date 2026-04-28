@@ -8,6 +8,7 @@ namespace RetailCorrector.Utils.Integrations.Clients;
 public abstract class ResilienceApiClient
 {
     protected static readonly HttpMessageHandler Handler = InitHandler();
+    protected static readonly CookieContainer Cookies = new();
     
     private static ResilienceHandler InitHandler()
     {
@@ -20,7 +21,7 @@ public abstract class ResilienceApiClient
         var httpHandler = new SocketsHttpHandler
         {
             PooledConnectionLifetime = TimeSpan.FromMinutes(10),
-            CookieContainer = new(),
+            CookieContainer = Cookies,
             UseCookies = true
         };
         return new ResilienceHandler(retryPipeline) { InnerHandler = httpHandler };
