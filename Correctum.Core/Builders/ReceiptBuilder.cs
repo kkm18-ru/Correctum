@@ -73,9 +73,9 @@ namespace Correctum.Core.Builders
             _docShift = receipt.DocInSession;
             _docId = receipt.DocNumber;
             _sign = receipt.DocSign;
-            _regId = receipt.RegId;
+            _regId = receipt.RegId?.ToString();
             _shift = receipt.SessionId;
-            _drive = receipt.StorageId;
+            _drive = receipt.StorageId?.ToString();
             _taxation = receipt.TaxationSystem;
             _total = (ulong?)receipt.TotalSum;
             _type = receipt.Type;
@@ -297,9 +297,9 @@ namespace Correctum.Core.Builders
             DocInSession = _docShift,
             DocNumber = _docId,
             DocSign = _sign,
-            RegId = _regId,
+            RegId = _regId is null ? null : ulong.Parse(_regId),
             SessionId = _shift,
-            StorageId = _drive,
+            StorageId = _drive is null ? null : ulong.Parse(_drive),
             TaxationSystem = _taxation,
             TotalSum = _total,
             Type = _type,

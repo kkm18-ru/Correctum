@@ -15,11 +15,11 @@ namespace Correctum.Core.Models
         /// <summary>
         /// Регистрационный номер ККТ
         /// </summary>
-        public string? RegId { get; init; }
+        public ulong? RegId { get; init; }
         /// <summary>
         /// Номер накопителя
         /// </summary>
-        public string? StorageId { get; init; }
+        public ulong? StorageId { get; init; }
         /// <summary>
         /// Номер документа
         /// </summary>
