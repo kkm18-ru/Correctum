@@ -1,10 +1,7 @@
 ﻿using Correctum.Core.Enums;
 using Correctum.Core.Models;
 using Correctum.Storage.Enums;
-using Correctum.Storage.Extensions;
-using System.Buffers.Binary;
-using System.Runtime.InteropServices;
-using System.Text;
+using Correctum.Storage.Helpers;
 
 namespace Correctum.Storage.Models
 {
@@ -38,14 +35,14 @@ namespace Correctum.Storage.Models
 
         public readonly Position ToModel() => new()
         {
-            Name        = IsNullProperties.HasFlag(IsNullPositionProperties.Name)       ? null : Name.TrimEnd(' '),
-            Type        = IsNullProperties.HasFlag(IsNullPositionProperties.Type)       ? null : (PositionType)Type,
-            CalcMethod  = IsNullProperties.HasFlag(IsNullPositionProperties.CalcMethod) ? null : (CalculationMethod)CalcMethod,
-            TaxRate     = IsNullProperties.HasFlag(IsNullPositionProperties.TaxRate)    ? null : (NDSRate)TaxRate,
-            Unit        = IsNullProperties.HasFlag(IsNullPositionProperties.Unit)       ? null : (UnitOfMeasure)Unit,
-            Price       = IsNullProperties.HasFlag(IsNullPositionProperties.Price)      ? null : Price,
-            Quantity    = IsNullProperties.HasFlag(IsNullPositionProperties.Quantity)   ? null : Quantity,
-            Cost        = IsNullProperties.HasFlag(IsNullPositionProperties.Cost)       ? null : Cost,
+            Name       = GetOrNull(IsNullPositionProperties.Name, Name.TrimEnd(' ')),
+            Type       = GetOrNull(IsNullPositionProperties.Type, (PositionType)Type),
+            CalcMethod = GetOrNull(IsNullPositionProperties.CalcMethod, (CalculationMethod)CalcMethod),
+            TaxRate    = GetOrNull(IsNullPositionProperties.TaxRate, (NDSRate)TaxRate),
+            Unit       = GetOrNull(IsNullPositionProperties.Unit, (UnitOfMeasure)Unit),
+            Price      = GetOrNull(IsNullPositionProperties.Price, Price),
+            Quantity   = GetOrNull(IsNullPositionProperties.Quantity, Quantity),
+            Cost       = GetOrNull(IsNullPositionProperties.Cost, Cost),
         };
 
         public static PositionDto FromModel(Position model) => new()
@@ -59,28 +56,28 @@ namespace Correctum.Storage.Models
             Quantity = model.Quantity ?? default,
             Cost = (ulong?)model.Cost ?? default,
             IsNullProperties =
-                (model.Name         is null ? IsNullPositionProperties.Name         : 0) |
-                (model.Type         is null ? IsNullPositionProperties.Type         : 0) |
-                (model.CalcMethod   is null ? IsNullPositionProperties.CalcMethod   : 0) |
-                (model.TaxRate      is null ? IsNullPositionProperties.TaxRate      : 0) |
-                (model.Unit         is null ? IsNullPositionProperties.Unit         : 0) |
-                (model.Price        is null ? IsNullPositionProperties.Price        : 0) |
-                (model.Quantity     is null ? IsNullPositionProperties.Quantity     : 0) |
-                (model.Cost         is null ? IsNullPositionProperties.Cost         : 0)
+                FlagIfNull(model.Name, IsNullPositionProperties.Name) |
+                FlagIfNull(model.Type, IsNullPositionProperties.Type) |
+                FlagIfNull(model.CalcMethod, IsNullPositionProperties.CalcMethod) |
+                FlagIfNull(model.TaxRate, IsNullPositionProperties.TaxRate) |
+                FlagIfNull(model.Unit, IsNullPositionProperties.Unit) |
+                FlagIfNull(model.Price, IsNullPositionProperties.Price) |
+                FlagIfNull(model.Quantity, IsNullPositionProperties.Quantity) |
+                FlagIfNull(model.Cost, IsNullPositionProperties.Cost)
         };
 
         public void ToBytes(Span<byte> bytes)
         {
             ArgumentOutOfRangeException.ThrowIfLessThan(bytes.Length, ByteCount);
-            Encoding.CorrectumStorage.GetBytes(Name).CopyTo(bytes.Slice(NameOffset, NameLength));
-            bytes[TypeOffset] = Type;
-            bytes[CalcMethodOffset] = CalcMethod;
-            bytes[TaxRateOffset] = TaxRate;
-            bytes[UnitOffset] = Unit;
-            BinaryPrimitives.WriteUInt64LittleEndian(bytes.Slice(PriceOffset, sizeof(ulong)), Price);
-            MemoryMarshal.Write(bytes.Slice(QuantityOffset, sizeof(decimal)), Quantity);
-            BinaryPrimitives.WriteUInt64LittleEndian(bytes.Slice(CostOffset, sizeof(ulong)), Cost);
-            bytes[IsNullPropertiesOffset] = IsNullPropertiesOffset;
+            BytesHelper.Write(bytes, NameOffset, NameLength, Name);
+            BytesHelper.Write(bytes, TypeOffset, Type);
+            BytesHelper.Write(bytes, CalcMethodOffset, CalcMethod);
+            BytesHelper.Write(bytes, TaxRateOffset, TaxRate);
+            BytesHelper.Write(bytes, UnitOffset, Unit);
+            BytesHelper.Write(bytes, PriceOffset, Price);
+            BytesHelper.Write(bytes, QuantityOffset, Quantity);
+            BytesHelper.Write(bytes, CostOffset, Cost);
+            BytesHelper.Write(bytes, IsNullPropertiesOffset, IsNullPropertiesOffset);
         }
 
         public static PositionDto FromBytes(ReadOnlySpan<byte> bytes)
@@ -88,16 +85,22 @@ namespace Correctum.Storage.Models
             ArgumentOutOfRangeException.ThrowIfLessThan(bytes.Length, ByteCount);
             return new()
             {
-                Name = Encoding.CorrectumStorage.GetString(bytes.Slice(NameOffset, NameLength)),
-                Type = bytes[TypeOffset],
-                CalcMethod = bytes[CalcMethodOffset],
-                TaxRate = bytes[TaxRateOffset],
-                Unit = bytes[UnitOffset],
-                Price = BinaryPrimitives.ReadUInt64LittleEndian(bytes.Slice(PriceOffset, sizeof(ulong))),
-                Quantity = MemoryMarshal.Read<decimal>(bytes.Slice(QuantityOffset, sizeof(decimal))),
-                Cost = BinaryPrimitives.ReadUInt64LittleEndian(bytes.Slice(CostOffset, sizeof(ulong))),
-                IsNullProperties = (IsNullPositionProperties)bytes[IsNullPropertiesOffset]
+                Name = BytesHelper.ReadString(bytes, NameOffset, NameLength),
+                Type = BytesHelper.ReadUInt8(bytes, TypeOffset),
+                CalcMethod = BytesHelper.ReadUInt8(bytes, CalcMethodOffset),
+                TaxRate = BytesHelper.ReadUInt8(bytes, TaxRateOffset),
+                Unit = BytesHelper.ReadUInt8(bytes, UnitOffset),
+                Price = BytesHelper.ReadUInt64(bytes, PriceOffset),
+                Quantity = BytesHelper.ReadDecimal(bytes, QuantityOffset),
+                Cost = BytesHelper.ReadUInt64(bytes, CostOffset),
+                IsNullProperties = (IsNullPositionProperties)BytesHelper.ReadUInt8(bytes, IsNullPropertiesOffset)
             };
         }
+
+        private static IsNullPositionProperties FlagIfNull<T>(T? value, IsNullPositionProperties flag) =>
+            value is null ? 0 : flag;
+
+        private readonly T? GetOrNull<T>(IsNullPositionProperties flag, T value) =>
+            IsNullProperties.HasFlag(flag) ? default : value;
     }
 }
