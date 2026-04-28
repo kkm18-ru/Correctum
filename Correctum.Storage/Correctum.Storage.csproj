@@ -10,14 +10,4 @@
 		<ProjectReference Include="..\Correctum.Core\Correctum.Core.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.7" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Using Include="Correctum.Storage.Extensions.ExceptionExtensions">
-	    <Static>True</Static>
-	  </Using>
-	</ItemGroup>
-
 </Project>
