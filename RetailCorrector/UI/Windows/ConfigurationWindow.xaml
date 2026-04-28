@@ -53,9 +53,13 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="20"/>
                 </Grid.ColumnDefinitions>
                 
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="5"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="5"/>
                     <RowDefinition Height="Auto"/>
@@ -66,13 +70,16 @@
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Количество документов в ответе:"/>
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Интервал между HTTP-запросами:"/>
                 <TextBlock Grid.Column="0" Grid.Row="4" Text="Количество попыток запроса:"/>
+                <TextBlock Grid.Column="0" Grid.Row="6" Text="Путь к Chromium-браузеру:"/>
                 
-                <tk:IntegerUpDown Grid.Column="2" Grid.Row="0" Minimum="1"
+                <tk:IntegerUpDown Grid.Column="2" Grid.Row="0" Minimum="1" Grid.ColumnSpan="3"
                                   Value="{Binding HttpClient.PageSize}"/>
-                <tk:IntegerUpDown Grid.Column="2" Grid.Row="2" Minimum="1"
+                <tk:IntegerUpDown Grid.Column="2" Grid.Row="2" Minimum="1" Grid.ColumnSpan="3"
                                   Value="{Binding HttpClient.RequestDelay}"/>
-                <tk:IntegerUpDown Grid.Column="2" Grid.Row="4" Minimum="1"
+                <tk:IntegerUpDown Grid.Column="2" Grid.Row="4" Minimum="1" Grid.ColumnSpan="3"
                                   Value="{Binding HttpClient.TriesCount}"/>
+                <TextBox Grid.Column="2" Grid.Row="6" Text="{Binding HttpClient.HeadlessBrowserPath}"/>
+                <Button Grid.Column="4" Grid.Row="6" Content="..." Click="OnBrowserPathSelector"/>
             </Grid>
         </TabItem>
         <TabItem Header="Экспорт">

@@ -1,6 +1,8 @@
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Win32;
 using RetailCorrector.UI.Windows.Types;
 using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations;
@@ -32,4 +34,16 @@ public sealed partial class ConfigurationWindow : DialogWindow
 
     private void OnLokiPasswordChanged(object sender, RoutedEventArgs e) =>
         Configuration.Instance.Logging.LokiPassword = ((PasswordBox)sender).Password;
+
+    private void OnBrowserPathSelector(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = "Исполняемый файл|*.exe",
+            InitialDirectory = 
+                Path.GetDirectoryName(Configuration.Instance.HttpClient.HeadlessBrowserPath)
+        };
+        if (!dialog.ShowDialog() ?? false) return;
+        Configuration.Instance.HttpClient.HeadlessBrowserPath = dialog.FileName;
+    }
 }
