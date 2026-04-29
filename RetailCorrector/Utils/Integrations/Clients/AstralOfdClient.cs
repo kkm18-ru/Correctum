@@ -43,18 +43,9 @@ internal sealed class AstralOfdClient(string host = "https://ofd.astralnalog.ru"
 
     public async Task<IEnumerable<AstralOfdOrganization>> GetOrganizationIdAsync(CancellationToken cancellationToken = default)
     {
-        using var resp = await Client.GetAsync("/lk/api/v4.2/users.getMe", cancellationToken).ConfigureAwait(false);
-        await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        if (!resp.IsSuccessStatusCode)
-            throw new HttpRequestException(null, null, resp.StatusCode);
-        var content = await JsonSerializer.DeserializeAsync<AstralOfdGetMeResponse>
-            (stream, cancellationToken: cancellationToken).ConfigureAwait(false);
-        if (!content.Success)
-        {
-            var builder = new StringBuilder();
-            throw new HttpRequestException(builder.ToString());
-        }
-        return content.Data.Organizations;
+        var req = new HttpRequestMessage(HttpMethod.Get, "/lk/api/v4.2/users.getMe");
+        var resp = await SendAsync<AstralOfdGetMeResponse, AstralOfdGetMeResponseItem>(req, cancellationToken);
+        return resp.Organizations;
     }
 
     public async IAsyncEnumerable<AstralOfdKkt> GetKktsAsync
@@ -73,69 +64,64 @@ internal sealed class AstralOfdClient(string host = "https://ofd.astralnalog.ru"
         } while (true);
     }
 
-    internal async Task<AstralOfdKktSearchResponseItem> GetKktsByPageAsync
+    internal Task<AstralOfdKktSearchResponseItem> GetKktsByPageAsync
         (string organizationId, int page, int count, CancellationToken cancellationToken = default)
     {
-        if (!int.TryParse(organizationId, out _))
-            throw new ArgumentException("Входной параметр не является целочисленным", nameof(organizationId));
+        ArgumentException.ThrowIfNotUInteger(organizationId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
-        using var req = new HttpRequestMessage(HttpMethod.Post, "/lk/api/v4.2/kkt.search")
-        {
-            Content = JsonContent.Create(new { organizationId, page, count })
-        };
-        using var resp = await Client.SendAsync(req, cancellationToken).ConfigureAwait(false);
-        if (!resp.IsSuccessStatusCode)
-            throw new HttpRequestException(null, null, resp.StatusCode);
-        await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var content = await JsonSerializer.DeserializeAsync<AstralOfdKktSearchResponse>
-            (stream, cancellationToken: cancellationToken).ConfigureAwait(false);
-        if (!content.Success)
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine("Сервер сообщил об ошибках запроса:");
-            foreach(var property in content.Errors!.Value.EnumerateObject())
-                builder.AppendLine($"- {property.Name}: {property.Value}");
-            throw new HttpRequestException(builder.ToString());
-        }
-        return content.Data;
+
+        using var req = new HttpRequestMessage(HttpMethod.Post, "/lk/api/v4.2/kkt.search");
+        req.Content = JsonContent.Create(new { organizationId, page, count });
+        return SendAsync<AstralOfdKktSearchResponse, AstralOfdKktSearchResponseItem>(req, cancellationToken);
     }
 
-    public async Task<Receipt> GetReceiptAsync(
-        int fiscalDocumentNumber, 
-        string fiscalDriveNumber, 
-        int fiscalSign, 
-        CancellationToken cancellationToken = default)
+    public async Task<Receipt> GetReceiptAsync
+        (int fiscalDocumentNumber, string fiscalDriveNumber, int fiscalSign, CancellationToken cancellationToken = default)
     {
-        using var req = new HttpRequestMessage(HttpMethod.Post, "/lk/api/v4.2/documents.receiptNew")
-        {
-            Content = JsonContent.Create(new { fiscalDocumentNumber, fiscalDriveNumber, fiscalSign })
-        };
-        using var resp = await Client.SendAsync(req, cancellationToken).ConfigureAwait(false);
-        if (!resp.IsSuccessStatusCode)
-            throw new HttpRequestException(null, null, resp.StatusCode);
-        await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var content = await JsonSerializer.DeserializeAsync<AstralOfdReceiptResponse>
-            (stream, cancellationToken: cancellationToken).ConfigureAwait(false);
-        if (!content.Success)
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine("Сервер сообщил об ошибках запроса:");
-            foreach (var property in content.Errors!.Value.EnumerateObject())
-                builder.AppendLine($"- {property.Name}: {property.Value}");
-            throw new HttpRequestException(builder.ToString());
-        }
-        return content.Data.Receipt.ToReceipt();
+        using var req = new HttpRequestMessage(HttpMethod.Post, "/lk/api/v4.2/documents.receiptNew");
+        req.Content = JsonContent.Create(new { fiscalDocumentNumber, fiscalDriveNumber, fiscalSign });
+        var resp = await SendAsync<AstralOfdReceiptResponse, AstralOfdReceiptResponseItem>(req, cancellationToken);
+        return resp.Receipt.ToReceipt();
     }
 
-
+    private async Task<TItem> SendAsync<TResponse, TItem>
+        (HttpRequestMessage requestMessage, CancellationToken cancellationToken = default)
+        where TResponse: IAstralOfdResponse<TItem>
+    {
+        using var resp = await Client.SendAsync(requestMessage, cancellationToken).ConfigureAwait(false);
+        if (!resp.IsSuccessStatusCode) throw new HttpRequestException(null, null, resp.StatusCode);
+        await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        var content = await JsonSerializer.DeserializeAsync<TResponse>
+            (stream, cancellationToken: cancellationToken).ConfigureAwait(false) ??
+            throw new JsonException($"Не удалось сериализировать тело HTTP-ответа в экземпляр {typeof(TResponse).Name}.");
+        content.ThrowIfFailed();
+        return content.Data!;
+    }
 }
 
-file interface IAstralOfdResponse<out T>
+internal interface IAstralOfdResponse<out T> 
 {
     public bool Success { get; }
     public T? Data { get; }
     public JsonElement? Errors { get; }
+
+    public void ThrowIfFailed()
+    {
+        if (Success) return;
+        switch (Errors!.Value.ValueKind)
+        {
+            case JsonValueKind.Object:
+                var builder = new StringBuilder();
+                builder.AppendLine("Сервер сообщил об ошибках запроса:");
+                foreach (var property in Errors!.Value.EnumerateObject())
+                    builder.AppendLine($"- {property.Name}: {property.Value}");
+                throw new HttpRequestException(builder.ToString());
+            case JsonValueKind.String:
+                throw new HttpRequestException(Errors!.Value.GetString());
+            default: throw new HttpRequestException("Неожиданная ошибка.");
+        }
+    }
 }
 
 [method: JsonConstructor]
