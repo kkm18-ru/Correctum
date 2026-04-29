@@ -1,4 +1,8 @@
-﻿using PuppeteerSharp;
+﻿using Correctum.Core.Enums;
+using Correctum.Core.Models;
+using Correctum.Core.ValueObjects;
+using PuppeteerSharp;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
@@ -81,9 +85,9 @@ internal sealed class AstralOfdClient(string host = "https://ofd.astralnalog.ru"
             Content = JsonContent.Create(new { organizationId, page, count })
         };
         using var resp = await Client.SendAsync(req, cancellationToken).ConfigureAwait(false);
-        await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         if (!resp.IsSuccessStatusCode)
             throw new HttpRequestException(null, null, resp.StatusCode);
+        await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         var content = await JsonSerializer.DeserializeAsync<AstralOfdKktSearchResponse>
             (stream, cancellationToken: cancellationToken).ConfigureAwait(false);
         if (!content.Success)
@@ -96,6 +100,35 @@ internal sealed class AstralOfdClient(string host = "https://ofd.astralnalog.ru"
         }
         return content.Data;
     }
+
+    public async Task<Receipt> GetReceiptAsync(
+        int fiscalDocumentNumber, 
+        string fiscalDriveNumber, 
+        int fiscalSign, 
+        CancellationToken cancellationToken = default)
+    {
+        using var req = new HttpRequestMessage(HttpMethod.Post, "/lk/api/v4.2/documents.receiptNew")
+        {
+            Content = JsonContent.Create(new { fiscalDocumentNumber, fiscalDriveNumber, fiscalSign })
+        };
+        using var resp = await Client.SendAsync(req, cancellationToken).ConfigureAwait(false);
+        if (!resp.IsSuccessStatusCode)
+            throw new HttpRequestException(null, null, resp.StatusCode);
+        await using var stream = await resp.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        var content = await JsonSerializer.DeserializeAsync<AstralOfdReceiptResponse>
+            (stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+        if (!content.Success)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("Сервер сообщил об ошибках запроса:");
+            foreach (var property in content.Errors!.Value.EnumerateObject())
+                builder.AppendLine($"- {property.Name}: {property.Value}");
+            throw new HttpRequestException(builder.ToString());
+        }
+        return content.Data.Receipt.ToReceipt();
+    }
+
+
 }
 
 file interface IAstralOfdResponse<out T>
@@ -148,4 +181,79 @@ public readonly struct AstralOfdOrganization(string id, string name)
 {
     public string Id { get; } = id;
     public override string ToString() => name;
+}
+
+[method: JsonConstructor]
+internal readonly struct AstralOfdReceiptResponse(bool ok, AstralOfdReceiptResponseItem result, JsonElement? description) 
+    : IAstralOfdResponse<AstralOfdReceiptResponseItem>
+{
+    public bool Success { get; } = ok;
+    public AstralOfdReceiptResponseItem Data { get; } = ok ? result : default;
+    public JsonElement? Errors { get; } = description;
+}
+
+[method: JsonConstructor]
+internal readonly struct AstralOfdReceiptResponseItem(AstralOfdReceipt documentJson)
+{
+    public AstralOfdReceipt Receipt { get; } = documentJson;
+}
+
+[method: JsonConstructor]
+#pragma warning disable S107
+public readonly struct AstralOfdReceipt(
+    string? kktRegId,
+    uint? fiscalDocumentNumber,
+    string? fiscalDriveNumber,
+    string? fiscalSign,
+    string? dateTime,
+    string? buyerPhoneOrAddress,
+    ulong? ecashTotalSum,
+    AstralOfdReceiptItem[]? items,
+    uint? operationType,
+    uint? requestNumber,
+    uint? shiftNumber,
+    uint? taxationType,
+    ulong? totalSum)
+#pragma warning restore S107
+{
+    public Receipt ToReceipt() => new()
+    {
+        Items = items?.Select(i => i.ToPosition()).ToArray(),
+        BuyerContact = buyerPhoneOrAddress,
+        SessionId = shiftNumber,
+        RegId = kktRegId,
+        DocNumber = fiscalDocumentNumber,
+        DocSign = FiscalSign.Parse(fiscalSign),
+        DocInSession = requestNumber,
+        TaxationSystem = (TaxationSystems?)taxationType,
+        StorageId = fiscalDriveNumber,
+        Type = (ReceiptType?)operationType,
+        TotalSum = totalSum,
+        Created = dateTime is null ? null : DateTime.ParseExact(dateTime, "dd'.'MM'.'yyyy' 'HH':'mm", CultureInfo.InvariantCulture),
+        Payment = new()
+        {
+            NonCashSum = ecashTotalSum,
+
+        }
+    };
+}
+
+[method: JsonConstructor]
+public readonly struct AstralOfdReceiptItem(
+    string? name, 
+    ulong? price, 
+    ulong? sum, 
+    decimal? quantity, 
+    int? nds, 
+    int? productType)
+{
+    public Position ToPosition() => new()
+    {
+        Name = name,
+        Type = (PositionType?)productType,
+        TaxRate = (NDSRate?)nds,
+        Price = price,
+        Quantity = quantity is null ? null : (ulong)Math.Round(quantity.Value * 1000),
+        Cost = sum,
+    };
 }
