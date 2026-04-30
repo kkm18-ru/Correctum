@@ -9,6 +9,7 @@
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+		<PlatformTarget>x86</PlatformTarget>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
