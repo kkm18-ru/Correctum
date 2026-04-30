@@ -23,7 +23,7 @@
 
         private static readonly GetBoolDelegate getParamBool;                   // libfptr_get_param_bool
         private static readonly GetIntDelegate getParamInt;                     // libfptr_get_param_int
-        private static readonly GetDoubleDelegate getParamDouble;               // libfptr_get_param_double
+        //private static readonly GetDoubleDelegate getParamDouble;             // libfptr_get_param_double
         private static readonly GetBytesDelegate getParamByteArray;             // libfptr_get_param_bytearray
         private static readonly GetBytesDelegate getParamStr;                   // libfptr_get_param_str
         private static readonly GetDateDelegate getParamDateTime;               // libfptr_get_param_datetime
