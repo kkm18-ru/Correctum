@@ -1,9 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using Correctum.Core.Models;
-using Correctum.Core.Enums;
 using RetailCorrector.Utils;
-using Correctum.Core.ValueObjects;
 using System.Runtime.CompilerServices;
 
 namespace RetailCorrector.Importers;
@@ -21,43 +19,11 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
             for (var i = 0; i < count; i += Configuration.Instance.Sqlite.Limit)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var docs = (await Task.Run(() => conn.QueryAsync<Document>(GET_RECEIPTS, new { limit = Configuration.Instance.Sqlite.Limit, offset = i }))).ToArray();
-                for (var j = 0; j < docs.Length; j++)
+                var parameters = new { limit = Configuration.Instance.Sqlite.Limit, offset = i };
+                await foreach(var doc in conn.QueryUnbufferedAsync<ReceiptDto>(GET_RECEIPTS, parameters))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-
-                    yield return new()
-                    {
-                        Items = [.. (await Task.Run(() => conn.QueryAsync<InnerPosition>(GET_POSITIONS, docs[j]))).Select(i => new Position {
-                            Name = i.name,
-                            Cost = i.total,
-                            Unit = i.unit,
-                            CalcMethod = i.payment,
-                            Price = i.price,
-                            Quantity = i.quantity,
-                            TaxRate = EnumUtils.ToTaxRate(i.tax),
-                            Type = i.type
-                        })],
-                        Created = docs[j].date,
-                        RegId = docs[j].devid,
-                        StorageId = docs[j].drive,
-                        SessionId = docs[j].shift,
-                        DocNumber = docs[j].doc,
-                        DocInSession = docs[j].req,
-                        DocSign = FiscalSign.Parse(docs[j].sign),
-                        TotalSum = docs[j].total,
-                        Payment = new Payment
-                        {
-                            CashSum = docs[j].cash,
-                            NonCashSum = docs[j].ecash,
-                            AdvanceSum = docs[j].pre,
-                            CreditSum = docs[j].post,
-                            ProvisionSum = docs[j].other,
-                        },
-                        Type = docs[j].type,
-                        BuyerContact = docs[j].buyer,
-                        TaxationSystem = (TaxationSystems)docs[j].taxation
-                    };
+                    yield return await doc.ToModelAsync(conn);
                     progress.ReportIncrement();
                 }
             }
