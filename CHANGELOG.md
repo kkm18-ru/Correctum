@@ -1,5 +1,53 @@
 # Changelog
 
+## [0.10.0](https://github.com/kkm18-ru/Correctum/compare/v0.9.1...v0.10.0) (2026-04-30)
+
+
+### ✨ Нововведения
+
+* **ui:** Добавлена работа с диапазонами дат ([#52](https://github.com/kkm18-ru/Correctum/issues/52)) ([8ac7104](https://github.com/kkm18-ru/Correctum/commit/8ac7104566e730c705ea25d0a28d8600dadb3db6))
+* Реализован импорт из "Первого ОФД" ([#16](https://github.com/kkm18-ru/Correctum/issues/16)) ([580b2ae](https://github.com/kkm18-ru/Correctum/commit/580b2ae8d7b9772a4cbe855f75eea2641d3f9d6e))
+
+
+### 🐞 Исправления
+
+* Исправлена ошибка с null в Fptr120ExportViewModel.PaymentAsync ([af89c02](https://github.com/kkm18-ru/Correctum/commit/af89c0271a36550234f238f8070b66a3aefe8563))
+* Исправлено CS8604 в отчете "Наименования позиций" ([ad6c18a](https://github.com/kkm18-ru/Correctum/commit/ad6c18af6db968d260ea4fe4c545bdc4ba3d7d0b))
+* Исправлены варнинги S3459 и S1144 в импортере Sqlite ([8b5519d](https://github.com/kkm18-ru/Correctum/commit/8b5519d39dd428ed7777574a99593da3ed6906d0))
+* Установлен абсолютный путь к explorer.exe ([#55](https://github.com/kkm18-ru/Correctum/issues/55)) ([555b6e7](https://github.com/kkm18-ru/Correctum/commit/555b6e7aea8de0091a7a0adfd607c11215636b56))
+* Установлена целевая платформа x86 ([9c1da0a](https://github.com/kkm18-ru/Correctum/commit/9c1da0ac176e6b0928daaad0c15b87d889251c4a))
+* Установлено максимальное время работы регулярных выражений ([#54](https://github.com/kkm18-ru/Correctum/issues/54)) ([e73397d](https://github.com/kkm18-ru/Correctum/commit/e73397dfc5f992c691a545aec8ac649bf3e12e99))
+
+
+### ⚡ Улучшение производительности
+
+* Добавлены значительные объекты ([#60](https://github.com/kkm18-ru/Correctum/issues/60)) ([b7c654f](https://github.com/kkm18-ru/Correctum/commit/b7c654f8920b60f2ee5885d68dd14d77e92fc964))
+
+
+### ⏪ Отмена изменений
+
+* Вырезана система действий над чеками ([#61](https://github.com/kkm18-ru/Correctum/issues/61)) ([08b6f20](https://github.com/kkm18-ru/Correctum/commit/08b6f20d5008a61d8decbb20ca960338a4ae5ac8))
+* Удалён импортер FxPOS ([736e48e](https://github.com/kkm18-ru/Correctum/commit/736e48e108c92b08123e8b7e862baaf05f3d5146))
+
+
+### ⬆️ Обновления зависимостей
+
+* **RetailCorrector.Tests:** WireMock.Net.Minimal 1.25.0 ==&gt; 2.3.0 ([e579240](https://github.com/kkm18-ru/Correctum/commit/e579240a5174e063caaca33ff766e0acff8c9de2))
+* **RetailCorrector:** Bogus 35.6.4 ==&gt; 35.6.5 ([4636beb](https://github.com/kkm18-ru/Correctum/commit/4636beb5aa15b5b5b9367b05413ba03786337c3b))
+* **RetailCorrector:** Dapper 2.1.66 ==&gt; 2.1.72 ([9f9edf8](https://github.com/kkm18-ru/Correctum/commit/9f9edf892b34534dfe393fed02f4353380638211))
+* **RetailCorrector:** Microsoft.Data.Sqlite.Core 9.0.9 ==&gt; 10.0.7 ([563f726](https://github.com/kkm18-ru/Correctum/commit/563f726944011a7417f5dc743510b8a0607a4b35))
+* **RetailCorrector:** Microsoft.Extensions.Http.Resilience 10.0.0 ==&gt; 10.5.0 ([b42f124](https://github.com/kkm18-ru/Correctum/commit/b42f12417820188ef380b5f976d32a8ef63d4365))
+* **RetailCorrector:** NLog 6.1.0 ==&gt; 6.1.2 ([e87eaea](https://github.com/kkm18-ru/Correctum/commit/e87eaea2bb7e2c8393ee76f40419df114d428de3))
+* **RetailCorrector:** NLog.Targets.Loki 2.4.0 ==&gt; 2.5.0 ([e2cbb8a](https://github.com/kkm18-ru/Correctum/commit/e2cbb8a145ceb992ae5e16633b0624800b0a6489))
+* **RetailCorrector:** Polly 8.6.5 ==&gt; 8.6.6 ([d7c1a8d](https://github.com/kkm18-ru/Correctum/commit/d7c1a8d065f7c2c0b9101ea893d59d14e0ddd717))
+* **RetailCorrector:** System.ServiceProcess.ServiceController 9.0.10 ==&gt; 10.0.7 ([1c1bfe6](https://github.com/kkm18-ru/Correctum/commit/1c1bfe66660d3ba8a99764699829538ff38954f9))
+* **RetailCorrector:** Tomlyn 0.19.0 ==&gt; 2.3.1 ([0be5c45](https://github.com/kkm18-ru/Correctum/commit/0be5c45943eaeb267e806357f7de3158e95aa9e8))
+* **tests:** coverlet.collector 6.0.4 ==&gt; 10.0.0 ([232fda0](https://github.com/kkm18-ru/Correctum/commit/232fda0f0ba2647a289623a4b9edb9be245351da))
+* **tests:** Microsoft.NET.Test.Sdk ==&gt; 18.5.0 ([0cabf9b](https://github.com/kkm18-ru/Correctum/commit/0cabf9bf9499d6e59d06e686fc7346309f7034bd))
+* **tests:** NUnit ==&gt; 4.5.1 ([18832cb](https://github.com/kkm18-ru/Correctum/commit/18832cb4ff4c71a527b283aa49dd8054a560a357))
+* **tests:** NUnit.Analyzers ==&gt; 4.12.0 ([c3bc9c9](https://github.com/kkm18-ru/Correctum/commit/c3bc9c9de48c1edd41e6112d7e8713d2ab68b98b))
+* **tests:** NUnit3TestAdapter ==&gt; 6.2.0 ([86377e8](https://github.com/kkm18-ru/Correctum/commit/86377e8a6884045eedb3bc0251eb9fda2ca747eb))
+
 ## [0.9.1](https://github.com/kkm18-ru/Correctum/compare/v0.9.0...v0.9.1) (2026-04-01)
 
 
