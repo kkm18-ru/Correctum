@@ -43,7 +43,7 @@ namespace RetailCorrector.Utils.Integrations
 
             getParamBool = GetDelegateOfLib<GetBoolDelegate>("libfptr_get_param_bool");
             getParamInt = GetDelegateOfLib<GetIntDelegate>("libfptr_get_param_int");
-            getParamDouble = GetDelegateOfLib<GetDoubleDelegate>("libfptr_get_param_double");
+            //getParamDouble = GetDelegateOfLib<GetDoubleDelegate>("libfptr_get_param_double");
             getParamByteArray = GetDelegateOfLib<GetBytesDelegate>("libfptr_get_param_bytearray");
             getParamStr = GetDelegateOfLib<GetBytesDelegate>("libfptr_get_param_str");
             getParamDateTime = GetDelegateOfLib<GetDateDelegate>("libfptr_get_param_datetime");
