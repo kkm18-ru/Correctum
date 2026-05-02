@@ -1,0 +1,27 @@
+<Menu x:Class="RetailCorrector.Views.Controls.MainMenu"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:vm="clr-namespace:RetailCorrector.ViewModels.Controls"
+      xmlns:u="clr-namespace:RetailCorrector.Utils"
+      mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="1000">
+      <Menu.DataContext>
+            <vm:MainMenuViewModel/>
+      </Menu.DataContext>
+      <MenuItem Header="Файл">
+            <MenuItem Header="Импорт" ItemsSource="{x:Static u:ModuleRegistry.Importers}"/>
+            <MenuItem Header="Экспорт..." ItemsSource="{Binding Exporters}" />
+            <Separator/>
+            <MenuItem Header="Провести чеки" Command="{Binding ShowFptrCommand}"/>
+            <Separator/>
+            <MenuItem Header="Настройки" Command="{Binding ShowSettingsCommand}"/>
+            <MenuItem Header="Выход" Command="{Binding QuitCommand}"/>
+      </MenuItem>
+      <MenuItem Header="Отчеты" ItemsSource="{Binding Reports, Mode=OneTime}"/>
+      <MenuItem Header="Помощь">
+            <MenuItem Header="Список изменений" 
+                      Command="{Binding OpenLinkCommand}"
+                      CommandParameter="https://github.com/kkm18-ru/Correctum/blob/HEAD/CHANGELOG.md"/>
+      </MenuItem>
+</Menu>

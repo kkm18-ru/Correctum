@@ -55,7 +55,7 @@ public partial class MainWindow : Window
             DocumentHeaderTemplate = headerTemplate,
             Layout = new() { RootPanel = panelLayout }
         };
-        var menu = new MainMenu();
+        var menu = new RetailCorrector.Views.Controls.MainMenu();
         DockPanel.SetDock(menu, Dock.Top);
         dock.Children.Add(menu);
         dock.Children.Add(content);

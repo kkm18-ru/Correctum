@@ -1,0 +1,66 @@
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using Microsoft.Xaml.Behaviors.Core;
+using RetailCorrector.UI.Windows;
+using RetailCorrector.Utils;
+using RetailCorrector.ViewModels.Exports;
+using RetailCorrector.ViewModels.Reports;
+using RetailCorrector.Views.Windows;
+
+namespace RetailCorrector.ViewModels.Controls;
+
+public sealed class MainMenuViewModel : BaseViewModel
+{
+    private static string ExplorerPath { get; } =
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe");
+
+    public static MenuItem[] Exporters => SearchExporters();
+    public static MenuItem[] Reports => SearchReports();
+
+
+    public ICommand OpenReportMasterCommand { get; } = new RelayCommand<Type>(OpenReportMaster);
+    public ICommand OpenExportMasterCommand { get; } = new RelayCommand<Type>(OpenExportMaster);
+    public ICommand ShowFptrCommand { get; } = new ActionCommand(() => new FptrWindow().ShowDialog());
+    public ICommand ShowSettingsCommand { get; } = new ActionCommand(() => new ConfigurationWindow().ShowDialog());
+    public ICommand QuitCommand { get; } = new ActionCommand(() => Application.Current.Shutdown());
+    public ICommand OpenLinkCommand { get; } = new RelayCommand<string>(OpenLink);
+    
+    private static void OpenLink(string url) => Process.Start(ExplorerPath, url);
+
+    private static void OpenExportMaster(Type type)
+    {
+        var exporter = (BaseExportViewModel)Activator.CreateInstance(type)!;
+        new ExportWindow(exporter).ShowDialog();
+    }
+    
+    private static void OpenReportMaster(Type type)
+    {
+        var report = (BaseReportViewModel)Activator.CreateInstance(type)!;
+        new ReportWindow(report).ShowDialog();
+    }
+
+    private static MenuItem[] SearchExporters() => 
+        typeof(BaseExportViewModel).Assembly.GetTypes()
+            .Where(type => type.IsSubclassOf(typeof(FileExportViewModel))) // захадркодено
+            .Select(type =>
+            {
+                var report = (BaseExportViewModel)Activator.CreateInstance(type)!;
+                var item = new MenuItem { Header = report.ExportName, CommandParameter = type };
+                item.SetBinding(MenuItem.CommandProperty, nameof(OpenExportMasterCommand));
+                return item;
+            }).ToArray();
+
+    private static MenuItem[] SearchReports() => 
+        typeof(BaseReportViewModel).Assembly.GetTypes()
+            .Where(type => type.IsSubclassOf(typeof(BaseReportViewModel)))
+            .Select(type =>
+            {
+                var report = (BaseReportViewModel)Activator.CreateInstance(type)!;
+                var item = new MenuItem { Header = report.ReportName, CommandParameter = type };
+                item.SetBinding(MenuItem.CommandProperty, nameof(OpenReportMasterCommand));
+                return item;
+            }).ToArray();
+}
