@@ -21,21 +21,20 @@ public abstract class BaseReportViewModel : BaseViewModel
     public ICommand RefreshCommand { get; }
     public ICommand AutoGeneratingColumnCommand { get; }
 
-    public BaseReportViewModel()
+    protected BaseReportViewModel()
     {
-        ExportCommand = new RelayCommand(_ => Export(), _ => Items.Count > 0 && !IsBusy);
-        RefreshCommand = new RelayCommand(_ => Refresh(), _ => !IsBusy);
-        AutoGeneratingColumnCommand = new RelayCommand(a =>
+        ExportCommand = new RelayCommand(Export, () => Items.Count > 0 && !IsBusy);
+        RefreshCommand = new RelayCommand(Refresh, () => !IsBusy);
+        AutoGeneratingColumnCommand = new RelayCommand<DataGridAutoGeneratingColumnEventArgs>(args =>
         {
-            var e = (DataGridAutoGeneratingColumnEventArgs)a!;
-            if (ColumnDisplayNames.TryGetValue(e.PropertyName, out var header))
-                e.Column.Header = header;
+            if (ColumnDisplayNames.TryGetValue(args.PropertyName, out var header))
+                args.Column.Header = header;
         });
     }
     protected abstract Task<List<object>> InternalRefresh();
     protected abstract void InternalExport(string filepath);
-
-    public async void Refresh()
+    
+    private async void Refresh()
     {
         try
         {
@@ -55,7 +54,7 @@ public abstract class BaseReportViewModel : BaseViewModel
         }
     }
 
-    public void Export()
+    private void Export()
     {
         IsBusy = true;
         var saveDialog = new SaveFileDialog

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Win32;
 using Correctum.Core.Models;
-using RetailCorrector.Utils;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Xaml.Behaviors.Core;
 
 namespace RetailCorrector.ViewModels.Exports;
 
@@ -17,7 +17,7 @@ public abstract class BaseExportViewModel : BaseViewModel
 
     protected BaseExportViewModel()
     {
-        ExportCommand = new RelayCommand(async _ => await ExportAsync());
+        ExportCommand = new ActionCommand(Export);
     }
 
     protected void ShowNotification(string message, string caption = "", MessageBoxImage image = 0, MessageBoxButton button = 0) =>
@@ -25,7 +25,7 @@ public abstract class BaseExportViewModel : BaseViewModel
 
     protected abstract Task<bool> InternalExportAsync();
 
-    public async Task ExportAsync()
+    internal async void Export()
     {
         try
         {

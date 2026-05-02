@@ -16,8 +16,8 @@ public class BaseExportViewModelTests
                 Assert.That(caption, Is.EqualTo("Не удалось экспортировать ФД."));
                 Assert.That(img, Is.EqualTo(MessageBoxImage.Error));
             }
-        };
-        await viewModel.ExportAsync();
+        }; 
+        viewModel.Export();
     }
 
     [Test] public async Task Success()
@@ -25,14 +25,14 @@ public class BaseExportViewModelTests
         var viewModel = new MockExportViewModel();
         viewModel.NotifyCreated += 
             (m, _, _, _) => Assert.That(m, Is.EqualTo("Экспорт завершен успешно"));
-        await viewModel.ExportAsync();
+        viewModel.Export();
     }
 
     [Test] public async Task Force()
     {
         var viewModel = new MockExportViewModel();
         viewModel.NotifyCreated += (_, _, _, _) => Assert.Fail();
-        await viewModel.ExportAsync();
+        viewModel.Export();
     }
 }
 

@@ -1,11 +1,11 @@
 ﻿using System.Globalization;
 using RetailCorrector.UI.Controls;
-using RetailCorrector.Utils;
 using RetailCorrector.Utils.Integrations;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Microsoft.Xaml.Behaviors.Core;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -20,7 +20,7 @@ public partial class MainWindow : Window
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ru-RU");
         
         Title = "RetailCorrector";
-        InputBindings.Add(new KeyBinding(new RelayCommand(ShowPaste), Key.V, ModifierKeys.Control));
+        InputBindings.Add(new KeyBinding(new ActionCommand(ShowPaste), Key.V, ModifierKeys.Control));
 
         var textHeader = new FrameworkElementFactory(typeof(TextBlock));
         textHeader.SetBinding(TextBlock.TextProperty, new Binding(nameof(LayoutDocument.Title)));
@@ -63,7 +63,7 @@ public partial class MainWindow : Window
         Content = dock;
     }
 
-    private static void ShowPaste(object? obj)
+    private static void ShowPaste()
     {
         if (!Clipboard.ContainsText()) return;
         new ParserWindow(Clipboard.GetText()).Show();

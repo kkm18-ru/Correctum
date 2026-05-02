@@ -2,7 +2,7 @@
 
 namespace RetailCorrector.Utils
 {
-    public class RelayCommand(Action<object?> execute, Predicate<object?>? canExecute = null) : ICommand
+    public class RelayCommand(Action execute, Func<bool> canExecute) : ICommand
     {
         public event EventHandler? CanExecuteChanged
         {
@@ -10,9 +10,8 @@ namespace RetailCorrector.Utils
             remove => CommandManager.RequerySuggested -= value; 
         }
 
-        public bool CanExecute(object? parameter) =>
-            canExecute == null || canExecute(parameter);
+        public bool CanExecute(object? parameter) => canExecute();
 
-        public void Execute(object? parameter) => execute(parameter);
+        public void Execute(object? parameter) => execute();
     }
 }
