@@ -1,0 +1,21 @@
+﻿using Correctum.Core.Models;
+using System.Collections.ObjectModel;
+
+namespace Correctum
+{
+    internal partial class Workspace
+    {
+        public static Workspace Instance => field ??= new Workspace();
+
+        public Guid Id { get; }
+        public ObservableCollection<Receipt> Receipts { get; }
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private Workspace()
+        {
+            Id = Guid.CreateVersion7();
+            Receipts = [];
+            Logger.Info("Создано новое рабочее место \"{Id:D}\"", Id);
+        }
+    }
+}
