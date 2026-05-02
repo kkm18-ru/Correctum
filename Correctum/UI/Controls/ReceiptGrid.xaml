@@ -1,0 +1,37 @@
+<DataGrid x:Class="Correctum.UI.Controls.ReceiptGrid" x:ClassModifier="internal"
+          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          IsReadOnly="True" AutoGenerateColumns="False"
+          CanUserAddRows="False" CanUserDeleteRows="False"
+          CanUserReorderColumns="False" CanUserResizeColumns="False"
+          CanUserSortColumns="False" CanUserResizeRows="False"
+          EnableColumnVirtualization="True" EnableRowVirtualization="True"
+          ScrollViewer.CanContentScroll="True" HeadersVisibility="Column"
+          ScrollViewer.IsDeferredScrollingEnabled="True"
+          VirtualizingPanel.IsVirtualizing="True" 
+          VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+          VirtualizingPanel.VirtualizationMode="Recycling"
+          FontFamily="{StaticResource jbmono}"
+          ItemsSource="{Binding Collection, Mode=OneWay}"
+          DataContext="{Binding RelativeSource={RelativeSource Self}}"
+          mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
+    <DataGrid.Columns>
+        <DataGridTextColumn Header="РНМ" Binding="{Binding RegId}" Width="125"/>
+        <DataGridTextColumn Header="ФН" Binding="{Binding StorageId}" Width="125"/>
+        <DataGridTextColumn Header="№ документа" Binding="{Binding DocNumb}" Width="120"/>
+        <DataGridTextColumn Header="№ смены" Binding="{Binding SessionId}" Width="120"/>
+        <DataGridTextColumn Header="№ чека в смене" Binding="{Binding DocInSession}" Width="120"/>
+        <DataGridTextColumn Header="Дата" Binding="{Binding Date}" Width="121"/>
+        <DataGridTextColumn Header="ФПД" Binding="{Binding Sign}" Width="93"/>
+        <DataGridTextColumn Header="Операция" Binding="{Binding Type}" Width="114"/>
+        <DataGridTextColumn Header="СНО" Binding="{Binding TaxationSystem}" Width="158"/>
+        <DataGridTextColumn Header="Налично" Binding="{Binding Cash}" Width="158"/>
+        <DataGridTextColumn Header="Безналично" Binding="{Binding eCash}" Width="158"/>
+        <DataGridTextColumn Header="Предоплата" Binding="{Binding PrePay}" Width="158"/>
+        <DataGridTextColumn Header="Кредит" Binding="{Binding PostPay}" Width="158"/>
+        <DataGridTextColumn Header="Иная оплата" Binding="{Binding OtherPay}" Width="158"/>
+        <DataGridTextColumn Header="Итог" Binding="{Binding Total}" Width="158"/>
+    </DataGrid.Columns>
+</DataGrid>

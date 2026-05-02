@@ -1,0 +1,22 @@
+<wt:DialogWindow x:Class="Correctum.Views.Windows.ExportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Correctum.ViewModels.Exports"
+        xmlns:wt="clr-namespace:Correctum.UI.Windows.Types"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d" SizeToContent="WidthAndHeight"
+        Title="{Binding ExportName, StringFormat={}Экспортер: {0}, Mode=OneTime}"
+        d:DataContext="{d:DesignInstance Type=vm:BaseExportViewModel, IsDesignTimeCreatable=True}">
+    <Grid Margin="5" Width="350">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="Экспорт" 
+                Command="{Binding ExportCommand, Mode=OneTime}"/>
+        <ProgressBar Grid.Column="2" 
+                     IsIndeterminate="{Binding IsBusy, Mode=OneWay}"/>
+    </Grid>
+</wt:DialogWindow>
