@@ -35,7 +35,7 @@ internal partial class Sqlite
             unit AS Unit,
             price AS Price,
             quantity AS Quantity,
-            total AS Cost,
+            total AS Cost
         FROM 
             position 
         WHERE 

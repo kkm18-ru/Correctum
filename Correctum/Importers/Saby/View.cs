@@ -87,7 +87,7 @@ internal partial class Saby
             {
                 UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
                 Mode = BindingMode.TwoWay,
-                Converter = new InnConverter()
+                Converter = (IValueConverter)App.Current.Resources["innConverter"]
             });
             tb.SetBinding(TextBox.IsEnabledProperty, nameof(Authorized));
             grid.AddChild(tb, 2, 8);

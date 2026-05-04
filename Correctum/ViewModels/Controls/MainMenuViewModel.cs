@@ -42,25 +42,37 @@ public sealed class MainMenuViewModel : BaseViewModel
         new ReportWindow(report).ShowDialog();
     }
 
-    private static MenuItem[] SearchExporters() => 
-        typeof(BaseExportViewModel).Assembly.GetTypes()
+    private static MenuItem[] SearchExporters() =>
+        [.. typeof(BaseExportViewModel).Assembly.GetTypes()
             .Where(type => type.IsSubclassOf(typeof(FileExportViewModel))) // захадркодено
             .Select(type =>
             {
                 var report = (BaseExportViewModel)Activator.CreateInstance(type)!;
-                var item = new MenuItem { Header = report.ExportName, CommandParameter = type };
+                var item = new MenuItem
+                {
+                    Header = report.ExportName,
+                    CommandParameter = type,
+                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                    VerticalContentAlignment = VerticalAlignment.Center
+                };
                 item.SetBinding(MenuItem.CommandProperty, nameof(OpenExportMasterCommand));
                 return item;
-            }).ToArray();
+            })];
 
-    private static MenuItem[] SearchReports() => 
-        typeof(BaseReportViewModel).Assembly.GetTypes()
+    private static MenuItem[] SearchReports() =>
+        [.. typeof(BaseReportViewModel).Assembly.GetTypes()
             .Where(type => type.IsSubclassOf(typeof(BaseReportViewModel)))
             .Select(type =>
             {
                 var report = (BaseReportViewModel)Activator.CreateInstance(type)!;
-                var item = new MenuItem { Header = report.ReportName, CommandParameter = type };
+                var item = new MenuItem
+                {
+                    Header = report.ReportName,
+                    CommandParameter = type,
+                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                    VerticalContentAlignment = VerticalAlignment.Center
+                };
                 item.SetBinding(MenuItem.CommandProperty, nameof(OpenReportMasterCommand));
                 return item;
-            }).ToArray();
+            })];
 }

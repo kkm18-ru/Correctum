@@ -13,8 +13,6 @@ partial class FirstOfd
     {
         public View()
         {
-            var invertBoolConverter = new InvertBooleanConverter();
-
             var grid = new Grid();
             Content = grid;
 
@@ -49,7 +47,10 @@ partial class FirstOfd
             grid.Children.Add(lbl);
 
             var input = new TextBox();
-            input.SetBinding(TextBox.IsEnabledProperty, new Binding(nameof(Authorizing)) { Converter = invertBoolConverter });
+            input.SetBinding(TextBox.IsEnabledProperty, new Binding(nameof(Authorizing))
+            {
+                Converter = (IValueConverter)App.Current.Resources["invertBoolConverter"]
+            });
             input.SetBinding(TextBox.TextProperty, new Binding(nameof(Login))
             {
                 Mode = BindingMode.TwoWay,
@@ -61,7 +62,10 @@ partial class FirstOfd
 
             var passwd = new PasswordBox();
             passwd.PasswordChanged += (s, _) => Presenter.Password = ((PasswordBox)s).Password;
-            passwd.SetBinding(PasswordBox.IsEnabledProperty, new Binding(nameof(Authorizing)) { Converter = invertBoolConverter });
+            passwd.SetBinding(PasswordBox.IsEnabledProperty, new Binding(nameof(Authorizing))
+            {
+                Converter = (IValueConverter)App.Current.Resources["invertBoolConverter"]
+            });
             Grid.SetColumn(passwd, 2);
             Grid.SetRow(passwd, 2);
             grid.Children.Add(passwd);
