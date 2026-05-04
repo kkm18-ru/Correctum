@@ -10,6 +10,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
 		<PlatformTarget>x86</PlatformTarget>
+		<StartupObject>Correctum.App</StartupObject>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -17,7 +18,6 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<Compile Remove="Importers\Taxcom*.cs" />
 		<Compile Remove="Importers\Mock*.cs" />
 	</ItemGroup>
 
@@ -27,6 +27,10 @@
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">
 		<PackageReference Include="Bogus" Version="35.6.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Code Include="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
