@@ -8,7 +8,6 @@
 		<UseWPF>true</UseWPF>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
 		<PlatformTarget>x86</PlatformTarget>
 		<StartupObject>Correctum.App</StartupObject>
 	</PropertyGroup>
@@ -19,10 +18,6 @@
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
 		<Compile Remove="Importers\Mock*.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Include="Assets\icon.ico" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">
