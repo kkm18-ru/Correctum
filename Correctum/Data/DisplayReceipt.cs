@@ -19,7 +19,7 @@ namespace Correctum.Data
         public string PrePay { get; } = origin.Payment?.AdvanceSum.ToString() ?? "";
         public string PostPay { get; } = origin.Payment?.CreditSum.ToString() ?? "";
         public string OtherPay { get; } = origin.Payment?.ProvisionSum.ToString() ?? "";
-        public string Total { get; } = origin.TotalSum.ToString();
+        public string Total { get; } = origin.TotalSum?.ToString() ?? string.Empty;
         public string TaxationSystem { get; } = EnumLocales.TaxationSystems.GetLocale(origin.TaxationSystem);
 
         public override string ToString() => $"Чек №{DocNumb} (ККТ: {RegId}; ФН: {StorageId})";
