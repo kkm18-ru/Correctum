@@ -60,8 +60,7 @@ partial class Acquirer
             var btn = new Button{Content = "..."};
             btn.Click += (s, e) =>
             {
-                var ok = open.ShowDialog();
-                if (ok == true)
+                if (open.ShowDialog() ?? false)
                     Presenter.FilePath = open.FileName;
             };
             grid.AddChild(btn, 4);
