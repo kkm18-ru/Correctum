@@ -64,7 +64,7 @@ public partial class OfdRuJsonDeserializer : IDeserializer
         {
             Name = dto.Name,
             Price = dto.Price,
-            Quantity = dto.Quantity is null ? null : (ulong)Math.Round(dto.Quantity.Value / 0.001M),
+            Quantity = dto.Quantity is null ? null : (ulong)Math.Round(dto.Quantity.Value * 1000),
             Cost = dto.Cost,
             Unit = (UnitOfMeasure?)dto.Unit,
             CalcMethod = (CalculationMethod?)dto.CalcMethod,
