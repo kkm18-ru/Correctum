@@ -1,10 +1,10 @@
-﻿using Correctum.Utils;
-using System.ComponentModel;
+﻿using Correctum.Attrubutes;
+using Correctum.Utils;
 using System.Data;
 
 namespace Correctum.Reports;
 
-[DisplayName("Наименования позиций")]
+[ReportInfo("Наименования позиций")]
 public class PositionNamesReport : IReport
 {
     public static DataTable GenerateReport()
