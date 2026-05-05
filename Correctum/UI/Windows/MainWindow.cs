@@ -9,6 +9,7 @@ using Correctum.Views.Controls;
 using Microsoft.Xaml.Behaviors.Core;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
+using Correctum.Views.Windows;
 
 namespace Correctum.UI.Windows;
 
@@ -67,7 +68,7 @@ public partial class MainWindow : Window
     private static void ShowPaste()
     {
         if (!Clipboard.ContainsText()) return;
-        new ParserWindow(Clipboard.GetText()).Show();
+        new PasteWindow(Clipboard.GetText()).Show();
     }
 
     protected override void OnClosed(EventArgs e)
