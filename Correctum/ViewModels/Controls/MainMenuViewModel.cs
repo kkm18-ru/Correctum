@@ -24,6 +24,7 @@ public sealed partial class MainMenuViewModel : BaseViewModel
     public ICommand OpenReportCommand { get; } = new RelayCommand<ReportDescriptor>(OpenReport);
     public ICommand OpenExportMasterCommand { get; } = new RelayCommand<Type>(OpenExportMaster);
     public ICommand ShowFptrCommand { get; } = new ActionCommand(() => new FptrWindow().ShowDialog());
+    public ICommand ShowPasteCommand { get; } = new ActionCommand(() => new PasteWindow().ShowDialog());
     public ICommand ShowSettingsCommand { get; } = new ActionCommand(() => new ConfigurationWindow().ShowDialog());
     public ICommand QuitCommand { get; } = new ActionCommand(() => Application.Current.Shutdown());
     public ICommand OpenLinkCommand { get; } = new RelayCommand<string>(OpenLink);
