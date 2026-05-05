@@ -1,13 +1,14 @@
 ﻿using Correctum.UI.Windows.Types;
-using Correctum.ViewModels.Reports;
+using Correctum.ViewModels.Windows;
+using System.Data;
 
 namespace Correctum.Views.Windows;
 
 public sealed partial class ReportWindow : DialogWindow
 {
-    public ReportWindow(BaseReportViewModel viewModel)
+    public ReportWindow(string reportName, Func<DataTable> function)
     {
-        DataContext = viewModel;
+        DataContext = new ReportWindowViewModel(reportName, function);
         InitializeComponent();
     }
 }
