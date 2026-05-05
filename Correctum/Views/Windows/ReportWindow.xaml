@@ -7,7 +7,10 @@
                        xmlns:conv="clr-namespace:Correctum.Converters"
                        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                        xmlns:tk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                       xmlns:vmr="clr-namespace:Correctum.ViewModels.Reports"
+                       xmlns:vm="clr-namespace:Correctum.ViewModels.Windows"
+                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       mc:Ignorable="d" 
+                       d:DataContext="{d:DesignInstance Type={x:Type vm:ReportWindowViewModel}, IsDesignTimeCreatable=True}"
                        xmlns:local="clr-namespace:Correctum.UI.Windows"
                        Title="{Binding ReportName, Mode=OneTime, StringFormat='Отчет &quot;{0}&quot;'}"
                        Height="450" Width="700">
@@ -34,16 +37,16 @@
         
         <DataGrid Grid.ColumnSpan="5" Grid.Row="2" IsReadOnly="True"
                   AutoGenerateColumns="True" CanUserAddRows="False"
-                  CanUserDeleteRows="False" ItemsSource="{Binding Items}"
+                  CanUserDeleteRows="False" ItemsSource="{Binding Table}"
                   HeadersVisibility="Column" CanUserResizeColumns="False"
                   CanUserResizeRows="False" CanUserReorderColumns="False"
                   CanUserSortColumns="False">
-            <i:Interaction.Triggers>
+            <!--i:Interaction.Triggers>
                 <i:EventTrigger EventName="AutoGeneratingColumn">
                     <i:InvokeCommandAction Command="{Binding AutoGeneratingColumnCommand}"
                                            PassEventArgsToCommand="True"/>
                 </i:EventTrigger>
-            </i:Interaction.Triggers>
+            </i:Interaction.Triggers-->
         </DataGrid>
     </Grid>
 </wintypes:DialogWindow>

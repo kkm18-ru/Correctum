@@ -3,7 +3,7 @@ using Correctum.UI.Controls;
 
 namespace Correctum.Utils;
 
-internal static class ModuleRegistry
+internal static partial class ModuleRegistry
 {
     public static readonly ImmutableArray<Parsers.IParser> Parsers = [
         Correctum.Parsers.PlatformOfd.Instance,
