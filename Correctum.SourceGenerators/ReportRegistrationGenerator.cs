@@ -61,11 +61,11 @@ public sealed class ReportRegistrationGenerator : IIncrementalGenerator
     {
         var builder = new StringBuilder();
         builder.AppendLine("""
-            namespace Correctum.Utils
+            namespace Correctum.ViewModels.Controls
             {
-                static partial class ModuleRegistry
+                partial class MainMenuViewModel
                 {
-                    public static readonly global::System.Collections.Immutable.ImmutableArray<ReportDescriptor> Reports = [
+                    public static partial global::System.Collections.Immutable.ImmutableArray<ReportDescriptor> Reports => [
             """);
         foreach (var cds in classDeclarations)
         {
@@ -88,6 +88,6 @@ public sealed class ReportRegistrationGenerator : IIncrementalGenerator
                 }
             }
             """);
-        context.AddSource($"ModuleRegistry.Reports.g.cs", SourceText.From(builder.ToString(), Encoding.UTF8));
+        context.AddSource($"MainMenuViewModel.Reports.g.cs", SourceText.From(builder.ToString(), Encoding.UTF8));
     }
 }

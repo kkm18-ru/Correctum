@@ -6,22 +6,32 @@
       xmlns:vm="clr-namespace:Correctum.ViewModels.Controls"
       xmlns:u="clr-namespace:Correctum.Utils"
       mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="1000">
-      <Menu.DataContext>
-            <vm:MainMenuViewModel/>
-      </Menu.DataContext>
-      <MenuItem Header="Файл">
-            <MenuItem Header="Импорт" ItemsSource="{x:Static u:ModuleRegistry.Importers}"/>
-            <MenuItem Header="Экспорт..." ItemsSource="{Binding Exporters}" />
-            <Separator/>
-            <MenuItem Header="Провести чеки" Command="{Binding ShowFptrCommand}"/>
-            <Separator/>
-            <MenuItem Header="Настройки" Command="{Binding ShowSettingsCommand}"/>
-            <MenuItem Header="Выход" Command="{Binding QuitCommand}"/>
-      </MenuItem>
-      <MenuItem Header="Отчеты" ItemsSource="{Binding Reports, Mode=OneTime}"/>
-      <MenuItem Header="Помощь">
-            <MenuItem Header="Список изменений" 
+    <Menu.DataContext>
+        <vm:MainMenuViewModel/>
+    </Menu.DataContext>
+    <MenuItem Header="Файл">
+        <MenuItem Header="Импорт" ItemsSource="{x:Static u:ModuleRegistry.Importers}"/>
+        <MenuItem Header="Экспорт..." ItemsSource="{Binding Exporters}" />
+        <Separator/>
+        <MenuItem Header="Провести чеки" Command="{Binding ShowFptrCommand}"/>
+        <Separator/>
+        <MenuItem Header="Настройки" Command="{Binding ShowSettingsCommand}"/>
+        <MenuItem Header="Выход" Command="{Binding QuitCommand}"/>
+    </MenuItem>
+    <MenuItem Header="Отчеты" ItemsSource="{Binding Reports, Mode=OneTime}">
+        <MenuItem.ItemContainerStyle>
+            <Style TargetType="MenuItem">
+                <Setter Property="Header" Value="{Binding DisplayName}" />
+                <Setter Property="Command" Value="{Binding DataContext.OpenReportCommand, RelativeSource={RelativeSource AncestorType=Menu}}" />
+                <Setter Property="CommandParameter" Value="{Binding}"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            </Style>
+        </MenuItem.ItemContainerStyle>
+    </MenuItem>
+    <MenuItem Header="Помощь">
+        <MenuItem Header="Список изменений" 
                       Command="{Binding OpenLinkCommand}"
                       CommandParameter="https://github.com/kkm18-ru/Correctum/blob/HEAD/CHANGELOG.md"/>
-      </MenuItem>
+    </MenuItem>
 </Menu>

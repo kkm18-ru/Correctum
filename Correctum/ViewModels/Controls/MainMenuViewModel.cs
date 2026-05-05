@@ -1,24 +1,27 @@
+using Correctum.UI.Windows;
+using Correctum.Utils;
+using Correctum.ViewModels.Exports;
+using Correctum.Views.Windows;
+using Microsoft.Xaml.Behaviors.Core;
+using System.Collections.Immutable;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Microsoft.Xaml.Behaviors.Core;
-using Correctum.UI.Windows;
-using Correctum.Utils;
-using Correctum.ViewModels.Exports;
-using Correctum.Views.Windows;
 
 namespace Correctum.ViewModels.Controls;
 
-public sealed class MainMenuViewModel : BaseViewModel
+public sealed partial class MainMenuViewModel : BaseViewModel
 {
     private static string ExplorerPath { get; } =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe");
 
     public static MenuItem[] Exporters => SearchExporters();
-    public static MenuItem[] Reports => [.. ModuleRegistry.Reports.Select(ModuleDescriptorHelper.ToMenuItem)];
+    public static partial ImmutableArray<ReportDescriptor> Reports { get; }
 
+    public ICommand OpenReportCommand { get; } = new RelayCommand<ReportDescriptor>(OpenReport);
     public ICommand OpenExportMasterCommand { get; } = new RelayCommand<Type>(OpenExportMaster);
     public ICommand ShowFptrCommand { get; } = new ActionCommand(() => new FptrWindow().ShowDialog());
     public ICommand ShowSettingsCommand { get; } = new ActionCommand(() => new ConfigurationWindow().ShowDialog());
@@ -26,6 +29,9 @@ public sealed class MainMenuViewModel : BaseViewModel
     public ICommand OpenLinkCommand { get; } = new RelayCommand<string>(OpenLink);
     
     private static void OpenLink(string url) => Process.Start(ExplorerPath, url);
+
+    private static void OpenReport(ReportDescriptor descriptor) =>
+        new ReportWindow(descriptor.DisplayName, descriptor.Function).ShowDialog();
 
     private static void OpenExportMaster(Type type)
     {
@@ -49,4 +55,6 @@ public sealed class MainMenuViewModel : BaseViewModel
                 item.SetBinding(MenuItem.CommandProperty, nameof(OpenExportMasterCommand));
                 return item;
             })];
+
+    public readonly record struct ReportDescriptor(string DisplayName, Func<DataTable> Function);
 }
