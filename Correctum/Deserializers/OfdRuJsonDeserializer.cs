@@ -2,14 +2,14 @@
 using Correctum.Core.Models;
 using Correctum.Core.ValueObjects;
 using Correctum.Utils;
-using System.ComponentModel;
+using Correctum.Attrubutes;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Correctum.Deserializers;
 
-[DisplayName("ОФД.ру (JSON)")]
+[DeserializerInfo("ОФД.ру (JSON)")]
 public partial class OfdRuJsonDeserializer : IDeserializer
 {
     public static Receipt Deserialize(ReadOnlySpan<char> text)

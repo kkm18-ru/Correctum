@@ -1,4 +1,5 @@
-﻿using Correctum.Core.Builders;
+﻿using Correctum.Attrubutes;
+using Correctum.Core.Builders;
 using Correctum.Core.Enums;
 using Correctum.Core.Models;
 using Correctum.Core.ValueObjects;
@@ -8,7 +9,7 @@ using System.Globalization;
 
 namespace Correctum.Deserializers;
 
-[DisplayName("Платформа ОФД (Реквизиты)")]
+[DeserializerInfo("Платформа ОФД (Реквизиты)")]
 public class PlatformOfdDeserializer : IDeserializer
 {
     private static readonly Stack<ushort> _propStack = new(5);

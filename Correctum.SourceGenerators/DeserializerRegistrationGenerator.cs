@@ -13,6 +13,15 @@ public sealed class DeserializerRegistrationGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        context.RegisterPostInitializationOutput(ctx => ctx.AddSource("DeserializerInfoAttribute.g.cs", """
+            namespace Correctum.Attrubutes;
+
+            public sealed class DeserializerInfoAttribute(
+                string DisplayName) 
+                : global::System.Attribute;
+
+            """));
+
         var provider = context.SyntaxProvider
             .CreateSyntaxProvider(FilterSyntaxNode, Transform)
             .Where(t => t.@using)
@@ -26,7 +35,7 @@ public sealed class DeserializerRegistrationGenerator : IIncrementalGenerator
     {
         if (node is not ClassDeclarationSyntax cds) return false;
         if (cds.AttributeLists is not { Count: > 0 } attrLists) return false;
-        if (!attrLists.Any(list => list.Attributes.Any(a => a.ToString().Contains("DisplayName"))))
+        if (!attrLists.Any(list => list.Attributes.Any(a => a.ToString().Contains("DeserializerInfo"))))
             return false;
         if (cds.BaseList is not BaseListSyntax baseList) return false;
         if (!baseList.Types.Any(t => t.ToString().Contains("IDeserializer"))) return false;
@@ -45,7 +54,7 @@ public sealed class DeserializerRegistrationGenerator : IIncrementalGenerator
                 if (context.SemanticModel.GetSymbolInfo(attribute).Symbol is not IMethodSymbol attributeSymbol)
                     continue;
 
-                if (attributeSymbol.ContainingType.ToDisplayString() != "System.ComponentModel.DisplayNameAttribute")
+                if (attributeSymbol.ContainingType.ToDisplayString() != "Correctum.Attrubutes.DeserializerInfoAttribute")
                     continue;
 
                 return (cds, true);
@@ -73,7 +82,7 @@ public sealed class DeserializerRegistrationGenerator : IIncrementalGenerator
                 continue;
             var typePath = $"{symbol.ContainingNamespace.ToDisplayString()}.{cds.Identifier.Text}";
             ImmutableArray<TypedConstant> attrArgs = symbol.GetAttributes()
-                .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "System.ComponentModel.DisplayNameAttribute")?
+                .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "Correctum.Attrubutes.DeserializerInfoAttribute")?
                 .ConstructorArguments ?? ImmutableArray<TypedConstant>.Empty;
             var displayName = string.Empty;
             if (attrArgs.Length == 1) displayName = (string?)attrArgs[0].Value ?? string.Empty;
