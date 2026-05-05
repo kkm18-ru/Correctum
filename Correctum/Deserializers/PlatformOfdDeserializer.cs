@@ -1,36 +1,33 @@
-using Correctum.Core.Models;
+﻿using Correctum.Core.Builders;
 using Correctum.Core.Enums;
-using Correctum.Utils;
+using Correctum.Core.Models;
 using Correctum.Core.ValueObjects;
+using Correctum.Utils;
+using System.ComponentModel;
 using System.Globalization;
-using Correctum.Core.Builders;
 
-namespace Correctum.Parsers;
+namespace Correctum.Deserializers;
 
-internal sealed class PlatformOfd : IParser
+[DisplayName("Платформа ОФД (Реквизиты)")]
+public class PlatformOfdDeserializer : IDeserializer
 {
-    public string Name => "Платформа ОФД (Реквизиты)";
-    public static PlatformOfd Instance => field ??= new PlatformOfd();
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-    private readonly Stack<ushort> _propStack = new(5);
-    
-    public bool Parse(string raw, out Receipt receipt)
+    private static readonly Stack<ushort> _propStack = new(5);
+    public static Receipt Deserialize(ReadOnlySpan<char> text)
     {
+        _propStack.Clear();
         var builder = new ReceiptBuilder();
         PositionBuilder currPosition = null!;
-        var span = raw.AsSpan();
         Span<char> rawValue = stackalloc char[256];
-        foreach (var range in span.Split('\n'))
+        foreach (var range in text.Split('\n'))
         {
-            var line = span[range];
-            if(line.IsEmpty) continue;
-            if(line[1] is not ('+' or '|')) continue;
-            
+            var line = text[range];
+            if (line.IsEmpty) continue;
+            if (line[1] is not ('+' or '|')) continue;
+
             var level = line.Count('|');
             while (level < _propStack.Count)
                 _propStack.Pop();
-            
+
             var tagIndex = line.IndexOf('[');
             if (!ushort.TryParse(line.Slice(tagIndex + 1, 4), out var tag)) continue;
 
@@ -42,26 +39,15 @@ internal sealed class PlatformOfd : IParser
                 continue;
             }
             rawValue.Clear();
-            line[43..].TrimEnd('·').Replace(rawValue,'·', ' ');
+            line[43..].TrimEnd('·').Replace(rawValue, '·', ' ');
             var value = rawValue.Trim(['\r', '\n', '\0', '\t', ' ']);
 
-            try
-            {
-                ChangeReceipt(tag, value, builder);
-                ChangePosition(tag, value, currPosition);
-            }
-            catch(Exception ex)
-            {
-                receipt = default;
-                Logger.Error(ex, "Не удалось обработать тег {Tag} со значением {Value}", tag, value.ToString());
-                return false;
-            }
+            ChangeReceipt(tag, value, builder);
+            ChangePosition(tag, value, currPosition);
         }
-        receipt = builder.Build();
-        return true;
+        return builder.Build();
     }
-
-    private void ChangeReceipt(ushort tag, ReadOnlySpan<char> value, ReceiptBuilder builder)
+    private static void ChangeReceipt(ushort tag, ReadOnlySpan<char> value, ReceiptBuilder builder)
     {
         if (_propStack.Count > 0 && _propStack.Peek() == 1059) return;
         switch (tag)
@@ -89,7 +75,7 @@ internal sealed class PlatformOfd : IParser
         }
     }
 
-    private void ChangePosition(ushort tag, ReadOnlySpan<char> value, PositionBuilder builder)
+    private static void ChangePosition(ushort tag, ReadOnlySpan<char> value, PositionBuilder builder)
     {
         if (_propStack.Count != 1 || _propStack.Peek() != 1059) return;
         switch (tag)

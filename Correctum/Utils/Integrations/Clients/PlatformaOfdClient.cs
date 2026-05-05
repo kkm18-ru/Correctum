@@ -1,5 +1,5 @@
 ﻿using Correctum.Core.Models;
-using Correctum.Parsers;
+using Correctum.Deserializers;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -109,7 +109,7 @@ internal sealed partial class PlatformaOfdClient() : ApiClient<PlatformaOfdClien
         Auth(resp.Headers);
         var html = await resp.Content.ReadAsStringAsync(cancel);
         var raw = HttpUtility.HtmlDecode(html.Split(@"<pre>")[1].Split(@"</pre>")[0]);
-        return PlatformOfd.Instance.Parse(raw, out var receipt) ? receipt : null;
+        return PlatformOfdDeserializer.Deserialize(raw);
     }
 
     [GeneratedRegex(@"terminal_(?<id>\d+)_id", 0, 250)]
