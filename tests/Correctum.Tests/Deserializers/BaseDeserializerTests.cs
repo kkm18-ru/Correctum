@@ -28,7 +28,7 @@ public abstract class BaseDeserializerTests<T>
         RegId = SharedFaker.Random.ULong(0, 9999999999999999).ToString("D16"),
         StorageId = SharedFaker.Random.ULong(0, 9999999999999999).ToString("D16"),
         BuyerContact = SharedFaker.Internet.Email(),
-        Created = SharedFaker.Date.Past().Truncate(TimeSpan.TicksPerSecond),
+        Created = SharedFaker.Date.Past().Round(TimeSpan.TicksPerSecond),
         DocNumber = SharedFaker.Random.UInt(),
         SessionId = SharedFaker.Random.UInt(),
         DocInSession = SharedFaker.Random.UInt(),

@@ -14,6 +14,7 @@ public sealed partial class PasteWindowViewModel : BaseViewModel
     public string Text { get; set => SetField(ref field, value); }
     public ICommand PasteCommand { get; }
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+    public event Action? OnPasted;
 
     public PasteWindowViewModel() : this(null) { }
     public PasteWindowViewModel(string? text)
@@ -30,6 +31,7 @@ public sealed partial class PasteWindowViewModel : BaseViewModel
             var receipt = deserializer.Deserialize.Invoke(Text);
             Workspace.Instance.Receipts.Add(receipt);
             ReceiptPanel.UpdateReceiptList();
+            OnPasted?.Invoke();
         }
         catch(Exception e)
         {
@@ -38,7 +40,6 @@ public sealed partial class PasteWindowViewModel : BaseViewModel
                 "", 0, MessageBoxImage.Error);
 
         }
-        // Close();
     }
 
     public readonly record struct DeserializerDescriptor(

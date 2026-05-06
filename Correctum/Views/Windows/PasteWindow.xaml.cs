@@ -6,7 +6,9 @@ partial class PasteWindow
 {
     public PasteWindow(string? text = null)
     {
-        DataContext = new PasteWindowViewModel(text);
+        var vm = new PasteWindowViewModel(text);
+        DataContext = vm;
+        vm.OnPasted += Close;
         InitializeComponent();
     }
 }
