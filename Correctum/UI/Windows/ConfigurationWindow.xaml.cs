@@ -3,18 +3,11 @@ using System.Windows;
 using System.Windows.Controls;
 using Correctum.UI.Windows.Types;
 using Correctum.Utils;
-using Correctum.Utils.Integrations;
 
 namespace Correctum.UI.Windows;
 
 public sealed partial class ConfigurationWindow : DialogWindow
 {
-    public string PortEoU
-    {
-        get => $"COM{EoU.CurrentPort}";
-        set => EoU.CurrentPort = byte.Parse(value[3..]);
-    }
-    
     public ConfigurationWindow()
     {
         InitializeComponent();

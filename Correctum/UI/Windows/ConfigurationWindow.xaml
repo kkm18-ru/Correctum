@@ -13,7 +13,6 @@
         <Style TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-        <ObjectDataProvider x:Key="GetEoUPorts" ObjectType="{x:Type addons:EoU}" MethodName="GetAvailablePorts" />
     </Window.Resources>
     <TabControl>
         <TabItem Header="Atol-драйвер">
@@ -28,22 +27,15 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="5"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Кол-во чеков до передачи в ОФД:"/>
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Время ожидания отправки чеков:"/>
-                <TextBlock Grid.Column="0" Grid.Row="4" Text="Транспортный порт Atol (EoU):"/>
                 
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="0" Minimum="10" Maximum="5000" Increment="10"
                                   Value="{Binding Fptr.CountReceiptsBeforeDelay}"/>
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="2" Minimum="10" Maximum="60"
                                   Value="{Binding Fptr.Delay}"/>
-                <ComboBox Grid.Column="2" Grid.Row="4" 
-                          IsEnabled="{Binding Items.Count, RelativeSource={RelativeSource Self}}"
-                          ItemsSource="{Binding Source={StaticResource GetEoUPorts}}"
-                          SelectedValue="{Binding PortEoU, RelativeSource={RelativeSource AncestorType=Window}}"/>
             </Grid>
         </TabItem>
         <TabItem Header="HTTP">
