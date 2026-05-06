@@ -36,7 +36,7 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         }
     }
 
-    public static DateOnly MinValue { get; } = new(2016, 1, 1);
+    public static DateOnly MinValue { get; } = DateOnly.OfdBeginDate;
     public static DateOnly MaxValue => DateOnly.Today;
 
     public static DateTime MinValueDateTime { get; } = MinValue.ToDateTime(new());
@@ -88,7 +88,7 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         value >= MinValue && value <= MaxValue;
 }
 
-internal class DateRangeEnumerator() : IEnumerator<DateOnly>
+internal sealed class DateRangeEnumerator() : IEnumerator<DateOnly>
 {
     public DateOnly Current => current;
     object IEnumerator.Current => Current;

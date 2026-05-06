@@ -103,9 +103,9 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Сумма в копейках.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetCashSum(Currency value)
+        public ReceiptBuilder SetCashSum(Currency? value)
         {
-            _cash = (ulong)value;
+            _cash = (ulong?)value;
             return this;
         }
 
@@ -114,9 +114,9 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Сумма в копейках.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetNonCashSum(Currency value)
+        public ReceiptBuilder SetNonCashSum(Currency? value)
         {
-            _noncash = (ulong)value;
+            _noncash = (ulong?)value;
             return this;
         }
 
@@ -125,9 +125,9 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Сумма в копейках.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetAdvanceSum(Currency value)
+        public ReceiptBuilder SetAdvanceSum(Currency? value)
         {
-            _advance = (ulong)value;
+            _advance = (ulong?)value;
             return this;
         }
 
@@ -136,9 +136,9 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Сумма в копейках.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetCreditSum(Currency value)
+        public ReceiptBuilder SetCreditSum(Currency? value)
         {
-            _credit = (ulong)value;
+            _credit = (ulong?)value;
             return this;
         }
 
@@ -147,9 +147,9 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Сумма в копейках.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetProvisionSum(Currency value)
+        public ReceiptBuilder SetProvisionSum(Currency? value)
         {
-            _provision = (ulong)value;
+            _provision = (ulong?)value;
             return this;
         }
 
@@ -158,7 +158,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Контакт покупателя.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetBuyerContact(string value)
+        public ReceiptBuilder SetBuyerContact(string? value)
         {
             _buyer = value;
             return this;
@@ -169,7 +169,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Дата и время.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetCreated(DateTime value)
+        public ReceiptBuilder SetCreated(DateTime? value)
         {
             _createdAt = value;
             return this;
@@ -180,7 +180,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Номер документа в смене.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetDocInSession(uint value)
+        public ReceiptBuilder SetDocInSession(uint? value)
         {
             _docShift = value;
             return this;
@@ -191,7 +191,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Номер смены.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetSessionId(uint value)
+        public ReceiptBuilder SetSessionId(uint? value)
         {
             _shift = value;
             return this;
@@ -202,7 +202,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Номер документа.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetDocNumber(uint value)
+        public ReceiptBuilder SetDocNumber(uint? value)
         {
             _docId = value;
             return this;
@@ -214,9 +214,9 @@ namespace Correctum.Core.Builders
         /// <param name="value">Тип операции.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Выбрасывается, если передано невалидное значение перечисления.</exception>
-        public ReceiptBuilder SetOperation(ReceiptType value)
+        public ReceiptBuilder SetOperation(ReceiptType? value)
         {
-            if (Enum.GetName(value) is null)
+            if (value is { } notNull && Enum.GetName(notNull) is null)
                 throw new ArgumentOutOfRangeException(nameof(value));
             _type = value;
             return this;
@@ -227,7 +227,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Фискальный признак.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetDocSign(FiscalSign value)
+        public ReceiptBuilder SetDocSign(FiscalSign? value)
         {
             _sign = value;
             return this;
@@ -238,7 +238,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Регистрационный номер.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetRegId(string value)
+        public ReceiptBuilder SetRegId(string? value)
         {
             _regId = value;
             return this;
@@ -249,7 +249,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Серийный номер накопителя.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetStorageId(string value)
+        public ReceiptBuilder SetStorageId(string? value)
         {
             _drive = value;
             return this;
@@ -261,9 +261,9 @@ namespace Correctum.Core.Builders
         /// <param name="value">Система налогообложения.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
         /// <exception cref="ArgumentOutOfRangeException">Выбрасывается, если передано невалидное значение перечисления.</exception>
-        public ReceiptBuilder SetTaxationSystem(TaxationSystems value)
+        public ReceiptBuilder SetTaxationSystem(TaxationSystems? value)
         {
-            if (Enum.GetName(value) is null)
+            if (value is { } notNull && Enum.GetName(notNull) is null)
                 throw new ArgumentOutOfRangeException(nameof(value));
             _taxation = value;
             return this;
@@ -274,9 +274,9 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Итоговая сумма в копейках.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public ReceiptBuilder SetTotalSum(Currency value)
+        public ReceiptBuilder SetTotalSum(Currency? value)
         {
-            _total = (ulong)value;
+            _total = (ulong?)value;
             return this;
         }
 

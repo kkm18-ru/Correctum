@@ -84,7 +84,7 @@ public class PlatformOfdDeserializer : IDeserializer
             case 2108: builder.SetUnit((UnitOfMeasure)byte.Parse(value)); break;
             case 1079: builder.SetPrice(ulong.Parse(value)); break;
             case 1043: builder.SetCost(ulong.Parse(value)); break;
-            case 1199: builder.SetTaxRate(EnumUtils.ToTaxRate(byte.Parse(value))); break;
+            case 1199: builder.SetTaxRate(NDSRate.FromFns(byte.Parse(value))); break;
             case 1214: builder.SetCalcMethod((CalculationMethod)byte.Parse(value)); break;
             case 1212: builder.SetSubjectType((PositionType)byte.Parse(value)); break;
             case 1023: builder.SetQuantity((ulong)Math.Round(double.Parse(value, CultureInfo.InvariantCulture) * 1000, 0)); break;

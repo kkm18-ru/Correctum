@@ -54,7 +54,7 @@ public sealed class ReportWindowViewModel : BaseViewModel
         {
             var saveDialog = new SaveFileDialog
             {
-                Filter = "CSV UTF-8 (Разделитель - точка с запятой)|*.csv|XLSX-таблица|*.xlsx",
+                Filter = "CSV UTF-8 (Разделитель - точка с запятой)|*.csv",
                 OverwritePrompt = true,
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                 AddExtension = true,

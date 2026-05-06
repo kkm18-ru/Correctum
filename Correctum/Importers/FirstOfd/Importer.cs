@@ -59,7 +59,7 @@ internal partial class FirstOfd : ImporterBase<FirstOfd, FirstOfd.View>
                 if (DateOnly.FromDateTime(fn.closeArchiveDate ?? fn.expireDate.Value) < DateRange.BeginDate) continue;
                 var fromDate = DateRange.BeginDate.ToDateTime(TimeOnly.MinValue);
                 var toDate = DateRange.EndDate.ToDateTime(TimeOnly.MaxValue);
-                var size = Configuration.Instance.HttpClient.PageSize;
+                var size = Configuration.Current.Http.PageSize;
                 var enumerable = Client.GetTransactionsAsync(kkt, fromDate, toDate, fn, size, cancellationToken);
                 await foreach(var tr in enumerable.WithCancellation(cancellationToken))
                     transactions.AddRange(tr);

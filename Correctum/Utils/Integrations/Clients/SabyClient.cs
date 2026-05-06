@@ -87,7 +87,7 @@ internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
     {
         ThrowIfDisposed();
         var builder = new StringBuilder(args.ToUri());
-        builder.Append($"&startId={offset}&limit={Configuration.Instance.HttpClient.PageSize}");
+        builder.Append($"&startId={offset}&limit={Configuration.Current.Http.PageSize}");
         using var resp = await Client.GetAsync(builder.ToString(), cancel);
         await using var stream = await resp.Content.ReadAsStreamAsync(cancel);
         if (!resp.IsSuccessStatusCode) throw new SabyException(stream);
@@ -269,7 +269,7 @@ file struct ReceiptResponse
         Price = item.Price,
         Quantity = (ulong)item.Quantity * 1000,
         Unit = item.Measure,
-        TaxRate = EnumUtils.ToTaxRate(item.Vat ?? 0),
+        TaxRate = NDSRate.FromFns(item.Vat),
         Type = item.Type ?? 0,
         CalcMethod = item.Payment ?? 0
     };

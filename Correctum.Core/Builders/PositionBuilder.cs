@@ -85,7 +85,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Наименование позиции.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public PositionBuilder SetName(string value)
+        public PositionBuilder SetName(string? value)
         {
             _name = value;
             return this;
@@ -96,8 +96,10 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Тип позиции.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public PositionBuilder SetSubjectType(PositionType value)
+        public PositionBuilder SetSubjectType(PositionType? value)
         {
+            if (value is { } notNull && Enum.GetName(notNull) is null)
+                throw new ArgumentOutOfRangeException(nameof(value));
             _type = value;
             return this;
         }
@@ -107,8 +109,10 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Способ расчёта.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public PositionBuilder SetCalcMethod(CalculationMethod value)
+        public PositionBuilder SetCalcMethod(CalculationMethod? value)
         {
+            if (value is { } notNull && Enum.GetName(notNull) is null)
+                throw new ArgumentOutOfRangeException(nameof(value));
             _calcMethod = value;
             return this;
         }
@@ -118,8 +122,10 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Ставка НДС.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public PositionBuilder SetTaxRate(NDSRate value)
+        public PositionBuilder SetTaxRate(NDSRate? value)
         {
+            if (value is { } notNull && Enum.GetName(notNull) is null)
+                throw new ArgumentOutOfRangeException(nameof(value));
             _ndsRate = value;
             return this;
         }
@@ -129,8 +135,10 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Единица измерения.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public PositionBuilder SetUnit(UnitOfMeasure value)
+        public PositionBuilder SetUnit(UnitOfMeasure? value)
         {
+            if (value is { } notNull && Enum.GetName(notNull) is null)
+                throw new ArgumentOutOfRangeException(nameof(value));
             _uom = value;
             return this;
         }
@@ -140,7 +148,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Цена в копейках.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public PositionBuilder SetPrice(Currency value)
+        public PositionBuilder SetPrice(Currency? value)
         {
             _price = value;
             return this;
@@ -151,7 +159,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Количество.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public PositionBuilder SetQuantity(ulong value)
+        public PositionBuilder SetQuantity(ulong? value)
         {
             _quantity = value;
             return this;
@@ -162,7 +170,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Стоимость в копейках.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public PositionBuilder SetCost(Currency value)
+        public PositionBuilder SetCost(Currency? value)
         {
             _cost = value;
             return this;

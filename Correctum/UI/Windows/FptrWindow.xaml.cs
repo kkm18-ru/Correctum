@@ -204,8 +204,8 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                             if (ConductingReceipt(Workspace.Instance.Receipts[CurrentIndex], _cancelSource.Token))
                                 CurrentIndex++;
                             else _handle.CancelReceipt();
-                            if (CurrentIndex > 0 && CurrentIndex % Configuration.Instance.Fptr.CountReceiptsBeforeDelay == 0)
-                                Thread.Sleep(60000 * Configuration.Instance.Fptr.Delay);
+                            if (CurrentIndex > 0 && CurrentIndex % Configuration.Current.Fptr.SizeStack == 0)
+                                Thread.Sleep(60000 * Configuration.Current.Fptr.StackIntervalMinutes);
                         }
                     }
                     catch (OperationCanceledException)
