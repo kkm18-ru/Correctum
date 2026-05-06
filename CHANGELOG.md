@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.10.1](https://github.com/kkm18-ru/Correctum/compare/v0.10.0...v0.10.1) (2026-05-05)
+
+
+### 🐞 Исправления
+
+* Исправлена ошибка привязки MenuItem верт./гориз. выравнивания контента ([63e5b09](https://github.com/kkm18-ru/Correctum/commit/63e5b09aab11313fd9181c84308437849b2e008a))
+* Исправление варнингов Correctum.Importers.Acquirer ([16ece5c](https://github.com/kkm18-ru/Correctum/commit/16ece5c3c59260463dde79f5a95bc4ba76c65dc6))
+* Исправлены конструкторы DisplayReceipt и DisplayPosition ([0fb2a7c](https://github.com/kkm18-ru/Correctum/commit/0fb2a7c96d6d73438b172f6f3c6e657587abe5d1))
+* Перевод главного меню в MVVM ([4136b52](https://github.com/kkm18-ru/Correctum/commit/4136b525c764128198ec337c9f4c92249f74a915))
+* Перевод окна ExportWindow в XAML ([748518a](https://github.com/kkm18-ru/Correctum/commit/748518af58b65e808d00c98dab4f2848a7279c06))
+
+
+### ⬆️ Обновления зависимостей
+
+* **Microsoft.NET.Test.Sdk:** 18.5.1 ([3b0cf8b](https://github.com/kkm18-ru/Correctum/commit/3b0cf8be0f6558ef22ae424fce6f1d82532963c1))
+* **Tomlyn:** 2.3.2 ([1087252](https://github.com/kkm18-ru/Correctum/commit/1087252e5ea82b3ce99a7a1a0675975ff726b0c3))
+* **WireMock.Net.Minimal:** 2.4.0 ([a274474](https://github.com/kkm18-ru/Correctum/commit/a274474a05638e6475db0e85467cd2ebba52742c))
+
 ## [0.10.0](https://github.com/kkm18-ru/Correctum/compare/v0.9.1...v0.10.0) (2026-04-30)
 
 
