@@ -36,7 +36,7 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         }
     }
 
-    public static DateOnly MinValue { get; } = new(2016, 1, 1);
+    public static DateOnly MinValue { get; } = DateOnly.OfdBeginDate;
     public static DateOnly MaxValue => DateOnly.Today;
 
     public static DateTime MinValueDateTime { get; } = MinValue.ToDateTime(new());
