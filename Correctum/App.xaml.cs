@@ -13,7 +13,7 @@ public partial class App : Application
         AppContext.SetSwitch("System.Net.DisableIPv6", true);
 
         var info = Assembly.GetExecutingAssembly().GetName();
-        Logger.Info("Запуск {Name} {Version}", info.Name, info.Version);
+        Logger.Info("Запуск {Name} {Version}", info.Name, info.Version!.ToString(3));
 
         InitializeComponent();
 
