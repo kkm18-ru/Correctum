@@ -88,7 +88,7 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         value >= MinValue && value <= MaxValue;
 }
 
-internal class DateRangeEnumerator() : IEnumerator<DateOnly>
+internal sealed class DateRangeEnumerator() : IEnumerator<DateOnly>
 {
     public DateOnly Current => current;
     object IEnumerator.Current => Current;
