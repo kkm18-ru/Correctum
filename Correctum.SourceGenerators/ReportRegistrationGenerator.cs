@@ -17,9 +17,15 @@ public sealed class ReportRegistrationGenerator : IIncrementalGenerator
         context.RegisterPostInitializationOutput(ctx => ctx.AddSource("ReportInfoAttribute.g.cs", """
             namespace Correctum.Attrubutes;
 
-            public sealed class ReportInfoAttribute(
-                string DisplayName) 
-                : global::System.Attribute;
+            public sealed class ReportInfoAttribute : global::System.Attribute
+            {
+                public string DisplayName { get; }
+            
+                public ReportInfoAttribute(string displayName) 
+                {
+                    DisplayName = displayName;
+                }
+            }
 
             """));
 

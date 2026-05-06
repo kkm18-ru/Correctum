@@ -13,14 +13,21 @@ public sealed class DeserializerRegistrationGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterPostInitializationOutput(ctx => ctx.AddSource("DeserializerInfoAttribute.g.cs", """
+        context.RegisterPostInitializationOutput(
+            ctx => ctx.AddSource("DeserializerInfoAttribute.g.cs", SourceText.From("""
             namespace Correctum.Attrubutes;
 
-            public sealed class DeserializerInfoAttribute(
-                string DisplayName) 
-                : global::System.Attribute;
+            public sealed class DeserializerInfoAttribute : global::System.Attribute
+            {
+                public string DisplayName { get; }
 
-            """));
+                public DeserializerInfoAttribute(string displayName) 
+                {
+                    DisplayName = displayName;
+                }
+            }
+
+            """, Encoding.UTF8)));
 
         var provider = context.SyntaxProvider
             .CreateSyntaxProvider(FilterSyntaxNode, Transform)
