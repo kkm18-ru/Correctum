@@ -32,7 +32,8 @@ internal sealed class LogSection
         var logFile = new FileTarget("log_file")
         {
             ArchiveEvery = FileArchivePeriod.Monday,
-            FileName = Configuration.Instance.Logging.FilePath
+            FileName = Configuration.Instance.Logging.FilePath,
+            Layout = Layout.FromString("${longdate} [${level:uppercase=true:format=TriLetter} ${logger:shortName=true}] ${message}${newline:when=exception!=null}${exception}")
         };
         config.AddRule(minLevel, LogLevel.Fatal, logFile);
 
