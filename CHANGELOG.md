@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.10.2](https://github.com/kkm18-ru/Correctum/compare/v0.10.1...v0.10.2) (2026-05-06)
+
+
+### 🐞 Исправления
+
+* **lint:** S3881 ([b635c05](https://github.com/kkm18-ru/Correctum/commit/b635c057b62a31aac905a505c906d1e29243e18a))
+* Добавлена проверка значения перечислений ([d34441a](https://github.com/kkm18-ru/Correctum/commit/d34441a740903bb0fdb6060807b142928e62a5b0))
+* **Логирование:** Добавлена лог-запись при необработанном исключении ([4fd1955](https://github.com/kkm18-ru/Correctum/commit/4fd1955ecc631e21c7fd939d59b94c6167d30732))
+* **Логирование:** Подкорректирован шаблон лог-записи в файл ([d5d5705](https://github.com/kkm18-ru/Correctum/commit/d5d570592cc7cc4f8d19c5af826d938676c503bf))
+* **Логирование:** Удалено отображения номера сборки приложения ([c08427f](https://github.com/kkm18-ru/Correctum/commit/c08427f27ce5df63af7fc4794562dde45387f38f))
+* Сеттеры построителей принимают null ([093ce3e](https://github.com/kkm18-ru/Correctum/commit/093ce3e1f54a3b967a1f0adf9c2c2bdc8a161a13))
+
+
+### ⏪ Отмена изменений
+
+* Удалена настройка EoU ([5c9cda5](https://github.com/kkm18-ru/Correctum/commit/5c9cda5751c69bdf6b031bf8487ce3bcfe6c7b8c))
+
 ## [0.10.1](https://github.com/kkm18-ru/Correctum/compare/v0.10.0...v0.10.1) (2026-05-05)
 
 
