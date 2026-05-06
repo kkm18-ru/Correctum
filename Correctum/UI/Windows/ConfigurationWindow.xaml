@@ -7,7 +7,7 @@
         xmlns:addons="clr-namespace:Correctum.Utils.Integrations"
         xmlns:wintypes="clr-namespace:Correctum.UI.Windows.Types"
         xmlns:nlog="clr-namespace:NLog;assembly=NLog"
-        DataContext="{Binding Source={x:Static utils:Configuration.Instance}}"
+        DataContext="{Binding Source={x:Static utils:Configuration.Current}}"
         Title="Настройки" Height="300" Width="450">
     <Window.Resources>
         <Style TargetType="TextBlock">
@@ -33,9 +33,9 @@
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Время ожидания отправки чеков:"/>
                 
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="0" Minimum="10" Maximum="5000" Increment="10"
-                                  Value="{Binding Fptr.CountReceiptsBeforeDelay}"/>
+                                  Value="{Binding Fptr.SizeStack}"/>
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="2" Minimum="10" Maximum="60"
-                                  Value="{Binding Fptr.Delay}"/>
+                                  Value="{Binding Fptr.StackIntervalMinutes}"/>
             </Grid>
         </TabItem>
         <TabItem Header="HTTP">
@@ -59,34 +59,11 @@
                 <TextBlock Grid.Column="0" Grid.Row="4" Text="Количество попыток запроса:"/>
                 
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="0" Minimum="1"
-                                  Value="{Binding HttpClient.PageSize}"/>
+                                  Value="{Binding Http.PageSize}"/>
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="2" Minimum="1"
-                                  Value="{Binding HttpClient.RequestDelay}"/>
+                                  Value="{Binding Http.RequestDelay}"/>
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="4" Minimum="1"
-                                  Value="{Binding HttpClient.TriesCount}"/>
-            </Grid>
-        </TabItem>
-        <TabItem Header="Экспорт">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                
-                <TextBlock Grid.Column="0" Grid.Row="0" Text="Количество документов в скрипте:"/>
-                <TextBlock Grid.Column="0" Grid.Row="2" Text="Количество документов в SQL-запросе:"/>
-                
-                <tk:IntegerUpDown Grid.Column="2" Grid.Row="0" Minimum="1" Maximum="150"
-                                  Value="{Binding Exporters.Fptr.DocsPerFile}"/>
-                <tk:IntegerUpDown Grid.Column="2" Grid.Row="2" Minimum="1"
-                                  Value="{Binding Sqlite.Limit}"/>
+                                  Value="{Binding Http.TriesCount}"/>
             </Grid>
         </TabItem>
         <TabItem Header="Импорт">
@@ -104,7 +81,7 @@
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="ID интегратора Taxcom:"/>
                 
                 <TextBox Grid.Column="2" Grid.Row="0" 
-                         Text="{Binding Importers.TaxcomIntegratorId, UpdateSourceTrigger=PropertyChanged}"/>
+                         Text="{Binding Import.Taxcom.IntegratorId, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </TabItem>
         <TabItem Header="Логирование">

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Correctum.Utils;
+using System.Reflection;
 using System.Windows;
 
 namespace Correctum;
@@ -9,7 +10,8 @@ public partial class App : Application
 
     public App()
     {
-        Utils.Configurations.LogSection.ReloadLoggingConfiguration(false);
+        Configuration.Load();
+        Configuration.Current.Logging.Apply(false);
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             Logger.Fatal((Exception)e.ExceptionObject, "Необработанная ошибка.");
         AppContext.SetSwitch("System.Net.DisableIPv6", true);

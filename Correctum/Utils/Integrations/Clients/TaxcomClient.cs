@@ -23,8 +23,8 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : ApiCli
     #if DEBUG
     public static string IntegratorId
     {
-        get => Configuration.Instance.Importers.TaxcomIntegratorId;
-        set => Configuration.Instance.Importers.TaxcomIntegratorId = value;
+        get => Configuration.Current.Import.Taxcom.IntegratorId;
+        set => Configuration.Current.Import.Taxcom.IntegratorId = value;
     }
     public
 #endif
@@ -71,7 +71,7 @@ public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : ApiCli
     {
         ThrowIfDisposed();
         using var request = new HttpRequestMessage(HttpMethod.Post, "/API/v2/Login");
-        request.Headers.Add("Integrator-ID", Configuration.Instance.Importers.TaxcomIntegratorId);
+        request.Headers.Add("Integrator-ID", Configuration.Current.Import.Taxcom.IntegratorId);
         request.Content = JsonContent.Create(new TaxcomAuthRequest(login, password, agreement));
         var response = await SendAsync<TaxcomAuthResponse>(request, cancellationToken).ConfigureAwait(false);
         SessionToken = response.Token;

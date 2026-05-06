@@ -16,10 +16,10 @@ internal partial class Sqlite : ImporterBase<Sqlite, Sqlite.View>
         {
             var count = await conn.ExecuteScalarAsync<uint>(COUNT_RECEIPTS);
             progress.ReportMaximum(count);
-            for (var i = 0; i < count; i += Configuration.Instance.Sqlite.Limit)
+            for (var i = 0; i < count; i += Configuration.Current.Import.Sqlite.StackSize)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var parameters = new { limit = Configuration.Instance.Sqlite.Limit, offset = i };
+                var parameters = new { limit = Configuration.Current.Import.Sqlite.StackSize, offset = i };
                 await foreach(var doc in conn.QueryUnbufferedAsync<ReceiptDto>(GET_RECEIPTS, parameters))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
