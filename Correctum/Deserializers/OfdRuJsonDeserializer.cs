@@ -68,7 +68,7 @@ public partial class OfdRuJsonDeserializer : IDeserializer
             Cost = dto.Cost,
             Unit = (UnitOfMeasure?)dto.Unit,
             CalcMethod = (CalculationMethod?)dto.CalcMethod,
-            TaxRate = dto.Tax is null ? null : EnumUtils.ToTaxRate((byte)dto.Tax.Value),
+            TaxRate = NDSRate.FromFns(dto.Tax),
             Type = (PositionType?)dto.Type,
         };
 

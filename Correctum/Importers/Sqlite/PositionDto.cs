@@ -26,7 +26,7 @@ partial class Sqlite
             CalcMethod = (CalculationMethod?)dto.CalcMethod,
             Price = (Currency?)dto.Price,
             Quantity = (ulong?)dto.Quantity,
-            TaxRate = dto.Tax is null ? null : EnumUtils.ToTaxRate((byte)dto.Tax),
+            TaxRate = NDSRate.FromFns(dto.Tax),
             Type = (PositionType?)dto.Type
         };
     }

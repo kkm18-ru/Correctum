@@ -163,7 +163,7 @@ file struct DocumentItem
             Cost = Total,
             CalcMethod = CalculationMethod,
             Unit = mu,
-            TaxRate = EnumUtils.ToTaxRate(NDS_Rate),
+            TaxRate = NDSRate.FromFns(NDS_Rate),
             Type = SubjectType
         };
     }

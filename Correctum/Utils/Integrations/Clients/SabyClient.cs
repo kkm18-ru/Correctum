@@ -269,7 +269,7 @@ file struct ReceiptResponse
         Price = item.Price,
         Quantity = (ulong)item.Quantity * 1000,
         Unit = item.Measure,
-        TaxRate = EnumUtils.ToTaxRate(item.Vat ?? 0),
+        TaxRate = NDSRate.FromFns(item.Vat),
         Type = item.Type ?? 0,
         CalcMethod = item.Payment ?? 0
     };
