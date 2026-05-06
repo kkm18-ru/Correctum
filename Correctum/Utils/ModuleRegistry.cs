@@ -5,11 +5,6 @@ namespace Correctum.Utils;
 
 internal static partial class ModuleRegistry
 {
-    public static readonly ImmutableArray<Parsers.IParser> Parsers = [
-        Correctum.Parsers.PlatformOfd.Instance,
-        Correctum.Parsers.OfdRuJson.Instance,
-    ];
-
     public static readonly ImmutableArray<ImportMenuItem> Importers = [
         new(Correctum.Importers.Saby.Instance),
         new(Correctum.Importers.Sqlite.Instance),

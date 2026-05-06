@@ -12,6 +12,7 @@
     <MenuItem Header="Файл">
         <MenuItem Header="Импорт" ItemsSource="{x:Static u:ModuleRegistry.Importers}"/>
         <MenuItem Header="Экспорт..." ItemsSource="{Binding Exporters}" />
+        <MenuItem Header="Вставить" Command="{Binding ShowPasteCommand}" />
         <Separator/>
         <MenuItem Header="Провести чеки" Command="{Binding ShowFptrCommand}"/>
         <Separator/>
