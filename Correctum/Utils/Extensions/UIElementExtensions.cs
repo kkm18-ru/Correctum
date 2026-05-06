@@ -23,23 +23,4 @@ internal static class UIElementExtensions
             grid.Children.Add(element);
         }
     }
-
-    extension(Color color)
-    {
-        public Color Subtraction(byte r, byte g, byte b)
-        {
-            var _r = color.R >= r ? color.R - r : color.R;
-            var _g = color.G >= g ? color.G - g : color.G;
-            var _b = color.B >= b ? color.B - b : color.B;
-            return Color.FromRgb((byte)_r, (byte)_g, (byte)_b);
-        }
-
-        public Color AddOrSubtraction(byte r, byte g, byte b)
-        {
-            var _r = color.R <= byte.MaxValue - r ? color.R + r : color.R - r;
-            var _g = color.G <= byte.MaxValue - g ? color.G + g : color.G - g;
-            var _b = color.B <= byte.MaxValue - b ? color.B + b : color.B - b;
-            return Color.FromRgb((byte)_r, (byte)_g, (byte)_b);
-        }
-    }
 }
