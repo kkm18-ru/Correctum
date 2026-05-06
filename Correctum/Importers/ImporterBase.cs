@@ -1,5 +1,5 @@
 ﻿using Correctum.Core.Models;
-using Correctum.UI.Windows;
+using Correctum.Views.Windows;
 using Correctum.Utils;
 
 namespace Correctum.Importers;
@@ -12,7 +12,7 @@ internal abstract class ImporterBase<TP, TV> : IImporter, ISingleton<TP>
 
     public abstract string Name { get; }
 
-    public void Show() => new ImportWindow(new TV()).ShowDialog();
+    public void Show() => new ImportWindow(Name, new TV()).ShowDialog();
     public abstract IAsyncEnumerable<Receipt> Import(BoundedProgress<uint> progress, CancellationToken cancellationToken);
     public virtual void OnClosing() { }
 }
