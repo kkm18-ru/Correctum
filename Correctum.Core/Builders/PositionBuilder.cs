@@ -98,6 +98,8 @@ namespace Correctum.Core.Builders
         /// <returns>Текущий экземпляр построителя.</returns>
         public PositionBuilder SetSubjectType(PositionType? value)
         {
+            if (value is { } notNull && Enum.GetName(notNull) is null)
+                throw new ArgumentOutOfRangeException(nameof(value));
             _type = value;
             return this;
         }
@@ -109,6 +111,8 @@ namespace Correctum.Core.Builders
         /// <returns>Текущий экземпляр построителя.</returns>
         public PositionBuilder SetCalcMethod(CalculationMethod? value)
         {
+            if (value is { } notNull && Enum.GetName(notNull) is null)
+                throw new ArgumentOutOfRangeException(nameof(value));
             _calcMethod = value;
             return this;
         }
@@ -120,6 +124,8 @@ namespace Correctum.Core.Builders
         /// <returns>Текущий экземпляр построителя.</returns>
         public PositionBuilder SetTaxRate(NDSRate? value)
         {
+            if (value is { } notNull && Enum.GetName(notNull) is null)
+                throw new ArgumentOutOfRangeException(nameof(value));
             _ndsRate = value;
             return this;
         }
@@ -131,6 +137,8 @@ namespace Correctum.Core.Builders
         /// <returns>Текущий экземпляр построителя.</returns>
         public PositionBuilder SetUnit(UnitOfMeasure? value)
         {
+            if (value is { } notNull && Enum.GetName(notNull) is null)
+                throw new ArgumentOutOfRangeException(nameof(value));
             _uom = value;
             return this;
         }
