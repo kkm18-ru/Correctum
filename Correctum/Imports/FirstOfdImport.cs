@@ -1,5 +1,5 @@
 ﻿using Correctum.Abstractions;
-using Correctum.Attrubutes;
+using Correctum.Attributes;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;

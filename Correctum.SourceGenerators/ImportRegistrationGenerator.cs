@@ -5,21 +5,6 @@ public sealed class ImportRegistrationGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterPostInitializationOutput(ctx => ctx.AddSource("ImportInfoAttribute.g.cs", """
-            namespace Correctum.Attrubutes;
-
-            public sealed class ImportInfoAttribute : global::System.Attribute
-            {
-                public string DisplayName { get; }
-            
-                public ImportInfoAttribute(string displayName) 
-                {
-                    DisplayName = displayName;
-                }
-            }
-
-            """));
-
         var provider = context.SyntaxProvider
             .CreateSyntaxProvider(FilterSyntaxNode, Transform)
             .Where(t => t.@using)
@@ -52,7 +37,7 @@ public sealed class ImportRegistrationGenerator : IIncrementalGenerator
                 if (context.SemanticModel.GetSymbolInfo(attribute).Symbol is not IMethodSymbol attributeSymbol)
                     continue;
 
-                if (attributeSymbol.ContainingType.ToDisplayString() != "Correctum.Attrubutes.ImportInfoAttribute")
+                if (attributeSymbol.ContainingType.ToDisplayString() != "Correctum.Attributes.ImportInfoAttribute")
                     continue;
 
                 return (cds, true);
@@ -80,7 +65,7 @@ public sealed class ImportRegistrationGenerator : IIncrementalGenerator
                 continue;
             var typePath = $"{symbol.ContainingNamespace.ToDisplayString()}.{cds.Identifier.Text}";
             ImmutableArray<TypedConstant> attrArgs = symbol.GetAttributes()
-                .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "Correctum.Attrubutes.ImportInfoAttribute")?
+                .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "Correctum.Attributes.ImportInfoAttribute")?
                 .ConstructorArguments ?? ImmutableArray<TypedConstant>.Empty;
             var displayName = string.Empty;
             if (attrArgs.Length == 1) displayName = (string?)attrArgs[0].Value ?? string.Empty;

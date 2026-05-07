@@ -1,4 +1,4 @@
-﻿using Correctum.Attrubutes;
+﻿using Correctum.Attributes;
 using Correctum.Utils;
 using System.Data;
 

@@ -5,22 +5,6 @@ public sealed class DeserializerRegistrationGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterPostInitializationOutput(
-            ctx => ctx.AddSource("DeserializerInfoAttribute.g.cs", SourceText.From("""
-            namespace Correctum.Attrubutes;
-
-            public sealed class DeserializerInfoAttribute : global::System.Attribute
-            {
-                public string DisplayName { get; }
-
-                public DeserializerInfoAttribute(string displayName) 
-                {
-                    DisplayName = displayName;
-                }
-            }
-
-            """, Encoding.UTF8)));
-
         var provider = context.SyntaxProvider
             .CreateSyntaxProvider(FilterSyntaxNode, Transform)
             .Where(t => t.@using)
@@ -53,7 +37,7 @@ public sealed class DeserializerRegistrationGenerator : IIncrementalGenerator
                 if (context.SemanticModel.GetSymbolInfo(attribute).Symbol is not IMethodSymbol attributeSymbol)
                     continue;
 
-                if (attributeSymbol.ContainingType.ToDisplayString() != "Correctum.Attrubutes.DeserializerInfoAttribute")
+                if (attributeSymbol.ContainingType.ToDisplayString() != "Correctum.Attributes.DeserializerInfoAttribute")
                     continue;
 
                 return (cds, true);
@@ -81,7 +65,7 @@ public sealed class DeserializerRegistrationGenerator : IIncrementalGenerator
                 continue;
             var typePath = $"{symbol.ContainingNamespace.ToDisplayString()}.{cds.Identifier.Text}";
             ImmutableArray<TypedConstant> attrArgs = symbol.GetAttributes()
-                .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "Correctum.Attrubutes.DeserializerInfoAttribute")?
+                .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "Correctum.Attributes.DeserializerInfoAttribute")?
                 .ConstructorArguments ?? ImmutableArray<TypedConstant>.Empty;
             var displayName = string.Empty;
             if (attrArgs.Length == 1) displayName = (string?)attrArgs[0].Value ?? string.Empty;

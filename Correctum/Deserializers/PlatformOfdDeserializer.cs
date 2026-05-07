@@ -1,4 +1,4 @@
-﻿using Correctum.Attrubutes;
+﻿using Correctum.Attributes;
 using Correctum.Core.Builders;
 using Correctum.Core.Enums;
 using Correctum.Core.Models;
