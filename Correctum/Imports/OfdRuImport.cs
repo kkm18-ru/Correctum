@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 namespace Correctum.Imports;
 
 [ImportInfo("OFD.ru")]
-public sealed class OfdRuImport() : OfdImport<OfdRuClient>(new())
+public sealed class OfdRuImport : OfdImport<OfdRuClient>
 {
     public string Token { get; set => SetField(ref field, value); } = string.Empty;
     public DateRange DateRange { get; } = new();

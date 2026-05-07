@@ -5,7 +5,7 @@ using System.Windows.Input;
 namespace Correctum.Abstractions;
 
 public abstract class OfdImport<TClient> : BaseImport
-    where TClient : ApiClient<TClient>
+    where TClient : ApiClient<TClient>, new()
 {
     public bool Authorized { get; private set => SetField(ref field, value); }
     public bool Authorizing { get; private set => SetField(ref field, value); }
@@ -13,9 +13,9 @@ public abstract class OfdImport<TClient> : BaseImport
 
     protected readonly TClient client;
 
-    protected OfdImport(TClient client)
+    protected OfdImport()
     {
-        this.client = client;
+        client = new TClient();
         AuthCommand = new RelayCommand(Auth, () => !Authorizing);
     }
 
