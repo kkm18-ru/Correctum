@@ -98,6 +98,8 @@ file struct Document
     public uint DocNumber { get; set; }
     public uint DocShiftNumber { get; set; }
     public string ReceiptNumber { get; set; }
+    public string Operator { get; set; }
+    public string? Operator_Inn { get; set; }
     public ulong TotalSumm { get; set; }
     public string OperationType { get; set; }
     public TaxationSystems TaxationType { get; set; }
@@ -135,7 +137,9 @@ file struct Document
             ProvisionSum = ProvisionSumm
         },
         TotalSum = TotalSumm,
-        TaxationSystem = TaxationType
+        TaxationSystem = TaxationType,
+        Cashier = Operator,
+        CashierInn = Operator_Inn is null ? null : Inn.Parse(Operator_Inn)
     };
 }
 file struct DocumentItem
