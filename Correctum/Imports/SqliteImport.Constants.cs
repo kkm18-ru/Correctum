@@ -1,8 +1,9 @@
-﻿namespace Correctum.Importers;
+﻿namespace Correctum.Imports;
 
-internal partial class Sqlite
+partial class SqliteImport
 {
     const string COUNT_RECEIPTS = "SELECT COUNT(id) FROM receipt;";
+
     const string GET_RECEIPTS = """
         SELECT 
             id AS Id,
@@ -26,6 +27,7 @@ internal partial class Sqlite
             receipt 
         LIMIT @limit OFFSET @offset;
         """;
+
     const string GET_POSITIONS = """
         SELECT 
             name AS Name,

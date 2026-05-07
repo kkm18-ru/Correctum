@@ -5,9 +5,9 @@ using Dapper;
 using Microsoft.Data.Sqlite;
 using System.Globalization;
 
-namespace Correctum.Importers;
+namespace Correctum.Imports;
 
-partial class Sqlite
+partial class SqliteImport
 {
     internal readonly struct ReceiptDto
     {
@@ -56,5 +56,29 @@ partial class Sqlite
                 TaxationSystem = (TaxationSystems?)Taxation
             };
         }
+    }
+
+    internal readonly struct PositionDto
+    {
+        public string? Name { get; init; }
+        public long? Type { get; init; }
+        public long? CalcMethod { get; init; }
+        public long? Tax { get; init; }
+        public long? Unit { get; init; }
+        public long? Price { get; init; }
+        public long? Quantity { get; init; }
+        public long? Cost { get; init; }
+
+        public static Position ToModel(PositionDto dto) => new()
+        {
+            Name = dto.Name,
+            Cost = (Currency?)dto.Cost,
+            Unit = (UnitOfMeasure?)dto.Unit,
+            CalcMethod = (CalculationMethod?)dto.CalcMethod,
+            Price = (Currency?)dto.Price,
+            Quantity = (ulong?)dto.Quantity,
+            TaxRate = NDSRate.FromFns(dto.Tax),
+            Type = (PositionType?)dto.Type
+        };
     }
 }
