@@ -35,6 +35,8 @@ public partial class OfdRuJsonDeserializer : IDeserializer
         [JsonPropertyName("Number")] public uint? DocSession { get; init; }
         [JsonPropertyName("ShiftNumber")] public uint? Session { get; init; }
         [JsonPropertyName("DateTime")] public string? DateTime { get; init; }
+        [JsonPropertyName("Operator")] public string? Cashier { get; init; }
+        [JsonPropertyName("OperatorInn")] public string? CashierInn { get; init; } // todo need check
         [JsonPropertyName("OperationType")] public int? Type { get; init; }
         [JsonPropertyName("TaxationType")] public int? Taxation { get; init; }
         [JsonPropertyName("Amount_Total")] public ulong? Total { get; init; }
@@ -94,6 +96,8 @@ public partial class OfdRuJsonDeserializer : IDeserializer
             Created = dto.DateTime is null ? null : DateTime.ParseExact(dto.DateTime, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
             TaxationSystem = (TaxationSystems?)dto.Taxation,
             // todo BuyerContact
+            Cashier = dto.Cashier,
+            CashierInn = dto.CashierInn is null ? null : Inn.Parse(dto.CashierInn)
         };
     }
 }
