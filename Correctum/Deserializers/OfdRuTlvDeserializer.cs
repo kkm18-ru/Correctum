@@ -6,6 +6,7 @@ using Correctum.Utils;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Xceed.Wpf.AvalonDock.Controls;
 
 namespace Correctum.Deserializers;
 
@@ -32,6 +33,8 @@ public partial class OfdRuTlvDeserializer : IDeserializer
         [JsonPropertyName("1038")] public uint? Session { get; init; }
         [JsonPropertyName("1040")] public uint? Doc { get; init; }
         [JsonPropertyName("1041")] public string? Drive { get; init; }
+        [JsonPropertyName("1021")] public string? Cashier { get; init; }
+        [JsonPropertyName("1203")] public string? CashierInn { get; init; }
         [JsonPropertyName("1042")] public uint? DocSession { get; init; }
         [JsonPropertyName("1054")] public int? Type { get; init; }
         [JsonPropertyName("1055")] public int? Taxation { get; init; }
@@ -90,7 +93,9 @@ public partial class OfdRuTlvDeserializer : IDeserializer
             Type = (ReceiptType?)dto.Type,
             Created = dto.DateTime is null ? null : DateTime.ParseExact(dto.DateTime, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
             TaxationSystem = (TaxationSystems?)dto.Taxation,
-            BuyerContact = dto.BuyerContact
+            BuyerContact = dto.BuyerContact,
+            Cashier = dto.Cashier,
+            CashierInn = dto.CashierInn is null ? null : Inn.Parse(dto.CashierInn)
         };
     }
 }
