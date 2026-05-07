@@ -61,6 +61,14 @@ namespace Correctum.Core.Models
         /// </summary>
         public string? BuyerContact { get; init; }
         /// <summary>
+        /// Кассира
+        /// </summary>
+        public string? Cashier { get; init; }
+        /// <summary>
+        /// ИНН кассира
+        /// </summary>
+        public Inn? CashierInn { get; init; }
+        /// <summary>
         /// Применяемая система налогообложения
         /// </summary>
         public TaxationSystems? TaxationSystem { get; init; }

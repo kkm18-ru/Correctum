@@ -21,6 +21,8 @@ namespace Correctum.Core.Builders
         private ulong? _credit;
         private ulong? _provision;
         private string? _buyer;
+        private string? _cashier;
+        private Inn? _cashierInn;
         private DateTime? _createdAt;
         private uint? _docShift;
         private uint? _docId;
@@ -52,6 +54,8 @@ namespace Correctum.Core.Builders
             _shift = null;
             _drive = null;
             _taxation = null;
+            _cashier = null;
+            _cashierInn = null;
             _total = null;
             _type = null;
         }
@@ -79,6 +83,8 @@ namespace Correctum.Core.Builders
             _taxation = receipt.TaxationSystem;
             _total = (ulong?)receipt.TotalSum;
             _type = receipt.Type;
+            _cashier = receipt.Cashier;
+            _cashierInn = receipt.CashierInn;
         }
 
         /// <summary>
@@ -161,6 +167,28 @@ namespace Correctum.Core.Builders
         public ReceiptBuilder SetBuyerContact(string? value)
         {
             _buyer = value;
+            return this;
+        }
+
+        /// <summary>
+        /// Устанавливает имя кассира.
+        /// </summary>
+        /// <param name="value">Имя кассира.</param>
+        /// <returns>Текущий экземпляр построителя.</returns>
+        public ReceiptBuilder SetCashier(string? value)
+        {
+            _cashier = value;
+            return this;
+        }
+
+        /// <summary>
+        /// Устанавливает ИНН кассира.
+        /// </summary>
+        /// <param name="value">ИНН кассира.</param>
+        /// <returns>Текущий экземпляр построителя.</returns>
+        public ReceiptBuilder SetCashierInn(Inn? value)
+        {
+            _cashierInn = value;
             return this;
         }
 
@@ -306,6 +334,8 @@ namespace Correctum.Core.Builders
             TaxationSystem = _taxation,
             TotalSum = _total,
             Type = _type,
+            Cashier = _cashier,
+            CashierInn = _cashierInn,
         };
     }
 }
