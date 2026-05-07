@@ -11,8 +11,7 @@
                  d:DataContext="{d:DesignInstance Type={x:Type vm:ImportWindowViewModel}, IsDesignTimeCreatable=True}"
                  Title="{Binding ImportName, StringFormat={}Импорт из {0}}">
     <StackPanel Margin="5">
-        <ContentControl Content="{Binding Import, RelativeSource={RelativeSource AncestorType=local:ImportWindow}}"/>
-        <Separator Height="5" Background="{x:Null}"/>
+        <ContentControl Content="{Binding Import}"/>
         <WrapPanel>
             <cc:TextProgressBar Width="125" Value="{Binding CurrentProgress}"
                                 Maximum="{Binding MaximumProgress}"/>

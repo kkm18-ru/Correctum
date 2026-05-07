@@ -70,5 +70,5 @@ public sealed class ImportWindowViewModel : BindableBase
 
     private void Cancel() => cts?.Cancel();
 
-    public void OnClosing() => Import.OnClosed();
+    public void OnClosing() => Import.OnClosing();
 }
