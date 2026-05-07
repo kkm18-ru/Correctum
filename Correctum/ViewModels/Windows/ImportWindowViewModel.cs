@@ -1,7 +1,5 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Core.Models;
-using Correctum.Importers;
-using Correctum.UI.Controls;
 using Correctum.Utils;
 using System.Windows;
 using System.Windows.Input;
@@ -13,6 +11,7 @@ public sealed class ImportWindowViewModel : BindableBase
     public string ImportName { get; }
     public ICommand StartCommand { get; }
     public ICommand CancelCommand { get; }
+    public BaseImport Import { get; }
 
     public int CurrentProgress { get; set; }
     public int MaximumProgress { get; set; }
@@ -22,23 +21,22 @@ public sealed class ImportWindowViewModel : BindableBase
     private CancellationTokenSource cts = null!;
     private readonly static NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     private readonly BoundedProgress<uint> progress;
-    private readonly IImporter importer;
 
-    internal ImportWindowViewModel(string importName, IImporter importer)
+    internal ImportWindowViewModel(string importName, BaseImport import)
     {
         ImportName = importName;
         StartCommand = new RelayCommand(Start, () => cts?.IsCancellationRequested ?? true);
         CancelCommand = new RelayCommand(Cancel, () => !cts?.IsCancellationRequested ?? false);
 
         progress = new BoundedProgress<uint>();
-        this.importer = importer;
+        Import = import;
     }
 
 #if DEBUG
     /// <summary>
     /// Инициализация тестового экземпляра <see cref="ImportWindowViewModel"/>
     /// </summary>
-    public ImportWindowViewModel() : this("Mock", new Mock())
+    public ImportWindowViewModel() : this("Mock", null!)
     {
         CurrentProgress = 10;
         MaximumProgress = 100;
@@ -51,7 +49,7 @@ public sealed class ImportWindowViewModel : BindableBase
         cts = new CancellationTokenSource();
         try
         {
-            await foreach (var receipt in importer.Import(progress, cts.Token))
+            await foreach (var receipt in Import.ImportAsync(cts.Token))
                 buffer.Add(receipt);
             cts.Dispose();
             buffer.ForEach(Workspace.Instance.Receipts.Add);
@@ -72,5 +70,5 @@ public sealed class ImportWindowViewModel : BindableBase
 
     private void Cancel() => cts?.Cancel();
 
-    public void OnClosing() => importer.OnClosing();
+    public void OnClosing() => Import.OnClosed();
 }

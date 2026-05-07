@@ -24,6 +24,7 @@ public sealed partial class MainMenuViewModel : BindableBase
     public static partial ImmutableArray<ImportDescriptor> Imports { get; }
 
     public ICommand OpenReportCommand { get; } = new RelayCommand<ReportDescriptor>(OpenReport);
+    public ICommand OpenImportCommand { get; } = new RelayCommand<ImportDescriptor>(OpenImport);
     public ICommand OpenExportMasterCommand { get; } = new RelayCommand<Type>(OpenExportMaster);
     public ICommand ShowFptrCommand { get; } = new ActionCommand(() => new FptrWindow().ShowDialog());
     public ICommand ShowPasteCommand { get; } = new ActionCommand(() => new PasteWindow().ShowDialog());
@@ -32,6 +33,9 @@ public sealed partial class MainMenuViewModel : BindableBase
     public ICommand OpenLinkCommand { get; } = new RelayCommand<string>(OpenLink);
     
     private static void OpenLink(string url) => Process.Start(ExplorerPath, url);
+
+    private static void OpenImport(ImportDescriptor descriptor) =>
+        new ImportWindow(descriptor.DisplayName, descriptor.Function.Invoke()).ShowDialog();
 
     private static void OpenReport(ReportDescriptor descriptor) =>
         new ReportWindow(descriptor.DisplayName, descriptor.Function).ShowDialog();
