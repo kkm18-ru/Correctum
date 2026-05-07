@@ -53,7 +53,11 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
     const string TextBox = """
                 {{
                     var tb = new global::System.Windows.Controls.TextBox();
-                    tb.SetBinding(global::System.Windows.Controls.TextBox.TextProperty, "{0}");
+                    var bind = new global::System.Windows.Data.Binding("{0}");
+                    if(!string.IsNullOrEmpty("{3}"))
+                        bind.Converter = (global::System.Windows.Data.IValueConverter)
+                            global::System.Windows.Application.Current.FindResource("{3}");
+                    tb.SetBinding(global::System.Windows.Controls.TextBox.TextProperty, bind);
                     if({1})
                     {{
                         global::System.Windows.Data.Binding b;
@@ -254,7 +258,10 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
             case "TextBox":
                 builder.AppendLine();
                 builder.AppendLine(string.Format(Label, pair.Value.DisplayName));
-                builder.AppendLine(string.Format(TextBox, pair.Key, authorizable.ToString().ToLowerInvariant(), pair.Value.ForAuth.ToString().ToLowerInvariant()));
+                builder.AppendLine(string.Format(TextBox, pair.Key, 
+                    authorizable.ToString().ToLowerInvariant(), 
+                    pair.Value.ForAuth.ToString().ToLowerInvariant(),
+                    pair.Value.Arguments.Length > 0 ? pair.Value.Arguments[0] : string.Empty));
                 builder.AppendLine(Separator);
                 break;
             case "DateRange":

@@ -13,7 +13,7 @@ namespace Correctum.Imports;
 [ImportInfo("SabyOFD")]
 [TextBox("Логин", nameof(Login))]
 [SecretBox("Пароль", nameof(Password))]
-[TextBox("ИНН организации", nameof(Inn))]
+[TextBox("ИНН организации", nameof(Inn), "innConverter")]
 [DateRange("Период импортирования", nameof(DateRange))]
 [CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
 [AuthorizationProperties(nameof(Login), nameof(Password))]
@@ -21,7 +21,7 @@ public sealed class SabyImport : OfdImport<SabyClient>
 {
     public string Login { get; set => SetField(ref field, value); } = string.Empty;
     public string Password { get; set => SetField(ref field, value); } = string.Empty;
-    public string Inn { get; set => SetField(ref field, value); } = string.Empty;
+    public Inn Inn { get; set => SetField(ref field, value); }
     public DateRange DateRange { get; } = new();
     public ObservableCollection<string> Devices { get; set; } = [];
     public ObservableCollection<string> SelectedDevices { get; set; } = [];
@@ -31,7 +31,7 @@ public sealed class SabyImport : OfdImport<SabyClient>
     {
         var drives = new Dictionary<string, SabyDriveResponse[]>();
         foreach (var device in SelectedDevices)
-            drives.Add(device, await client.FetchDrivesAsync(Core.ValueObjects.Inn.Parse(Inn), device, DateRange.BeginDate.ToDateTime(new()), DateRange.EndDate.ToDateTime(new()), cancellationToken));
+            drives.Add(device, await client.FetchDrivesAsync(Inn, device, DateRange.BeginDate.ToDateTime(new()), DateRange.EndDate.ToDateTime(new()), cancellationToken));
 
         foreach (var device in Devices)
         {
@@ -46,7 +46,7 @@ public sealed class SabyImport : OfdImport<SabyClient>
     private async IAsyncEnumerable<Receipt> ParseByStorage
         (string regId, SabyDriveResponse drive, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var baseRequest = new SabyReceiptsRequest(Core.ValueObjects.Inn.Parse(Inn), regId, drive.Id);
+        var baseRequest = new SabyReceiptsRequest(Inn, regId, drive.Id);
         var (start, end) = GetAvailablePeriod(drive);
         for (var day = start; day <= end; day = day.AddDays(1))
         {
@@ -84,7 +84,7 @@ public sealed class SabyImport : OfdImport<SabyClient>
 
         await client.AuthAsync(Login, Password);
 
-        await foreach (var device in client.EnumerateDevicesAsync(Core.ValueObjects.Inn.Parse(Inn)))
+        await foreach (var device in client.EnumerateDevicesAsync(Inn))
             Devices.Add(device);
     }
 }

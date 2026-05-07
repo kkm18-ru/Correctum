@@ -14,7 +14,8 @@ public sealed class SecretBoxAttribute(
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public sealed class TextBoxAttribute(
     string displayName, 
-    string propertyName
+    string propertyName,
+    string converterResourceKey = ""
 ) : Attribute;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
