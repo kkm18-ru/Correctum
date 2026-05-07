@@ -30,6 +30,11 @@ public sealed class ReportWindowViewModel : BaseViewModel
         RefreshCommand = new RelayCommand(Refresh, () => !IsBusy);
     }
 
+#if DEBUG
+    public ReportWindowViewModel() 
+        : this("Тест", () => new DataTable()) { }
+#endif
+
     private async void Refresh()
     {
         try
