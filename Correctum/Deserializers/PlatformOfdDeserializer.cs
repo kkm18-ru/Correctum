@@ -58,6 +58,8 @@ public class PlatformOfdDeserializer : IDeserializer
             case 1012: builder.SetCreated(DateTimeOffset.UnixEpoch.AddSeconds(ulong.Parse(value)).DateTime); break;
             case 1041: builder.SetStorageId(value.ToString()); break;
             case 1037: builder.SetRegId(value.ToString()); break;
+            case 1021: builder.SetCashier(value.ToString()); break;
+            case 1203: builder.SetCashierInn(Inn.Parse(value.ToString())); break;
             case 1038: builder.SetSessionId(uint.Parse(value)); break;
             case 1020: builder.SetTotalSum(ulong.Parse(value)); break;
             case 1055: builder.SetTaxationSystem((TaxationSystems)int.Parse(value)); break;
