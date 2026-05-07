@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 namespace Correctum.Imports;
 
 [ImportInfo("OFD.ru")]
-[SecretBox("Токен", nameof(Token))]
+[TextBox("Токен", nameof(Token))]
 [DateRange("Период импортирования", nameof(DateRange))]
 [CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
 [AuthorizationProperties(nameof(Token))]

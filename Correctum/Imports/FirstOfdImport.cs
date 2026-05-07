@@ -11,7 +11,7 @@ namespace Correctum.Imports;
 
 [ImportInfo("1-ОФД")]
 [TextBox("Логин", nameof(Login))]
-[SecretBox("Пароль", nameof(Password))]
+[TextBox("Пароль", nameof(Password))]
 [DateRange("Период импортирования", nameof(DateRange))]
 [CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
 [AuthorizationProperties(nameof(Login), nameof(Password))]

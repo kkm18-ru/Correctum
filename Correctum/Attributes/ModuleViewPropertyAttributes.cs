@@ -6,12 +6,6 @@ public sealed class AuthorizationPropertiesAttribute
     (params string[] propertyNames) : Attribute;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class SecretBoxAttribute(
-    string displayName, 
-    string propertyName
-) : Attribute;
-
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public sealed class TextBoxAttribute(
     string displayName, 
     string propertyName,

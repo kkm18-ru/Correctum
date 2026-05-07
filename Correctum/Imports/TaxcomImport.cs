@@ -11,7 +11,7 @@ namespace Correctum.Imports;
 
 [ImportInfo("Такском-Касса")]
 [TextBox("Логин", nameof(Login))]
-[SecretBox("Пароль", nameof(Password))]
+[TextBox("Пароль", nameof(Password))]
 [TextBox("Номер договора", nameof(Agreement))]
 [DateRange("Период импортирования", nameof(DateRange))]
 [CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]

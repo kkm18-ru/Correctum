@@ -205,7 +205,6 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
             {
                 switch (attribute.AttributeClass?.ToDisplayString())
                 {
-                    case "Correctum.Attributes.ModuleViewProperty.SecretBoxAttribute":
                     case "Correctum.Attributes.ModuleViewProperty.TextBoxAttribute":
                     case "Correctum.Attributes.ModuleViewProperty.DateRangeAttribute":
                     case "Correctum.Attributes.ModuleViewProperty.CheckComboBoxAttribute":
@@ -254,7 +253,6 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
     {
         switch (pair.Value.Type)
         {
-            case "SecretBox":
             case "TextBox":
                 builder.AppendLine();
                 builder.AppendLine(string.Format(Label, pair.Value.DisplayName));

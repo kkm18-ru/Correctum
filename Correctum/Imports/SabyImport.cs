@@ -12,7 +12,7 @@ namespace Correctum.Imports;
 
 [ImportInfo("SabyOFD")]
 [TextBox("Логин", nameof(Login))]
-[SecretBox("Пароль", nameof(Password))]
+[TextBox("Пароль", nameof(Password))]
 [TextBox("ИНН организации", nameof(Inn), "innConverter")]
 [DateRange("Период импортирования", nameof(DateRange))]
 [CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
