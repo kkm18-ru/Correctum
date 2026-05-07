@@ -1,12 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading;
-
-namespace Correctum.SourceGenerators;
+﻿namespace Correctum.SourceGenerators;
 
 [Generator(LanguageNames.CSharp)]
 public sealed class DeserializerRegistrationGenerator : IIncrementalGenerator
