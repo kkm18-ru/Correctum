@@ -1,5 +1,6 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
+using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Dapper;
@@ -9,6 +10,7 @@ using System.Runtime.CompilerServices;
 namespace Correctum.Imports;
 
 [ImportInfo("SQLite")]
+[TextBox("Путь", nameof(Path))]
 public sealed partial class SqliteImport : BaseImport
 {
     public string Path { get; set => SetField(ref field, value); } = string.Empty;

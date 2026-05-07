@@ -1,5 +1,6 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
+using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
@@ -9,6 +10,11 @@ using System.Runtime.CompilerServices;
 namespace Correctum.Imports;
 
 [ImportInfo("1-ОФД")]
+[TextBox("Логин", nameof(Login))]
+[SecretBox("Пароль", nameof(Password))]
+[DateRange("Период импортирования", nameof(DateRange))]
+[CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
+[AuthorizationProperties(nameof(Login), nameof(Password))]
 public sealed class FirstOfdImport : OfdImport<FirstOfdClient>
 {
     public string Login { get; set => SetField(ref field, value); } = string.Empty;

@@ -1,5 +1,6 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
+using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
@@ -9,11 +10,17 @@ using System.Runtime.CompilerServices;
 namespace Correctum.Imports;
 
 [ImportInfo("Такском-Касса")]
+[TextBox("Логин", nameof(Login))]
+[SecretBox("Пароль", nameof(Password))]
+[TextBox("Номер договора", nameof(Agreement))]
+[DateRange("Период импортирования", nameof(DateRange))]
+[CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
+[AuthorizationProperties(nameof(Login), nameof(Password), nameof(Agreement))]
 public sealed class TaxcomImport : OfdImport<TaxcomClient>
 {
     public string Login { get; set => SetField(ref field, value); } = string.Empty;
     public string Password { get; set => SetField(ref field, value); } = string.Empty;
-    public string Agreement { get; set => SetField(ref field, value); } = string.Empty;
+    public string Agreement { get; set => SetField(ref field, value); } = string.Empty;    
     public DateRange DateRange { get; } = new();
     public ObservableCollection<string> Devices { get; } = [];
     public ObservableCollection<string> SelectedDevices { get; } = [];

@@ -1,5 +1,6 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
+using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
@@ -9,6 +10,10 @@ using System.Runtime.CompilerServices;
 namespace Correctum.Imports;
 
 [ImportInfo("OFD.ru")]
+[SecretBox("Токен", nameof(Token))]
+[DateRange("Период импортирования", nameof(DateRange))]
+[CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
+[AuthorizationProperties(nameof(Token))]
 public sealed class OfdRuImport : OfdImport<OfdRuClient>
 {
     public string Token { get; set => SetField(ref field, value); } = string.Empty;

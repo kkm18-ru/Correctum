@@ -1,5 +1,6 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
+using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
@@ -9,6 +10,12 @@ using System.Runtime.CompilerServices;
 namespace Correctum.Imports;
 
 [ImportInfo("Платформа ОФД")]
+[TextBox("Идентификатор сессии", nameof(SessionId))]
+[SecretBox("Токен доступа", nameof(AccessToken))]
+[SecretBox("Токен обновления", nameof(RefreshToken))]
+[DateRange("Период импортирования", nameof(DateRange))]
+[CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
+[AuthorizationProperties(nameof(SessionId), nameof(AccessToken), nameof(RefreshToken))]
 public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
 {
     public string SessionId { get; set => SetField(ref field, value); } = string.Empty;
