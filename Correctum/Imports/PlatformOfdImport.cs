@@ -1,0 +1,45 @@
+﻿using Correctum.Abstractions;
+using Correctum.Attrubutes;
+using Correctum.Core.Models;
+using Correctum.Utils;
+using Correctum.Utils.Integrations.Clients;
+using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
+
+namespace Correctum.Imports;
+
+[ImportInfo("Платформа ОФД")]
+public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
+{
+    public string SessionId { get; set => SetField(ref field, value); } = string.Empty;
+    public string AccessToken { get; set => SetField(ref field, value); } = string.Empty;
+    public string RefreshToken { get; set => SetField(ref field, value); } = string.Empty;
+    public DateRange DateRange { get; } = new();
+    public ObservableCollection<PlatformaOfdDevice> Devices { get; } = [];
+    public ObservableCollection<PlatformaOfdDevice> SelectedDevices { get; } = [];
+
+    public override async IAsyncEnumerable<Receipt> ImportAsync
+        ([EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        foreach (var date in DateRange)
+        {
+            foreach (var Device in SelectedDevices)
+            {
+                var references = await client.FetchReceiptsAsync(date, Device, cancellationToken);
+                foreach (var @ref in references)
+                    if (await client.FetchReceiptAsync(@ref, cancellationToken) is { } receipt)
+                        yield return receipt;
+            }
+        }
+    }
+
+    protected override async Task InternalAuthAsync()
+    {
+        SelectedDevices.Clear();
+        Devices.Clear();
+
+        client.Auth(SessionId, AccessToken, RefreshToken);
+        foreach (var d in await client.FetchDevicesAsync())
+            Devices.Add(d);
+    }
+}

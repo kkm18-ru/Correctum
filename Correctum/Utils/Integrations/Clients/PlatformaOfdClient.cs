@@ -9,7 +9,7 @@ using System.Web;
 namespace Correctum.Utils.Integrations.Clients;
 
 /// <summary>Обертка API-клиента ПлатформаОФД.</summary>
-internal sealed partial class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>(Host)
+public sealed partial class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>(Host)
 {
     private const string Host = "https://lk.platformaofd.ru";
     private string JSessionId = "";
