@@ -16,14 +16,6 @@
 		<DebugType>none</DebugType>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<Compile Remove="Importers\Mock*.cs" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(Configuration)'=='Debug'">
-		<PackageReference Include="Bogus" Version="35.6.5" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<Code Include="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
