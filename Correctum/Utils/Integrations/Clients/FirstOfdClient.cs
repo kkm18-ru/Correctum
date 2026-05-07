@@ -11,8 +11,9 @@ using System.Text.Json.Serialization;
 
 namespace Correctum.Utils.Integrations.Clients;
 
-public sealed class FirstOfdClient(string host = "https://org.1-ofd.ru") : ApiClient<FirstOfdClient>(host)
+public sealed class FirstOfdClient(string host) : ApiClient<FirstOfdClient>(host)
 {
+    public FirstOfdClient() : this("https://org.1-ofd.ru") { }
     public async Task AuthAsync(string login, string password, CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
