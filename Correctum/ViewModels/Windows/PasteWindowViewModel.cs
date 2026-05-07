@@ -1,4 +1,5 @@
-﻿using Correctum.Core.Models;
+﻿using Correctum.Abstractions;
+using Correctum.Core.Models;
 using Correctum.UI.Controls;
 using Correctum.Utils;
 using System.Collections.Immutable;
@@ -7,7 +8,7 @@ using System.Windows.Input;
 
 namespace Correctum.ViewModels.Windows;
 
-public sealed partial class PasteWindowViewModel : BaseViewModel
+public sealed partial class PasteWindowViewModel : BindableBase
 {
     public static partial ImmutableArray<DeserializerDescriptor> Deserializers { get; }
     public DeserializerDescriptor? CurrentDeserializer { get; set => SetField(ref field, value); }

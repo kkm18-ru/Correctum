@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Correctum.ViewModels;
+namespace Correctum.Abstractions;
 
-public abstract class BaseViewModel : INotifyPropertyChanged
+public abstract class BindableBase : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 

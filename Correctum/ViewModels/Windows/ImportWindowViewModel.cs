@@ -1,4 +1,5 @@
-﻿using Correctum.Core.Models;
+﻿using Correctum.Abstractions;
+using Correctum.Core.Models;
 using Correctum.Importers;
 using Correctum.UI.Controls;
 using Correctum.Utils;
@@ -7,7 +8,7 @@ using System.Windows.Input;
 
 namespace Correctum.ViewModels.Windows;
 
-public sealed class ImportWindowViewModel : BaseViewModel
+public sealed class ImportWindowViewModel : BindableBase
 {
     public string ImportName { get; }
     public ICommand StartCommand { get; }

@@ -1,3 +1,4 @@
+using Correctum.Abstractions;
 using Correctum.UI.Windows;
 using Correctum.Utils;
 using Correctum.ViewModels.Exports;
@@ -13,7 +14,7 @@ using System.Windows.Input;
 
 namespace Correctum.ViewModels.Controls;
 
-public sealed partial class MainMenuViewModel : BaseViewModel
+public sealed partial class MainMenuViewModel : BindableBase
 {
     private static string ExplorerPath { get; } =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe");
