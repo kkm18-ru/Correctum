@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 namespace Correctum.Utils.Integrations.Clients;
 
 /// <summary>Обертка API-клиента OfdRu.</summary>
-internal sealed class OfdRuClient() : ApiClient<OfdRuClient>(Host)
+public sealed class OfdRuClient() : ApiClient<OfdRuClient>(Host)
 {
     private const string Host = "https://ofd.ru/api/integration/v2/";
     private string _token = "";
