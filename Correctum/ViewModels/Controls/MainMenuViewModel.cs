@@ -21,6 +21,7 @@ public sealed partial class MainMenuViewModel : BindableBase
 
     public static MenuItem[] Exporters => SearchExporters();
     public static partial ImmutableArray<ReportDescriptor> Reports { get; }
+    public static partial ImmutableArray<ImportDescriptor> Imports { get; }
 
     public ICommand OpenReportCommand { get; } = new RelayCommand<ReportDescriptor>(OpenReport);
     public ICommand OpenExportMasterCommand { get; } = new RelayCommand<Type>(OpenExportMaster);
@@ -59,4 +60,5 @@ public sealed partial class MainMenuViewModel : BindableBase
             })];
 
     public readonly record struct ReportDescriptor(string DisplayName, Func<DataTable> Function);
+    public readonly record struct ImportDescriptor(string DisplayName, Func<BaseImport> Function);
 }
