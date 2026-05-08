@@ -16,8 +16,6 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
 {
     public int CorrectionType { get; set => SetField(ref field, value); }
     public string Act { get; set => SetField(ref field, value); }
-    public string OperatorName { get; set => SetField(ref field, value); }
-    public string OperatorInn { get; set => SetField(ref field, value); }
     public bool IsInternet { get; set => SetField(ref field, value); }
     public string SiteAddress { get; set => SetField(ref field, value); }
     public int CurrentIndex { get; private set => SetField(ref field, value); }
@@ -50,7 +48,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     
     public FptrWindow()
     {
-        Act = OperatorName = OperatorInn = SiteAddress = "";
+        Act = SiteAddress = "";
         _handle = new FptrHandle();
         InitializeComponent();
     }
@@ -119,16 +117,6 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     }
 
     private string CaptionError => $"Произошла ошибка (Код: {_handle.ErrorCode})";
-
-    private bool LoginOperator()
-    {
-        if (string.IsNullOrWhiteSpace(OperatorName)) return true;
-        if (_handle.LoginOperator(OperatorName, OperatorInn)) return true;
-        
-        MessageBox.Show("Не удалось зарегистрировать кассира", 
-            CaptionError, MessageBoxButton.OK, MessageBoxImage.Hand);
-        return false;
-    }
 
     private bool ConnectKkt()
     {
@@ -235,7 +223,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                 _handle.Disconnect();
                 return;
             }
-            if (LoginOperator()) State = ConductingReceiptState.Idle;
+            State = ConductingReceiptState.Idle;
         }
         else
         {

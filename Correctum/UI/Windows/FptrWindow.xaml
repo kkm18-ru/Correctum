@@ -34,10 +34,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="5"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
@@ -62,21 +58,13 @@
         <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Act}"
                  IsEnabled="{Binding CanSettings, Mode=OneWay}"/>
         
-        <TextBlock Grid.Row="6" Grid.Column="0" Text="ФИО оператора:"/>
-        <TextBox Grid.Row="6" Grid.Column="2" Text="{Binding OperatorName}"
-                 IsEnabled="{Binding CanSettings, Mode=OneWay}"/>
-        
-        <TextBlock Grid.Row="8" Grid.Column="0" Text="ИНН оператора:"/>
-        <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding OperatorInn}"
-                 IsEnabled="{Binding CanSettings, Mode=OneWay}"/>
-        
-        <CheckBox Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3"
+        <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3"
                   IsChecked="{Binding IsInternet}"
                   Content="Применить рассчет для сети ''Интернет''"
                   IsEnabled="{Binding CanSettings, Mode=OneWay}"/>
         
-        <TextBlock Grid.Row="12" Grid.Column="0" Text="Адрес сайта:"/>
-        <TextBox Grid.Row="12" Grid.Column="2" Text="{Binding SiteAddress}">
+        <TextBlock Grid.Row="8" Grid.Column="0" Text="Адрес сайта:"/>
+        <TextBox Grid.Row="8" Grid.Column="2" Text="{Binding SiteAddress}">
             <TextBox.IsEnabled>
                 <MultiBinding Converter="{StaticResource andBoolConverter}">
                     <Binding Path="IsInternet" Mode="OneWay"/>
@@ -86,11 +74,11 @@
         </TextBox>
         
         <controls:TextProgressBar 
-            Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="3" 
+            Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3" 
             Value="{Binding CurrentIndex, Mode=OneWay}"
             Maximum="{Binding Source={x:Static rc:Workspace.Instance}, Path=Receipts.Count}"/>
         
-        <StackPanel Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+        <StackPanel Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
             <Button Content="{Binding RunButtonText, Mode=OneWay}" 
                     Click="UpdateState" Margin="0,0,2.5,0" Width="52"
                     IsEnabled="{Binding CanRun, Mode=OneWay}"/>

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Correctum.Core.ValueObjects;
+using System.Text;
 using System.Windows;
 using System.Windows.Interop;
 using FnInfo = (string Model, string SerialNumber);
@@ -73,10 +74,11 @@ namespace Correctum.Utils.Integrations
         public bool ShowProperties(Window wind) =>
             showProperties(handle, 0, new WindowInteropHelper(wind).Handle) == 0;
 
-        public bool LoginOperator(string fullname, string inn = "")
+        public bool LoginOperator(string fullname, Inn? inn)
         {
             SetString(1021, fullname);
-            SetString(1203, inn);
+            if(inn is not null) 
+                SetString(1203, inn.Value.ToString());
             return operatorLogin(handle) == 0;
         }
 

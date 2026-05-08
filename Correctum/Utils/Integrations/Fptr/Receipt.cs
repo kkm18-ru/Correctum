@@ -26,6 +26,11 @@ namespace Correctum.Utils.Integrations
         
         public bool OpenReceipt(Receipt doc, OpenReceiptArgs args)
         {
+
+            if (!string.IsNullOrWhiteSpace(doc.Cashier) &&
+                !LoginOperator(doc.Cashier, doc.CashierInn))
+                return false;
+
             var corrData = Array.Empty<byte>();
             if(DocFormat >= 110) GenerateCorrectionData(doc.Created.Value, args.Act, out corrData);
             var opcode = doc.Type.Value.ToCorrection(DocFormat);
