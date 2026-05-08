@@ -23,6 +23,7 @@
         <DataGridTextColumn Header="№ документа" Binding="{Binding DocNumb}" Width="120"/>
         <DataGridTextColumn Header="№ смены" Binding="{Binding SessionId}" Width="120"/>
         <DataGridTextColumn Header="№ чека в смене" Binding="{Binding DocInSession}" Width="120"/>
+        <DataGridTextColumn Header="Кассир" Binding="{Binding Cashier}"/>
         <DataGridTextColumn Header="Дата" Binding="{Binding Date}" Width="121"/>
         <DataGridTextColumn Header="ФПД" Binding="{Binding Sign}" Width="93"/>
         <DataGridTextColumn Header="Операция" Binding="{Binding Type}" Width="114"/>

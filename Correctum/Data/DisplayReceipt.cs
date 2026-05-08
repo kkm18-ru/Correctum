@@ -1,5 +1,7 @@
 ﻿using Correctum.Utils;
 using Correctum.Core.Models;
+using Correctum.Core.ValueObjects;
+using System.Text;
 
 namespace Correctum.Data
 {
@@ -9,6 +11,7 @@ namespace Correctum.Data
         public string RegId { get; } = origin.RegId ?? "";
         public string StorageId { get; } = origin.StorageId ?? "";
         public string DocNumb { get; } = origin.DocNumber.ToString() ?? "";
+        public string Cashier { get; } = GenerateCashier(origin.Cashier, origin.CashierInn);
         public string SessionId { get; } = origin.SessionId.ToString() ?? "";
         public string DocInSession { get; } = origin.DocInSession.ToString() ?? "";
         public string Date { get; } = $"{origin.Created:yyyy'-'MM'-'dd' 'HH':'mm}";
@@ -23,5 +26,13 @@ namespace Correctum.Data
         public string TaxationSystem { get; } = EnumLocales.TaxationSystems.GetLocale(origin.TaxationSystem);
 
         public override string ToString() => $"Чек №{DocNumb} (ККТ: {RegId}; ФН: {StorageId})";
+        private static string GenerateCashier(string? name, Inn? inn)
+        {
+            if (name is null) return string.Empty;
+            var builder = new StringBuilder(name);
+            if (inn.HasValue)
+                builder.Append($" ({inn.Value})");
+            return builder.ToString();
+        }
     }
 }
