@@ -1,7 +1,6 @@
 ﻿using Correctum.Core.Enums;
 using Correctum.Core.Models;
 using Correctum.Core.ValueObjects;
-using Correctum.Utils;
 
 namespace Correctum.Importers;
 
@@ -26,7 +25,7 @@ partial class Sqlite
             CalcMethod = (CalculationMethod?)dto.CalcMethod,
             Price = (Currency?)dto.Price,
             Quantity = (ulong?)dto.Quantity,
-            TaxRate = NDSRate.FromFns(dto.Tax),
+            TaxRate = (NDSRate?)dto.Tax,
             Type = (PositionType?)dto.Type
         };
     }

@@ -17,6 +17,8 @@ partial class Sqlite
         public string? Sign { get; init; }
         public string? KktRegId { get; init; }
         public string? DriveId { get; init; }
+        public string? Cashier { get; init; }
+        public string? CashierInn { get; init; }
         public uint? Session { get; init; }
         public uint? DocId { get; init; }
         public uint? DocInSession { get; init; }
@@ -53,7 +55,9 @@ partial class Sqlite
                 },
                 Type = (ReceiptType?)Type,
                 BuyerContact = Buyer,
-                TaxationSystem = (TaxationSystems?)Taxation
+                TaxationSystem = (TaxationSystems?)Taxation,
+                CashierInn = CashierInn is null ? null : Inn.Parse(CashierInn),
+                Cashier = Cashier,
             };
         }
     }
