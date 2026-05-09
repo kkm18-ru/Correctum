@@ -215,51 +215,52 @@ file readonly struct TaxcomDocumentResponse
     public Receipt? ParseReceipt()
     {
         if (DocType is not ("3" or "31")) return null;
-        var dt = Details["1012"]?.GetValue<string>() is { Length: 19 } s ?
-            DateTime.Parse(s, CultureInfo.InvariantCulture, 0) :
-            DateTime.MinValue;
+        DateTime? dt = Details["1012"]?.GetValue<string>() is { Length: 19 } s ?
+            DateTime.Parse(s, CultureInfo.InvariantCulture, 0) : null;
 
 
-        var receipt = new Receipt
+        return new Receipt
         {
-            BuyerContact = Details["1008"]?.GetValue<string>() ?? "",
-            StorageId = Details["1041"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
-            RegId = Details["1037"]?.GetValue<string>().Trim('\0', ' ', '\t') ?? 0.ToString("D16"),
-            DocNumber = Details["1040"]?.GetValue<uint>() ?? 0,
-            SessionId = Details["1038"]?.GetValue<uint>() ?? 0,
-            DocInSession = Details["1042"]?.GetValue<uint>() ?? 0,
-            Items = new Position[Details["1059"]?.AsArray().Count ?? 0],
-            Type = (ReceiptType?)Details["1054"]?.GetValue<int>() ?? 0,
-            DocSign = FiscalSign.Parse(Details["1077"]?.GetValue<string>()),
+            BuyerContact = Details["1008"]?.GetValue<string>(),
+            StorageId = Details["1041"]?.GetValue<string>().Trim('\0', ' ', '\t'),
+            RegId = Details["1037"]?.GetValue<string>().Trim('\0', ' ', '\t'),
+            DocNumber = Details["1040"]?.GetValue<uint>(),
+            SessionId = Details["1038"]?.GetValue<uint>(),
+            DocInSession = Details["1042"]?.GetValue<uint>(),
+            Items = Details["1059"]?.AsArray().Select(ParsePosition).Where(p => p.HasValue).Cast<Position>().ToArray(),
+            Type = (ReceiptType?)Details["1054"]?.GetValue<int>(),
+            DocSign = FiscalSign.TryParse(Details["1077"]?.GetValue<string>(), out var sign) ? sign : null,
             Payment = ParsePayment(),
-            TotalSum = Details["1020"]?.GetValue<ulong>() ?? 0,
-            TaxationSystem = (TaxationSystems?)Details["1055"]?.GetValue<int>()?? 0,
+            TotalSum = Details["1020"]?.GetValue<ulong>(),
+            TaxationSystem = (TaxationSystems?)Details["1055"]?.GetValue<int>(),
             Created = dt
         };
-        for (var i = 0; i < receipt.Items.Length; i++) receipt.Items[i] = ParsePosition(i);
-        return receipt;
     }
 
-    private Position ParsePosition(int index) => new()
+    private static Position? ParsePosition(JsonNode? node)
     {
-        Name = Details["1059"]?[index]?["1030"]?.GetValue<string>() ?? "",
-        Quantity = decimal.Parse(Details["1059"]?[index]?["1023"]?.GetValue<string>() ?? "0",
+        if (node is null) return null;
+        return new()
+        {
+            Name = node["1030"]?.GetValue<string>(),
+            Quantity = decimal.Parse(node["1023"]?.GetValue<string>() ?? "0",
             NumberStyles.Float, CultureInfo.InvariantCulture),
-        Price = Details["1059"]?[index]?["1079"]?.GetValue<ulong>() ?? 0,
-        Cost = Details["1059"]?[index]?["1043"]?.GetValue<ulong>() ?? 0,
-        Type = (PositionType?)Details["1059"]?[index]?["1212"]?.GetValue<int>() ?? 0,
-        CalcMethod = (CalculationMethod?)Details["1059"]?[index]?["1214"]?.GetValue<int>() ?? 0,
-        TaxRate = (NDSRate?)Details["1059"]?[index]?["1199"]?.GetValue<int>() ?? 0,
-        Unit = (UnitOfMeasure?)Details["1059"]?[index]?["2108"]?.GetValue<int>()
-    };
+            Price = node["1079"]?.GetValue<ulong>(),
+            Cost = node["1043"]?.GetValue<ulong>(),
+            Type = (PositionType?)node["1212"]?.GetValue<int>(),
+            CalcMethod = (CalculationMethod?)node["1214"]?.GetValue<int>(),
+            TaxRate = (NDSRate?)node["1199"]?.GetValue<int>(),
+            Unit = (UnitOfMeasure?)node["2108"]?.GetValue<int>()
+        };
+    }
 
     private Payment ParsePayment() => new()
     {
-        CashSum = Details["1031"]?.GetValue<ulong>() ?? 0,
-        NonCashSum = Details["1081"]?.GetValue<ulong>() ?? 0,
-        AdvanceSum = Details["1215"]?.GetValue<ulong>() ?? 0,
-        CreditSum = Details["1216"]?.GetValue<ulong>() ?? 0,
-        ProvisionSum = Details["1217"]?.GetValue<ulong>() ?? 0,
+        CashSum = Details["1031"]?.GetValue<ulong>(),
+        NonCashSum = Details["1081"]?.GetValue<ulong>(),
+        AdvanceSum = Details["1215"]?.GetValue<ulong>(),
+        CreditSum = Details["1216"]?.GetValue<ulong>(),
+        ProvisionSum = Details["1217"]?.GetValue<ulong>(),
     };
 }
 

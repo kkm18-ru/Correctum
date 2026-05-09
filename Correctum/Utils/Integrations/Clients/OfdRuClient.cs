@@ -91,22 +91,22 @@ public struct OfdRuDevice
 
 file struct Document
 {
-    public DateTime DocDateTime { get; set; }
-    public string DecimalFiscalSign { get; set; }
-    public string KktRegNumber { get; set; }
-    public string FnNumber { get; set; }
-    public uint DocNumber { get; set; }
-    public uint DocShiftNumber { get; set; }
-    public string ReceiptNumber { get; set; }
-    public ulong TotalSumm { get; set; }
-    public string OperationType { get; set; }
-    public TaxationSystems TaxationType { get; set; }
+    public DateTime? DocDateTime { get; set; }
+    public string? DecimalFiscalSign { get; set; }
+    public string? KktRegNumber { get; set; }
+    public string? FnNumber { get; set; }
+    public uint? DocNumber { get; set; }
+    public uint? DocShiftNumber { get; set; }
+    public string? ReceiptNumber { get; set; }
+    public ulong? TotalSumm { get; set; }
+    public string? OperationType { get; set; }
+    public TaxationSystems? TaxationType { get; set; }
     public DocumentItem[] Items { get; set; }
-    public ulong CashSumm { get; set; }
-    public ulong ECashSumm { get; set; }
-    public ulong PrepaidSumm { get; set; }
-    public ulong CreditSumm { get; set; }
-    public ulong ProvisionSumm { get; set; }
+    public ulong? CashSumm { get; set; }
+    public ulong? ECashSumm { get; set; }
+    public ulong? PrepaidSumm { get; set; }
+    public ulong? CreditSumm { get; set; }
+    public ulong? ProvisionSumm { get; set; }
 
     public Receipt ToReceipt() => new()
     {
@@ -114,11 +114,12 @@ file struct Document
         StorageId = FnNumber,
         DocNumber = DocNumber,
         SessionId = DocShiftNumber,
-        DocInSession = uint.Parse(ReceiptNumber),
+        DocInSession = uint.TryParse(ReceiptNumber, out var dis) ? dis : null,
         Created = DocDateTime,
         DocSign = FiscalSign.Parse(DecimalFiscalSign),
-        Type = OperationType.ToLowerInvariant() switch
+        Type = OperationType?.ToLowerInvariant() switch
         {
+            null => null,
             "income" => ReceiptType.Income,
             "outcome" => ReceiptType.Outcome,
             "refund income" => ReceiptType.RefundIncome,
@@ -140,14 +141,14 @@ file struct Document
 }
 file struct DocumentItem
 {
-    public string Name { get; set; }
-    public ulong Price { get; set; }
-    public decimal Quantity { get; set; }
-    public ulong Total { get; set; }
-    public CalculationMethod CalculationMethod { get; set; }
+    public string? Name { get; set; }
+    public ulong? Price { get; set; }
+    public decimal? Quantity { get; set; }
+    public ulong? Total { get; set; }
+    public CalculationMethod? CalculationMethod { get; set; }
     public string? ProductUnitOfMeasure { get; set; }
-    public byte NDS_Rate { get; set; }
-    public PositionType SubjectType { get; set; }
+    public byte? NDS_Rate { get; set; }
+    public PositionType? SubjectType { get; set; }
 
     public Position ToPosition()
     {
