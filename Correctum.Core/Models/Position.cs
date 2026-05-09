@@ -35,7 +35,7 @@ namespace Correctum.Core.Models
         /// <summary>
         /// Количество предмета расчета
         /// </summary>
-        public ulong? Quantity { get; init; }
+        public decimal? Quantity { get; init; }
         /// <summary>
         /// Стоимость предмета расчета с учетом скидок и наценок
         /// </summary>

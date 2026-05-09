@@ -245,7 +245,7 @@ internal static class FirstOfdHelper
             TaxRate = (NDSRate)item.ndsRate,
             Unit = (UnitOfMeasure)item.quantityMeasure,
             Price = item.price,
-            Quantity = (ulong)Math.Round(item.quantity * 1000),
+            Quantity = item.quantity,
             Cost = item.sum,
         };
     }

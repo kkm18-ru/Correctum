@@ -267,7 +267,7 @@ file struct ReceiptResponse
         Name = item.Name,
         Cost = item.Sum,
         Price = item.Price,
-        Quantity = (ulong)item.Quantity * 1000,
+        Quantity = item.Quantity,
         Unit = item.Measure,
         TaxRate = NDSRate.FromFns(item.Vat),
         Type = item.Type ?? 0,
@@ -278,7 +278,7 @@ file struct ReceiptResponse
 file struct ItemResponse
 {
     [JsonPropertyName("quantity")]
-    public double Quantity { get; set; }
+    public decimal Quantity { get; set; }
 
     [JsonPropertyName("name")]
     public string Name { get; set; }

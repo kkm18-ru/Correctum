@@ -25,13 +25,13 @@ internal partial class Mock : ImporterBase<Mock, Mock.View>
             ulong sum = 0;
             for(var j = 0; j < pos.Length; j++)
             {
-                var quantity = faker.Random.UInt(1, 10);
+                var quantity = Math.Round(faker.Random.Decimal(1, 10), 3);
                 var price = faker.Random.ULong(100, 9999999);
                 pos[j] = new()
                 {
                     Name = faker.Commerce.ProductName(),
                     Price = price,
-                    Quantity = 1000 * quantity,
+                    Quantity = quantity,
                     Cost = price * quantity,
                     Unit = faker.Random.Enum<UnitOfMeasure>(),
                     CalcMethod = faker.Random.Enum<CalculationMethod>(),

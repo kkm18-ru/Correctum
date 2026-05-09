@@ -59,7 +59,7 @@ public class OfdRuJsonDeserializerTests :
     {
         public string Name { get; } = pos.Name!;
         public ulong Price { get; } = (ulong)pos.Price!.Value;
-        public decimal Quantity { get; } = pos.Quantity!.Value * 0.001M;
+        public decimal Quantity { get; } = pos.Quantity!.Value;
         public ulong Total { get; } = (ulong)pos.Cost!.Value;
         public int SubjectType { get; } = (int)pos.Type!.Value;
         public int CalculationMethod { get; } = (int)pos.CalcMethod!.Value;

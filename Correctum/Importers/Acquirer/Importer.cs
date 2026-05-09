@@ -40,7 +40,7 @@ internal sealed partial class Acquirer : ImporterBase<Acquirer, Acquirer.View>
                     {
                         Name = ItemName,
                         Price = sum,
-                        Quantity = 1000,
+                        Quantity = 1,
                         Cost = sum,
                         TaxRate = ItemVat,
                         Unit = UnitOfMeasure.Piece,
