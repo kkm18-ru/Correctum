@@ -45,6 +45,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Correctum.Core\Correctum.Core.csproj" />
+		<ProjectReference Include="..\Correctum.Fptr\Correctum.Fptr.csproj" />
 		<ProjectReference Include="..\Correctum.SourceGenerators\Correctum.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 

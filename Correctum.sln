@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Correctum.SourceGenerators"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Correctum.SourceGenerators.Tests", "tests\Correctum.SourceGenerators.Tests\Correctum.SourceGenerators.Tests.csproj", "{934EB112-F335-48AF-86F8-568A64BDA531}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Correctum.Fptr", "Correctum.Fptr\Correctum.Fptr.csproj", "{541786D1-933E-442B-8975-F5EAFBF15749}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,9 @@ Global
 		{934EB112-F335-48AF-86F8-568A64BDA531}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{934EB112-F335-48AF-86F8-568A64BDA531}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{934EB112-F335-48AF-86F8-568A64BDA531}.Release|Any CPU.Build.0 = Release|Any CPU
+		{541786D1-933E-442B-8975-F5EAFBF15749}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{541786D1-933E-442B-8975-F5EAFBF15749}.Debug|Any CPU.Build.0 = Debug|x86
+		{541786D1-933E-442B-8975-F5EAFBF15749}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

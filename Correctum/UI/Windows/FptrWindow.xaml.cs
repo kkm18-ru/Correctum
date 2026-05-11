@@ -9,6 +9,7 @@ using Correctum.UI.Windows.Types;
 using Correctum.Utils;
 using Correctum.Utils.Integrations;
 using Correctum.Core.ValueObjects;
+using Correctum.Fptr;
 
 namespace Correctum.UI.Windows;
 
@@ -46,20 +47,19 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     }
 
     private CancellationTokenSource _cancelSource = null!;
-    private readonly FptrHandle _handle;
+    private readonly Fptr.Fptr _handle;
     
     public FptrWindow()
     {
         Act = OperatorName = OperatorInn = SiteAddress = "";
-        _handle = new FptrHandle();
+        _handle = FptrLibrary.CreateHandle();
         InitializeComponent();
     }
 
     protected override void OnClosed(EventArgs e)
     {
-        if (_handle.IsInvalid) return;
-        _handle.CancelReceipt();
-        _handle.Disconnect();
+        _handle.Receipt.Cancel();
+        _handle.Cashbox.Disconnect();
         _handle.Dispose();
     }
 

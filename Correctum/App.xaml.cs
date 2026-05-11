@@ -1,4 +1,5 @@
-﻿using Correctum.Utils;
+﻿using Correctum.Fptr;
+using Correctum.Utils;
 using System.Reflection;
 using System.Windows;
 
@@ -10,6 +11,7 @@ public partial class App : Application
 
     public App()
     {
+        FptrLibrary.Load();
         Configuration.Load();
         Configuration.Current.Logging.Apply(false);
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
@@ -23,5 +25,11 @@ public partial class App : Application
 
         MainWindow = UI.Windows.MainWindow.Instance;
         MainWindow.Show();
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        FptrLibrary.Free();
+        base.OnExit(e);
     }
 }
