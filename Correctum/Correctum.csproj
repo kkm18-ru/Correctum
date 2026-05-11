@@ -49,10 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Assets\Fonts\JetBrainsMono.ttf">
-			<Link>assets\fonts\JetBrainsMono.ttf</Link>
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
+	  <Resource Include="Resources\**\*"/>
 	</ItemGroup>
 
 	<ItemGroup>

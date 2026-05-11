@@ -3,8 +3,6 @@ using Correctum.Core.Builders;
 using Correctum.Core.Enums;
 using Correctum.Core.Models;
 using Correctum.Core.ValueObjects;
-using Correctum.Utils;
-using System.ComponentModel;
 using System.Globalization;
 
 namespace Correctum.Deserializers;
@@ -87,7 +85,7 @@ public class PlatformOfdDeserializer : IDeserializer
             case 1199: builder.SetTaxRate(NDSRate.FromFns(byte.Parse(value))); break;
             case 1214: builder.SetCalcMethod((CalculationMethod)byte.Parse(value)); break;
             case 1212: builder.SetSubjectType((PositionType)byte.Parse(value)); break;
-            case 1023: builder.SetQuantity((ulong)Math.Round(double.Parse(value, CultureInfo.InvariantCulture) * 1000, 0)); break;
+            case 1023: builder.SetQuantity(decimal.Parse(value, CultureInfo.InvariantCulture)); break;
             case 1030: builder.SetName(value.ToString()); break;
 
             default: break;

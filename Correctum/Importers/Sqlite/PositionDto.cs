@@ -25,7 +25,7 @@ partial class Sqlite
             Unit = (UnitOfMeasure?)dto.Unit,
             CalcMethod = (CalculationMethod?)dto.CalcMethod,
             Price = (Currency?)dto.Price,
-            Quantity = (ulong?)dto.Quantity,
+            Quantity = dto.Quantity,
             TaxRate = NDSRate.FromFns(dto.Tax),
             Type = (PositionType?)dto.Type
         };
