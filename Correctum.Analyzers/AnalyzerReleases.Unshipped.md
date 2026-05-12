@@ -5,4 +5,6 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-CORR1000 | Attributes | Warning | MissingImportInfoAttributeAnalyzer
+CORR1000 | Attributes | Warning | MissingModuleInfoAttributeAnalyzer
+CORR1001 | Attributes | Warning | MissingModuleInfoAttributeAnalyzer
+CORR1002 | Attributes | Warning | MissingModuleInfoAttributeAnalyzer
