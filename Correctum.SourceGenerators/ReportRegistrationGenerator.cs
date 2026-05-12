@@ -1,34 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading;
-
-namespace Correctum.SourceGenerators;
+﻿namespace Correctum.SourceGenerators;
 
 [Generator(LanguageNames.CSharp)]
 public sealed class ReportRegistrationGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterPostInitializationOutput(ctx => ctx.AddSource("ReportInfoAttribute.g.cs", """
-            namespace Correctum.Attrubutes;
-
-            public sealed class ReportInfoAttribute : global::System.Attribute
-            {
-                public string DisplayName { get; }
-            
-                public ReportInfoAttribute(string displayName) 
-                {
-                    DisplayName = displayName;
-                }
-            }
-
-            """));
-
         var provider = context.SyntaxProvider
             .CreateSyntaxProvider(FilterSyntaxNode, Transform)
             .Where(t => t.@using)
@@ -61,7 +37,7 @@ public sealed class ReportRegistrationGenerator : IIncrementalGenerator
                 if (context.SemanticModel.GetSymbolInfo(attribute).Symbol is not IMethodSymbol attributeSymbol)
                     continue;
 
-                if (attributeSymbol.ContainingType.ToDisplayString() != "Correctum.Attrubutes.ReportInfoAttribute")
+                if (attributeSymbol.ContainingType.ToDisplayString() != "Correctum.Attributes.ReportInfoAttribute")
                     continue;
 
                 return (cds, true);
@@ -89,12 +65,12 @@ public sealed class ReportRegistrationGenerator : IIncrementalGenerator
                 continue;
             var typePath = $"{symbol.ContainingNamespace.ToDisplayString()}.{cds.Identifier.Text}";
             ImmutableArray<TypedConstant> attrArgs = symbol.GetAttributes()
-                .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "Correctum.Attrubutes.ReportInfoAttribute")?
+                .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "Correctum.Attributes.ReportInfoAttribute")?
                 .ConstructorArguments ?? ImmutableArray<TypedConstant>.Empty;
             var displayName = string.Empty;
             if (attrArgs.Length == 1) displayName = (string?)attrArgs[0].Value ?? string.Empty;
 
-            if (!symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Reports.IReport"))
+            if (!symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Abstractions.IReport"))
                 continue;
             builder.AppendLine(@$"            new ReportDescriptor(""{displayName}"", {typePath}.GenerateReport),");
         }

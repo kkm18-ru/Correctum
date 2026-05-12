@@ -10,7 +10,17 @@
         <vm:MainMenuViewModel/>
     </Menu.DataContext>
     <MenuItem Header="Файл">
-        <MenuItem Header="Импорт" ItemsSource="{x:Static u:ModuleRegistry.Importers}"/>
+        <MenuItem Header="Импорт" ItemsSource="{Binding Imports, Mode=OneTime}">
+            <MenuItem.ItemContainerStyle>
+                <Style TargetType="MenuItem">
+                    <Setter Property="Header" Value="{Binding DisplayName}" />
+                    <Setter Property="Command" Value="{Binding DataContext.OpenImportCommand, RelativeSource={RelativeSource AncestorType=Menu}}" />
+                    <Setter Property="CommandParameter" Value="{Binding}"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                </Style>
+            </MenuItem.ItemContainerStyle>
+        </MenuItem>
         <MenuItem Header="Экспорт..." ItemsSource="{Binding Exporters}" />
         <MenuItem Header="Вставить" Command="{Binding ShowPasteCommand}" />
         <Separator/>

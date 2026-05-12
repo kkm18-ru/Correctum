@@ -13,7 +13,7 @@ using Correctum.Core.ValueObjects;
 namespace Correctum.Utils.Integrations.Clients;
 
 /// <summary>Обертка API-клиента SabyOFD.</summary>
-internal sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
+public sealed class SabyClient() : ApiClient<SabyClient>(BaseHost)
 {
     private const string BaseHost = "https://api.sbis.ru";
 

@@ -1,6 +1,6 @@
-﻿using Correctum.Core.Enums;
+﻿using Correctum.Abstractions;
+using Correctum.Core.Enums;
 using Correctum.Core.Models;
-using Correctum.Deserializers;
 using Correctum.Tests.Utils.Extensions;
 using static Correctum.Tests.Utils.BogusHelper;
 

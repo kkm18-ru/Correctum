@@ -3,10 +3,11 @@ using Correctum.Core.Models;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors.Core;
+using Correctum.Abstractions;
 
 namespace Correctum.ViewModels.Exports;
 
-public abstract class BaseExportViewModel : BaseViewModel
+public abstract class BaseExportViewModel : BindableBase
 {
     public abstract string ExportName { get; }
     public bool IsBusy { get; set => SetField(ref field, value); }

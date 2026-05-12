@@ -16,14 +16,6 @@
 		<DebugType>none</DebugType>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<Compile Remove="Importers\Mock*.cs" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(Configuration)'=='Debug'">
-		<PackageReference Include="Bogus" Version="35.6.5" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<Code Include="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
@@ -44,6 +36,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Correctum.Analyzers\Correctum.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Correctum.Core\Correctum.Core.csproj" />
 		<ProjectReference Include="..\Correctum.SourceGenerators\Correctum.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>

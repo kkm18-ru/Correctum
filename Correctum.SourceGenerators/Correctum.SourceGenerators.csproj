@@ -11,6 +11,7 @@
 
         <RootNamespace>Correctum.SourceGenerators</RootNamespace>
         <PackageId>Correctum.SourceGenerators</PackageId>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,8 +19,16 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.3.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Using Include="Microsoft.CodeAnalysis" />
+      <Using Include="Microsoft.CodeAnalysis.CSharp.Syntax" />
+      <Using Include="Microsoft.CodeAnalysis.Text" />
+      <Using Include="System.Collections.Immutable" />
+      <Using Include="System.Text" />
     </ItemGroup>
 
 

@@ -14,11 +14,13 @@ namespace Correctum.Utils.Integrations.Clients;
 
 /// <summary>API-клиент ОФД Такском-Касса</summary>
 /// <seealso href="https://lk-ofd.taxcom.ru/ApiHelp/">Документация интегратора</seealso>
-public class TaxcomClient(string host = "https://api-lk-ofd.taxcom.ru") : ApiClient<TaxcomClient>(host: host)
+public class TaxcomClient(string host) : ApiClient<TaxcomClient>(host)
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     
     private const string SessionHeaderName = "Session-Token";
+
+    public TaxcomClient() : this("https://api-lk-ofd.taxcom.ru") { }
 
     #if DEBUG
     public static string IntegratorId

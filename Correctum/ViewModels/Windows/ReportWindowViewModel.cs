@@ -1,4 +1,5 @@
-﻿using Correctum.Utils;
+﻿using Correctum.Abstractions;
+using Correctum.Utils;
 using Microsoft.Win32;
 using NanoXLSX;
 using System.Data;
@@ -10,7 +11,7 @@ using System.Windows.Input;
 
 namespace Correctum.ViewModels.Windows;
 
-public sealed class ReportWindowViewModel : BaseViewModel
+public sealed class ReportWindowViewModel : BindableBase
 {
     public string ReportName { get; }
     public Func<DataTable> Func { get; }
