@@ -188,55 +188,55 @@ file struct DocumentResponse
 file struct ReceiptResponse
 {
     [JsonPropertyName("kktRegId")]
-    public string RegId { get; set; }
+    public string? RegId { get; set; }
     
     [JsonPropertyName("fiscalDriveNumber")]
-    public string StorageId { get; set; }
+    public string? StorageId { get; set; }
     
     [JsonPropertyName("shiftNumber")]
-    public uint SessionId { get; set; }
+    public uint? SessionId { get; set; }
     
     [JsonPropertyName("requestNumber")]
-    public uint DocInSession { get; set; }
+    public uint? DocInSession { get; set; }
 
     [JsonPropertyName("buyerPhoneOrAddress")]
-    public string Buyer { get; set; }
+    public string? Buyer { get; set; }
     
     [JsonPropertyName("dateTime")]
-    public long DateTimeUnix { get; set; }
+    public long? DateTimeUnix { get; set; }
     
     [JsonPropertyName("totalSum")]
-    public ulong Total { get; set; }
+    public ulong? Total { get; set; }
     
     [JsonPropertyName("cashTotalSum")]
-    public ulong Cash { get; set; }
+    public ulong? Cash { get; set; }
     
     [JsonPropertyName("operationType")]
-    public ReceiptType Operation { get; set; }
+    public ReceiptType? Operation { get; set; }
 
     [JsonPropertyName("items")]
-    public ItemResponse[] Items { get; set; }
+    public ItemResponse[]? Items { get; set; }
 
     [JsonPropertyName("fiscalSign")]
-    public uint Sign { get; set; }
+    public uint? Sign { get; set; }
     
     [JsonPropertyName("ecashTotalSum")]
-    public ulong Ecash { get; set; }
+    public ulong? Ecash { get; set; }
     
     [JsonPropertyName("prepaidSum")]
-    public ulong Prepaid { get; set; }
+    public ulong? Prepaid { get; set; }
     
     [JsonPropertyName("creditSum")]
-    public ulong Credit { get; set; }
+    public ulong? Credit { get; set; }
     
     [JsonPropertyName("taxationType")]
-    public TaxationSystems Taxation { get; set; }
+    public TaxationSystems? Taxation { get; set; }
     
     [JsonPropertyName("provisionSum")]
-    public ulong Provision { get; set; }
+    public ulong? Provision { get; set; }
     
     [JsonPropertyName("fiscalDocumentNumber")]
-    public uint Number { get; set; }
+    public uint? Number { get; set; }
 
     public Receipt ToReceipt() => new()
     {
@@ -244,7 +244,7 @@ file struct ReceiptResponse
         StorageId = StorageId,
         DocInSession = DocInSession,
         SessionId = SessionId,
-        Items = Items.Select(ToPosition).ToArray(),
+        Items = Items?.Select(ToPosition).ToArray(),
         Payment = new Payment
         {
             CashSum = Cash,
@@ -259,7 +259,7 @@ file struct ReceiptResponse
         TotalSum = Total,
         TaxationSystem = Taxation,
         DocNumber = Number,
-        Created = DateTimeOffset.FromUnixTimeSeconds(DateTimeUnix).DateTime
+        Created = DateTime.FromUnixTimeSeconds(DateTimeUnix)
     };
     
     private static Position ToPosition(ItemResponse item) => new()
@@ -267,27 +267,27 @@ file struct ReceiptResponse
         Name = item.Name,
         Cost = item.Sum,
         Price = item.Price,
-        Quantity = (ulong)item.Quantity * 1000,
+        Quantity = item.Quantity,
         Unit = item.Measure,
         TaxRate = NDSRate.FromFns(item.Vat),
-        Type = item.Type ?? 0,
-        CalcMethod = item.Payment ?? 0
+        Type = item.Type,
+        CalcMethod = item.Payment
     };
 }
 
 file struct ItemResponse
 {
     [JsonPropertyName("quantity")]
-    public double Quantity { get; set; }
+    public decimal? Quantity { get; set; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     
     [JsonPropertyName("sum")]
-    public ulong Sum { get; set; }
+    public ulong? Sum { get; set; }
     
     [JsonPropertyName("price")]
-    public ulong Price { get; set; }
+    public ulong? Price { get; set; }
     
     [JsonPropertyName("itemsQuantityMeasure")]
     public UnitOfMeasure? Measure { get; set; }

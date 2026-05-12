@@ -261,7 +261,7 @@ public class Fptr120ExportViewModelTests :
             CalcMethod = CalculationMethod.FullPayment,
             TaxRate = NDSRate.NoNDS,
             Price = 10010UL,
-            Quantity = 1234,
+            Quantity = 1.234m,
             Cost = 12300UL
         };
         using var stream = new MemoryStream();
@@ -368,7 +368,7 @@ public class Fptr120ExportViewModelTests :
             CalcMethod = CalculationMethod.FullPayment,
             TaxRate = NDSRate.NDS20,
             Price = 5000UL,
-            Quantity = 2000,
+            Quantity = 2,
             Cost = 10000UL
         };
         var position2 = new Position
@@ -379,7 +379,7 @@ public class Fptr120ExportViewModelTests :
             CalcMethod = CalculationMethod.FullPayment,
             TaxRate = NDSRate.NDS10,
             Price = 6500UL,
-            Quantity = 1000,
+            Quantity = 1,
             Cost = 6500UL
         };
         var receipt = new Receipt

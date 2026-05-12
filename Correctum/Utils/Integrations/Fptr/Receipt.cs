@@ -71,7 +71,7 @@ namespace Correctum.Utils.Integrations
         {
             SetString(65631, pos.Name);
             SetDouble(65632, (double)pos.Price);
-            SetDouble(65633, pos.Quantity.Value / 1000.0);
+            SetDouble(65633, (double)pos.Quantity.Value);
             SetDouble(65634, (double)pos.Cost);
             SetInteger(65569, (uint)pos.TaxRate);
             SetInteger(1212, (uint)pos.Type);

@@ -35,7 +35,7 @@ public sealed class OfdRuTlvDeserializerTests
 
     private readonly struct PositionDto(Position pos)
     {
-        [JsonPropertyName("1023")] public decimal Quantity { get; } = pos.Quantity!.Value * 0.001M;
+        [JsonPropertyName("1023")] public decimal Quantity { get; } = pos.Quantity!.Value;
         [JsonPropertyName("1030")] public string Name { get; } = pos.Name!;
         [JsonPropertyName("1043")] public ulong Cost { get; } = (ulong)pos.Cost!.Value;
         [JsonPropertyName("1079")] public ulong Price { get; } = (ulong)pos.Price!.Value;

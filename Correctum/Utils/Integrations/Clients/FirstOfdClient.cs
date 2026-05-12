@@ -176,46 +176,48 @@ internal readonly record struct FirstOfdTicketInformation(FirstOfdTicket ticket)
 
 [method: JsonConstructor]
 internal readonly record struct FirstOfdTicket(
-    FirstOfdTicketItem[] items,
-    int taxationType,
-    int requestNumber,
-    string transactionDate,
-    int fiscalDocumentNumber,
-    string kktRegId,
-    string fiscalDriveNumber,
-    int shiftNumber,
-    string fiscalId,
-    decimal totalSum,
-    decimal cashTotalSum,
-    decimal ecashTotalSum,
-    decimal prepaymentSum,
-    decimal postpaymentSum,
-    decimal counterSubmissionSum,
-    JsonElement options);
+    FirstOfdTicketItem[]? items,
+    int? taxationType,
+    int? requestNumber,
+    string? transactionDate,
+    int? fiscalDocumentNumber,
+    string? kktRegId,
+    string? fiscalDriveNumber,
+    int? shiftNumber,
+    string? fiscalId,
+    decimal? totalSum,
+    decimal? cashTotalSum,
+    decimal? ecashTotalSum,
+    decimal? prepaymentSum,
+    decimal? postpaymentSum,
+    decimal? counterSubmissionSum,
+    JsonElement? options);
 
 [method: JsonConstructor]
 internal readonly record struct FirstOfdTicketItem(
-    string name,
-    int calculationSubjectSign,
-    int calculationTypeSign,
-    int ndsRate,
-    int quantityMeasure,
-    long price,
-    decimal quantity,
-    long sum);
+    string? name,
+    int? calculationSubjectSign,
+    int? calculationTypeSign,
+    int? ndsRate,
+    int? quantityMeasure,
+    long? price,
+    decimal? quantity,
+    long? sum);
 
 internal static class FirstOfdHelper
 {
     public static Receipt ToReceipt(FirstOfdTicket ticket) => new()
     {
         Type =
-            ticket.options.TryGetProperty("operationType", out var operationElement) &&
+(            ticket.options?.TryGetProperty("operationType", out var operationElement) ?? false) &&
             operationElement.GetString() is { } strOperation ?
             (ReceiptType)int.Parse(strOperation) : null,
-        Created = DateTime.ParseExact(ticket.transactionDate, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
-        StorageId = ticket.fiscalDriveNumber.Trim(),
-        RegId = ticket.kktRegId.Trim(),
-        DocInSession = (uint)ticket.requestNumber,
+        Created = ticket.transactionDate is null ? null :
+            DateTime.ParseExact(ticket.transactionDate, 
+                "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
+        StorageId = ticket.fiscalDriveNumber?.Trim(),
+        RegId = ticket.kktRegId?.Trim(),
+        DocInSession = (uint?)ticket.requestNumber,
         TotalSum = ticket.totalSum,
         Payment = new Payment
         {
@@ -225,12 +227,12 @@ internal static class FirstOfdHelper
             CreditSum = ticket.postpaymentSum,
             ProvisionSum = ticket.counterSubmissionSum,
         },
-        DocNumber = (uint)ticket.fiscalDocumentNumber,
-        SessionId = (uint)ticket.shiftNumber,
-        Items = [..ticket.items.Select(ToPosition)],
+        DocNumber = (uint?)ticket.fiscalDocumentNumber,
+        SessionId = (uint?)ticket.shiftNumber,
+        Items = ticket.items?.Select(ToPosition).ToArray(),
         DocSign = FiscalSign.Parse(ticket.fiscalId),
-        TaxationSystem = (TaxationSystems)ticket.taxationType,
-        BuyerContact = ""
+        TaxationSystem = (TaxationSystems?)ticket.taxationType,
+        //todo BuyerContact
     };
 
     public static Position ToPosition(FirstOfdTicketItem item)
@@ -241,12 +243,12 @@ internal static class FirstOfdHelper
         return new()
         {
             Name = item.name,
-            Type = (PositionType)item.calculationSubjectSign,
-            CalcMethod = (CalculationMethod)item.calculationTypeSign,
-            TaxRate = (NDSRate)item.ndsRate,
-            Unit = (UnitOfMeasure)item.quantityMeasure,
+            Type = (PositionType?)item.calculationSubjectSign,
+            CalcMethod = (CalculationMethod?)item.calculationTypeSign,
+            TaxRate = (NDSRate?)item.ndsRate,
+            Unit = (UnitOfMeasure?)item.quantityMeasure,
             Price = item.price,
-            Quantity = (ulong)Math.Round(item.quantity * 1000),
+            Quantity = item.quantity,
             Cost = item.sum,
         };
     }

@@ -13,7 +13,7 @@
           VirtualizingPanel.IsVirtualizing="True" 
           VirtualizingPanel.IsVirtualizingWhenGrouping="True"
           VirtualizingPanel.VirtualizationMode="Recycling"
-          FontFamily="{StaticResource JetBrainsMono}"
+          FontFamily="{StaticResource FiraCode}"
           ItemsSource="{Binding Collection, Mode=OneWay}"
           DataContext="{Binding RelativeSource={RelativeSource Self}}"
           mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">

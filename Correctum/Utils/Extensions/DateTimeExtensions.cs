@@ -4,8 +4,18 @@
     {
         extension(DateTime dt)
         {
-            public long UnixTimestampMilliseconds => (dt.Ticks - 621355968000000000) / 10000;
-            public long UnixTimestampSeconds => (dt.Ticks - 621355968000000000) / 10000000;
+            public long UnixTimestampTicks => dt.Ticks - DateTime.UnixEpochTicks;
+            public long UnixTimestampMilliseconds => dt.UnixTimestampTicks / TimeSpan.TicksPerMillisecond;
+            public long UnixTimestampSeconds => dt.UnixTimestampTicks / TimeSpan.TicksPerSecond;
+        }
+
+        extension(DateTime)
+        {
+            public static long UnixEpochTicks => 621355968000000000;
+            public static DateTime UnixEpoch => new(DateTime.UnixEpochTicks, 0);
+            public static DateTime? FromUnixTimeSeconds(long? seconds) =>
+                seconds is null ? null : DateTime.UnixEpoch.AddSeconds(seconds.Value);
+
         }
 
         extension(DateOnly)

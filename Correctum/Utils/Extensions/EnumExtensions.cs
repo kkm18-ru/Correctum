@@ -35,7 +35,7 @@ internal static class EnumExtensions
             NDSRate.NDS107 => 10,
             NDSRate.NDS22 => 11,
             NDSRate.NDS122 => 12,
-            _ => 0
+            _ => throw new ArgumentOutOfRangeException(nameof(rate))
         };
     }
 
@@ -43,6 +43,7 @@ internal static class EnumExtensions
     {
         public static NDSRate? FromFns(long? fns) => fns switch
         {
+            null => null,
             1 => NDSRate.NDS20,
             2 => NDSRate.NDS10,
             3 => NDSRate.NDS120,
@@ -55,7 +56,7 @@ internal static class EnumExtensions
             10 => NDSRate.NDS107,
             11 => NDSRate.NDS22,
             12 => NDSRate.NDS122,
-            _ => null
+            _ => throw new ArgumentOutOfRangeException(nameof(fns))
         };
     }
 }

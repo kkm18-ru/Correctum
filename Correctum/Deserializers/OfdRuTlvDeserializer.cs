@@ -3,7 +3,6 @@ using Correctum.Attributes;
 using Correctum.Core.Enums;
 using Correctum.Core.Models;
 using Correctum.Core.ValueObjects;
-using Correctum.Utils;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -62,7 +61,7 @@ public partial class OfdRuTlvDeserializer : IDeserializer
         {
             Name = dto.Name,
             Price = dto.Price,
-            Quantity = dto.Quantity is null ? null : (ulong)Math.Round(dto.Quantity.Value * 1000),
+            Quantity = dto.Quantity,
             Cost = dto.Cost,
             Unit = (UnitOfMeasure?)dto.Unit,
             CalcMethod = (CalculationMethod?)dto.CalcMethod,

@@ -114,7 +114,7 @@ partial class Taxcom
                 var posObject = document["1059"]?[i]!;
                 Assert.That(position.Name, Is.EqualTo(posObject["1030"]?.Value<string>()));
                 Assert.That((ulong)position.Price, Is.EqualTo(posObject["1079"]?.Value<ulong>()));
-                Assert.That((position.Quantity/1000.0)?.ToString("F6", CultureInfo.InvariantCulture), 
+                Assert.That(position.Quantity?.ToString("F6", CultureInfo.InvariantCulture), 
                     Is.EqualTo(posObject["1023"]?.Value<string>()));
                 Assert.That((ulong)position.Cost, Is.EqualTo(posObject["1043"]?.Value<ulong>()));
                 Assert.That((int?)position.Unit, Is.EqualTo(posObject["2108"]?.Value<int>()));

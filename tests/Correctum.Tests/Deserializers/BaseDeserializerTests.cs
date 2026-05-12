@@ -58,7 +58,7 @@ public abstract class BaseDeserializerTests<T>
     {
         Name = SharedFaker.Commerce.ProductName(),
         Price = SharedFaker.Random.ULong(),
-        Quantity = SharedFaker.Random.ULong(),
+        Quantity = Math.Round(SharedFaker.Random.Decimal(1,5), 3),
         Cost = SharedFaker.Random.ULong(),
         CalcMethod = SharedFaker.Random.Enum<CalculationMethod>(),
         Unit = SharedFaker.Random.Enum<UnitOfMeasure>(),

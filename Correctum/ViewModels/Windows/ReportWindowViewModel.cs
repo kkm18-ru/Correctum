@@ -1,6 +1,7 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Utils;
 using Microsoft.Win32;
+using NanoXLSX;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -30,6 +31,11 @@ public sealed class ReportWindowViewModel : BindableBase
         RefreshCommand = new RelayCommand(Refresh, () => !IsBusy);
     }
 
+#if DEBUG
+    public ReportWindowViewModel() 
+        : this("Тест", () => new DataTable()) { }
+#endif
+
     private async void Refresh()
     {
         try
@@ -55,7 +61,7 @@ public sealed class ReportWindowViewModel : BindableBase
         {
             var saveDialog = new SaveFileDialog
             {
-                Filter = "CSV UTF-8 (Разделитель - точка с запятой)|*.csv",
+                Filter = "CSV UTF-8 (Разделитель - точка с запятой)|*.csv|Excel|*.xlsx",
                 OverwritePrompt = true,
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                 AddExtension = true,
@@ -65,9 +71,9 @@ public sealed class ReportWindowViewModel : BindableBase
             switch (saveDialog.FilterIndex)
             {
                 case 1: ExportAsCsv(saveDialog.FileName); break;
+                case 2: ExportAsXlsx(saveDialog.FileName); break;
                 default: throw new NotImplementedException();
             }
-            // todo add xlsx
             MessageBox.Show("Отчет успешно экспортирован!");
             Logger.Info("Отчет \"{ReportName}\" успешно экспортирован.", ReportName);
         }
@@ -109,5 +115,21 @@ public sealed class ReportWindowViewModel : BindableBase
             })));
 
         File.WriteAllText(filepath, builder.ToString(), Encoding.UTF8);
+    }
+
+    private void ExportAsXlsx(string filepath)
+    {
+        var workbook = new Workbook(filepath, "Отчет");
+        var sheet = workbook.CurrentWorksheet;
+        for (var i = 0; i < Table.Columns.Count; i++)
+            sheet.AddNextCell(Table.Columns[i].ColumnName);
+        for(var i = 0; i < Table.Rows.Count; i++)
+        {
+            sheet.GoToNextRow();
+            var row = Table.Rows[i];
+            foreach(var cell in row.ItemArray)
+                sheet.AddNextCell(cell);
+        }
+        workbook.Save();
     }
 }

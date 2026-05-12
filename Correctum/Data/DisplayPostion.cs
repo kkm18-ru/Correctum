@@ -27,7 +27,7 @@ namespace Correctum.Data
             Price = origin.Price?.ToString() ?? string.Empty;
             Cost = origin.Cost?.ToString() ?? string.Empty;
             var QuantityBuilder = new StringBuilder();
-            QuantityBuilder.Append(origin.Quantity is null ? "-" : (origin.Quantity * 0.001).ToString());
+            QuantityBuilder.Append(origin.Quantity.ToString() ?? "-");
             QuantityBuilder.Append(EnumLocales.PositionUnits.GetLocale(origin.Unit, string.Empty));
             Quantity = QuantityBuilder.ToString();
         }

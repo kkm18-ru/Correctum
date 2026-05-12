@@ -27,7 +27,7 @@ namespace Correctum.Core.Builders
         private NDSRate? _ndsRate;
         private UnitOfMeasure? _uom;
         private Currency? _price;
-        private ulong? _quantity;
+        private decimal? _quantity;
         private Currency? _cost;
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Correctum.Core.Builders
         /// </summary>
         /// <param name="value">Количество.</param>
         /// <returns>Текущий экземпляр построителя.</returns>
-        public PositionBuilder SetQuantity(ulong? value)
+        public PositionBuilder SetQuantity(decimal? value)
         {
             _quantity = value;
             return this;
