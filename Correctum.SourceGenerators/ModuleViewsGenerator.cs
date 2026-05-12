@@ -33,6 +33,7 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
         """;
 
     const string ViewTemplate = """
+        #pragma warning disable CS0162
         using System.Windows.Controls;
 
         namespace Correctum.Views.{0};
@@ -46,6 +47,7 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
                     global::System.Windows.Application.Current.FindResource("invertBoolConverter");
         {2}    }}
         }}
+        #pragma warning restore CS0162
         """;
 
     const string Separator = "        Children.Add(new global::System.Windows.Controls.Separator { Height = 5, Background = global::System.Windows.Media.Brushes.White });";
