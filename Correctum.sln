@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Correctum.SourceGenerators"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Correctum.SourceGenerators.Tests", "tests\Correctum.SourceGenerators.Tests\Correctum.SourceGenerators.Tests.csproj", "{934EB112-F335-48AF-86F8-568A64BDA531}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Roslyn", "Roslyn", "{EAF38EA9-5066-422C-BCB8-EA8EE90CBDF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Correctum.Analyzers", "Correctum.Analyzers\Correctum.Analyzers.csproj", "{5CA8975D-83AA-42C6-BAB5-B9C1C3933992}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +56,10 @@ Global
 		{934EB112-F335-48AF-86F8-568A64BDA531}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{934EB112-F335-48AF-86F8-568A64BDA531}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{934EB112-F335-48AF-86F8-568A64BDA531}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CA8975D-83AA-42C6-BAB5-B9C1C3933992}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CA8975D-83AA-42C6-BAB5-B9C1C3933992}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CA8975D-83AA-42C6-BAB5-B9C1C3933992}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CA8975D-83AA-42C6-BAB5-B9C1C3933992}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,7 +67,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6D8FF1F9-32BF-4493-BE63-7982DB969380} = {E02BF953-3E83-4FC7-AA62-E8BE76C4BADE}
 		{4ADDAAF9-180D-4ED6-96A9-CB410771EFC5} = {E02BF953-3E83-4FC7-AA62-E8BE76C4BADE}
+		{78E961DB-4015-4A85-8D6F-79CD02EA2426} = {EAF38EA9-5066-422C-BCB8-EA8EE90CBDF3}
 		{934EB112-F335-48AF-86F8-568A64BDA531} = {E02BF953-3E83-4FC7-AA62-E8BE76C4BADE}
+		{5CA8975D-83AA-42C6-BAB5-B9C1C3933992} = {EAF38EA9-5066-422C-BCB8-EA8EE90CBDF3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {18C1677A-FEAA-4658-838D-195341D4AD29}
