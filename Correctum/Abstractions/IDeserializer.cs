@@ -1,6 +1,6 @@
 ﻿using Correctum.Core.Models;
 
-namespace Correctum.Deserializers;
+namespace Correctum.Abstractions;
 
 public interface IDeserializer
 {

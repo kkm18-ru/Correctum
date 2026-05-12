@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Correctum.Reports;
+namespace Correctum.Abstractions;
 
 public interface IReport
 {

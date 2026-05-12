@@ -70,7 +70,7 @@ public sealed class DeserializerRegistrationGenerator : IIncrementalGenerator
             var displayName = string.Empty;
             if (attrArgs.Length == 1) displayName = (string?)attrArgs[0].Value ?? string.Empty;
 
-            if (!symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Deserializers.IDeserializer"))
+            if (!symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Abstractions.IDeserializer"))
                 continue;
             builder.AppendLine(@$"            new DeserializerDescriptor(""{displayName}"", {typePath}.Deserialize),");
         }

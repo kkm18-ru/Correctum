@@ -70,7 +70,7 @@ public sealed class ReportRegistrationGenerator : IIncrementalGenerator
             var displayName = string.Empty;
             if (attrArgs.Length == 1) displayName = (string?)attrArgs[0].Value ?? string.Empty;
 
-            if (!symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Reports.IReport"))
+            if (!symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Abstractions.IReport"))
                 continue;
             builder.AppendLine(@$"            new ReportDescriptor(""{displayName}"", {typePath}.GenerateReport),");
         }
