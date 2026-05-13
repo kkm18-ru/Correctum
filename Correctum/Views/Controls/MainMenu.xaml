@@ -22,7 +22,7 @@
             </MenuItem.ItemContainerStyle>
         </MenuItem>
         <MenuItem Header="Экспорт..." ItemsSource="{Binding Exporters}" />
-        <MenuItem Header="Вставить" Command="{Binding ShowPasteCommand}" />
+        <MenuItem Header="Вставить" Command="{Binding ShowPasteCommand}" InputGestureText="Ctrl + V" />
         <Separator/>
         <MenuItem Header="Провести чеки" Command="{Binding ShowFptrCommand}"/>
         <Separator/>
