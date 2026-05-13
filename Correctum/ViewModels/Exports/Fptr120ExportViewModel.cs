@@ -25,7 +25,7 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
             await writer.WriteLineAsync("Fptr.openReceipt();");
             await PositionsAsync(writer, receipt.Items);
             await TotalSumAsync(writer, receipt.TotalSum.Value);
-            await PaymentAsync(writer, receipt.Payment.Value);
+            await PaymentAsync(writer, receipt.Payment);
             await writer.WriteLineAsync("Fptr.closeReceipt();");
             await writer.WriteLineAsync();
         }
