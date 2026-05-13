@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.11.0](https://github.com/kkm18-ru/Correctum/compare/v0.10.2...v0.11.0) (2026-05-13)
+
+
+### ✨ Нововведения
+
+* **Отчеты:** Добавлен экспорт отчета в XLSX-таблицу ([#85](https://github.com/kkm18-ru/Correctum/issues/85)) ([62f8cf1](https://github.com/kkm18-ru/Correctum/commit/62f8cf1fc9dcbf4095f7c1302e1af905ba9ac782))
+
+
+### 🐞 Исправления
+
+* Добавлена обработка отсутствия реквизитов в импортерах ([25c1ff7](https://github.com/kkm18-ru/Correctum/commit/25c1ff7c7cd32e8a6f0ffc93125c0ca9ac06c720))
+* Добавлена подсказка сочитания клавиш для вставки чека ([4afe55a](https://github.com/kkm18-ru/Correctum/commit/4afe55a8e0aeecf395e372e2c7a440a9abeebabf))
+* **Модели данных:** Удалены лишние nullable ([420a88b](https://github.com/kkm18-ru/Correctum/commit/420a88bc60fc69c18c4a66ed75770f4e53fd331f))
+* Подкорректирована работа EnumLocales.GetLocale ([8ae3dff](https://github.com/kkm18-ru/Correctum/commit/8ae3dffc421ee5205bff91e351c23a33ea5c6b80))
+* **Ресурсы:** Шрифт перенесен в ресурсы ([73b3ed2](https://github.com/kkm18-ru/Correctum/commit/73b3ed2de67555f7da193dec34fce7f5d78a3e90))
+* Тип  данных количество предмета расчета заменен на decimal ([922ce85](https://github.com/kkm18-ru/Correctum/commit/922ce85f917721b36381a324cfc3a78cb835ac9c))
+
+
+### ⏪ Отмена изменений
+
+* Удален mock-импорт ([90de07d](https://github.com/kkm18-ru/Correctum/commit/90de07de7083e204c10ec901885f77ffbf04f12d))
+* Удален импорт из эквайринга ([9dfcc0c](https://github.com/kkm18-ru/Correctum/commit/9dfcc0c8997acb6daaf04f39d6847ecb6b02de8e))
+
 ## [0.10.2](https://github.com/kkm18-ru/Correctum/compare/v0.10.1...v0.10.2) (2026-05-06)
 
 
