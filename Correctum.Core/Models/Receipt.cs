@@ -47,11 +47,11 @@ namespace Correctum.Core.Models
         /// <summary>
         /// Множество предметов расчета
         /// </summary>
-        public Position[]? Items { get; init; }
+        public Position[] Items { get; init; } = [];
         /// <summary>
         /// Информация об оплате чека
         /// </summary>
-        public Payment? Payment { get; init; }
+        public Payment Payment { get; init; }
         /// <summary>
         /// Итоговая сумма расчета
         /// </summary>

@@ -6,4 +6,5 @@
     <c:InvertBooleanConverter x:Key="invertBoolConverter"/>
     <c:MultiBooleanConverter x:Key="andBoolConverter"/>
     <c:TextColorConverter x:Key="textColorConverter"/>
+    <c:NullableIndicatorConverter x:Key="nullIndicator"/>
 </ResourceDictionary>

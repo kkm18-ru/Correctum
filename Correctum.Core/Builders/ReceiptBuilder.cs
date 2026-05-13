@@ -63,11 +63,11 @@ namespace Correctum.Core.Builders
         public ReceiptBuilder(Receipt receipt)
         {
             _positions = [..receipt.Items?.Select(i => new PositionBuilder(i)) ?? []];
-            _cash = receipt.Payment is null ? null : (ulong?)receipt.Payment.Value.CashSum;
-            _noncash = receipt.Payment is null ? null : (ulong?)receipt.Payment.Value.NonCashSum;
-            _advance = receipt.Payment is null ? null : (ulong?)receipt.Payment.Value.AdvanceSum;
-            _credit = receipt.Payment is null ? null : (ulong?)receipt.Payment.Value.CreditSum;
-            _provision = receipt.Payment is null ? null : (ulong?)receipt.Payment.Value.ProvisionSum;
+            _cash = (ulong?)receipt.Payment.CashSum;
+            _noncash = (ulong?)receipt.Payment.NonCashSum;
+            _advance = (ulong?)receipt.Payment.AdvanceSum;
+            _credit = (ulong?)receipt.Payment.CreditSum;
+            _provision = (ulong?)receipt.Payment.ProvisionSum;
             _buyer = receipt.BuyerContact;
             _createdAt = receipt.Created;
             _docShift = receipt.DocInSession;

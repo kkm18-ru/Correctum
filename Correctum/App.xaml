@@ -1,12 +1,14 @@
 ﻿<Application x:Class="Correctum.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:rd="clr-namespace:Correctum.ResourceDictionaries"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="Views\Windows\MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/ResourceDictionaries/Converters.xaml"/>
                 <ResourceDictionary Source="/ResourceDictionaries/Fonts.xaml"/>
+                <ResourceDictionary Source="/ResourceDictionaries/Style.xaml"/>
                 <rd:ModuleViews/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

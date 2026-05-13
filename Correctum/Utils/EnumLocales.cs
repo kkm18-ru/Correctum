@@ -117,8 +117,8 @@ public static class EnumLocales
         new(CalculationMethod.Postpaid, "Оплата кредита"),
     ];
 
-    public static string GetLocale<TEnum>(this ReadOnlyCollection<EnumLocale<TEnum>> collection, TEnum? value,
-        string defaultLocale = "???") where TEnum : struct, Enum => value is null
-        ? string.Empty
+    public static string? GetLocale<TEnum>(this ReadOnlyCollection<EnumLocale<TEnum>> collection, TEnum? value,
+        string? defaultLocale = "???") where TEnum : struct, Enum => value is null
+        ? defaultLocale
         : collection.FirstOrDefault(i => i.Value.Equals(value))?.Locale ?? defaultLocale;
 }
