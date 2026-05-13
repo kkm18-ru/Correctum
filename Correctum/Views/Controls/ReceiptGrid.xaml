@@ -1,0 +1,163 @@
+﻿<DataGrid x:Class="Correctum.Views.Controls.ReceiptGrid"
+          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+          xmlns:local="clr-namespace:Correctum.Views.Controls"
+          xmlns:m="clr-namespace:Correctum.Models"
+          mc:Ignorable="d" Style="{StaticResource ReadOnlyDataGrid}"
+          d:DataContext="{d:DesignInstance Type={x:Type m:ReceiptView}, IsDesignTimeCreatable=True}"
+          SelectionMode="Single"
+          d:DesignHeight="450" d:DesignWidth="800">
+    <DataGrid.Columns>
+        <DataGridTemplateColumn Header="Регистрационный номер ККТ">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding RegId, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding RegId}" HorizontalAlignment="Center"/>
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Заводской номер ФН">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding StorageId, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding StorageId}" HorizontalAlignment="Center"/>
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Номер ФН">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding DocNumber, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding DocNumber}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Номер смены">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding SessionId, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding SessionId}" HorizontalAlignment="Center"/>
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Номер чека за смену">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding DocInSession, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding DocInSession}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Фискальный признак">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding DocSign, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding DocSign}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Дата проведения расчета">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding Created, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding Created}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Операция чека">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding Type, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding Type}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Система налогооблажения">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding TaxationSystem, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding TaxationSystem}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Контакт покупателя">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding BuyerContact, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                    <TextBlock Text="{Binding BuyerContact}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Наличная оплата">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding CashSum, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding CashSum}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Безналичная оплата">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding NonCashSum, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding NonCashSum}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Сумма аванса">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding AdvanceSum, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding AdvanceSum}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Сумма оплаты кредита">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding CreditSum, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding CreditSum}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Встречное предоставление">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding ProvisionSum, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding ProvisionSum}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Итог">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel Background="{Binding TotalSum, Converter={StaticResource nullIndicator}, Mode=OneWay}">
+                        <TextBlock Text="{Binding TotalSum}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+    </DataGrid.Columns>
+    <DataGrid.RowDetailsTemplate>
+        <DataTemplate>
+            <local:PositionGrid ItemsSource="{Binding Items}"/>
+        </DataTemplate>
+    </DataGrid.RowDetailsTemplate>
+</DataGrid>
