@@ -7,6 +7,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/ResourceDictionaries/Converters.xaml"/>
                 <ResourceDictionary Source="/ResourceDictionaries/Fonts.xaml"/>
+                <ResourceDictionary Source="/ResourceDictionaries/Style.xaml"/>
                 <rd:ModuleViews/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
