@@ -23,7 +23,4 @@
         <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
         <Setter Property="FontFamily" Value="{StaticResource FiraCode}"/>
     </Style>
-    <Style TargetType="DataGrid" x:Key="PositionDataGrid" BasedOn="{StaticResource ReadOnlyDataGrid}">
-        <Setter Property="IsEnabled" Value="False"/>
-    </Style>
 </ResourceDictionary>
