@@ -1,6 +1,6 @@
 ﻿using Correctum.Abstractions;
-using Correctum.UI.Controls;
 using Correctum.ViewModels.Windows;
+using System.Windows;
 
 namespace Correctum.Views.Windows;
 
@@ -14,7 +14,7 @@ public partial class ImportWindow
         vm.Imported += () =>
         {
             Close();
-            ReceiptPanel.UpdateReceiptList();
+            ((MainWindowViewModel)Application.Current.MainWindow.DataContext).UpdatePanel();
         };
         InitializeComponent();
     }

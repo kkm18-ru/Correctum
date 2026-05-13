@@ -20,8 +20,5 @@ public partial class App : Application
         Logger.Info("Запуск {Name} {Version}", info.Name, info.Version!.ToString(3));
 
         InitializeComponent();
-
-        MainWindow = UI.Windows.MainWindow.Instance;
-        MainWindow.Show();
     }
 }

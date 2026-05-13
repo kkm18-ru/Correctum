@@ -1,6 +1,5 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Core.Models;
-using Correctum.UI.Controls;
 using Correctum.Utils;
 using System.Collections.Immutable;
 using System.Windows;
@@ -31,7 +30,7 @@ public sealed partial class PasteWindowViewModel : BindableBase
             var deserializer = (DeserializerDescriptor)CurrentDeserializer!;
             var receipt = deserializer.Deserialize.Invoke(Text);
             Workspace.Instance.Receipts.Add(receipt);
-            ReceiptPanel.UpdateReceiptList();
+            ((MainWindowViewModel)Application.Current.MainWindow.DataContext).UpdatePanel();
             OnPasted?.Invoke();
         }
         catch(Exception e)
