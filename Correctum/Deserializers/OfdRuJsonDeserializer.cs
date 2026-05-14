@@ -74,15 +74,12 @@ public partial class OfdRuJsonDeserializer : IDeserializer
 
         public static Receipt ToReceipt(ReceiptDto dto) => new()
         {
-            Items = dto.Items is null ? null : [..dto.Items.Select(ToPosition)],
-            Payment = new()
-            {
-                CashSum = dto.Cash,
-                NonCashSum = dto.NonCash,
-                AdvanceSum = dto.Advance,
-                CreditSum = dto.Credit,
-                ProvisionSum = dto.Provision,
-            },
+            Items = dto.Items is null ? [] : [..dto.Items.Select(ToPosition)],
+            CashSum = dto.Cash,
+            NonCashSum = dto.NonCash,
+            AdvanceSum = dto.Advance,
+            CreditSum = dto.Credit,
+            ProvisionSum = dto.Provision,
             TotalSum = dto.Total,
             DocSign = dto.Sign is null ? null : FiscalSign.Parse(dto.Sign),
             RegId = dto.KktReg,

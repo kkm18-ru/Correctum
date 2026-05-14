@@ -25,7 +25,7 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
             await writer.WriteLineAsync("Fptr.openReceipt();");
             await PositionsAsync(writer, receipt.Items);
             await TotalSumAsync(writer, receipt.TotalSum.Value);
-            await PaymentAsync(writer, receipt.Payment);
+            await PaymentAsync(writer, receipt);
             await writer.WriteLineAsync("Fptr.closeReceipt();");
             await writer.WriteLineAsync();
         }
@@ -106,7 +106,7 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         await writer.WriteLineAsync("Fptr.receiptTotal();");
     }
 
-    internal static async Task PaymentAsync(StreamWriter writer, Payment info)
+    internal static async Task PaymentAsync(StreamWriter writer, Receipt info)
     {
         await PaymentAsync(writer, "LIBFPTR_PT_CASH", info.CashSum);
         await PaymentAsync(writer, "LIBFPTR_PT_ELECTRONICALLY", info.NonCashSum);
@@ -117,7 +117,7 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
 
     private static async Task PaymentAsync(StreamWriter writer, string type, Currency? sum)
     {
-        if (sum is null || (ulong)sum == 0) return;
+        if (sum is null || (ulong)sum.Value == 0) return;
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.{type});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, {sum});");
         await writer.WriteLineAsync("Fptr.payment();");

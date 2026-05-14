@@ -244,15 +244,12 @@ file struct ReceiptResponse
         StorageId = StorageId,
         DocInSession = DocInSession,
         SessionId = SessionId,
-        Items = Items?.Select(ToPosition).ToArray(),
-        Payment = new Payment
-        {
-            CashSum = Cash,
-            NonCashSum = Ecash,
-            AdvanceSum = Prepaid,
-            CreditSum = Credit,
-            ProvisionSum = Provision
-        },
+        Items = Items?.Select(ToPosition).ToArray() ?? [],
+        CashSum = Cash,
+        NonCashSum = Ecash,
+        AdvanceSum = Prepaid,
+        CreditSum = Credit,
+        ProvisionSum = Provision,
         Type = Operation,
         BuyerContact = Buyer,
         DocSign = Sign,

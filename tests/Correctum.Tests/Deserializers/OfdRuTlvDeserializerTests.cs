@@ -17,7 +17,7 @@ public sealed class OfdRuTlvDeserializerTests
         [JsonPropertyName("1008")] public string BuyerContact { get; } = doc.BuyerContact!;
         [JsonPropertyName("1012")] public string DateTime { get; } = doc.Created!.Value.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss");
         [JsonPropertyName("1020")] public ulong Total { get; } = (ulong)doc.TotalSum!.Value;
-        [JsonPropertyName("1031")] public ulong Cash { get; } = (ulong)doc.Payment!.Value.CashSum!.Value;
+        [JsonPropertyName("1031")] public ulong Cash { get; } = (ulong)doc.CashSum!.Value;
         [JsonPropertyName("1037")] public string KktReg { get; } = doc.RegId!;
         [JsonPropertyName("1038")] public uint Session { get; } = doc.SessionId!.Value;
         [JsonPropertyName("1040")] public uint Doc { get; } = doc.DocNumber!.Value;
@@ -27,10 +27,10 @@ public sealed class OfdRuTlvDeserializerTests
         [JsonPropertyName("1055")] public int Taxation { get; } = (int)doc.TaxationSystem!.Value;
         [JsonPropertyName("1059")] public PositionDto[] Items { get; } = [.. doc.Items!.Select(p => new PositionDto(p))];
         [JsonPropertyName("1077")] public string Sign { get; } = FiscalHelper.ToStringSign(uint.Parse(doc.DocSign!.Value.ToString()));
-        [JsonPropertyName("1081")] public ulong NonCash { get; } = (ulong)doc.Payment!.Value.NonCashSum!.Value;
-        [JsonPropertyName("1215")] public ulong Advance { get; } = (ulong)doc.Payment!.Value.AdvanceSum!.Value;
-        [JsonPropertyName("1216")] public ulong Credit { get; } = (ulong)doc.Payment!.Value.CreditSum!.Value;
-        [JsonPropertyName("1217")] public ulong Provision { get; } = (ulong)doc.Payment!.Value.ProvisionSum!.Value;
+        [JsonPropertyName("1081")] public ulong NonCash { get; } = (ulong)doc.NonCashSum!.Value;
+        [JsonPropertyName("1215")] public ulong Advance { get; } = (ulong)doc.AdvanceSum!.Value;
+        [JsonPropertyName("1216")] public ulong Credit { get; } = (ulong)doc.CreditSum!.Value;
+        [JsonPropertyName("1217")] public ulong Provision { get; } = (ulong)doc.ProvisionSum!.Value;
     }
 
     private readonly struct PositionDto(Position pos)

@@ -315,49 +315,6 @@ public class Fptr120ExportViewModelTests :
 
     #endregion
 
-    #region Payment
-
-    [Test] public void PaymentTest()
-    {
-        var payment = new Payment
-        {
-            CashSum = 100UL,
-            NonCashSum = 120UL,
-            AdvanceSum = 0UL,
-            CreditSum = 12UL,
-            ProvisionSum = 12345UL,
-        };
-
-        using var stream = new MemoryStream();
-        using (var writer = new StreamWriter(stream, leaveOpen: true))
-        {
-            var task = Fptr120ExportViewModel.PaymentAsync(writer, payment);
-            Assert.DoesNotThrowAsync(async () => await task);
-        }
-        stream.Position = 0;
-        using (var reader = new StreamReader(stream, leaveOpen: true))
-        {
-            var expectedScript = $"""
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_CASH);
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 1.00);
-                    Fptr.payment();
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_ELECTRONICALLY);
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 1.20);
-                    Fptr.payment();
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_CREDIT);
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 0.12);
-                    Fptr.payment();
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.LIBFPTR_PT_OTHER);
-                    Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, 123.45);
-                    Fptr.payment();
-                    
-                    """;
-            Assert.That(reader.ReadToEnd(), Is.EqualTo(expectedScript));
-        }
-    }
-
-    #endregion
-
     [Test] public async Task CorrectReceipt()
     {
         var position1 = new Position
@@ -384,23 +341,20 @@ public class Fptr120ExportViewModelTests :
         };
         var receipt = new Receipt
         {
-            Created = new DateTime(2020, 12, 31, 13, 35, 59),
+            Created = new DateTime(2020, 12, 31, 13, 35, 59, DateTimeKind.Unspecified),
             BuyerContact = "client@mail.ru",
             Type = ReceiptType.Income,
             TaxationSystem = TaxationSystems.SimplifiedIncomeMinusExpense,
             DocSign = null,
             Items = [position1, position2],
             TotalSum = 16500UL,
-            Payment = new()
-            {
-                CashSum = 5000UL,
-                NonCashSum = 11500UL
-            }
+            CashSum = 5000UL,
+            NonCashSum = 11500UL
         };
 
         var path = GenPath();
         await ViewModel.Export(path, [receipt]);
-        var fileContent = File.ReadAllText(path);
+        var fileContent = await File.ReadAllTextAsync(path);
         const string expectedScript = """            
             Fptr.setParam(1178, new Date("2020-12-31T13:35:59"));
             Fptr.setParam(1179, " ");

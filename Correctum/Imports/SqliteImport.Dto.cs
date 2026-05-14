@@ -43,14 +43,11 @@ partial class SqliteImport
                 DocInSession = DocInSession,
                 DocSign = Sign is null ? null : FiscalSign.Parse(Sign),
                 TotalSum = (Currency?)Total,
-                Payment = new Payment
-                {
-                    CashSum = (Currency?)Cash,
-                    NonCashSum = (Currency?)NonCash,
-                    AdvanceSum = (Currency?)Advance,
-                    CreditSum = (Currency?)Credit,
-                    ProvisionSum = (Currency?)Provision,
-                },
+                CashSum = (Currency?)Cash,
+                NonCashSum = (Currency?)NonCash,
+                AdvanceSum = (Currency?)Advance,
+                CreditSum = (Currency?)Credit,
+                ProvisionSum = (Currency?)Provision,
                 Type = (ReceiptType?)Type,
                 BuyerContact = Buyer,
                 TaxationSystem = (TaxationSystems?)Taxation

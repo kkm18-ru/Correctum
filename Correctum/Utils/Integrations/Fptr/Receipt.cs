@@ -95,12 +95,12 @@ namespace Correctum.Utils.Integrations
             return payment(handle) == 0;
         }
 
-        public bool Payment(Payment pay) =>
-            Payment(0, pay.CashSum.Value) &&
-            Payment(1, pay.NonCashSum.Value) &&
-            Payment(2, pay.AdvanceSum.Value) &&
-            Payment(3, pay.CreditSum.Value) &&
-            Payment(4, pay.ProvisionSum.Value);
+        public bool Payment(Receipt receipt) =>
+            Payment(0, receipt.CashSum.Value) &&
+            Payment(1, receipt.NonCashSum.Value) &&
+            Payment(2, receipt.AdvanceSum.Value) &&
+            Payment(3, receipt.CreditSum.Value) &&
+            Payment(4, receipt.ProvisionSum.Value);
 
         public bool CloseReceipt() => closeReceipt(handle) == 0;
 

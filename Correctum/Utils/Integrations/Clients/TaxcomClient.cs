@@ -229,10 +229,14 @@ file readonly struct TaxcomDocumentResponse
             DocNumber = Details["1040"]?.GetValue<uint>(),
             SessionId = Details["1038"]?.GetValue<uint>(),
             DocInSession = Details["1042"]?.GetValue<uint>(),
-            Items = Details["1059"]?.AsArray().Select(ParsePosition).Where(p => p.HasValue).Cast<Position>().ToArray(),
+            Items = Details["1059"]?.AsArray().Select(ParsePosition).Where(p => p.HasValue).Cast<Position>().ToArray() ?? [],
             Type = (ReceiptType?)Details["1054"]?.GetValue<int>(),
             DocSign = FiscalSign.TryParse(Details["1077"]?.GetValue<string>(), out var sign) ? sign : null,
-            Payment = ParsePayment(),
+            CashSum = Details["1031"]?.GetValue<ulong>(),
+            NonCashSum = Details["1081"]?.GetValue<ulong>(),
+            AdvanceSum = Details["1215"]?.GetValue<ulong>(),
+            CreditSum = Details["1216"]?.GetValue<ulong>(),
+            ProvisionSum = Details["1217"]?.GetValue<ulong>(),
             TotalSum = Details["1020"]?.GetValue<ulong>(),
             TaxationSystem = (TaxationSystems?)Details["1055"]?.GetValue<int>(),
             Created = dt
@@ -255,15 +259,6 @@ file readonly struct TaxcomDocumentResponse
             Unit = (UnitOfMeasure?)node["2108"]?.GetValue<int>()
         };
     }
-
-    private Payment ParsePayment() => new()
-    {
-        CashSum = Details["1031"]?.GetValue<ulong>(),
-        NonCashSum = Details["1081"]?.GetValue<ulong>(),
-        AdvanceSum = Details["1215"]?.GetValue<ulong>(),
-        CreditSum = Details["1216"]?.GetValue<ulong>(),
-        ProvisionSum = Details["1217"]?.GetValue<ulong>(),
-    };
 }
 
 file readonly struct TaxcomAuthRequest(string login, string password, string? agreement = null)
