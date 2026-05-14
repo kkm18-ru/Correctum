@@ -47,10 +47,17 @@ namespace Correctum.Core.Builders
         }
 
         /// <summary>
-        /// Инициализирует построитель значениями существующей позиции.
+        /// Инициализирует построитель позиции, связанный с построителем чека.
+        /// </summary>
+        /// <param name="receiptBuilder">Построитель чека, к которому будет добавлена позиция.</param>
+        internal PositionBuilder(ReceiptBuilder receiptBuilder) : this(default, receiptBuilder) { }
+
+        /// <summary>
+        /// Инициализирует построитель значениями существующей позиции, связанный с построителем чека.
         /// </summary>
         /// <param name="position">Исходная позиция чека.</param>
-        public PositionBuilder(Position position)
+        /// <param name="receiptBuilder">Построитель чека, к которому будет добавлена позиция.</param>
+        internal PositionBuilder(Position position, ReceiptBuilder receiptBuilder)
         {
             _name = position.Name;
             _type = position.Type;
@@ -60,23 +67,6 @@ namespace Correctum.Core.Builders
             _price = position.Price;
             _quantity = position.Quantity;
             _cost = position.Cost;
-            Receipt = null;
-        }
-
-        /// <summary>
-        /// Инициализирует построитель позиции, связанный с построителем чека.
-        /// </summary>
-        /// <param name="receiptBuilder">Построитель чека, к которому будет добавлена позиция.</param>
-        internal PositionBuilder(ReceiptBuilder receiptBuilder)
-        {
-            _name = null;
-            _type = null;
-            _calcMethod = null;
-            _ndsRate = null;
-            _uom = null;
-            _price = null;
-            _quantity = null;
-            _cost = null;
             Receipt = receiptBuilder;
         }
 

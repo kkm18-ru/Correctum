@@ -62,7 +62,7 @@ namespace Correctum.Core.Builders
         /// <param name="receipt">Исходный чек.</param>
         public ReceiptBuilder(Receipt receipt)
         {
-            _positions = [..receipt.Items?.Select(i => new PositionBuilder(i)) ?? []];
+            _positions = [..receipt.Items?.Select(i => new PositionBuilder(i, this)) ?? []];
             _cash = (ulong?)receipt.CashSum;
             _noncash = (ulong?)receipt.NonCashSum;
             _advance = (ulong?)receipt.AdvanceSum;
@@ -94,6 +94,17 @@ namespace Correctum.Core.Builders
         public PositionBuilder AddItem()
         {
             var builder = new PositionBuilder(this);
+            _positions.Add(builder);
+            return builder;
+        }
+
+        /// <summary>
+        /// Добавляет новую позицию в чек и возвращает её построитель.
+        /// </summary>
+        /// <returns>Построитель добавленной позиции.</returns>
+        public PositionBuilder AppendItem(Position pos)
+        {
+            var builder = new PositionBuilder(pos, this);
             _positions.Add(builder);
             return builder;
         }
@@ -287,11 +298,11 @@ namespace Correctum.Core.Builders
         public Receipt Build() => new()
         {
             Items = [.. _positions.Select(b => b.Build())],
-                CashSum = _cash,
-                NonCashSum = _noncash,
-                AdvanceSum = _advance,
-                CreditSum = _credit,
-                ProvisionSum = _provision,
+            CashSum = _cash,
+            NonCashSum = _noncash,
+            AdvanceSum = _advance,
+            CreditSum = _credit,
+            ProvisionSum = _provision,
             BuyerContact = _buyer,
             Created = _createdAt,
             DocInSession = _docShift,
