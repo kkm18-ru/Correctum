@@ -130,7 +130,7 @@ internal readonly struct AstralOfdReceiptItemDto
     [JsonPropertyName("name")] public string? Name { get; init; }
     [JsonPropertyName("productType")] public int? Type { get; init; }
     [JsonPropertyName("nds")] public int? NdsRate { get; init; }
-    [JsonIgnore] public int? CalcMethod { get; init; }
+    [JsonPropertyName("paymentType")] public int? CalcMethod { get; init; }
     [JsonIgnore] public int? Unit { get; init; }
     [JsonPropertyName("price")] public decimal? Price { get; init; }
     [JsonPropertyName("quantity")] public decimal? Quantity { get; init; }
@@ -154,7 +154,7 @@ internal readonly struct AstralOfdReceiptDto
     [JsonIgnore] public decimal? AdvancePaymentSum { get; init; }
     [JsonPropertyName("buyerPhoneOrAddress")] public string? BuyerContact { get; init; }
     [JsonPropertyName("totalSum")] public decimal? TotalSum { get; init; }
-    [JsonIgnore] public decimal? CashPaymentSum { get; init; }
+    [JsonPropertyName("cashTotalSum")] public decimal? CashPaymentSum { get; init; }
     [JsonPropertyName("ecashTotalSum")] public decimal? NonCashPaymentSum { get; init; }
     [JsonIgnore] public decimal? CreditPaymentSum { get; init; }
     [JsonIgnore] public decimal? ProvisionPaymentSum { get; init; }
