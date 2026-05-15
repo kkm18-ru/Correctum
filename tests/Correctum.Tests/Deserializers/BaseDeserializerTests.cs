@@ -33,14 +33,11 @@ public abstract class BaseDeserializerTests<T>
         SessionId = SharedFaker.Random.UInt(),
         DocInSession = SharedFaker.Random.UInt(),
         DocSign = SharedFaker.Random.UInt(),
-        Payment = new()
-        {
-            CashSum = SharedFaker.Random.ULong(),
-            NonCashSum = SharedFaker.Random.ULong(),
-            AdvanceSum = SharedFaker.Random.ULong(),
-            CreditSum = SharedFaker.Random.ULong(),
-            ProvisionSum = SharedFaker.Random.ULong(),
-        },
+        CashSum = SharedFaker.Random.ULong(),
+        NonCashSum = SharedFaker.Random.ULong(),
+        AdvanceSum = SharedFaker.Random.ULong(),
+        CreditSum = SharedFaker.Random.ULong(),
+        ProvisionSum = SharedFaker.Random.ULong(),
         TotalSum = SharedFaker.Random.ULong(),
         TaxationSystem = SharedFaker.Random.Enum<TaxationSystems>(),
         Type = SharedFaker.Random.Enum<ReceiptType>(),
@@ -78,7 +75,11 @@ public abstract class BaseDeserializerTests<T>
             Assert.That(actual.Created, Is.EqualTo(excepted.Created));
             Assert.That(actual.DocSign, Is.EqualTo(excepted.DocSign));
             Assert.That(actual.Type, Is.EqualTo(excepted.Type));
-            Assert.That(actual.Payment, Is.EqualTo(excepted.Payment));
+            Assert.That(actual.CashSum, Is.EqualTo(excepted.CashSum));
+            Assert.That(actual.NonCashSum, Is.EqualTo(excepted.NonCashSum));
+            Assert.That(actual.AdvanceSum, Is.EqualTo(excepted.AdvanceSum));
+            Assert.That(actual.CreditSum, Is.EqualTo(excepted.CreditSum));
+            Assert.That(actual.ProvisionSum, Is.EqualTo(excepted.ProvisionSum));
             Assert.That(actual.TotalSum, Is.EqualTo(excepted.TotalSum));
             Assert.That(actual.BuyerContact, Is.EqualTo(excepted.BuyerContact));
             Assert.That(actual.TaxationSystem, Is.EqualTo(excepted.TaxationSystem));

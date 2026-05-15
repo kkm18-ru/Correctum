@@ -21,16 +21,13 @@ public class SqliteExportViewModelTests :
             Type = ReceiptType.Income,
             SessionId = 2,
             DocNumber = 3,
-            Payment = new()
-            {
-                CashSum = 6UL,
-                NonCashSum = 7UL,
-                AdvanceSum = 8UL,
-                CreditSum = 9UL,
-                ProvisionSum = 10UL,
-            },
+            CashSum = 6UL,
+            NonCashSum = 7UL,
+            AdvanceSum = 8UL,
+            CreditSum = 9UL,
+            ProvisionSum = 10UL,
             TotalSum = 11UL,
-            Created = new DateTime(2023,12,30,15,35,29),
+            Created = new DateTime(2023, 12, 30, 15, 35, 29, DateTimeKind.Unspecified),
             DocInSession = 13,
             DocSign = 16,
             TaxationSystem = TaxationSystems.Patent,
@@ -51,8 +48,8 @@ public class SqliteExportViewModelTests :
         using (var conn = new SqliteConnection($"Data Source={path};Pooling=False"))
         {
             conn.Open();
-            var receipts = conn.Query<receipt>("SELECT * FROM receipt;").ToArray();
-            Assert.That(receipts.Length, Is.EqualTo(1));
+            var receipts = conn.Query<ReceiptDto>("SELECT * FROM receipt;").ToArray();
+            Assert.That(receipts, Has.Length.EqualTo(1));
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(receipts[0].id, Is.EqualTo(1));
@@ -66,16 +63,16 @@ public class SqliteExportViewModelTests :
                 Assert.That(receipts[0].taxation, Is.EqualTo((byte)receipt.TaxationSystem));
                 Assert.That(FiscalSign.Parse(receipts[0].sign), Is.EqualTo(receipt.DocSign));
                 Assert.That(receipts[0].buyer, Is.EqualTo(receipt.BuyerContact));
-                Assert.That((Currency)receipts[0].cash, Is.EqualTo(receipt.Payment?.CashSum));
-                Assert.That((Currency)receipts[0].ecash, Is.EqualTo(receipt.Payment?.NonCashSum));
-                Assert.That((Currency)receipts[0].pre, Is.EqualTo(receipt.Payment?.AdvanceSum));
-                Assert.That((Currency)receipts[0].post, Is.EqualTo(receipt.Payment?.CreditSum));
-                Assert.That((Currency)receipts[0].other, Is.EqualTo(receipt.Payment?.ProvisionSum));
+                Assert.That((Currency)receipts[0].cash, Is.EqualTo(receipt.CashSum));
+                Assert.That((Currency)receipts[0].ecash, Is.EqualTo(receipt.NonCashSum));
+                Assert.That((Currency)receipts[0].pre, Is.EqualTo(receipt.AdvanceSum));
+                Assert.That((Currency)receipts[0].post, Is.EqualTo(receipt.CreditSum));
+                Assert.That((Currency)receipts[0].other, Is.EqualTo(receipt.ProvisionSum));
                 Assert.That((Currency)receipts[0].total, Is.EqualTo(receipt.TotalSum));
             }
 
-            var positions = conn.Query<position>("SELECT * FROM position;").ToArray();
-            Assert.That(positions.Length, Is.EqualTo(1));
+            var positions = conn.Query<PositionDto>("SELECT * FROM position;").ToArray();
+            Assert.That(positions, Has.Length.EqualTo(1));
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(positions[0].id, Is.EqualTo(1));
@@ -93,6 +90,6 @@ public class SqliteExportViewModelTests :
         SqliteConnection.ClearAllPools();
     }
 
-    private record receipt(long id, string devid, string drive, long shift, long doc, long req, string date, long type, long taxation, string? sign, string? buyer, long cash, long ecash, long pre, long post, long other, long total);
-    private record position(long id, string name, long? payment, long? type, long? tax, long? unit, long price, long quantity, long total, long receipt);
+    private record ReceiptDto(long id, string devid, string drive, long shift, long doc, long req, string date, long type, long taxation, string? sign, string? buyer, long cash, long ecash, long pre, long post, long other, long total);
+    private record PositionDto(long id, string name, long? payment, long? type, long? tax, long? unit, long price, long quantity, long total, long receipt);
 }

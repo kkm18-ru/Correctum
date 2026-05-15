@@ -2,7 +2,7 @@
 
 namespace Correctum.Utils
 {
-    public class RelayCommand(Action execute, Func<bool> canExecute) : ICommand
+    public class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
     {
         public event EventHandler? CanExecuteChanged
         {
@@ -10,7 +10,7 @@ namespace Correctum.Utils
             remove => CommandManager.RequerySuggested -= value; 
         }
 
-        public bool CanExecute(object? parameter) => canExecute();
+        public bool CanExecute(object? parameter) => canExecute is null || canExecute();
 
         public void Execute(object? parameter) => execute();
     }

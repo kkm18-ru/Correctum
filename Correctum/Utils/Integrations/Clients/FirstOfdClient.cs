@@ -219,17 +219,14 @@ internal static class FirstOfdHelper
         RegId = ticket.kktRegId?.Trim(),
         DocInSession = (uint?)ticket.requestNumber,
         TotalSum = ticket.totalSum,
-        Payment = new Payment
-        {
-            CashSum = ticket.cashTotalSum,
-            NonCashSum = ticket.ecashTotalSum,
-            AdvanceSum = ticket.prepaymentSum,
-            CreditSum = ticket.postpaymentSum,
-            ProvisionSum = ticket.counterSubmissionSum,
-        },
+        CashSum = ticket.cashTotalSum,
+        NonCashSum = ticket.ecashTotalSum,
+        AdvanceSum = ticket.prepaymentSum,
+        CreditSum = ticket.postpaymentSum,
+        ProvisionSum = ticket.counterSubmissionSum,
         DocNumber = (uint?)ticket.fiscalDocumentNumber,
         SessionId = (uint?)ticket.shiftNumber,
-        Items = ticket.items?.Select(ToPosition).ToArray(),
+        Items = ticket.items?.Select(ToPosition).ToArray() ?? [],
         DocSign = FiscalSign.Parse(ticket.fiscalId),
         TaxationSystem = (TaxationSystems?)ticket.taxationType,
         //todo BuyerContact

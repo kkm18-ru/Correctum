@@ -16,10 +16,10 @@ public readonly struct ReceiptView(Receipt model)
     public string? TaxationSystem { get; } = EnumLocales.TaxationSystems.GetLocale(model.TaxationSystem, null);
     public string? BuyerContact { get; } = model.BuyerContact;
     public PositionView[] Items { get; } = [.. model.Items.Select(m => new PositionView(m))];
-    public string? CashSum { get; } = model.Payment.CashSum is null ? null : $"{model.Payment.CashSum} руб.";
-    public string? NonCashSum { get; } = model.Payment.NonCashSum is null ? null : $"{model.Payment.NonCashSum} руб.";
-    public string? AdvanceSum { get; } = model.Payment.AdvanceSum is null ? null : $"{model.Payment.AdvanceSum} руб.";
-    public string? CreditSum { get; } = model.Payment.CreditSum is null ? null : $"{model.Payment.CreditSum} руб.";
-    public string? ProvisionSum { get; } = model.Payment.ProvisionSum is null ? null : $"{model.Payment.ProvisionSum} руб.";
+    public string? CashSum { get; } = model.CashSum is null ? null : $"{model.CashSum} руб.";
+    public string? NonCashSum { get; } = model.NonCashSum is null ? null : $"{model.NonCashSum} руб.";
+    public string? AdvanceSum { get; } = model.AdvanceSum is null ? null : $"{model.AdvanceSum} руб.";
+    public string? CreditSum { get; } = model.CreditSum is null ? null : $"{model.CreditSum} руб.";
+    public string? ProvisionSum { get; } = model.ProvisionSum is null ? null : $"{model.ProvisionSum} руб.";
     public string? TotalSum { get; } = model.TotalSum is null ? null : $"{model.TotalSum} руб.";
 }

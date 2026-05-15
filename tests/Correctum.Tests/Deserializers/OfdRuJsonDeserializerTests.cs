@@ -43,15 +43,15 @@ public class OfdRuJsonDeserializerTests :
         public Item[] Items { get; } = [.. doc.Items!.Select(i => new Item(i))];
         public string RetailPlaceAddress { get; } = SharedFaker.Address.FullAddress();
         public ulong Amount_Total { get; } = (ulong)doc.TotalSum!.Value;
-        public ulong Amount_Cash { get; } = (ulong)doc.Payment!.Value.CashSum!.Value;
-        public ulong Amount_ECash { get; } = (ulong)doc.Payment!.Value.NonCashSum!.Value;
+        public ulong Amount_Cash { get; } = (ulong)doc.CashSum!.Value;
+        public ulong Amount_ECash { get; } = (ulong)doc.NonCashSum!.Value;
         public uint Document_Number { get; } = doc.DocNumber!.Value;
         public string FiscalSign { get; } = FiscalHelper.ToStringSign(uint.Parse(doc.DocSign!.Value.ToString()));
         public string DecimalFiscalSign { get; } = doc.DocSign!.Value.ToString();
         public int Format_Version { get; } = 4;
-        public ulong Amount_Advance { get; } = (ulong)doc.Payment!.Value.AdvanceSum!.Value;
-        public ulong Amount_Loan { get; } = (ulong)doc.Payment!.Value.CreditSum!.Value;
-        public ulong Amount_Granting { get; } = (ulong)doc.Payment!.Value.ProvisionSum!.Value;
+        public ulong Amount_Advance { get; } = (ulong)doc.AdvanceSum!.Value;
+        public ulong Amount_Loan { get; } = (ulong)doc.CreditSum!.Value;
+        public ulong Amount_Granting { get; } = (ulong)doc.ProvisionSum!.Value;
         public string Calculation_Place { get; } = SharedFaker.Commerce.Department();
     }
 
