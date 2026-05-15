@@ -16,35 +16,35 @@ public sealed class SqliteExportViewModel : FileExportViewModel
     private const string InitializationQuery = """
         CREATE TABLE receipt (
             id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            devid    TEXT    NOT NULL,
-            drive    TEXT    NOT NULL,
-            shift    INTEGER NOT NULL,
-            doc      INTEGER NOT NULL,
-            req      INTEGER NOT NULL,
-            date     TEXT    NOT NULL,
-            "type"   INTEGER NOT NULL,
-            taxation INTEGER NOT NULL,
+            devid    TEXT,
+            drive    TEXT,
+            shift    INTEGER,
+            doc      INTEGER,
+            req      INTEGER,
+            date     TEXT,
+            "type"   INTEGER,
+            taxation INTEGER,
             sign     TEXT,
             buyer    TEXT,
-            cash     INTEGER NOT NULL,
-            ecash    INTEGER NOT NULL,
-            pre      INTEGER NOT NULL,
-            post     INTEGER NOT NULL,
-            other    INTEGER NOT NULL,
-            total    INTEGER NOT NULL
+            cash     INTEGER,
+            ecash    INTEGER,
+            pre      INTEGER,
+            post     INTEGER,
+            other    INTEGER,
+            total    INTEGER
         );
 
         CREATE TABLE position (
             id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            name     TEXT    NOT NULL,
+            name     TEXT,
             payment  INTEGER,
             type     INTEGER,
             tax      INTEGER,
             unit     INTEGER,
-            price    INTEGER NOT NULL,
-            quantity INTEGER NOT NULL,
-            total    INTEGER NOT NULL,
-            receipt  INTEGER NOT NULL,
+            price    INTEGER,
+            quantity INTEGER,
+            total    INTEGER,
+            receipt  INTEGER,
             CONSTRAINT position_receipt_FK FOREIGN KEY (receipt) REFERENCES receipt(id) ON DELETE CASCADE
         );
         """;
