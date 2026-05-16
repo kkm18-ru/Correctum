@@ -229,7 +229,7 @@ file readonly struct TaxcomDocumentResponse
             DocNumber = Details["1040"]?.GetValue<uint>(),
             SessionId = Details["1038"]?.GetValue<uint>(),
             DocInSession = Details["1042"]?.GetValue<uint>(),
-            Items = Details["1059"]?.AsArray().Select(ParsePosition).Where(p => p.HasValue).Cast<Position>().ToArray() ?? [],
+            Items = Details["1059"]?.AsArray().Select(ParsePosition).Where(p => p is not null).Cast<Position>().ToList() ?? [],
             Type = (ReceiptType?)Details["1054"]?.GetValue<int>(),
             DocSign = FiscalSign.TryParse(Details["1077"]?.GetValue<string>(), out var sign) ? sign : null,
             CashSum = Details["1031"]?.GetValue<ulong>(),

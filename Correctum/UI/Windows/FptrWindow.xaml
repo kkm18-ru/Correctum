@@ -88,7 +88,7 @@
         <controls:TextProgressBar 
             Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="3" 
             Value="{Binding CurrentIndex, Mode=OneWay}"
-            Maximum="{Binding Source={x:Static rc:Workspace.Instance}, Path=Receipts.Count}"/>
+            Maximum="{Binding Source={x:Static rc:StorageContext.ReceiptsCount}, Mode=OneTime}"/>
         
         <StackPanel Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
             <Button Content="{Binding RunButtonText, Mode=OneWay}" 

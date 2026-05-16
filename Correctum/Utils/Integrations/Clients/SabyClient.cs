@@ -244,7 +244,7 @@ file struct ReceiptResponse
         StorageId = StorageId,
         DocInSession = DocInSession,
         SessionId = SessionId,
-        Items = Items?.Select(ToPosition).ToArray() ?? [],
+        Items = Items?.Select(ToPosition).ToList() ?? [],
         CashSum = Cash,
         NonCashSum = Ecash,
         AdvanceSum = Prepaid,

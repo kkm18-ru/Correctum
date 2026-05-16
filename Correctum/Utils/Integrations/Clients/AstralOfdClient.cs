@@ -188,7 +188,7 @@ internal readonly struct AstralOfdReceiptDto
         TaxationSystem = (TaxationSystems?)TaxationSystem,
         TotalSum = TotalSum,
         Type = (ReceiptType?)Type,
-        Items = Items?.Select(i => i.ToModel()).ToArray() ?? [],
+        Items = Items?.Select(i => i.ToModel()).ToList() ?? [],
     };
 }
 

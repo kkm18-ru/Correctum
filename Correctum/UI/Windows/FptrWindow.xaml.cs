@@ -9,6 +9,7 @@ using Correctum.UI.Windows.Types;
 using Correctum.Utils;
 using Correctum.Utils.Integrations;
 using Correctum.Core.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Correctum.UI.Windows;
 
@@ -197,11 +198,17 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                 {
                     try
                     {
-                        while (CurrentIndex < Workspace.Instance.Receipts.Count)
+                        Receipt[] receipts;
+                        using (var ctx = new StorageContext())
+                        {
+                            ctx.Positions.Load();
+                            receipts = [.. ctx.Receipts];
+                        }
+                        while (CurrentIndex < receipts.Length)
                         {
                             _cancelSource.Token.ThrowIfCancellationRequested();
                             _handle.ProcessSession(true);
-                            if (ConductingReceipt(Workspace.Instance.Receipts[CurrentIndex], _cancelSource.Token))
+                            if (ConductingReceipt(receipts[CurrentIndex], _cancelSource.Token))
                                 CurrentIndex++;
                             else _handle.CancelReceipt();
                             if (CurrentIndex > 0 && CurrentIndex % Configuration.Current.Fptr.SizeStack == 0)
@@ -252,8 +259,13 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
             "Отменить тестовые чеки?";
             
         CurrentIndex = 0;
-        var count = Math.Min(defaultCount, Workspace.Instance.Receipts.Count);
-        var slice = Workspace.Instance.Receipts.ToArray()[..count];
+        int count;
+        Receipt[] slice = [];
+        using (var ctx = new StorageContext()) {
+            ctx.Positions.Load();
+            count = Math.Min(defaultCount, ctx.Receipts.Count());
+            slice = ctx.Receipts.ToArray()[..count];
+        }
         
         State = ConductingReceiptState.TestConducting;
 
@@ -274,18 +286,16 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
             for (uint i = 0; i < count; i++)
             {
                 var info = _handle.GetReceiptInfo(docNumb + i);
-                var receipt = slice[i] with
+                var receipt = slice[i].Clone();
+                receipt.DocSign = FiscalSign.Parse(info.Item1);
+                receipt.Created = info.Item2;
+                receipt.Type = slice[i].Type switch
                 {
-                    DocSign = FiscalSign.Parse(info.Item1),
-                    Created = info.Item2,
-                    Type = slice[i].Type switch
-                    {
-                        ReceiptType.Income => ReceiptType.RefundIncome,
-                        ReceiptType.RefundIncome => ReceiptType.Income,
-                        ReceiptType.Outcome => ReceiptType.RefundOutcome,
-                        ReceiptType.RefundOutcome => ReceiptType.Outcome,
-                        _ => throw new NotImplementedException()
-                    }
+                    ReceiptType.Income => ReceiptType.RefundIncome,
+                    ReceiptType.RefundIncome => ReceiptType.Income,
+                    ReceiptType.Outcome => ReceiptType.RefundOutcome,
+                    ReceiptType.RefundOutcome => ReceiptType.Outcome,
+                    _ => throw new NotImplementedException()
                 };
                 _handle.ProcessSession(true);
                 if (!ConductingReceipt(receipt))

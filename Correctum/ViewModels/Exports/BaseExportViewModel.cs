@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors.Core;
 using Correctum.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Correctum.ViewModels.Exports;
 
@@ -64,7 +65,9 @@ public abstract class FileExportViewModel : BaseExportViewModel
         };
         if (!dialog.ShowDialog() ?? false) 
             return true;
-        await Export(dialog.FileName, Workspace.Instance.Receipts).AsTask();
+        using var ctx = new StorageContext();
+        await ctx.Positions.LoadAsync();
+        await Export(dialog.FileName, ctx.Receipts).AsTask();
         return false;
     }
 

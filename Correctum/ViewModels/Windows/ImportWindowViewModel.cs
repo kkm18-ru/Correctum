@@ -52,7 +52,11 @@ public sealed class ImportWindowViewModel : BindableBase
             await foreach (var receipt in Import.ImportAsync(cts.Token))
                 buffer.Add(receipt);
             cts.Dispose();
-            buffer.ForEach(Workspace.Instance.Receipts.Add);
+            using (var ctx = new StorageContext())
+            {
+                await ctx.Receipts.AddRangeAsync(buffer);
+                await ctx.SaveChangesAsync();
+            }
             Imported?.Invoke();
         }
         catch (OperationCanceledException e)
