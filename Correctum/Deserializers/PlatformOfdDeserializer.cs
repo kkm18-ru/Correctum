@@ -1,6 +1,5 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
-using Correctum.Core.Builders;
 using Correctum.Core.Enums;
 using Correctum.Core.Models;
 using Correctum.Core.ValueObjects;
@@ -15,8 +14,8 @@ public class PlatformOfdDeserializer : IDeserializer
     public static Receipt Deserialize(ReadOnlySpan<char> text)
     {
         _propStack.Clear();
-        var builder = new ReceiptBuilder();
-        PositionBuilder currPosition = null!;
+        var receipt = new Receipt();
+        Position currPosition = null!;
         Span<char> rawValue = stackalloc char[256];
         foreach (var range in text.Split('\n'))
         {
@@ -35,59 +34,62 @@ public class PlatformOfdDeserializer : IDeserializer
             {
                 _propStack.Push(tag);
                 if (tag == 1059)
-                    currPosition = builder.AddItem();
+                {
+                    currPosition = new();
+                    receipt.Items.Add(currPosition);
+                }
                 continue;
             }
             rawValue.Clear();
             line[43..].TrimEnd('·').Replace(rawValue, '·', ' ');
             var value = rawValue.Trim(['\r', '\n', '\0', '\t', ' ']);
 
-            ChangeReceipt(tag, value, builder);
+            ChangeReceipt(tag, value, receipt);
             ChangePosition(tag, value, currPosition);
         }
-        return builder.Build();
+        return receipt;
     }
-    private static void ChangeReceipt(ushort tag, ReadOnlySpan<char> value, ReceiptBuilder builder)
+    private static void ChangeReceipt(ushort tag, ReadOnlySpan<char> value, Receipt builder)
     {
         if (_propStack.Count > 0 && _propStack.Peek() == 1059) return;
         switch (tag)
         {
             // Простые реквизиты чека
-            case 1077: builder.SetDocSign(FiscalSign.Parse(value)); break;
-            case 1012: builder.SetCreated(DateTimeOffset.UnixEpoch.AddSeconds(ulong.Parse(value)).DateTime); break;
-            case 1041: builder.SetStorageId(value.ToString()); break;
-            case 1037: builder.SetRegId(value.ToString()); break;
-            case 1038: builder.SetSessionId(uint.Parse(value)); break;
-            case 1020: builder.SetTotalSum(ulong.Parse(value)); break;
-            case 1055: builder.SetTaxationSystem((TaxationSystems)int.Parse(value)); break;
-            case 1008: builder.SetBuyerContact(value.ToString()); break;
-            case 1042: builder.SetDocInSession(uint.Parse(value)); break;
-            case 1040: builder.SetDocNumber(uint.Parse(value)); break;
-            case 1054: builder.SetOperation((ReceiptType)byte.Parse(value)); break;
+            case 1077: builder.DocSign = FiscalSign.Parse(value); break;
+            case 1012: builder.Created = DateTimeOffset.UnixEpoch.AddSeconds(ulong.Parse(value)).DateTime; break;
+            case 1041: builder.StorageId = value.ToString(); break;
+            case 1037: builder.RegId = value.ToString(); break;
+            case 1038: builder.SessionId = uint.Parse(value); break;
+            case 1020: builder.TotalSum = ulong.Parse(value); break;
+            case 1055: builder.TaxationSystem = (TaxationSystems)int.Parse(value); break;
+            case 1008: builder.BuyerContact = value.ToString(); break;
+            case 1042: builder.DocInSession = uint.Parse(value); break;
+            case 1040: builder.DocNumber = uint.Parse(value); break;
+            case 1054: builder.Type = (ReceiptType)byte.Parse(value); break;
             // Суммы способов оплаты
-            case 1031: builder.SetCashSum(ulong.Parse(value)); break;
-            case 1081: builder.SetNonCashSum(ulong.Parse(value)); break;
-            case 1215: builder.SetAdvanceSum(ulong.Parse(value)); break;
-            case 1216: builder.SetCreditSum(ulong.Parse(value)); break;
-            case 1217: builder.SetProvisionSum(ulong.Parse(value)); break;
+            case 1031: builder.CashSum = ulong.Parse(value); break;
+            case 1081: builder.NonCashSum = ulong.Parse(value); break;
+            case 1215: builder.AdvanceSum = ulong.Parse(value); break;
+            case 1216: builder.CreditSum = ulong.Parse(value); break;
+            case 1217: builder.ProvisionSum = ulong.Parse(value); break;
 
             default: break;
         }
     }
 
-    private static void ChangePosition(ushort tag, ReadOnlySpan<char> value, PositionBuilder builder)
+    private static void ChangePosition(ushort tag, ReadOnlySpan<char> value, Position position)
     {
         if (_propStack.Count != 1 || _propStack.Peek() != 1059) return;
         switch (tag)
         {
-            case 2108: builder.SetUnit((UnitOfMeasure)byte.Parse(value)); break;
-            case 1079: builder.SetPrice(ulong.Parse(value)); break;
-            case 1043: builder.SetCost(ulong.Parse(value)); break;
-            case 1199: builder.SetTaxRate(NDSRate.FromFns(byte.Parse(value))); break;
-            case 1214: builder.SetCalcMethod((CalculationMethod)byte.Parse(value)); break;
-            case 1212: builder.SetSubjectType((PositionType)byte.Parse(value)); break;
-            case 1023: builder.SetQuantity(decimal.Parse(value, CultureInfo.InvariantCulture)); break;
-            case 1030: builder.SetName(value.ToString()); break;
+            case 2108: position.Unit = (UnitOfMeasure)byte.Parse(value); break;
+            case 1079: position.Price = ulong.Parse(value); break;
+            case 1043: position.Cost = ulong.Parse(value); break;
+            case 1199: position.TaxRate = NDSRate.FromFns(byte.Parse(value)); break;
+            case 1214: position.CalcMethod = (CalculationMethod)byte.Parse(value); break;
+            case 1212: position.Type = (PositionType)byte.Parse(value); break;
+            case 1023: position.Quantity = decimal.Parse(value, CultureInfo.InvariantCulture); break;
+            case 1030: position.Name = value.ToString(); break;
 
             default: break;
         }
