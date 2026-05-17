@@ -66,6 +66,11 @@ public class PlatformOfdDeserializer : IDeserializer
             case 1042: builder.DocInSession = uint.Parse(value); break;
             case 1040: builder.DocNumber = uint.Parse(value); break;
             case 1054: builder.Type = (ReceiptType)byte.Parse(value); break;
+            case 1117: builder.SenderAddress = value.ToString(); break;
+            case 1203: builder.OperatorInn = Inn.Parse(value.ToString()); break;
+            case 1009: builder.RetailAddress = value.ToString(); break;
+            case 1021: builder.OperatorName = value.ToString(); break;
+            case 1187: builder.RetailPlace = value.ToString(); break;
             // Суммы способов оплаты
             case 1031: builder.CashSum = ulong.Parse(value); break;
             case 1081: builder.NonCashSum = ulong.Parse(value); break;

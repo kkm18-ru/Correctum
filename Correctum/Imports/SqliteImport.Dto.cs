@@ -28,6 +28,11 @@ partial class SqliteImport
         public ulong? Total { get; init; }
         public int? Taxation { get; init; }
         public string? Buyer { get; init; }
+        public string? RetailAddress { get; init; }
+        public string? SenderAddress { get; init; }
+        public string? RetailPlace { get; init; }
+        public string? Cashier { get; init; }
+        public string? CashierInn { get; init; }
 
         public async Task<Receipt> ToModelAsync(SqliteConnection conn)
         {
@@ -50,7 +55,12 @@ partial class SqliteImport
                 ProvisionSum = (Currency?)Provision,
                 Type = (ReceiptType?)Type,
                 BuyerContact = Buyer,
-                TaxationSystem = (TaxationSystems?)Taxation
+                TaxationSystem = (TaxationSystems?)Taxation,
+                RetailAddress = RetailAddress,
+                SenderAddress = SenderAddress,
+                RetailPlace = RetailPlace,
+                OperatorName = Cashier,
+                OperatorInn = CashierInn is null ? null : Inn.Parse(CashierInn),
             };
         }
     }

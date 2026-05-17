@@ -80,7 +80,12 @@ namespace Correctum.Core.Models
         /// Применяемая система налогообложения
         /// </summary>
         public TaxationSystems? TaxationSystem { get; set; }
-        
+        public string? RetailPlace { get; set; }
+        public string? RetailAddress { get; set; }
+        public string? SenderAddress { get; set; }
+        public string? OperatorName { get; set; }
+        public Inn? OperatorInn { get; set; }
+
         public Receipt Clone() => new()
         {
             Items = [..Items.Select(i => i.Clone())],
@@ -95,8 +100,13 @@ namespace Correctum.Core.Models
             DocInSession = DocInSession,
             DocNumber = DocNumber,
             DocSign = DocSign,
+            OperatorName = (string?)OperatorName?.Clone(),
+            RetailPlace = (string?)RetailPlace?.Clone(),
+            RetailAddress = (string?)RetailAddress?.Clone(),
+            SenderAddress = (string?)SenderAddress?.Clone(),
             StorageId = (string?)StorageId?.Clone(),
             RegId = (string?)RegId?.Clone(),
+            OperatorInn = OperatorInn,
             SessionId = SessionId,
             TaxationSystem = TaxationSystem,
             Type = Type

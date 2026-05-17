@@ -22,7 +22,12 @@ partial class SqliteImport
             other AS Provision,
             total AS Total,
             taxation AS Taxation,
-            buyer AS Buyer
+            buyer AS Buyer,
+            address AS RetailAddress,
+            email AS SenderAddress,
+            place AS RetailPlace,
+            cashier AS Cashier,
+            cashierInn AS CashierInn
         FROM 
             receipt 
         LIMIT @limit OFFSET @offset;
