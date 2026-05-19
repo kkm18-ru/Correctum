@@ -17,10 +17,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
 {
     public int CorrectionType { get; set => SetField(ref field, value); }
     public string Act { get; set => SetField(ref field, value); }
-    public string OperatorName { get; set => SetField(ref field, value); }
-    public string OperatorInn { get; set => SetField(ref field, value); }
     public bool IsInternet { get; set => SetField(ref field, value); }
-    public string SiteAddress { get; set => SetField(ref field, value); }
     public int CurrentIndex { get; private set => SetField(ref field, value); }
     public int SettingIndex { get; set => SetField(ref field, value); }
 
@@ -51,8 +48,9 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     
     public FptrWindow()
     {
-        Act = OperatorName = OperatorInn = SiteAddress = "";
-        _handle = new FptrHandle();
+        Act = "";
+        _handle = new FptrHandle(); 
+        CurrentIndex = 0;
         InitializeComponent();
     }
 
@@ -100,7 +98,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     private bool ConductingReceipt(Receipt data, CancellationToken token = default)
     {
         token.ThrowIfCancellationRequested();
-        OpenReceiptArgs openArgs = new(IsInternet, SiteAddress, Act, CorrectionType);
+        OpenReceiptArgs openArgs = new(IsInternet, Act, CorrectionType);
         if (!_handle.OpenReceipt(data, openArgs)) return false;
 
         foreach (var item in data.Items)
@@ -110,7 +108,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
         }
         
         token.ThrowIfCancellationRequested();
-        if (!_handle.SetTotal(data.TotalSum.Value)) return false;
+        if (!_handle.SetTotal(data.TotalSum!.Value)) return false;
         
         token.ThrowIfCancellationRequested();
         if (!_handle.Payment(data)) return false;
@@ -120,16 +118,6 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     }
 
     private string CaptionError => $"Произошла ошибка (Код: {_handle.ErrorCode})";
-
-    private bool LoginOperator()
-    {
-        if (string.IsNullOrWhiteSpace(OperatorName)) return true;
-        if (_handle.LoginOperator(OperatorName, OperatorInn)) return true;
-        
-        MessageBox.Show("Не удалось зарегистрировать кассира", 
-            CaptionError, MessageBoxButton.OK, MessageBoxImage.Hand);
-        return false;
-    }
 
     private bool ConnectKkt()
     {
@@ -191,7 +179,6 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
             case ConductingReceiptState.Idle:
             case ConductingReceiptState.Suspended:
                 _cancelSource = new CancellationTokenSource();
-                if (State == ConductingReceiptState.Idle) CurrentIndex = 0;
                 State = ConductingReceiptState.Running;
 
                 void Function()
@@ -242,7 +229,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                 _handle.Disconnect();
                 return;
             }
-            if (LoginOperator()) State = ConductingReceiptState.Idle;
+            State = ConductingReceiptState.Idle;
         }
         else
         {
