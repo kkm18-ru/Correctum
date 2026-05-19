@@ -96,12 +96,6 @@
                     IsEnabled="{Binding CanRun, Mode=OneWay}"/>
             <Button Content="Тест" Margin="2.5,0,2.5,0" Width="38" Click="Test"
                     IsEnabled="{Binding CanSettings, Mode=OneWay}"/>
-            <Button Content="Перейти на" Margin="2.5,0,2.5,0" Width="80" Click="SetIndex"
-                    IsEnabled="{Binding CanSettings, Mode=OneWay}"/>
-            <tk:IntegerUpDown
-                Value="{Binding SettingIndex}" IsEnabled="{Binding CanSettings, Mode=OneWay}"
-                Maximum="{Binding Source={x:Static rc:Workspace.Instance}, Path=Receipts.Count}"
-                Minimum="0" Margin="2.5,0,0,0" Width="70"/>
         </StackPanel>
         
     </Grid>
