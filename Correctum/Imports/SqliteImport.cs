@@ -16,11 +16,12 @@ public sealed partial class SqliteImport : BaseImport
     public string Path { get; set => SetField(ref field, value); } = string.Empty;
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        ([EnumeratorCancellation] CancellationToken cancellationToken)
+        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         using (var conn = new SqliteConnection($"Data Source={Path};Mode=ReadOnly"))
         {
             var count = await conn.ExecuteScalarAsync<uint>(COUNT_RECEIPTS);
+            progress.ReportMaximum(count);
             for (var i = 0; i < count; i += Configuration.Current.Import.Sqlite.StackSize)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -29,6 +30,7 @@ public sealed partial class SqliteImport : BaseImport
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     yield return await doc.ToModelAsync(conn);
+                    progress.ReportIncrement();
                 }
             }
         }

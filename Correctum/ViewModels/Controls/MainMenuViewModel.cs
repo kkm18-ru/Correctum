@@ -2,7 +2,10 @@ using Correctum.Abstractions;
 using Correctum.UI.Windows;
 using Correctum.Utils;
 using Correctum.ViewModels.Exports;
+using Correctum.ViewModels.Windows;
 using Correctum.Views.Windows;
+using Microsoft.Data.Sqlite;
+using Microsoft.Win32;
 using Microsoft.Xaml.Behaviors.Core;
 using System.Collections.Immutable;
 using System.Data;
@@ -22,9 +25,14 @@ public sealed partial class MainMenuViewModel : BindableBase
     public static MenuItem[] Exporters => SearchExporters();
     public static partial ImmutableArray<ReportDescriptor> Reports { get; }
     public static partial ImmutableArray<ImportDescriptor> Imports { get; }
+    public static partial ImmutableArray<ActionDescriptor> Actions { get; }
 
     public ICommand OpenReportCommand { get; } = new RelayCommand<ReportDescriptor>(OpenReport);
     public ICommand OpenImportCommand { get; } = new RelayCommand<ImportDescriptor>(OpenImport);
+    public ICommand OpenActionCommand { get; } = new RelayCommand<ActionDescriptor>(OpenAction);
+    public ICommand CreateContextCommand { get; } = new ActionCommand(CreateDbContext);
+    public ICommand LoadContextCommand { get; } = new ActionCommand(SetPathContext);
+    public ICommand SaveAsContextCommand { get; } = new ActionCommand(ChangePathContext);
     public ICommand OpenExportMasterCommand { get; } = new RelayCommand<Type>(OpenExportMaster);
     public ICommand ShowFptrCommand { get; } = new ActionCommand(() => new FptrWindow().ShowDialog());
     public ICommand ShowPasteCommand { get; } = new ActionCommand(() => new PasteWindow().ShowDialog());
@@ -34,11 +42,47 @@ public sealed partial class MainMenuViewModel : BindableBase
     
     private static void OpenLink(string url) => Process.Start(ExplorerPath, url);
 
+    private static void ChangePathContext()
+    {
+        var dialog = new SaveFileDialog
+        {
+            Filter = $"{StorageContext.DisplayNameFileExtension}|*{StorageContext.FileExtension}"
+        };
+        if (dialog.ShowDialog() ?? false)
+        {
+            File.Copy(StorageContext.ConnectionString, dialog.FileName);
+            StorageContext.SetContextPath(dialog.FileName);
+        }
+    }
+
+    private static void CreateDbContext()
+    {
+        var dialog = new SaveFileDialog
+        {
+            Filter = $"{StorageContext.DisplayNameFileExtension}|*{StorageContext.FileExtension}"
+        };
+        if(dialog.ShowDialog() ?? false)
+            StorageContext.SetContextPath(dialog.FileName);
+    }
+
+    private static void SetPathContext()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = $"{StorageContext.DisplayNameFileExtension}|*{StorageContext.FileExtension}"
+        };
+        if (dialog.ShowDialog() ?? false)
+            StorageContext.SetContextPath(dialog.FileName);
+    }
+
     private static void OpenImport(ImportDescriptor descriptor) =>
         new ImportWindow(descriptor.DisplayName, descriptor.Function.Invoke()).ShowDialog();
 
     private static void OpenReport(ReportDescriptor descriptor) =>
         new ReportWindow(descriptor.DisplayName, descriptor.Function).ShowDialog();
+
+    private static void OpenAction(ActionDescriptor descriptor) =>
+        new ActionWindow(descriptor.DisplayName, descriptor.Function.Invoke()).ShowDialog();
 
     private static void OpenExportMaster(Type type)
     {
@@ -65,4 +109,5 @@ public sealed partial class MainMenuViewModel : BindableBase
 
     public readonly record struct ReportDescriptor(string DisplayName, Func<DataTable> Function);
     public readonly record struct ImportDescriptor(string DisplayName, Func<BaseImport> Function);
+    public readonly record struct ActionDescriptor(string DisplayName, Func<IAction> Function);
 }

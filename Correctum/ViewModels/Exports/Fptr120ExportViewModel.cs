@@ -64,10 +64,10 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         await writer.WriteLineAsync("correctionInfo = Fptr.getParamByteArray(Fptr.LIBFPTR_PARAM_TAG_VALUE);");
     }
 
-    internal static async Task PositionsAsync(StreamWriter writer, Position[] array)
+    internal static async Task PositionsAsync(StreamWriter writer, List<Position> array)
     {
         array ??= [];
-        if (array.Length == 0)
+        if (array.Count == 0)
             throw new FormatException("Кассовый чек должен содержать хотя бы одну позицию.");
         foreach (var pos in array) await PositionAsync(writer, pos);
     }

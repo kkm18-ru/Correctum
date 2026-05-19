@@ -28,6 +28,11 @@ partial class SqliteImport
         public ulong? Total { get; init; }
         public int? Taxation { get; init; }
         public string? Buyer { get; init; }
+        public string? RetailAddress { get; init; }
+        public string? SenderAddress { get; init; }
+        public string? RetailPlace { get; init; }
+        public string? Cashier { get; init; }
+        public string? CashierInn { get; init; }
 
         public async Task<Receipt> ToModelAsync(SqliteConnection conn)
         {
@@ -50,7 +55,12 @@ partial class SqliteImport
                 ProvisionSum = (Currency?)Provision,
                 Type = (ReceiptType?)Type,
                 BuyerContact = Buyer,
-                TaxationSystem = (TaxationSystems?)Taxation
+                TaxationSystem = (TaxationSystems?)Taxation,
+                RetailAddress = RetailAddress,
+                SenderAddress = SenderAddress,
+                RetailPlace = RetailPlace,
+                OperatorName = Cashier,
+                OperatorInn = CashierInn is null ? null : Inn.Parse(CashierInn),
             };
         }
     }
@@ -63,7 +73,7 @@ partial class SqliteImport
         public long? Tax { get; init; }
         public long? Unit { get; init; }
         public long? Price { get; init; }
-        public long? Quantity { get; init; }
+        public decimal? Quantity { get; init; }
         public long? Cost { get; init; }
 
         public static Position ToModel(PositionDto dto) => new()
@@ -73,8 +83,8 @@ partial class SqliteImport
             Unit = (UnitOfMeasure?)dto.Unit,
             CalcMethod = (CalculationMethod?)dto.CalcMethod,
             Price = (Currency?)dto.Price,
-            Quantity = (ulong?)dto.Quantity,
-            TaxRate = NDSRate.FromFns(dto.Tax),
+            Quantity = dto.Quantity,
+            TaxRate = (NDSRate?)dto.Tax,
             Type = (PositionType?)dto.Type
         };
     }

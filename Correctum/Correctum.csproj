@@ -23,7 +23,8 @@
 	<ItemGroup>
 		<PackageReference Include="Dapper" Version="2.1.72" />
 		<PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.8" />
 		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.5.0" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
 		<PackageReference Include="NanoXLSX.Writer" Version="3.1.0" />
@@ -42,7 +43,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Resource Include="Resources\**\*"/>
+	  <Resource Include="Resources\**\*" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -29,7 +29,11 @@ public sealed partial class PasteWindowViewModel : BindableBase
         {
             var deserializer = (DeserializerDescriptor)CurrentDeserializer!;
             var receipt = deserializer.Deserialize.Invoke(Text);
-            Workspace.Instance.Receipts.Add(receipt);
+            using (var ctx = new StorageContext())
+            {
+                ctx.Receipts.Add(receipt);
+                ctx.SaveChanges();
+            }
             ((MainWindowViewModel)Application.Current.MainWindow.DataContext).UpdatePanel();
             OnPasted?.Invoke();
         }

@@ -226,7 +226,7 @@ internal static class FirstOfdHelper
         ProvisionSum = ticket.counterSubmissionSum,
         DocNumber = (uint?)ticket.fiscalDocumentNumber,
         SessionId = (uint?)ticket.shiftNumber,
-        Items = ticket.items?.Select(ToPosition).ToArray() ?? [],
+        Items = ticket.items?.Select(ToPosition).ToList() ?? [],
         DocSign = FiscalSign.Parse(ticket.fiscalId),
         TaxationSystem = (TaxationSystems?)ticket.taxationType,
         //todo BuyerContact

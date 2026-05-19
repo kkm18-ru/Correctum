@@ -10,6 +10,8 @@
           d:DataContext="{d:DesignInstance Type={x:Type m:ReceiptView}, IsDesignTimeCreatable=True}"
           d:DesignHeight="450" d:DesignWidth="800">
     <DataGrid.Columns>
+        <DataGridCheckBoxColumn Header="" Binding="{Binding Marked, Mode=OneWay}" />
+        <DataGridCheckBoxColumn Header="RO" Binding="{Binding ReadOnly, Mode=OneWay}" />
         <local:DataGridReceiptInfoColumn Header="Регистрационный номер ККТ" Binding="{Binding RegId}" />
         <local:DataGridReceiptInfoColumn Header="Заводской номер ФН" Binding="{Binding StorageId}" />
         <local:DataGridReceiptInfoColumn Header="Номер ФД" Binding="{Binding DocNumber}" />
@@ -20,6 +22,11 @@
         <local:DataGridReceiptInfoColumn Header="Операция чека" Binding="{Binding Type}" />
         <local:DataGridReceiptInfoColumn Header="Система налогооблажения" Binding="{Binding TaxationSystem}" />
         <local:DataGridReceiptInfoColumn Header="Контакт покупателя" Binding="{Binding BuyerContact}" />
+        <local:DataGridReceiptInfoColumn Header="Кассир" Binding="{Binding OperatorName}" />
+        <local:DataGridReceiptInfoColumn Header="ИНН кассира" Binding="{Binding OperatorInn}" />
+        <local:DataGridReceiptInfoColumn Header="Электронный адрес отправителя" Binding="{Binding SenderAddress}" />
+        <local:DataGridReceiptInfoColumn Header="Место расчета" Binding="{Binding RetailPlace}" />
+        <local:DataGridReceiptInfoColumn Header="Адрес расчета" Binding="{Binding RetailAddress}" />
         <local:DataGridReceiptInfoColumn Header="Наличная оплата" Binding="{Binding CashSum}" />
         <local:DataGridReceiptInfoColumn Header="Безналичная оплата" Binding="{Binding NonCashSum}" />
         <local:DataGridReceiptInfoColumn Header="Сумма аванса" Binding="{Binding AdvanceSum}" />

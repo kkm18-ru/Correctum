@@ -27,18 +27,23 @@ namespace Correctum.Utils.Integrations
         public bool OpenReceipt(Receipt doc, OpenReceiptArgs args)
         {
             var corrData = Array.Empty<byte>();
-            if(DocFormat >= 110) GenerateCorrectionData(doc.Created.Value, args.Act, out corrData);
-            var opcode = doc.Type.Value.ToCorrection(DocFormat);
+            if (!LoginOperator(doc.OperatorName!, doc.OperatorInn?.ToString() ?? "")) return false;
+            if (DocFormat >= 110) GenerateCorrectionData(doc.Created!.Value, args.Act, out corrData);
+            var opcode = doc.Type!.Value.ToCorrection(DocFormat);
             if (opcode is null) return false;
             SetInteger(65545, opcode.Value);
             SetBoolean(65572, true);
-            SetInteger(1055, (uint)doc.TaxationSystem);
+            if(doc.TaxationSystem is not null)
+                SetInteger(1055, (uint)doc.TaxationSystem);
+            if(doc.RetailPlace is not null) 
+                SetString(1187, doc.RetailPlace);
+            if(doc.RetailAddress is not null) 
+                SetString(1009, doc.RetailAddress);
 
             if (args.IsInternetPayment)
             {
                 SetBoolean(1125, true);
-                SetString(1008, doc.BuyerContact);
-                SetString(1187, args.HttpAddress);
+                SetString(1008, doc.BuyerContact!);
             }
             else if (ConfigurationVersion >= new Version(5, 17))
             {
@@ -69,13 +74,13 @@ namespace Correctum.Utils.Integrations
 
         public bool AddPosition(Position pos)
         {
-            SetString(65631, pos.Name);
-            SetDouble(65632, (double)pos.Price);
-            SetDouble(65633, (double)pos.Quantity.Value);
-            SetDouble(65634, (double)pos.Cost);
-            SetInteger(65569, (uint)pos.TaxRate);
-            SetInteger(1212, (uint)pos.Type);
-            SetInteger(1214, (uint)pos.CalcMethod);
+            SetString(65631, pos.Name!);
+            SetDouble(65632, (double)pos.Price!.Value);
+            SetDouble(65633, (double)pos.Quantity!);
+            SetDouble(65634, (double)pos.Cost!.Value);
+            SetInteger(65569, (uint)pos.TaxRate!);
+            SetInteger(1212, (uint)pos.Type!);
+            SetInteger(1214, (uint)pos.CalcMethod!);
             if (DocFormat == 120)
                 SetInteger(2108, (uint)pos.Unit!);
             return registration(handle) == 0;
@@ -87,20 +92,20 @@ namespace Correctum.Utils.Integrations
             return receiptTotal(handle) == 0;
         }
 
-        public bool Payment(uint type, Currency sum)
+        public bool Payment(uint type, Currency? sum)
         {
-            if ((ulong)sum == 0) return true;
+            if (sum is null || (ulong)sum.Value == 0) return true;
             SetInteger(65564, type);
-            SetDouble(65565, (double)sum);
+            SetDouble(65565, (double)sum.Value);
             return payment(handle) == 0;
         }
 
         public bool Payment(Receipt receipt) =>
-            Payment(0, receipt.CashSum.Value) &&
-            Payment(1, receipt.NonCashSum.Value) &&
-            Payment(2, receipt.AdvanceSum.Value) &&
-            Payment(3, receipt.CreditSum.Value) &&
-            Payment(4, receipt.ProvisionSum.Value);
+            Payment(0, receipt.CashSum) &&
+            Payment(1, receipt.NonCashSum) &&
+            Payment(2, receipt.AdvanceSum) &&
+            Payment(3, receipt.CreditSum) &&
+            Payment(4, receipt.ProvisionSum);
 
         public bool CloseReceipt() => closeReceipt(handle) == 0;
 
@@ -125,10 +130,9 @@ namespace Correctum.Utils.Integrations
         }
     }
 
-    public readonly struct OpenReceiptArgs(bool internet, string site, string act, int corr)
+    public readonly struct OpenReceiptArgs(bool internet, string act, int corr)
     {
         public bool IsInternetPayment { get; } = internet;
-        public string HttpAddress { get; } = site;
         public string Act { get; } = string.IsNullOrWhiteSpace(act) ? " " : act;
         public int CorrType { get; } = corr;
     }

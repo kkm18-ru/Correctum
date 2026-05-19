@@ -15,23 +15,28 @@ public sealed class SqliteExportViewModel : FileExportViewModel
 
     private const string InitializationQuery = """
         CREATE TABLE receipt (
-            id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            devid    TEXT,
-            drive    TEXT,
-            shift    INTEGER,
-            doc      INTEGER,
-            req      INTEGER,
-            date     TEXT,
-            "type"   INTEGER,
-            taxation INTEGER,
-            sign     TEXT,
-            buyer    TEXT,
-            cash     INTEGER,
-            ecash    INTEGER,
-            pre      INTEGER,
-            post     INTEGER,
-            other    INTEGER,
-            total    INTEGER
+            id         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            devid      TEXT,
+            drive      TEXT,
+            shift      INTEGER,
+            doc        INTEGER,
+            req        INTEGER,
+            date       TEXT,
+            "type"     INTEGER,
+            taxation   INTEGER,
+            sign       TEXT,
+            buyer      TEXT,
+            address    TEXT,
+            email      TEXT,
+            place      TEXT,
+            cashier    TEXT,
+            cashierInn TEXT,
+            cash       INTEGER,
+            ecash      INTEGER,
+            pre        INTEGER,
+            post       INTEGER,
+            other      INTEGER,
+            total      INTEGER
         );
 
         CREATE TABLE position (
@@ -87,8 +92,8 @@ file static class SqliteExportViewModelTools
         public Task<uint> AddReceiptAsync(Receipt data, IDbTransaction tr)
         {
             const string Query = """
-            INSERT INTO receipt (devid, drive, shift, doc, req, date, type, sign, cash, ecash, pre, post, other, total, buyer, taxation) 
-            VALUES (@RegNumber, @FnSerial, @Session, @DocId, @DocInSession, @DateTime, @Operaion, @FiscalSign, @CashSum, @NonCashSum, @AdvanceSum, @CreditSum, @OtherSum, @TotalSum, @BuyerContact, @Taxation) 
+            INSERT INTO receipt (devid, drive, shift, doc, req, date, type, sign, cash, ecash, pre, post, other, total, buyer, taxation, address, email, place, cashier, cashierInn) 
+            VALUES (@RegNumber, @FnSerial, @Session, @DocId, @DocInSession, @DateTime, @Operaion, @FiscalSign, @CashSum, @NonCashSum, @AdvanceSum, @CreditSum, @OtherSum, @TotalSum, @BuyerContact, @Taxation, @RetailAddress, @SenderAddress, @RetailPlace, @Cashier, @CashierInn) 
             RETURNING id;
             """;
             var parameters = new DynamicParameters();
@@ -99,7 +104,12 @@ file static class SqliteExportViewModelTools
             parameters.Add("@DocId", data.DocNumber, DbType.UInt32);
             parameters.Add("@DateTime", data.Created?.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss"), DbType.String);
             parameters.Add("@Operaion", (uint?)data.Type, DbType.UInt32);
-            parameters.Add("@BuyerContact", string.IsNullOrWhiteSpace(data.BuyerContact) ? null : data.BuyerContact, DbType.String);
+            parameters.Add("@BuyerContact", data.BuyerContact, DbType.String);
+            parameters.Add("@RetailAddress", data.RetailAddress, DbType.String);
+            parameters.Add("@SenderAddress", data.SenderAddress, DbType.String);
+            parameters.Add("@RetailPlace", data.RetailPlace, DbType.String);
+            parameters.Add("@Cashier", data.OperatorName, DbType.String);
+            parameters.Add("@CashierInn", data.OperatorInn?.ToString(), DbType.String);
             parameters.Add("@Taxation", (uint?)data.TaxationSystem, DbType.UInt32);
             parameters.Add("@FiscalSign", data.DocSign?.ToString(), DbType.String);
             parameters.Add("@CashSum", (ulong?)data.CashSum, DbType.UInt64);

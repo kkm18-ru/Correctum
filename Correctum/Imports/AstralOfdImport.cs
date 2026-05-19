@@ -12,7 +12,7 @@ namespace Correctum.Imports;
 [ImportInfo("Астрал ОФД")]
 [TextBox("Идентификатор сессии", nameof(SessionId))]
 [DateRange("Период импортирования", nameof(DateRange))]
-[CheckComboBox("Организации", nameof(Organizations), nameof(SelectedOrganizations))]
+[CheckComboBox("Организации", nameof(SelectedOrganizations), nameof(Organizations))]
 [AuthorizationProperties(nameof(SessionId))]
 public sealed class AstralOfdImport : OfdImport<AstralOfdClient>
 {
@@ -21,8 +21,10 @@ public sealed class AstralOfdImport : OfdImport<AstralOfdClient>
     public ObservableCollection<AstralOfdOrganization> Organizations { get; } = [];
     public ObservableCollection<AstralOfdOrganization> SelectedOrganizations { get; } = [];
 
-    public override async IAsyncEnumerable<Receipt> ImportAsync([EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<Receipt> ImportAsync
+        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        progress.ReportMaximum((uint)(SelectedOrganizations.Count * DateRange.Count));
         foreach(var org in SelectedOrganizations)
         {
             foreach (var dt in DateRange)
@@ -34,6 +36,7 @@ public sealed class AstralOfdImport : OfdImport<AstralOfdClient>
 
                 await foreach (var ticket in tickets)
                     yield return await client.GetReceiptAsync(ticket, cancellationToken);
+                progress.ReportIncrement();
             }
         }
     }

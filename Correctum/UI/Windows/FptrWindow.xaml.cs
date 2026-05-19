@@ -1,14 +1,18 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows;
-using Correctum.Core.Models;
 using Correctum.Core.Enums;
+using Correctum.Core.Models;
+using Correctum.Core.ValueObjects;
 using Correctum.Enums;
+using Correctum.Exceptions;
 using Correctum.UI.Windows.Types;
 using Correctum.Utils;
 using Correctum.Utils.Integrations;
-using Correctum.Core.ValueObjects;
+using Correctum.Validators;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Windows;
 
 namespace Correctum.UI.Windows;
 
@@ -16,10 +20,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
 {
     public int CorrectionType { get; set => SetField(ref field, value); }
     public string Act { get; set => SetField(ref field, value); }
-    public string OperatorName { get; set => SetField(ref field, value); }
-    public string OperatorInn { get; set => SetField(ref field, value); }
     public bool IsInternet { get; set => SetField(ref field, value); }
-    public string SiteAddress { get; set => SetField(ref field, value); }
     public int CurrentIndex { get; private set => SetField(ref field, value); }
     public int SettingIndex { get; set => SetField(ref field, value); }
 
@@ -29,6 +30,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     public bool CanRun => State != 0 && State < ConductingReceiptState.TestConducting;
     public string RunButtonText => State == ConductingReceiptState.Running ? "Пауза" : "Запуск";
     public string ConnectionButtonText => State == ConductingReceiptState.Disconnected ? "Подключиться" : "Отключиться";
+    private readonly static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
     private ConductingReceiptState State
     {
@@ -50,8 +52,9 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     
     public FptrWindow()
     {
-        Act = OperatorName = OperatorInn = SiteAddress = "";
-        _handle = new FptrHandle();
+        Act = "";
+        _handle = new FptrHandle(); 
+        CurrentIndex = 0;
         InitializeComponent();
     }
 
@@ -99,7 +102,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     private bool ConductingReceipt(Receipt data, CancellationToken token = default)
     {
         token.ThrowIfCancellationRequested();
-        OpenReceiptArgs openArgs = new(IsInternet, SiteAddress, Act, CorrectionType);
+        OpenReceiptArgs openArgs = new(IsInternet, Act, CorrectionType);
         if (!_handle.OpenReceipt(data, openArgs)) return false;
 
         foreach (var item in data.Items)
@@ -109,7 +112,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
         }
         
         token.ThrowIfCancellationRequested();
-        if (!_handle.SetTotal(data.TotalSum.Value)) return false;
+        if (!_handle.SetTotal(data.TotalSum!.Value)) return false;
         
         token.ThrowIfCancellationRequested();
         if (!_handle.Payment(data)) return false;
@@ -119,16 +122,6 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     }
 
     private string CaptionError => $"Произошла ошибка (Код: {_handle.ErrorCode})";
-
-    private bool LoginOperator()
-    {
-        if (string.IsNullOrWhiteSpace(OperatorName)) return true;
-        if (_handle.LoginOperator(OperatorName, OperatorInn)) return true;
-        
-        MessageBox.Show("Не удалось зарегистрировать кассира", 
-            CaptionError, MessageBoxButton.OK, MessageBoxImage.Hand);
-        return false;
-    }
 
     private bool ConnectKkt()
     {
@@ -190,23 +183,35 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
             case ConductingReceiptState.Idle:
             case ConductingReceiptState.Suspended:
                 _cancelSource = new CancellationTokenSource();
-                if (State == ConductingReceiptState.Idle) CurrentIndex = 0;
                 State = ConductingReceiptState.Running;
 
                 void Function()
                 {
                     try
                     {
-                        while (CurrentIndex < Workspace.Instance.Receipts.Count)
+                        Receipt[] receipts;
+                        using (var ctx = new StorageContext())
+                        {
+                            ctx.Positions.Load();
+                            receipts = [.. ctx.Receipts];
+                        }
+                        foreach (var receipt in receipts)
+                            ReceiptValidator.Validate(receipt, (int)_handle.DocFormat);
+                        while (CurrentIndex < receipts.Length)
                         {
                             _cancelSource.Token.ThrowIfCancellationRequested();
                             _handle.ProcessSession(true);
-                            if (ConductingReceipt(Workspace.Instance.Receipts[CurrentIndex], _cancelSource.Token))
+                            if (ConductingReceipt(receipts[CurrentIndex], _cancelSource.Token))
                                 CurrentIndex++;
                             else _handle.CancelReceipt();
                             if (CurrentIndex > 0 && CurrentIndex % Configuration.Current.Fptr.SizeStack == 0)
                                 Thread.Sleep(60000 * Configuration.Current.Fptr.StackIntervalMinutes);
                         }
+                    }
+                    catch (ModelValidationException ex)
+                    {
+                        logger.Warn(ex, $"{{ModelType}}{{ModelId}}: {ex.Message}", ex.Type, ex.ModelId);
+                        MessageBox.Show(ex.Message, "Проверка ФД", 0, MessageBoxImage.Warning);
                     }
                     catch (OperationCanceledException)
                     {
@@ -235,7 +240,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                 _handle.Disconnect();
                 return;
             }
-            if (LoginOperator()) State = ConductingReceiptState.Idle;
+            State = ConductingReceiptState.Idle;
         }
         else
         {
@@ -252,9 +257,24 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
             "Отменить тестовые чеки?";
             
         CurrentIndex = 0;
-        var count = Math.Min(defaultCount, Workspace.Instance.Receipts.Count);
-        var slice = Workspace.Instance.Receipts.ToArray()[..count];
-        
+        int count;
+        Receipt[] slice = [];
+        using (var ctx = new StorageContext()) {
+            ctx.Positions.Load();
+            try
+            {
+                foreach (var receipt in ctx.Receipts)
+                    ReceiptValidator.Validate(receipt, (int)_handle.DocFormat);
+            }
+            catch(ModelValidationException ex)
+            {
+                logger.Warn(ex, $"{{ModelType}}{{ModelId}}: {ex.Message}", ex.Type, ex.ModelId);
+                MessageBox.Show(ex.Message, "Проверка ФД", 0, MessageBoxImage.Warning);
+            }
+            count = Math.Min(defaultCount, ctx.Receipts.Count());
+            slice = ctx.Receipts.ToArray()[..count];
+        }
+
         State = ConductingReceiptState.TestConducting;
 
         void Function()
@@ -274,18 +294,16 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
             for (uint i = 0; i < count; i++)
             {
                 var info = _handle.GetReceiptInfo(docNumb + i);
-                var receipt = slice[i] with
+                var receipt = slice[i].Clone();
+                receipt.DocSign = FiscalSign.Parse(info.Item1);
+                receipt.Created = info.Item2;
+                receipt.Type = slice[i].Type switch
                 {
-                    DocSign = FiscalSign.Parse(info.Item1),
-                    Created = info.Item2,
-                    Type = slice[i].Type switch
-                    {
-                        ReceiptType.Income => ReceiptType.RefundIncome,
-                        ReceiptType.RefundIncome => ReceiptType.Income,
-                        ReceiptType.Outcome => ReceiptType.RefundOutcome,
-                        ReceiptType.RefundOutcome => ReceiptType.Outcome,
-                        _ => throw new NotImplementedException()
-                    }
+                    ReceiptType.Income => ReceiptType.RefundIncome,
+                    ReceiptType.RefundIncome => ReceiptType.Income,
+                    ReceiptType.Outcome => ReceiptType.RefundOutcome,
+                    ReceiptType.RefundOutcome => ReceiptType.Outcome,
+                    _ => throw new NotImplementedException()
                 };
                 _handle.ProcessSession(true);
                 if (!ConductingReceipt(receipt))

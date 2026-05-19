@@ -10,6 +10,10 @@
         <vm:MainMenuViewModel/>
     </Menu.DataContext>
     <MenuItem Header="Файл">
+        <MenuItem Header="Создать" Command="{Binding CreateContextCommand}"/>
+        <MenuItem Header="Открыть" Command="{Binding LoadContextCommand}"/>
+        <MenuItem Header="Сохранить как..." Command="{Binding SaveAsContextCommand}"/>
+        <Separator/>
         <MenuItem Header="Импорт" ItemsSource="{Binding Imports, Mode=OneTime}">
             <MenuItem.ItemContainerStyle>
                 <Style TargetType="MenuItem">
@@ -28,6 +32,17 @@
         <Separator/>
         <MenuItem Header="Настройки" Command="{Binding ShowSettingsCommand}"/>
         <MenuItem Header="Выход" Command="{Binding QuitCommand}"/>
+    </MenuItem>
+    <MenuItem Header="Действия" ItemsSource="{Binding Actions, Mode=OneTime}">
+        <MenuItem.ItemContainerStyle>
+            <Style TargetType="MenuItem">
+                <Setter Property="Header" Value="{Binding DisplayName}" />
+                <Setter Property="Command" Value="{Binding DataContext.OpenActionCommand, RelativeSource={RelativeSource AncestorType=Menu}}" />
+                <Setter Property="CommandParameter" Value="{Binding}"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            </Style>
+        </MenuItem.ItemContainerStyle>
     </MenuItem>
     <MenuItem Header="Отчеты" ItemsSource="{Binding Reports, Mode=OneTime}">
         <MenuItem.ItemContainerStyle>

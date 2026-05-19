@@ -165,6 +165,11 @@ internal readonly struct AstralOfdReceiptDto
     [JsonPropertyName("kktRegId")] public string? RegId { get; init; }
     [JsonPropertyName("shiftNumber")] public uint? SessionId { get; init; }
     [JsonPropertyName("fiscalDriveNumber")] public string? StorageId { get; init; }
+    [JsonPropertyName("sellerAddress")] public string? SenderAddress { get; init; }
+    [JsonPropertyName("retailPlace")] public string? RetailPlace { get; init; }
+    [JsonPropertyName("retailAddress")] public string? RetailAddress { get; init; }
+    [JsonPropertyName("operator")] public string? OperatorName { get; init; }
+    [JsonPropertyName("operatorInn")] public string? OperatorInn { get; init; }
     [JsonPropertyName("taxationType")] public int? TaxationSystem { get; init; }
     [JsonPropertyName("operationType")] public int? Type { get; init; }
     [JsonPropertyName("items")] public AstralOfdReceiptItemDto[]? Items { get; init; }
@@ -188,7 +193,12 @@ internal readonly struct AstralOfdReceiptDto
         TaxationSystem = (TaxationSystems?)TaxationSystem,
         TotalSum = TotalSum,
         Type = (ReceiptType?)Type,
-        Items = Items?.Select(i => i.ToModel()).ToArray() ?? [],
+        Items = Items?.Select(i => i.ToModel()).ToList() ?? [],
+        RetailPlace = RetailPlace,
+        RetailAddress = RetailAddress,
+        SenderAddress = SenderAddress,
+        OperatorName = OperatorName,
+        OperatorInn = OperatorInn is null ? null : Inn.Parse(OperatorInn)
     };
 }
 

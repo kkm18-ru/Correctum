@@ -18,17 +18,21 @@ partial class ReceiptGrid
         var pathes = (string[])e.Data.GetData(DataFormats.FileDrop);
         try
         {
-            foreach (var path in pathes)
+            using (var ctx = new StorageContext())
             {
-                switch (Path.GetExtension(path))
+                foreach (var path in pathes)
                 {
-                    case ".sqlite":
-                        var import = new SqliteImport { Path = path };
-                        await foreach(var receipt in import.ImportAsync(CancellationToken.None))
-                            Workspace.Instance.Receipts.Add(receipt);
-                        break;
-                    default: return;
+                    switch (Path.GetExtension(path))
+                    {
+                        case ".sqlite":
+                            var import = new SqliteImport { Path = path };
+                            await foreach (var receipt in import.ImportAsync(new(), CancellationToken.None))
+                                ctx.Receipts.Add(receipt);
+                            break;
+                        default: return;
+                    }
                 }
+                await ctx.SaveChangesAsync();
             }
             ((MainWindowViewModel)Application.Current.MainWindow.DataContext).UpdatePanel();
         }
