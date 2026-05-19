@@ -19,8 +19,28 @@ public sealed class DateRangeAttribute(
 ) : Attribute;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class CheckComboBoxAttribute(
+public sealed class CheckBoxAttribute(
     string displayName, 
+    string propertyName
+) : Attribute;
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public sealed class CheckComboBoxAttribute(
+    string displayName,
     string selectedItemsPropertyName, 
     string itemsSourcePropertyName
+) : Attribute;
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public sealed class ComboBoxAttribute(
+    string displayName,
+    string selectedPropertyName, 
+    string itemsSourcePropertyName
+) : Attribute;
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public sealed class LocalizedComboBoxAttribute(
+    string displayName,
+    string selectedPropertyName, 
+    string localizedItemsPropertyName
 ) : Attribute;

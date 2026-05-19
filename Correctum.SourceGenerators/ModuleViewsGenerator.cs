@@ -120,6 +120,75 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
                     Children.Add(ccb);
                 }}
         """;
+    const string ComboBox = """
+                {{
+                    var cb = new global::System.Windows.Controls.ComboBox();
+                    cb.SetBinding(global::System.Windows.Controls.ComboBox.ItemsSourceProperty, "{1}");
+                    cb.SetBinding(global::System.Windows.Controls.ComboBox.SelectedItemProperty, "{0}");
+                    if({2})
+                    {{
+                        global::System.Windows.Data.Binding b;
+                        if({3})
+                        {{
+                            b = new global::System.Windows.Data.Binding("Authorizing");
+                            b.Converter = invertBoolConverter;
+                        }}
+                        else
+                        {{
+                            b = new global::System.Windows.Data.Binding("Authorized");
+                        }}
+                        cb.SetBinding(global::System.Windows.Controls.ComboBox.IsEnabledProperty, b);
+                    }}
+                    Children.Add(cb);
+                }}
+        """;
+    const string LocalizedComboBox = """
+                {{
+                    var cb = new global::System.Windows.Controls.ComboBox()
+                    {{
+                        DisplayMemberPath = nameof(global::Correctum.Utils.EnumLocale<>.Locale),
+                        SelectedValuePath = nameof(global::Correctum.Utils.EnumLocale<>.Value),
+                        ItemsSource = global::Correctum.Utils.EnumLocales.{1}
+                    }};
+                    cb.SetBinding(global::System.Windows.Controls.ComboBox.SelectedValueProperty, "{0}");
+                    if({2})
+                    {{
+                        global::System.Windows.Data.Binding b;
+                        if({3})
+                        {{
+                            b = new global::System.Windows.Data.Binding("Authorizing");
+                            b.Converter = invertBoolConverter;
+                        }}
+                        else
+                        {{
+                            b = new global::System.Windows.Data.Binding("Authorized");
+                        }}
+                        cb.SetBinding(global::System.Windows.Controls.ComboBox.IsEnabledProperty, b);
+                    }}
+                    Children.Add(cb);
+                }}
+        """;
+    const string CheckBox = """
+                {{
+                    var cb = new global::System.Windows.Controls.CheckBox {{ Content = "{1}" }};
+                    cb.SetBinding(global::System.Windows.Controls.CheckBox.IsCheckedProperty, "{0}");
+                    if({2})
+                    {{
+                        global::System.Windows.Data.Binding b;
+                        if({3})
+                        {{
+                            b = new global::System.Windows.Data.Binding("Authorizing");
+                            b.Converter = invertBoolConverter;
+                        }}
+                        else
+                        {{
+                            b = new global::System.Windows.Data.Binding("Authorized");
+                        }}
+                        cb.SetBinding(global::System.Windows.Controls.CheckBox.IsEnabledProperty, b);
+                    }}
+                    Children.Add(cb);
+                }}
+        """;
     const string AuthButton = """
                 {
                     var btn = new global::System.Windows.Controls.Button();
@@ -138,7 +207,7 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(FilterSyntaxNode, Transform)
             .Where(t => t.@using)
             .Select((t, _) => t.Item1);
-
+        
         context.RegisterSourceOutput(context.CompilationProvider.Combine(provider.Collect()),
             (ctx, t) => GenerateViews(ctx, t.Left, t.Right));
 
@@ -150,10 +219,9 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
     {
         if (node is not ClassDeclarationSyntax cds) return false;
         if (cds.AttributeLists is not { Count: > 0 } attrLists) return false;
-        if (!attrLists.Any(list => list.Attributes.Any(a => a.ToString().Contains("ImportInfo"))))
+        if (!attrLists.Any(list => list.Attributes.Any(a => a.ToString().Contains("ImportInfo"))) &&
+            !attrLists.Any(list => list.Attributes.Any(a => a.ToString().Contains("ActionInfo"))))
             return false;
-        if (cds.BaseList is not BaseListSyntax baseList) return false;
-        if (!baseList.Types.Any(t => t.ToString().Contains("Import"))) return false;
         return true;
     }
 
@@ -169,7 +237,9 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
                 if (context.SemanticModel.GetSymbolInfo(attribute).Symbol is not IMethodSymbol attributeSymbol)
                     continue;
 
-                if (attributeSymbol.ContainingType.ToDisplayString() != "Correctum.Attributes.ImportInfoAttribute")
+                var type = attributeSymbol.ContainingType.ToDisplayString();
+                if (type != "Correctum.Attributes.ImportInfoAttribute" && 
+                    type != "Correctum.Attributes.ActionInfoAttribute")
                     continue;
 
                 return (cds, true);
@@ -196,8 +266,12 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
             var model = compilation.GetSemanticModel(cds.SyntaxTree);
             if (model.GetDeclaredSymbol(cds) is not INamedTypeSymbol symbol)
                 continue;
-            if (!symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Abstractions.IImport"))
-                continue;
+            var @namespace = string.Empty;
+            if (symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Abstractions.IImport"))
+                @namespace = "Imports";
+            else if (symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Abstractions.IAction"))
+                @namespace = "Actions";
+            else continue;
 
             var authorizable = symbol.BaseType?.ToDisplayString().StartsWith("Correctum.Abstractions.OfdImport") ?? false;
 
@@ -210,6 +284,9 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
                     case "Correctum.Attributes.ModuleViewProperty.TextBoxAttribute":
                     case "Correctum.Attributes.ModuleViewProperty.DateRangeAttribute":
                     case "Correctum.Attributes.ModuleViewProperty.CheckComboBoxAttribute":
+                    case "Correctum.Attributes.ModuleViewProperty.ComboBoxAttribute":
+                    case "Correctum.Attributes.ModuleViewProperty.LocalizedComboBoxAttribute":
+                    case "Correctum.Attributes.ModuleViewProperty.CheckBoxAttribute":
                         var propName = (string)attribute.ConstructorArguments[1].Value!;
                         var displayName = (string)attribute.ConstructorArguments[0].Value!;
                         var attrClass = attribute.AttributeClass!.ToDisplayString();
@@ -245,7 +322,7 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
             foreach (var item in dict.Where(i => !i.Value.ForAuth))
                 AppendBuilder(item, authorizable, builder);
 
-            var text = string.Format(ViewTemplate, "Imports", cds.Identifier.Text, builder.ToString());
+            var text = string.Format(ViewTemplate, @namespace, cds.Identifier.Text, builder.ToString());
             var source = SourceText.From(text, Encoding.UTF8);
             context.AddSource($"{cds.Identifier.Text}View.g.cs", source);
         }
@@ -276,6 +353,23 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
                 builder.AppendLine(string.Format(CheckComboBox, pair.Key, pair.Value.Arguments[0], authorizable.ToString().ToLowerInvariant(), pair.Value.ForAuth.ToString().ToLowerInvariant()));
                 builder.AppendLine(Separator);
                 break;
+            case "ComboBox":
+                builder.AppendLine();
+                builder.AppendLine(string.Format(Label, pair.Value.DisplayName));
+                builder.AppendLine(string.Format(ComboBox, pair.Key, pair.Value.Arguments[0], authorizable.ToString().ToLowerInvariant(), pair.Value.ForAuth.ToString().ToLowerInvariant()));
+                builder.AppendLine(Separator);
+                break;
+            case "LocalizedComboBox":
+                builder.AppendLine();
+                builder.AppendLine(string.Format(Label, pair.Value.DisplayName));
+                builder.AppendLine(string.Format(LocalizedComboBox, pair.Key, pair.Value.Arguments[0], authorizable.ToString().ToLowerInvariant(), pair.Value.ForAuth.ToString().ToLowerInvariant()));
+                builder.AppendLine(Separator);
+                break;
+            case "CheckBox":
+                builder.AppendLine();
+                builder.AppendLine(string.Format(CheckBox, pair.Key, pair.Value.DisplayName, authorizable.ToString().ToLowerInvariant(), pair.Value.ForAuth.ToString().ToLowerInvariant()));
+                builder.AppendLine(Separator);
+                break;
             default: break;
         }
     }
@@ -291,9 +385,11 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
                 continue;
             var typePath = $"{symbol.ContainingNamespace.ToDisplayString()}.{cds.Identifier.Text}";
 
-            if (!symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Abstractions.IImport"))
-                continue;
-            builder.AppendLine(@$"            Add<{typePath}, Correctum.Views.Imports.{cds.Identifier.Text}View>();");
+            if (symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Abstractions.IImport"))
+                builder.AppendLine(@$"            Add<{typePath}, Correctum.Views.Imports.{cds.Identifier.Text}View>();");
+
+            if (symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Abstractions.IAction"))
+                builder.AppendLine(@$"            Add<{typePath}, Correctum.Views.Actions.{cds.Identifier.Text}View>();");
         }
         var text = string.Format(Template, builder.ToString());
         var source = SourceText.From(text, Encoding.UTF8);
