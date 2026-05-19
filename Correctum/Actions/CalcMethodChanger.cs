@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace Correctum.Actions;
 
-//[ActionInfo("Смена метода расчета")]
+[ActionInfo("Смена метода расчета")]
 [CheckBox("Старое значение отсутствует", nameof(IsNullOldValue))]
 [CheckBox("Значение будет отсутствовать", nameof(IsNullNewValue))]
 [LocalizedComboBox("Найти", nameof(OldValue), nameof(Utils.EnumLocales.PositionPayments))]
