@@ -5,6 +5,8 @@ namespace Correctum.Models;
 
 public readonly struct ReceiptView(Receipt model)
 {
+    public bool Marked { get; } = model.Marked;
+    public bool ReadOnly { get; } = model.IsReadOnly;
     public string? RegId { get; } = model.RegId;
     public string? StorageId { get; } = model.StorageId;
     public string? DocNumber { get; } = model.DocNumber?.ToString();

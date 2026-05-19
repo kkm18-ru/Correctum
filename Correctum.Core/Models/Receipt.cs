@@ -12,6 +12,7 @@ namespace Correctum.Core.Models
         /// Внутренний идентификатор
         /// </summary>
         public int Id { get; set; }
+        public bool Marked { get; set; }
         /// <summary>
         /// Регистрационный номер ККТ
         /// </summary>
@@ -85,6 +86,7 @@ namespace Correctum.Core.Models
         public string? SenderAddress { get; set; }
         public string? OperatorName { get; set; }
         public Inn? OperatorInn { get; set; }
+        public bool IsReadOnly { get; set; }
 
         public Receipt Clone() => new()
         {
