@@ -25,6 +25,9 @@ public sealed partial class MainMenuViewModel : BindableBase
 
     public ICommand OpenReportCommand { get; } = new RelayCommand<ReportDescriptor>(OpenReport);
     public ICommand OpenImportCommand { get; } = new RelayCommand<ImportDescriptor>(OpenImport);
+    public ICommand CreateContextCommand { get; } = new ActionCommand(CreateDbContext);
+    public ICommand LoadContextCommand { get; } = new ActionCommand(SetPathContext);
+    public ICommand SaveAsContextCommand { get; } = new ActionCommand(ChangePathContext);
     public ICommand OpenExportMasterCommand { get; } = new RelayCommand<Type>(OpenExportMaster);
     public ICommand ShowFptrCommand { get; } = new ActionCommand(() => new FptrWindow().ShowDialog());
     public ICommand ShowPasteCommand { get; } = new ActionCommand(() => new PasteWindow().ShowDialog());
@@ -33,6 +36,39 @@ public sealed partial class MainMenuViewModel : BindableBase
     public ICommand OpenLinkCommand { get; } = new RelayCommand<string>(OpenLink);
     
     private static void OpenLink(string url) => Process.Start(ExplorerPath, url);
+
+    private static void ChangePathContext()
+    {
+        var dialog = new SaveFileDialog
+        {
+            Filter = $"{StorageContext.DisplayNameFileExtension}|*{StorageContext.FileExtension}"
+        };
+        if (dialog.ShowDialog() ?? false)
+        {
+            File.Copy(StorageContext.ConnectionString, dialog.FileName);
+            StorageContext.SetContextPath(dialog.FileName);
+        }
+    }
+
+    private static void CreateDbContext()
+    {
+        var dialog = new SaveFileDialog
+        {
+            Filter = $"{StorageContext.DisplayNameFileExtension}|*{StorageContext.FileExtension}"
+        };
+        if(dialog.ShowDialog() ?? false)
+            StorageContext.SetContextPath(dialog.FileName);
+    }
+
+    private static void SetPathContext()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = $"{StorageContext.DisplayNameFileExtension}|*{StorageContext.FileExtension}"
+        };
+        if (dialog.ShowDialog() ?? false)
+            StorageContext.SetContextPath(dialog.FileName);
+    }
 
     private static void OpenImport(ImportDescriptor descriptor) =>
         new ImportWindow(descriptor.DisplayName, descriptor.Function.Invoke()).ShowDialog();

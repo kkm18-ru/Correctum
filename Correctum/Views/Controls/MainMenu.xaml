@@ -10,6 +10,10 @@
         <vm:MainMenuViewModel/>
     </Menu.DataContext>
     <MenuItem Header="Файл">
+        <MenuItem Header="Создать" Command="{Binding CreateContextCommand}"/>
+        <MenuItem Header="Открыть" Command="{Binding LoadContextCommand}"/>
+        <MenuItem Header="Сохранить как..." Command="{Binding SaveAsContextCommand}"/>
+        <Separator/>
         <MenuItem Header="Импорт" ItemsSource="{Binding Imports, Mode=OneTime}">
             <MenuItem.ItemContainerStyle>
                 <Style TargetType="MenuItem">
