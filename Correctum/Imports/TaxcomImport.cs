@@ -14,7 +14,7 @@ namespace Correctum.Imports;
 [TextBox("Пароль", nameof(Password))]
 [TextBox("Номер договора", nameof(Agreement))]
 [DateRange("Период импортирования", nameof(DateRange))]
-[CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
+[CheckComboBox("ККТ", nameof(SelectedDevices), nameof(Devices))]
 [AuthorizationProperties(nameof(Login), nameof(Password), nameof(Agreement))]
 public sealed class TaxcomImport : OfdImport<TaxcomClient>
 {

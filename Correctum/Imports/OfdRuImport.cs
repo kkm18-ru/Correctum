@@ -12,7 +12,7 @@ namespace Correctum.Imports;
 [ImportInfo("OFD.ru")]
 [TextBox("Токен", nameof(Token))]
 [DateRange("Период импортирования", nameof(DateRange))]
-[CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
+[CheckComboBox("ККТ", nameof(SelectedDevices), nameof(Devices))]
 [AuthorizationProperties(nameof(Token))]
 public sealed class OfdRuImport : OfdImport<OfdRuClient>
 {

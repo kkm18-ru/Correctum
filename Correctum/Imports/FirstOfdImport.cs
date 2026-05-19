@@ -13,7 +13,7 @@ namespace Correctum.Imports;
 [TextBox("Логин", nameof(Login))]
 [TextBox("Пароль", nameof(Password))]
 [DateRange("Период импортирования", nameof(DateRange))]
-[CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
+[CheckComboBox("ККТ", nameof(SelectedDevices), nameof(Devices))]
 [AuthorizationProperties(nameof(Login), nameof(Password))]
 public sealed class FirstOfdImport : OfdImport<FirstOfdClient>
 {

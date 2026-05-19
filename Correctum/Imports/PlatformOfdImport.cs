@@ -14,7 +14,7 @@ namespace Correctum.Imports;
 [TextBox("Токен доступа", nameof(AccessToken))]
 [TextBox("Токен обновления", nameof(RefreshToken))]
 [DateRange("Период импортирования", nameof(DateRange))]
-[CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
+[CheckComboBox("ККТ", nameof(SelectedDevices), nameof(Devices))]
 [AuthorizationProperties(nameof(SessionId), nameof(AccessToken), nameof(RefreshToken))]
 public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
 {

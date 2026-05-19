@@ -101,8 +101,8 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
     const string CheckComboBox = """
                 {{
                     var ccb = new global::Xceed.Wpf.Toolkit.CheckComboBox();
-                    ccb.SetBinding(global::Xceed.Wpf.Toolkit.CheckComboBox.ItemsSourceProperty, "{0}");
-                    ccb.SetBinding(global::Xceed.Wpf.Toolkit.CheckComboBox.SelectedItemsOverrideProperty, "{1}");
+                    ccb.SetBinding(global::Xceed.Wpf.Toolkit.CheckComboBox.ItemsSourceProperty, "{1}");
+                    ccb.SetBinding(global::Xceed.Wpf.Toolkit.CheckComboBox.SelectedItemsOverrideProperty, "{0}");
                     if({2})
                     {{
                         global::System.Windows.Data.Binding b;

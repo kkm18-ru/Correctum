@@ -21,6 +21,6 @@ public sealed class DateRangeAttribute(
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public sealed class CheckComboBoxAttribute(
     string displayName, 
-    string itemsSourcePropertyName,
-    string selectedItemsPropertyName
+    string selectedItemsPropertyName, 
+    string itemsSourcePropertyName
 ) : Attribute;

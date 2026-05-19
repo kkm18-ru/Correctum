@@ -12,7 +12,7 @@ namespace Correctum.Imports;
 [ImportInfo("Астрал ОФД")]
 [TextBox("Идентификатор сессии", nameof(SessionId))]
 [DateRange("Период импортирования", nameof(DateRange))]
-[CheckComboBox("Организации", nameof(Organizations), nameof(SelectedOrganizations))]
+[CheckComboBox("Организации", nameof(SelectedOrganizations), nameof(Organizations))]
 [AuthorizationProperties(nameof(SessionId))]
 public sealed class AstralOfdImport : OfdImport<AstralOfdClient>
 {

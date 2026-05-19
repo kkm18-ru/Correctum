@@ -15,7 +15,7 @@ namespace Correctum.Imports;
 [TextBox("Пароль", nameof(Password))]
 [TextBox("ИНН организации", nameof(Inn), "innConverter")]
 [DateRange("Период импортирования", nameof(DateRange))]
-[CheckComboBox("ККТ", nameof(Devices), nameof(SelectedDevices))]
+[CheckComboBox("ККТ", nameof(SelectedDevices), nameof(Devices))]
 [AuthorizationProperties(nameof(Login), nameof(Password))]
 public sealed class SabyImport : OfdImport<SabyClient>
 {
