@@ -27,18 +27,20 @@ public sealed class SabyImport : OfdImport<SabyClient>
     public ObservableCollection<string> SelectedDevices { get; set; } = [];
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        ([EnumeratorCancellation] CancellationToken cancellationToken)
+        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var drives = new Dictionary<string, SabyDriveResponse[]>();
         foreach (var device in SelectedDevices)
             drives.Add(device, await client.FetchDrivesAsync(Inn, device, DateRange.BeginDate.ToDateTime(new()), DateRange.EndDate.ToDateTime(new()), cancellationToken));
 
+        progress.ReportMaximum((uint)drives.SelectMany(d => d.Value).Count());
         foreach (var device in Devices)
         {
             foreach (var drive in drives[device])
             {
                 await foreach (var receipt in ParseByStorage(device, drive, cancellationToken))
                     yield return receipt;
+                progress.ReportIncrement();
             }
         }
     }

@@ -26,18 +26,19 @@ public sealed class TaxcomImport : OfdImport<TaxcomClient>
     public ObservableCollection<string> SelectedDevices { get; } = [];
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        ([EnumeratorCancellation] CancellationToken cancellationToken)
+        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var ranges = new List<(string drive, uint min, uint max)>(SelectedDevices.Count);
 
         await FillRanges(ranges, cancellationToken);
-
+        progress.ReportMaximum((uint)ranges.Sum(r => r.max - r.min + 1));
         foreach (var (drive, min, max) in ranges)
         {
             for (var fd = min; fd <= max; fd++)
             {
                 if (await client.FetchReceiptAsync(drive, fd, cancellationToken) is { } receipt)
                     yield return receipt;
+                progress.ReportIncrement();
             }
         }
     }

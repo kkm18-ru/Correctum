@@ -73,7 +73,7 @@ partial class SqliteImport
         public long? Tax { get; init; }
         public long? Unit { get; init; }
         public long? Price { get; init; }
-        public long? Quantity { get; init; }
+        public decimal? Quantity { get; init; }
         public long? Cost { get; init; }
 
         public static Position ToModel(PositionDto dto) => new()
@@ -83,8 +83,8 @@ partial class SqliteImport
             Unit = (UnitOfMeasure?)dto.Unit,
             CalcMethod = (CalculationMethod?)dto.CalcMethod,
             Price = (Currency?)dto.Price,
-            Quantity = (ulong?)dto.Quantity,
-            TaxRate = NDSRate.FromFns(dto.Tax),
+            Quantity = dto.Quantity,
+            TaxRate = (NDSRate?)dto.Tax,
             Type = (PositionType?)dto.Type
         };
     }

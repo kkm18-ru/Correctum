@@ -22,9 +22,9 @@ public sealed class OfdRuImport : OfdImport<OfdRuClient>
     public ObservableCollection<OfdRuDevice> SelectedDevices { get; } = [];
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        ([EnumeratorCancellation] CancellationToken cancellationToken)
+        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        //progress.ReportMaximum((uint)(DateRange.Count * SelectedDevices.Count));
+        progress.ReportMaximum((uint)(DateRange.Count * SelectedDevices.Count));
         foreach (var day in DateRange)
         {
             foreach (var device in SelectedDevices)
@@ -32,7 +32,7 @@ public sealed class OfdRuImport : OfdImport<OfdRuClient>
                 cancellationToken.ThrowIfCancellationRequested();
                 var arr = await client.FetchReceiptsAsync(device, day, cancellationToken);
                 foreach (var receipt in arr) yield return receipt;
-                //progress.ReportIncrement();
+                progress.ReportIncrement();
             }
         }
     }

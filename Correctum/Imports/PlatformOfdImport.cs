@@ -26,8 +26,9 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
     public ObservableCollection<PlatformaOfdDevice> SelectedDevices { get; } = [];
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        ([EnumeratorCancellation] CancellationToken cancellationToken)
+        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        progress.ReportMaximum((uint)(DateRange.Count * SelectedDevices.Count));
         foreach (var date in DateRange)
         {
             foreach (var Device in SelectedDevices)
@@ -36,6 +37,7 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
                 foreach (var @ref in references)
                     if (await client.FetchReceiptAsync(@ref, cancellationToken) is { } receipt)
                         yield return receipt;
+                progress.ReportIncrement();
             }
         }
     }

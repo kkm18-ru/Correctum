@@ -26,7 +26,7 @@ partial class ReceiptGrid
                     {
                         case ".sqlite":
                             var import = new SqliteImport { Path = path };
-                            await foreach (var receipt in import.ImportAsync(CancellationToken.None))
+                            await foreach (var receipt in import.ImportAsync(new(), CancellationToken.None))
                                 ctx.Receipts.Add(receipt);
                             break;
                         default: return;

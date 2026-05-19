@@ -13,8 +13,8 @@ public sealed class ImportWindowViewModel : BindableBase
     public ICommand CancelCommand { get; }
     public BaseImport Import { get; }
 
-    public int CurrentProgress { get; set; }
-    public int MaximumProgress { get; set; }
+    public uint CurrentProgress { get; set => SetField(ref field, value); }
+    public uint MaximumProgress { get; set => SetField(ref field, value); }
 
     public event Action? Imported;
 
@@ -29,6 +29,9 @@ public sealed class ImportWindowViewModel : BindableBase
         CancelCommand = new RelayCommand(Cancel, () => !cts?.IsCancellationRequested ?? false);
 
         progress = new BoundedProgress<uint>();
+        progress.ValueCleared += () => CurrentProgress = 0;
+        progress.MaximumChanged += max => MaximumProgress = max;
+        progress.ValueIncremented += () => CurrentProgress++;
         Import = import;
     }
 
@@ -49,7 +52,7 @@ public sealed class ImportWindowViewModel : BindableBase
         cts = new CancellationTokenSource();
         try
         {
-            await foreach (var receipt in Import.ImportAsync(cts.Token))
+            await foreach (var receipt in Import.ImportAsync(progress, cts.Token))
                 buffer.Add(receipt);
             cts.Dispose();
             using (var ctx = new StorageContext())
