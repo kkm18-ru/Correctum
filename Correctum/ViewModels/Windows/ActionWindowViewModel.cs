@@ -31,6 +31,7 @@ public sealed class ActionWindowViewModel : BindableBase
         try
         {
             IsBusy = true;
+            StorageContext.CreateBackup();
             using (var storage = new StorageContext())
             {
                 await storage.Positions.LoadAsync();

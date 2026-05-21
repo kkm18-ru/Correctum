@@ -41,6 +41,11 @@ public partial class OfdRuTlvDeserializer : IDeserializer
         [JsonPropertyName("1215")] public ulong? Advance { get; init; }
         [JsonPropertyName("1216")] public ulong? Credit { get; init; }
         [JsonPropertyName("1217")] public ulong? Provision { get; init; }
+        [JsonPropertyName("1117")] public string? SenderAddress { get; init; }
+        [JsonPropertyName("1203")] public string? OperatorInn { get; init; }
+        [JsonPropertyName("1009")] public string? RetailAddress { get; init; }
+        [JsonPropertyName("1021")] public string? OperatorName { get; init; }
+        [JsonPropertyName("1187")] public string? RetailPlace { get; init; }
     }
 
     private readonly struct PositionDto
@@ -87,7 +92,12 @@ public partial class OfdRuTlvDeserializer : IDeserializer
             Type = (ReceiptType?)dto.Type,
             Created = dto.DateTime is null ? null : DateTime.ParseExact(dto.DateTime, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
             TaxationSystem = (TaxationSystems?)dto.Taxation,
-            BuyerContact = dto.BuyerContact
+            BuyerContact = dto.BuyerContact,
+            SenderAddress = dto.SenderAddress,
+            OperatorInn = dto.OperatorInn is null ? null : Inn.Parse(dto.OperatorInn),
+            RetailAddress = dto.RetailAddress,
+            OperatorName = dto.OperatorName,
+            RetailPlace = dto.RetailPlace,
         };
     }
 }
