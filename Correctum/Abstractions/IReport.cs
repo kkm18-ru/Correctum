@@ -1,8 +1,9 @@
-﻿using System.Data;
+﻿using OxyPlot;
+using System.Data;
 
 namespace Correctum.Abstractions;
 
 public interface IReport
 {
-    abstract static DataTable GenerateReport();
+    abstract static (DataTable, PlotModel?) GenerateReport();
 }

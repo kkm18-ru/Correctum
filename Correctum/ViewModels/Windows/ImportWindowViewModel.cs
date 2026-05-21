@@ -57,7 +57,7 @@ public sealed class ImportWindowViewModel : BindableBase
             cts.Dispose();
             using (var ctx = new StorageContext())
             {
-                await ctx.Receipts.AddRangeAsync(buffer);
+                await ctx.Receipts.AddRangeAsync(buffer.OrderBy(r => r.Created));
                 await ctx.SaveChangesAsync();
             }
             Imported?.Invoke();

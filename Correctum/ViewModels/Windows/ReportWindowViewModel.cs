@@ -2,6 +2,7 @@
 using Correctum.Utils;
 using Microsoft.Win32;
 using NanoXLSX;
+using OxyPlot;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -14,38 +15,34 @@ namespace Correctum.ViewModels.Windows;
 public sealed class ReportWindowViewModel : BindableBase
 {
     public string ReportName { get; }
-    public Func<DataTable> Func { get; }
-    public bool IsBusy { get; set => SetField(ref field, value); } = false;
+    public Func<(DataTable, PlotModel?)> Func { get; }
+    public bool Exporting { get; set => SetField(ref field, value); } = false;
     public DataTable Table { get; set => SetField(ref field, value); }
+    public PlotModel? Plot { get; set => SetField(ref field, value); }
 
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     public ICommand ExportCommand { get; }
-    public ICommand RefreshCommand { get; }
 
-    public ReportWindowViewModel(string reportName, Func<DataTable> function)
+    public ReportWindowViewModel(string reportName, Func<(DataTable, PlotModel?)> function)
     {
         ReportName = reportName;
         Func = function;
         Table = null!;
-        ExportCommand = new RelayCommand(Export, () => Table is not null && Table.Rows.Count > 0 && !IsBusy);
-        RefreshCommand = new RelayCommand(Refresh, () => !IsBusy);
+        ExportCommand = new RelayCommand(Export, () => Table is not null && Table.Rows.Count > 0 && !Exporting);
+        RefreshAsync().GetAwaiter().GetResult();
     }
 
 #if DEBUG
     public ReportWindowViewModel() 
-        : this("Тест", () => new DataTable()) { }
+        : this("Тест", () => (new DataTable(), null)) { }
 #endif
 
-    private async void Refresh()
+    private async Task RefreshAsync()
     {
         try
         {
-            IsBusy = true;
-
-            Table = await Task.Run(Func);
-
+            (Table, Plot) = await Task.Run(Func).ConfigureAwait(false);
             Logger.Info("Отчет \"{ReportName}\" успешно составлен.", ReportName);
-            IsBusy = false;
         }
         catch (Exception ex)
         {
@@ -54,26 +51,27 @@ public sealed class ReportWindowViewModel : BindableBase
         }
     }
 
-    private void Export()
+    private async void Export()
     {
-        IsBusy = true;
         try
         {
             var saveDialog = new SaveFileDialog
             {
-                Filter = "CSV UTF-8 (Разделитель - точка с запятой)|*.csv|Excel|*.xlsx",
+                Filter = "CSV UTF-8|*.csv|Excel-таблица|*.xlsx",
                 OverwritePrompt = true,
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                 AddExtension = true,
                 AddToRecent = true
             };
             if (!saveDialog.ShowDialog() ?? true) return;
-            switch (saveDialog.FilterIndex)
+            Exporting = true;
+            Func<string, Task> exporter = saveDialog.FilterIndex switch
             {
-                case 1: ExportAsCsv(saveDialog.FileName); break;
-                case 2: ExportAsXlsx(saveDialog.FileName); break;
-                default: throw new NotImplementedException();
-            }
+                1 => ExportAsCsv,
+                2 => ExportAsXlsx,
+                _ => throw new NotImplementedException()
+            };
+            await exporter(saveDialog.FileName).ConfigureAwait(false);
             MessageBox.Show("Отчет успешно экспортирован!");
             Logger.Info("Отчет \"{ReportName}\" успешно экспортирован.", ReportName);
         }
@@ -83,11 +81,11 @@ public sealed class ReportWindowViewModel : BindableBase
         }
         finally
         {
-            IsBusy = false;
+            Exporting = false;
         }
     }
 
-    private void ExportAsCsv(string filepath)
+    private async Task ExportAsCsv(string filepath)
     {
         var builder = new StringBuilder();
         for (var i = 0; i < Table.Columns.Count; i++)
@@ -114,10 +112,10 @@ public sealed class ReportWindowViewModel : BindableBase
                 return str;
             })));
 
-        File.WriteAllText(filepath, builder.ToString(), Encoding.UTF8);
+        await File.WriteAllTextAsync(filepath, builder.ToString(), Encoding.UTF8);
     }
 
-    private void ExportAsXlsx(string filepath)
+    private async Task ExportAsXlsx(string filepath)
     {
         var workbook = new Workbook(filepath, "Отчет");
         var sheet = workbook.CurrentWorksheet;
@@ -130,6 +128,6 @@ public sealed class ReportWindowViewModel : BindableBase
             foreach(var cell in row.ItemArray)
                 sheet.AddNextCell(cell);
         }
-        workbook.Save();
+        await workbook.SaveAsync();
     }
 }

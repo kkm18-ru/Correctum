@@ -9,44 +9,30 @@
                        xmlns:tk="http://schemas.xceed.com/wpf/xaml/toolkit"
                        xmlns:vm="clr-namespace:Correctum.ViewModels.Windows"
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:oxy="http://oxyplot.org/wpf"
                        mc:Ignorable="d" 
                        d:DataContext="{d:DesignInstance Type={x:Type vm:ReportWindowViewModel}, IsDesignTimeCreatable=True}"
                        xmlns:local="clr-namespace:Correctum.UI.Windows"
                        Title="{Binding ReportName, Mode=OneTime, StringFormat='Отчет &quot;{0}&quot;'}"
-                       Height="450" Width="700">
-    <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="70"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="70"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="23"/>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        
-        <ProgressBar Grid.Column="0" Grid.Row="0" Value="0" Maximum="1"
-                     IsIndeterminate="{Binding IsBusy, Mode=OneWay}" />
-        <Button Grid.Column="2" Grid.Row="0" Content="Обновить"
-                Command="{Binding RefreshCommand}"/>
-        <Button Grid.Column="4" Grid.Row="0" Content="Экспорт..."
-                Command="{Binding ExportCommand}"/>
-        
-        <DataGrid Grid.ColumnSpan="5" Grid.Row="2" IsReadOnly="True"
-                  AutoGenerateColumns="True" CanUserAddRows="False"
+                       SizeToContent="WidthAndHeight" >
+    <StackPanel Margin="10" Orientation="Vertical">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar Grid.Column="0" IsIndeterminate="{Binding Exporting, Mode=OneWay}" />
+            <Button Grid.Column="2" Content="Экспорт..." Command="{Binding ExportCommand}"/>
+        </Grid>        
+        <Separator Height="5"/>
+        <oxy:PlotView Height="220" Model="{Binding Plot}" MinWidth="500"
+                      Visibility="{Binding Plot, Converter={StaticResource collapsedWhenNull}}" />
+        <Separator Height="5" Visibility="{Binding Plot, Converter={StaticResource collapsedWhenNull}}"/>
+        <DataGrid IsReadOnly="True" AutoGenerateColumns="True"
+                  CanUserAddRows="False" CanUserSortColumns="False"
                   CanUserDeleteRows="False" ItemsSource="{Binding Table}"
                   HeadersVisibility="Column" CanUserResizeColumns="False"
-                  CanUserResizeRows="False" CanUserReorderColumns="False"
-                  CanUserSortColumns="False">
-            <!--i:Interaction.Triggers>
-                <i:EventTrigger EventName="AutoGeneratingColumn">
-                    <i:InvokeCommandAction Command="{Binding AutoGeneratingColumnCommand}"
-                                           PassEventArgsToCommand="True"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers-->
-        </DataGrid>
-    </Grid>
+                  CanUserResizeRows="False" CanUserReorderColumns="False" />
+    </StackPanel>
 </wintypes:DialogWindow>

@@ -2,6 +2,7 @@
 using Correctum.Attributes;
 using Correctum.Utils;
 using Microsoft.EntityFrameworkCore;
+using OxyPlot;
 using System.Data;
 
 namespace Correctum.Reports;
@@ -9,7 +10,7 @@ namespace Correctum.Reports;
 [ReportInfo("Наименования позиций")]
 public class PositionNamesReport : IReport
 {
-    public static DataTable GenerateReport()
+    public static (DataTable, PlotModel?) GenerateReport()
     {
         var table = new DataTable();
         table.Columns.AddRange([new("Наименование"), new("Тип"), new("Количество чеков")]);
@@ -23,6 +24,6 @@ public class PositionNamesReport : IReport
         var rows = ordered.Select(g => new object?[] { g.Key.Name, EnumLocales.PositionTypes.GetLocale(g.Key.Type), g.Select(x => x.r).Distinct().Count() });
         rows.ForEach(row => table.Rows.Add(row));
         
-        return table;
+        return (table, null);
     }
 }
