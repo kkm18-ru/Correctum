@@ -5,6 +5,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.IO;
+using System.Text;
 
 namespace Correctum
 {    
@@ -28,6 +29,18 @@ namespace Correctum
         }
 
         public StorageContext() => Database.EnsureCreated();
+
+        public static void CreateBackup()
+        {
+            var backupDateTime = DateTime.Now;
+            var connBuilder = new SqliteConnectionStringBuilder(ConnectionString);
+            var originalFilePath = connBuilder.DataSource;
+            var backupFilePathBuilder = new StringBuilder(originalFilePath);
+            backupFilePathBuilder.Insert(
+                backupFilePathBuilder.Length - FileExtension.Length, 
+                backupDateTime.ToString("'_'yyyyMMddHHmmss"));
+            File.Copy(originalFilePath, backupFilePathBuilder.ToString());
+        }
 
         public static void SetContextPath(string filepath)
         {
