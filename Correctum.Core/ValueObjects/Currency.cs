@@ -7,6 +7,8 @@ namespace Correctum.Core.ValueObjects
     /// </summary>
     public readonly struct Currency
     {
+        public readonly static Currency Zero = new(0);
+
         private readonly ulong _data;
 
         private Currency(ulong data) => _data = data;
