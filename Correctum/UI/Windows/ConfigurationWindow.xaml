@@ -52,11 +52,14 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="5"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Количество документов в ответе:"/>
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Интервал между HTTP-запросами:"/>
                 <TextBlock Grid.Column="0" Grid.Row="4" Text="Количество попыток запроса:"/>
+                <TextBlock Grid.Column="0" Grid.Row="6" Text="Путь к Web-браузеру:"/>
                 
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="0" Minimum="1"
                                   Value="{Binding Http.PageSize}"/>
@@ -64,6 +67,11 @@
                                   Value="{Binding Http.RequestDelay}"/>
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="4" Minimum="1"
                                   Value="{Binding Http.TriesCount}"/>
+                <DockPanel Grid.Row="6" Grid.Column="2">
+                    <Button DockPanel.Dock="Right" Width="22" Content="..." Click="BrowseChromiumPath"/>
+                    <Separator DockPanel.Dock="Right" Width="5" />
+                    <TextBox DockPanel.Dock="Right" Text="{Binding Http.ChromiumPath}"/>
+                </DockPanel>
             </Grid>
         </TabItem>
         <TabItem Header="Импорт">
