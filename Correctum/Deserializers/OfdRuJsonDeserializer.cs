@@ -44,6 +44,12 @@ public partial class OfdRuJsonDeserializer : IDeserializer
         [JsonPropertyName("Amount_Loan")] public ulong? Credit { get; init; }
         [JsonPropertyName("Amount_Granting")] public ulong? Provision { get; init; }
         [JsonPropertyName("Items")] public PositionDto[]? Items { get; init; }
+        [JsonIgnore] public string? SenderAddress { get; init; }
+        [JsonIgnore] public string? OperatorInn { get; init; }
+        [JsonPropertyName("RetailPlaceAddress")] public string? RetailAddress { get; init; }
+        [JsonPropertyName("Operator")] public string? OperatorName { get; init; }
+        [JsonPropertyName("Calculation_Place")] public string? RetailPlace { get; init; }
+        [JsonIgnore] public string? BuyerContact { get; init; }
     }
 
     private readonly struct PositionDto
@@ -90,7 +96,12 @@ public partial class OfdRuJsonDeserializer : IDeserializer
             Type = (ReceiptType?)dto.Type,
             Created = dto.DateTime is null ? null : DateTime.ParseExact(dto.DateTime, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
             TaxationSystem = (TaxationSystems?)dto.Taxation,
-            // todo BuyerContact
+            SenderAddress = dto.SenderAddress,
+            OperatorInn = dto.OperatorInn is null ? null : Inn.Parse(dto.OperatorInn),
+            RetailAddress = dto.RetailAddress,
+            OperatorName = dto.OperatorName,
+            RetailPlace = dto.RetailPlace,
+            BuyerContact = dto.BuyerContact,
         };
     }
 }
