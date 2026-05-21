@@ -28,7 +28,11 @@ namespace Correctum
             ConnectionString = connBuilder.ToString();
         }
 
-        public StorageContext() => Database.EnsureCreated();
+        public StorageContext()
+        {
+            if(Database.EnsureCreated())
+                Database.ExecuteSqlRaw("PRAGMA journal_mode=DELETE;");
+        }
 
         public static void CreateBackup()
         {
