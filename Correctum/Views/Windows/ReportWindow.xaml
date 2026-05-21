@@ -9,11 +9,12 @@
                        xmlns:tk="http://schemas.xceed.com/wpf/xaml/toolkit"
                        xmlns:vm="clr-namespace:Correctum.ViewModels.Windows"
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:oxy="http://oxyplot.org/wpf"
                        mc:Ignorable="d" 
                        d:DataContext="{d:DesignInstance Type={x:Type vm:ReportWindowViewModel}, IsDesignTimeCreatable=True}"
                        xmlns:local="clr-namespace:Correctum.UI.Windows"
                        Title="{Binding ReportName, Mode=OneTime, StringFormat='Отчет &quot;{0}&quot;'}"
-                       Height="450" Width="700">
+                       Height="800" Width="900">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -23,15 +24,19 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="23"/>
             <RowDefinition Height="5"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="5*"/>
         </Grid.RowDefinitions>
-        
+
         <ProgressBar Grid.Column="0" Grid.Row="0" Value="0" Maximum="1"
                      IsIndeterminate="{Binding IsBusy, Mode=OneWay}" />
         <Button Grid.Column="4" Grid.Row="0" Content="Экспорт..."
                 Command="{Binding ExportCommand}"/>
-        
-        <DataGrid Grid.ColumnSpan="5" Grid.Row="2" IsReadOnly="True"
+
+        <oxy:PlotView Grid.ColumnSpan="3" Grid.Row="2" Model="{Binding Plot}"/>
+
+        <DataGrid Grid.ColumnSpan="3" Grid.Row="4" IsReadOnly="True"
                   AutoGenerateColumns="True" CanUserAddRows="False"
                   CanUserDeleteRows="False" ItemsSource="{Binding Table}"
                   HeadersVisibility="Column" CanUserResizeColumns="False"

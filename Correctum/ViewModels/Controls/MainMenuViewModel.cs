@@ -107,7 +107,7 @@ public sealed partial class MainMenuViewModel : BindableBase
                 return item;
             })];
 
-    public readonly record struct ReportDescriptor(string DisplayName, Func<DataTable> Function);
+    public readonly record struct ReportDescriptor(string DisplayName, Func<(DataTable, OxyPlot.PlotModel?)> Function);
     public readonly record struct ImportDescriptor(string DisplayName, Func<BaseImport> Function);
     public readonly record struct ActionDescriptor(string DisplayName, Func<IAction> Function);
 }

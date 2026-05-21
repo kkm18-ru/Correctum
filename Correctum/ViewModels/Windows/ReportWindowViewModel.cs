@@ -2,6 +2,7 @@
 using Correctum.Utils;
 using Microsoft.Win32;
 using NanoXLSX;
+using OxyPlot;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -14,14 +15,15 @@ namespace Correctum.ViewModels.Windows;
 public sealed class ReportWindowViewModel : BindableBase
 {
     public string ReportName { get; }
-    public Func<DataTable> Func { get; }
+    public Func<(DataTable, PlotModel?)> Func { get; }
     public bool IsBusy { get; set => SetField(ref field, value); } = false;
     public DataTable Table { get; set => SetField(ref field, value); }
+    public PlotModel? Plot { get; set => SetField(ref field, value); }
 
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     public ICommand ExportCommand { get; }
 
-    public ReportWindowViewModel(string reportName, Func<DataTable> function)
+    public ReportWindowViewModel(string reportName, Func<(DataTable, PlotModel?)> function)
     {
         ReportName = reportName;
         Func = function;
@@ -32,7 +34,7 @@ public sealed class ReportWindowViewModel : BindableBase
 
 #if DEBUG
     public ReportWindowViewModel() 
-        : this("Тест", () => new DataTable()) { }
+        : this("Тест", () => (new DataTable(), null)) { }
 #endif
 
     private async Task RefreshAsync()
@@ -41,7 +43,7 @@ public sealed class ReportWindowViewModel : BindableBase
         {
             IsBusy = true;
 
-            Table = await Task.Run(Func).ConfigureAwait(false);
+            (Table, Plot) = await Task.Run(Func).ConfigureAwait(false);
 
             Logger.Info("Отчет \"{ReportName}\" успешно составлен.", ReportName);
             IsBusy = false;
