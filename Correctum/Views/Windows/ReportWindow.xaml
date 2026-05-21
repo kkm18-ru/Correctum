@@ -14,34 +14,25 @@
                        d:DataContext="{d:DesignInstance Type={x:Type vm:ReportWindowViewModel}, IsDesignTimeCreatable=True}"
                        xmlns:local="clr-namespace:Correctum.UI.Windows"
                        Title="{Binding ReportName, Mode=OneTime, StringFormat='Отчет &quot;{0}&quot;'}"
-                       Height="800" Width="900">
-    <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="70"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="23"/>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="5*"/>
-        </Grid.RowDefinitions>
-
-        <ProgressBar Grid.Column="0" Grid.Row="0" Value="0" Maximum="1"
-                     IsIndeterminate="{Binding IsBusy, Mode=OneWay}" />
-        <Button Grid.Column="4" Grid.Row="0" Content="Экспорт..."
-                Command="{Binding ExportCommand}"/>
-
-        <oxy:PlotView Grid.ColumnSpan="3" Grid.Row="2" Model="{Binding Plot}"/>
-
-        <DataGrid Grid.ColumnSpan="3" Grid.Row="4" IsReadOnly="True"
-                  AutoGenerateColumns="True" CanUserAddRows="False"
+                       SizeToContent="WidthAndHeight" >
+    <StackPanel Margin="10" Orientation="Vertical">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar Grid.Column="0" IsIndeterminate="{Binding Exporting, Mode=OneWay}" />
+            <Button Grid.Column="2" Content="Экспорт..." Command="{Binding ExportCommand}"/>
+        </Grid>        
+        <Separator Height="5"/>
+        <oxy:PlotView Height="220" Model="{Binding Plot}" MinWidth="500"
+                      Visibility="{Binding Plot, Converter={StaticResource collapsedWhenNull}}" />
+        <Separator Height="5" Visibility="{Binding Plot, Converter={StaticResource collapsedWhenNull}}"/>
+        <DataGrid IsReadOnly="True" AutoGenerateColumns="True"
+                  CanUserAddRows="False" CanUserSortColumns="False"
                   CanUserDeleteRows="False" ItemsSource="{Binding Table}"
                   HeadersVisibility="Column" CanUserResizeColumns="False"
-                  CanUserResizeRows="False" CanUserReorderColumns="False"
-                  CanUserSortColumns="False">
-        </DataGrid>
-    </Grid>
+                  CanUserResizeRows="False" CanUserReorderColumns="False" />
+    </StackPanel>
 </wintypes:DialogWindow>
