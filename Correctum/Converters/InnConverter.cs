@@ -7,12 +7,13 @@ namespace Correctum.Converters;
 
 public sealed class InnConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
         => value is Inn inn ? inn.ToString() : "";
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not string s) return new();
+        if (string.IsNullOrEmpty(s)) return null;
         try
         {
             return Inn.Parse(s);
