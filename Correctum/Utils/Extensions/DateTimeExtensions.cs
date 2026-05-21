@@ -7,6 +7,8 @@
             public long UnixTimestampTicks => dt.Ticks - DateTime.UnixEpochTicks;
             public long UnixTimestampMilliseconds => dt.UnixTimestampTicks / TimeSpan.TicksPerMillisecond;
             public long UnixTimestampSeconds => dt.UnixTimestampTicks / TimeSpan.TicksPerSecond;
+
+            public DateTime Round(long ticks) => dt.AddTicks(-(dt.Ticks % ticks));
         }
 
         extension(DateTime)
@@ -15,7 +17,6 @@
             public static DateTime UnixEpoch => new(DateTime.UnixEpochTicks, 0);
             public static DateTime? FromUnixTimeSeconds(long? seconds) =>
                 seconds is null ? null : DateTime.UnixEpoch.AddSeconds(seconds.Value);
-
         }
 
         extension(DateOnly)
