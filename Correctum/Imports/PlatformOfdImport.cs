@@ -4,23 +4,17 @@ using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
+using PuppeteerSharp;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
 namespace Correctum.Imports;
 
 [ImportInfo("Платформа ОФД")]
-[TextBox("Идентификатор сессии", nameof(SessionId))]
-[TextBox("Токен доступа", nameof(AccessToken))]
-[TextBox("Токен обновления", nameof(RefreshToken))]
 [DateRange("Период импортирования", nameof(DateRange))]
 [CheckComboBox("ККТ", nameof(SelectedDevices), nameof(Devices))]
-[AuthorizationProperties(nameof(SessionId), nameof(AccessToken), nameof(RefreshToken))]
 public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
 {
-    public string SessionId { get; set => SetField(ref field, value); } = string.Empty;
-    public string AccessToken { get; set => SetField(ref field, value); } = string.Empty;
-    public string RefreshToken { get; set => SetField(ref field, value); } = string.Empty;
     public DateRange DateRange { get; } = new();
     public ObservableCollection<PlatformaOfdDevice> Devices { get; } = [];
     public ObservableCollection<PlatformaOfdDevice> SelectedDevices { get; } = [];
@@ -46,9 +40,25 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
     {
         SelectedDevices.Clear();
         Devices.Clear();
-
-        client.Auth(SessionId, AccessToken, RefreshToken);
+        await AuthorizationByBrowserAsync();
         foreach (var d in await client.FetchDevicesAsync())
             Devices.Add(d);
+    }
+
+    private async Task AuthorizationByBrowserAsync()
+    {
+        using var browser = await Puppeteer.LaunchAsync(new() 
+        { 
+            Headless = false,  
+            ExecutablePath = Configuration.Current.Http.ChromiumPath
+        });
+        var page = await browser.NewPageAsync();
+        await page.GoToAsync("https://lk.platformaofd.ru/web/sso-login");
+        await page.WaitForResponseAsync("https://lk.platformaofd.ru/web/multilogin/get-list/ajax?term=");
+        var cookies = await page.GetCookiesAsync();
+        var _sessionId = cookies.First(c => c.Name == "JSESSIONID").Value;
+        var _accessToken = cookies.First(c => c.Name == "access_token").Value;
+        var _refreshToken = cookies.First(c => c.Name == "refresh_token").Value;
+        client.Auth(_sessionId, _accessToken, _refreshToken);
     }
 }
