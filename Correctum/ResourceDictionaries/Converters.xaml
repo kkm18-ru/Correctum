@@ -7,5 +7,5 @@
     <c:MultiBooleanConverter x:Key="andBoolConverter"/>
     <c:TextColorConverter x:Key="textColorConverter"/>
     <c:NullableIndicatorConverter x:Key="nullIndicator"/>
-    <c:CollapsedWhenNullConverter x:Key="collapsedWhenNull"/>
+    <c:CollapsedWhenNullConverter x:Key="collapsedWhenNullConverter"/>
 </ResourceDictionary>

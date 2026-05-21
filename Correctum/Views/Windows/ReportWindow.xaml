@@ -27,8 +27,8 @@
         </Grid>        
         <Separator Height="5"/>
         <oxy:PlotView Height="220" Model="{Binding Plot}" MinWidth="500"
-                      Visibility="{Binding Plot, Converter={StaticResource collapsedWhenNull}}" />
-        <Separator Height="5" Visibility="{Binding Plot, Converter={StaticResource collapsedWhenNull}}"/>
+                      Visibility="{Binding Plot, Converter={StaticResource collapsedWhenNullConverter}}" />
+        <Separator Height="5" Visibility="{Binding Plot, Converter={StaticResource collapsedWhenNullConverter}}"/>
         <DataGrid IsReadOnly="True" AutoGenerateColumns="True"
                   CanUserAddRows="False" CanUserSortColumns="False"
                   CanUserDeleteRows="False" ItemsSource="{Binding Table}"
