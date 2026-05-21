@@ -19,8 +19,6 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="70"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="70"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="23"/>
@@ -30,8 +28,6 @@
         
         <ProgressBar Grid.Column="0" Grid.Row="0" Value="0" Maximum="1"
                      IsIndeterminate="{Binding IsBusy, Mode=OneWay}" />
-        <Button Grid.Column="2" Grid.Row="0" Content="Обновить"
-                Command="{Binding RefreshCommand}"/>
         <Button Grid.Column="4" Grid.Row="0" Content="Экспорт..."
                 Command="{Binding ExportCommand}"/>
         
@@ -41,12 +37,6 @@
                   HeadersVisibility="Column" CanUserResizeColumns="False"
                   CanUserResizeRows="False" CanUserReorderColumns="False"
                   CanUserSortColumns="False">
-            <!--i:Interaction.Triggers>
-                <i:EventTrigger EventName="AutoGeneratingColumn">
-                    <i:InvokeCommandAction Command="{Binding AutoGeneratingColumnCommand}"
-                                           PassEventArgsToCommand="True"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers-->
         </DataGrid>
     </Grid>
 </wintypes:DialogWindow>

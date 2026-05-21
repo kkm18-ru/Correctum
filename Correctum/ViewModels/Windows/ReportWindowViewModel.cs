@@ -20,7 +20,6 @@ public sealed class ReportWindowViewModel : BindableBase
 
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     public ICommand ExportCommand { get; }
-    public ICommand RefreshCommand { get; }
 
     public ReportWindowViewModel(string reportName, Func<DataTable> function)
     {
@@ -28,7 +27,7 @@ public sealed class ReportWindowViewModel : BindableBase
         Func = function;
         Table = null!;
         ExportCommand = new RelayCommand(Export, () => Table is not null && Table.Rows.Count > 0 && !IsBusy);
-        RefreshCommand = new RelayCommand(Refresh, () => !IsBusy);
+        RefreshAsync().GetAwaiter().GetResult();
     }
 
 #if DEBUG
@@ -36,13 +35,13 @@ public sealed class ReportWindowViewModel : BindableBase
         : this("Тест", () => new DataTable()) { }
 #endif
 
-    private async void Refresh()
+    private async Task RefreshAsync()
     {
         try
         {
             IsBusy = true;
 
-            Table = await Task.Run(Func);
+            Table = await Task.Run(Func).ConfigureAwait(false);
 
             Logger.Info("Отчет \"{ReportName}\" успешно составлен.", ReportName);
             IsBusy = false;
