@@ -72,7 +72,7 @@ public sealed class AccountOfdRuClient(string host) :
         var respContent = await JsonSerializer.DeserializeAsync
             (respStream, HtmlOfdRuSerializerContext.Default.HtmlOfdRuRpcResponseHtmlOfdRuRpcDataHtmlOfdRuGetFNInfo, cancellationToken)
             .ConfigureAwait(false);
-        return respContent.Data.DataSet.Drives;
+        return respContent.Data.DataSet.Drives ?? [];
     }
 
     public async IAsyncEnumerable<HtmlOfdRuGetKktsDocumentsItem> GetDocsInfoAsync(
@@ -146,7 +146,7 @@ internal readonly struct HtmlOfdRuRpcData<T>
 
 internal readonly struct HtmlOfdRuGetFNInfo
 {
-    [JsonPropertyName("listFNS")] public string[] Drives { get; init; }
+    [JsonPropertyName("listFNS")] public string[]? Drives { get; init; }
 }
 
 internal readonly struct HtmlOfdRuResponse<T>

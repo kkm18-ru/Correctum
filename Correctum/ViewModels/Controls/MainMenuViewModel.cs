@@ -50,7 +50,8 @@ public sealed partial class MainMenuViewModel : BindableBase
         };
         if (dialog.ShowDialog() ?? false)
         {
-            File.Copy(StorageContext.ConnectionString, dialog.FileName);
+            var connBuilder = new SqliteConnectionStringBuilder(StorageContext.ConnectionString);
+            File.Copy(connBuilder.DataSource, dialog.FileName);
             StorageContext.SetContextPath(dialog.FileName);
         }
     }
