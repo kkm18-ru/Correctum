@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.0.0](https://github.com/kkm18-ru/Correctum/compare/v0.11.0...v1.0.0) (2026-05-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* Добавлены действия над чеками
+* Переработано хранилище
+
+### ✨ Нововведения
+
+* Добавлено Drag&Drop для SQLite-импорта ([ac9ca88](https://github.com/kkm18-ru/Correctum/commit/ac9ca88b186e5e43e07530135d0dafd77f88be7c))
+* Добавлены действия над чеками ([094b5b4](https://github.com/kkm18-ru/Correctum/commit/094b5b43a5dd05119b70d656e3e44aebb3b1ecc6))
+* Добавлены реквизиты 1117, 1203, 1009, 1021 и 1187 к чеку ([5ea4520](https://github.com/kkm18-ru/Correctum/commit/5ea45208adb556703e87a10c04c129586772b2a6))
+* **Импорт:** Реализован импорт из Астрал ОФД ([#92](https://github.com/kkm18-ru/Correctum/issues/92)) ([d55f279](https://github.com/kkm18-ru/Correctum/commit/d55f279abc1189a88ebf7b3fa319d17be56e381c))
+* Переработано хранилище ([2b0ed80](https://github.com/kkm18-ru/Correctum/commit/2b0ed80283a510365f5de876880b0ae3721b3102))
+* Реализована валидация чеков и их позиций ([fe55c2b](https://github.com/kkm18-ru/Correctum/commit/fe55c2bde34ce31a2f9bd6ee139d15eb3e53763e))
+* Реализовано создание, окрытие и сохранение хранилища ([2807bb5](https://github.com/kkm18-ru/Correctum/commit/2807bb5c3daae6a2ee13f072b0a4878d8e6ab2a8))
+
+
+### 🐞 Исправления
+
+* Восстановлен показ прогресса импорта ([f63eea7](https://github.com/kkm18-ru/Correctum/commit/f63eea7ae22a586611e9bda93b4a0ac80d162d56))
+* Исправлен Sqlite-экспорт с пустыми реквизитами ([e53ccad](https://github.com/kkm18-ru/Correctum/commit/e53ccadc267a2a9690578c14f43292349fb9bdc3))
+* Стабилизирована работа проведения чеков ([514afcb](https://github.com/kkm18-ru/Correctum/commit/514afcb60a42c89c3796e7b2c00a2a395259e5b8))
+* Удалена излишняя структура оплаты ([20a7aa9](https://github.com/kkm18-ru/Correctum/commit/20a7aa984318dfb6e93a698cebb333d4e4bebd30))
+* Упрощена работа с сочетанием клавиш в базовом классе диалоговых окон ([70c7719](https://github.com/kkm18-ru/Correctum/commit/70c7719bc1baf1f9231062e73b38e5ed85a5a596))
+
+
+### ⏪ Отмена изменений
+
+* Удалено перемешение по индексу ([b079c66](https://github.com/kkm18-ru/Correctum/commit/b079c66fd8ab01f9021e76aa73883f87f6bcfdb8))
+
 ## [0.11.0](https://github.com/kkm18-ru/Correctum/compare/v0.10.2...v0.11.0) (2026-05-13)
 
 
