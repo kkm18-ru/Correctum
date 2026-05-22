@@ -6,6 +6,7 @@ using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace Correctum.Imports;
 
@@ -39,23 +40,39 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
     {
         SelectedDevices.Clear();
         Devices.Clear();
-        await AuthorizationByBrowserAsync();
+        if (!await AuthorizationByBrowserAsync()) return;
         foreach (var d in await client.FetchDevicesAsync())
             Devices.Add(d);
     }
 
-    private async Task AuthorizationByBrowserAsync()
+    private async Task<bool> AuthorizationByBrowserAsync()
     {
-        #pragma warning disable S1075
-        using var browser = await PuppeteerHelper.OpenBrowser();
-        var page = await browser.NewPageAsync();
-        await page.GoToAsync("https://lk.platformaofd.ru/web/sso-login");
-        await page.WaitForResponseAsync("https://lk.platformaofd.ru/web/multilogin/get-list/ajax?term=");
-        var cookies = await page.GetCookiesAsync();
-        var sessionId = cookies.First(c => c.Name == "JSESSIONID").Value;
-        var accessToken = cookies.First(c => c.Name == "access_token").Value;
-        var refreshToken = cookies.First(c => c.Name == "refresh_token").Value;
-        client.Auth(sessionId, accessToken, refreshToken);
+#pragma warning disable S1075
+        try
+        {
+            using var browser = await PuppeteerHelper.OpenBrowser();
+            var page = await browser.NewPageAsync();
+            await page.GoToAsync("https://lk.platformaofd.ru/web/sso-login");
+            await page.WaitForResponseAsync("https://lk.platformaofd.ru/web/multilogin/get-list/ajax?term=", new(300000));
+            var cookies = await page.GetCookiesAsync();
+            var sessionId = cookies.First(c => c.Name == "JSESSIONID").Value;
+            var accessToken = cookies.First(c => c.Name == "access_token").Value;
+            var refreshToken = cookies.First(c => c.Name == "refresh_token").Value;
+            client.Auth(sessionId, accessToken, refreshToken);
+            return true;
+        }
+        catch(PuppeteerSharp.TargetClosedException e) when(e.CloseReason == "Session closed")
+        {
+            logger.Warn(e, "Авторизация преждевременно завершено.");
+            MessageBox.Show("Авторизация преждевременно завершено по причине: закрытие браузера");
+            return false;
+        }
+        catch(TimeoutException e)
+        {
+            logger.Warn(e, "Превышено время ожидания ввода аутентификационных данных.");
+            MessageBox.Show("Авторизация преждевременно завершено по причине: превышено время ожидания");
+            return false;
+        }
         #pragma warning restore S1075
     }
 }
