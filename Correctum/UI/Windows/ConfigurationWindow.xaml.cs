@@ -32,11 +32,11 @@ public sealed partial class ConfigurationWindow : DialogWindow
     {
         var dialog = new OpenFileDialog
         {
-            InitialDirectory = Path.GetDirectoryName(Configuration.Current.Http.ChromiumPath),
+            InitialDirectory = Path.GetDirectoryName(Configuration.Current.Http.WebBrowserPath),
             Filter = "Исполняемый файл|*.exe",
             Multiselect = false,
         };
         if (!dialog.ShowDialog() ?? true) return;
-        Configuration.Current.Http.ChromiumPath = dialog.FileName;
+        Configuration.Current.Http.WebBrowserPath = dialog.FileName;
     }
 }

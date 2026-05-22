@@ -7,6 +7,18 @@ public record EnumLocale<TEnum>(TEnum Value, string Locale) where TEnum : Enum;
 
 public static class EnumLocales
 {
+    public static readonly ReadOnlyCollection<EnumLocale<PuppeteerSharp.SupportedBrowser>> SupportedBrowsers =
+    [
+        new(PuppeteerSharp.SupportedBrowser.Chrome, "Chrome"),
+        new(PuppeteerSharp.SupportedBrowser.Firefox, "Firefox"),
+        new(PuppeteerSharp.SupportedBrowser.Chromium, "Chromium"),
+    ];
+    public static readonly ReadOnlyCollection<EnumLocale<PuppeteerSharp.ProtocolType>> BrowserProtocolType =
+    [
+        new(PuppeteerSharp.ProtocolType.Cdp, "Chrome DevTools"),
+        new(PuppeteerSharp.ProtocolType.WebdriverBiDi, "WebDriver BiDi"),
+    ];
+
     public static readonly ReadOnlyCollection<EnumLocale<TaxationSystems>> TaxationSystems =
     [
         new(Correctum.Core.Enums.TaxationSystems.General, "ОСН"),
