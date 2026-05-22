@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.1.0](https://github.com/kkm18-ru/Correctum/compare/v1.0.0...v1.1.0) (2026-05-22)
+
+
+### ✨ Нововведения
+
+* **Действия:** Добавлено новое действие "Смена кассира" ([098001b](https://github.com/kkm18-ru/Correctum/commit/098001bed8f8d3e073d102057481619bc6a1e322))
+* **Действия:** Добавлено новое действие "Смена метода оплаты" ([912f55b](https://github.com/kkm18-ru/Correctum/commit/912f55b71b3ec0567d1e21e02b4cea1fccd36a10))
+* **Действия:** Добавлено новое действие "Смена способа расчета" ([d0d420f](https://github.com/kkm18-ru/Correctum/commit/d0d420f033a898f885aa7ee001b5f222c3e19d8e))
+* Добавлена кнопка обратной связи ([be0a1da](https://github.com/kkm18-ru/Correctum/commit/be0a1da8877d965185486e05bb3db926876f6a6e))
+* Добавлены иконки для элементов меню ([ac1d0e4](https://github.com/kkm18-ru/Correctum/commit/ac1d0e478eb8b7b45bb830db2d02d1b04af83553))
+* **Импорт:** Добавлен импорт из OFD.ru через ЛК ([#95](https://github.com/kkm18-ru/Correctum/issues/95)) ([3d38f98](https://github.com/kkm18-ru/Correctum/commit/3d38f98b2cd3834e2713961f4eec75efe8daa242))
+* **Импорт:** Упрощена авторизация для импорта из Астрал ОФД ([2201033](https://github.com/kkm18-ru/Correctum/commit/220103322cb14c27f2bf4e69f5adc43cd53420b3))
+* **Импорт:** Упрощена авторизация для импорта из Платформа ОФД ([2c07d68](https://github.com/kkm18-ru/Correctum/commit/2c07d68cc5eaad60d23474dbb25add721cb80801))
+* **Отчеты:** Добавлен отчет "Количество чеков по часам" ([688e614](https://github.com/kkm18-ru/Correctum/commit/688e614614a2a0e9ee34266a0132990aec1dcd2f))
+* **Отчеты:** Добавлено отображение графика в отчете ([#98](https://github.com/kkm18-ru/Correctum/issues/98)) ([860ab90](https://github.com/kkm18-ru/Correctum/commit/860ab9017df9fa7731d037b1ba94dc580918aef3))
+* **Хранилище:** Добавлено Drag&Drop-открытие хранилища ([878f1e6](https://github.com/kkm18-ru/Correctum/commit/878f1e6b5509a13d64c370abe24ad2a05acbc7b1))
+* **Хранилище:** Добавлено резервное копирование хранилища ([#96](https://github.com/kkm18-ru/Correctum/issues/96)) ([c7a4a86](https://github.com/kkm18-ru/Correctum/commit/c7a4a86de979cea93f0f02badc20e663b3de003b))
+
+
+### 🐞 Исправления
+
+* **OfdRuJsonDeserializer:** Добавлен парсинг свойств ([ea93d84](https://github.com/kkm18-ru/Correctum/commit/ea93d840c0c33a2031f06f6ec56581d2e474f637))
+* **OfdRuTlvDeserializer:** Добавлен парсинг свойств ([128df14](https://github.com/kkm18-ru/Correctum/commit/128df1473075303cc0e3e30bfd77f5df1789ab0b))
+* **Импорт:** Исправлена инициализация логирования импорта ([263f735](https://github.com/kkm18-ru/Correctum/commit/263f7354135fb136bf752da62ce5048148b01e35))
+* **Импорт:** Чеки записываются в хранилище в отсортированном виде ([eadd7a1](https://github.com/kkm18-ru/Correctum/commit/eadd7a17d6f6e1a12f9425729e36411776dbd3d6))
+* Исправлена кнопка меню Файл&gt;Сохранить как... ([e391dde](https://github.com/kkm18-ru/Correctum/commit/e391dde6f64f8d3daee1940240057753d11513ed))
+* **Отчеты:** Удалена излишняя кнопка обновления отчета ([858bee4](https://github.com/kkm18-ru/Correctum/commit/858bee4ce3e767d5d8482d34836e8567e967f69a))
+
+
+### ⏪ Отмена изменений
+
+* Удален Drop&Drag-импорт SQLite ([c4c6c31](https://github.com/kkm18-ru/Correctum/commit/c4c6c314afb0a10e43070fbec334f7c4bb04459f))
+
 ## [1.0.0](https://github.com/kkm18-ru/Correctum/compare/v0.11.0...v1.0.0) (2026-05-19)
 
 
