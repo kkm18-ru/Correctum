@@ -59,5 +59,8 @@
         <MenuItem Header="Список изменений" 
                       Command="{Binding OpenLinkCommand}"
                       CommandParameter="https://github.com/kkm18-ru/Correctum/blob/HEAD/CHANGELOG.md"/>
+        <MenuItem Header="Обратная связь" 
+                      Command="{Binding OpenLinkCommand}"
+                      CommandParameter="https://forms.yandex.ru/u/6a0fe98d95add5af2bdbc9ae"/>
     </MenuItem>
 </Menu>
