@@ -5,16 +5,21 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:vm="clr-namespace:Correctum.ViewModels.Controls"
       xmlns:u="clr-namespace:Correctum.Utils"
+      xmlns:icons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
       mc:Ignorable="d" d:DesignHeight="20" d:DesignWidth="1000">
     <Menu.DataContext>
         <vm:MainMenuViewModel/>
     </Menu.DataContext>
     <MenuItem Header="Файл">
-        <MenuItem Header="Создать" Command="{Binding CreateContextCommand}"/>
-        <MenuItem Header="Открыть" Command="{Binding LoadContextCommand}"/>
-        <MenuItem Header="Сохранить как..." Command="{Binding SaveAsContextCommand}"/>
+        <MenuItem Header="Создать" Command="{Binding CreateContextCommand}"
+                  Icon="{icons:MaterialIconExt Kind=FileOutline, IconSize=16}" />
+        <MenuItem Header="Открыть" Command="{Binding LoadContextCommand}"
+                  Icon="{icons:MaterialIconExt Kind=FolderOutline, IconSize=16}" />
+        <MenuItem Header="Сохранить как..." Command="{Binding SaveAsContextCommand}"
+                  Icon="{icons:MaterialIconExt Kind=ContentSaveOutline, IconSize=16}" />
         <Separator/>
-        <MenuItem Header="Импорт" ItemsSource="{Binding Imports, Mode=OneTime}">
+        <MenuItem Header="Импорт" ItemsSource="{Binding Imports, Mode=OneTime}"
+                  Icon="{icons:MaterialIconExt Kind=DatabaseImport, IconSize=16}" >
             <MenuItem.ItemContainerStyle>
                 <Style TargetType="MenuItem">
                     <Setter Property="Header" Value="{Binding DisplayName}" />
@@ -25,13 +30,18 @@
                 </Style>
             </MenuItem.ItemContainerStyle>
         </MenuItem>
-        <MenuItem Header="Экспорт..." ItemsSource="{Binding Exporters}" />
-        <MenuItem Header="Вставить" Command="{Binding ShowPasteCommand}" InputGestureText="Ctrl + V" />
+        <MenuItem Header="Экспорт..." ItemsSource="{Binding Exporters}" 
+                  Icon="{icons:MaterialIconExt Kind=DatabaseExport, IconSize=16}" />
+        <MenuItem Header="Вставить" Command="{Binding ShowPasteCommand}" InputGestureText="Ctrl + V" 
+                  Icon="{icons:MaterialIconExt Kind=ContentPaste, IconSize=16}" />
         <Separator/>
-        <MenuItem Header="Провести чеки" Command="{Binding ShowFptrCommand}"/>
+        <MenuItem Header="Провести чеки" Command="{Binding ShowFptrCommand}"
+                  Icon="{icons:MaterialIconExt Kind=ReceiptTextSendOutline, IconSize=16}" />
         <Separator/>
-        <MenuItem Header="Настройки" Command="{Binding ShowSettingsCommand}"/>
-        <MenuItem Header="Выход" Command="{Binding QuitCommand}"/>
+        <MenuItem Header="Настройки" Command="{Binding ShowSettingsCommand}"
+                  Icon="{icons:MaterialIconExt Kind=CogOutline, IconSize=16}" />
+        <MenuItem Header="Выход" Command="{Binding QuitCommand}"
+                  Icon="{icons:MaterialIconExt Kind=ExitToApp, IconSize=16}" />
     </MenuItem>
     <MenuItem Header="Действия" ItemsSource="{Binding Actions, Mode=OneTime}">
         <MenuItem.ItemContainerStyle>
@@ -56,11 +66,11 @@
         </MenuItem.ItemContainerStyle>
     </MenuItem>
     <MenuItem Header="Помощь">
-        <MenuItem Header="Список изменений" 
-                      Command="{Binding OpenLinkCommand}"
-                      CommandParameter="https://github.com/kkm18-ru/Correctum/blob/HEAD/CHANGELOG.md"/>
-        <MenuItem Header="Обратная связь" 
-                      Command="{Binding OpenLinkCommand}"
-                      CommandParameter="https://forms.yandex.ru/u/6a0fe98d95add5af2bdbc9ae"/>
+        <MenuItem Header="Список изменений" Command="{Binding OpenLinkCommand}"
+                  Icon="{icons:MaterialIconExt Kind=TimelineTextOutline, IconSize=16}"  
+                  CommandParameter="https://github.com/kkm18-ru/Correctum/blob/HEAD/CHANGELOG.md" />
+        <MenuItem Header="Обратная связь" Command="{Binding OpenLinkCommand}"
+                  Icon="{icons:MaterialIconExt Kind=MessageAlertOutline, IconSize=16}"                   
+                  CommandParameter="https://forms.yandex.ru/u/6a0fe98d95add5af2bdbc9ae" />
     </MenuItem>
 </Menu>
