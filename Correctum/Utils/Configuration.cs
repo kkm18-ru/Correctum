@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using Correctum.Abstractions;
+using PuppeteerSharp;
+using System.IO;
 using System.Text;
 using Tomlyn;
 
@@ -56,11 +58,15 @@ public partial class Configuration
         }
     }
 
-    public class HttpConfigurationSection
+    public class HttpConfigurationSection : BindableBase
     {
         public int RequestDelay { get; set; } = 1000;
         public byte TriesCount { get; set; } = 3;
         public short PageSize { get; set; } = 100;
+        public string WebBrowserPath { get; set => SetField(ref field, value); } = 
+            @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
+        public ProtocolType WebBrowserProtocol { get; set; } = ProtocolType.Cdp;
+        public SupportedBrowser WebBrowserType { get; set; } = SupportedBrowser.Chromium;
     }
 
     public class FptrConfigurationSection
