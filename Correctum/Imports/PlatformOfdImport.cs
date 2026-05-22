@@ -4,7 +4,6 @@ using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
-using PuppeteerSharp;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
@@ -47,18 +46,16 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
 
     private async Task AuthorizationByBrowserAsync()
     {
-        using var browser = await Puppeteer.LaunchAsync(new() 
-        { 
-            Headless = false,  
-            ExecutablePath = Configuration.Current.Http.ChromiumPath
-        });
+        #pragma warning disable S1075
+        using var browser = await PuppeteerHelper.OpenBrowser();
         var page = await browser.NewPageAsync();
         await page.GoToAsync("https://lk.platformaofd.ru/web/sso-login");
         await page.WaitForResponseAsync("https://lk.platformaofd.ru/web/multilogin/get-list/ajax?term=");
         var cookies = await page.GetCookiesAsync();
-        var _sessionId = cookies.First(c => c.Name == "JSESSIONID").Value;
-        var _accessToken = cookies.First(c => c.Name == "access_token").Value;
-        var _refreshToken = cookies.First(c => c.Name == "refresh_token").Value;
-        client.Auth(_sessionId, _accessToken, _refreshToken);
+        var sessionId = cookies.First(c => c.Name == "JSESSIONID").Value;
+        var accessToken = cookies.First(c => c.Name == "access_token").Value;
+        var refreshToken = cookies.First(c => c.Name == "refresh_token").Value;
+        client.Auth(sessionId, accessToken, refreshToken);
+        #pragma warning restore S1075
     }
 }
