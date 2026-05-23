@@ -4,6 +4,7 @@ using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
+using Correctum.ViewModels.Controls;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
@@ -26,27 +27,43 @@ public sealed class AccountOfdRuImport : OfdImport<AccountOfdRuClient>
     private HtmlOfdRuUserIds UserIds { get; set; }
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var drives = new Dictionary<HtmlOfdRuKkt, string[]>();
         foreach (var kkt in SelectedDevices)
             drives.Add(kkt, [.. await client.GetDrivesAsync(UserIds.OfdAgreementId, kkt, cancellationToken), kkt.FnNumber]);
 
-        progress.ReportMaximum((uint)(DateRange.Count * drives.SelectMany(i => i.Value).Count()));
+        progress.AddStage(DateRange.Count);
         foreach(var date in DateRange)
         {
+            progress.SetStageText(0, $"Дата: {date:dd'.'MM'.'yyyy}");
+            progress.AddStage(drives.Count);
             foreach (var item in drives)
             {
+                progress.SetStageText(1, $"ККТ: {item.Key.RegNumber}");
+                progress.AddStage(item.Value.Length);
                 foreach (var drive in item.Value)
                 {
-                    await foreach (var doc in client.GetDocsInfoAsync
-                        (UserIds.AccountId, UserIds.OfdAgreementId, item.Key.RegNumber, drive, 
-                            date.ToDateTime(TimeOnly.MinValue), date.ToDateTime(TimeOnly.MaxValue), cancellationToken))
+                    progress.SetStageText(2, $"ФН: {drive}");
+                    var collection = await client.GetDocsInfoAsync(UserIds.AccountId, UserIds.OfdAgreementId, item.Key.RegNumber, drive,
+                        date.ToDateTime(TimeOnly.MinValue), date.ToDateTime(TimeOnly.MaxValue), cancellationToken).ToArrayAsync(cancellationToken);
+                    progress.AddStage(collection.Length);
+                    foreach (var doc in collection)
+                    {
+                        progress.SetStageText(3, $"Документ №{doc.DocNumber}");
                         yield return await client.GetReceiptAsync(item.Key.Id, doc, cancellationToken);
-                    progress.ReportIncrement();
+                        progress.Increment(3);
+                    }
+                    progress.RemoveStage();
+                    progress.Increment(2);
                 }
+                progress.RemoveStage();
+                progress.Increment(1);
             }
+            progress.RemoveStage();
+            progress.Increment(0);
         }
+        progress.RemoveStage();
     }
 
     protected override async Task InternalAuthAsync()
