@@ -1,10 +1,10 @@
 ﻿using Correctum.Core.Models;
-using Correctum.Utils;
+using Correctum.ViewModels.Controls;
 
 namespace Correctum.Abstractions;
 
 public interface IImport
 {
-    IAsyncEnumerable<Receipt> ImportAsync(BoundedProgress<uint> progress, CancellationToken cancellationToken);
+    IAsyncEnumerable<Receipt> ImportAsync(MultiProgress progress, CancellationToken cancellationToken);
     void OnClosing() { }
 }
