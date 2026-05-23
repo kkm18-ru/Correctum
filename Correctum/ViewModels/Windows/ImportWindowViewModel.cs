@@ -1,6 +1,7 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Core.Models;
 using Correctum.Utils;
+using Correctum.ViewModels.Controls;
 using System.Windows;
 using System.Windows.Input;
 
@@ -13,25 +14,19 @@ public sealed class ImportWindowViewModel : BindableBase
     public ICommand CancelCommand { get; }
     public BaseImport Import { get; }
 
-    public uint CurrentProgress { get; set => SetField(ref field, value); }
-    public uint MaximumProgress { get; set => SetField(ref field, value); }
-
     public event Action? Imported;
 
     private CancellationTokenSource cts = null!;
     private readonly static NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-    private readonly BoundedProgress<uint> progress;
+    private MultiProgress progress;
 
-    internal ImportWindowViewModel(string importName, BaseImport import)
+    internal ImportWindowViewModel(string importName, BaseImport import, MultiProgress progress)
     {
-        ImportName = importName;
         StartCommand = new RelayCommand(Start, () => cts?.IsCancellationRequested ?? true);
         CancelCommand = new RelayCommand(Cancel, () => !cts?.IsCancellationRequested ?? false);
 
-        progress = new BoundedProgress<uint>();
-        progress.ValueCleared += () => CurrentProgress = 0;
-        progress.MaximumChanged += max => MaximumProgress = max;
-        progress.ValueIncremented += () => CurrentProgress++;
+        ImportName = importName;
+        this.progress = progress;
         Import = import;
     }
 
@@ -39,11 +34,7 @@ public sealed class ImportWindowViewModel : BindableBase
     /// <summary>
     /// Инициализация тестового экземпляра <see cref="ImportWindowViewModel"/>
     /// </summary>
-    public ImportWindowViewModel() : this("Mock", null!)
-    {
-        CurrentProgress = 10;
-        MaximumProgress = 100;
-    }
+    public ImportWindowViewModel() : this("Mock", null!, null!) { }
 #endif
 
     private async void Start()
@@ -52,6 +43,7 @@ public sealed class ImportWindowViewModel : BindableBase
         cts = new CancellationTokenSource();
         try
         {
+            progress.RemoveAllStages();
             await foreach (var receipt in Import.ImportAsync(progress, cts.Token))
                 buffer.Add(receipt);
             cts.Dispose();
