@@ -12,11 +12,11 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         set
         {
             if (!ValidDateByPeriod(value)) return;
+
             var days = (int)(value - MinValue).TotalDays;
-            if (days == _beginDays) return;
-            if (days > _endDays) return;
-            _beginDays = (ushort)days;
-            _enumerator.SetBegin(value);
+            if (days == _beginDays || days > _endDays) return;
+
+            _beginDays = days;
             OnPropertyChanged();
         }
     }
@@ -27,11 +27,11 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         set
         {
             if (!ValidDateByPeriod(value)) return;
+
             var days = (int)(value - MinValue).TotalDays;
-            if (days == _endDays) return;
-            if (days < _beginDays) return;
-            _endDays = (ushort)days;
-            _enumerator.SetEnd(value);
+            if (days == _endDays || days < _beginDays) return;
+
+            _endDays = days;
             OnPropertyChanged();
         }
     }
@@ -39,87 +39,47 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
     public DateTime BeginDateTime => BeginDate.ToDateTime(TimeOnly.MinValue);
     public DateTime EndDateTime => EndDate.ToDateTime(TimeOnly.MaxValue);
 
-    public static DateOnly MinValue { get; } = DateOnly.OfdBeginDate;
+    public static DateOnly MinValue => DateOnly.OfdBeginDate;
     public static DateOnly MaxValue => DateOnly.Today;
+    public static DateTime MinValueDateTime => DateOnly.OfdBeginDate.ToDateTime(TimeOnly.MinValue);
+    public static DateTime MaxValueDateTime => DateOnly.Today.ToDateTime(TimeOnly.MaxValue);
 
-    public static DateTime MinValueDateTime { get; } = MinValue.ToDateTime(new());
-    public static DateTime MaxValueDateTime => DateTime.Today;
-
-    private ushort _beginDays;
-    private ushort _endDays;
-    private readonly DateRangeEnumerator _enumerator;
+    private int _beginDays;
+    private int _endDays;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public DateRange()
     {
-        _beginDays = _endDays = 
-            (ushort)Math.Min(MaxValue.DayNumber - MinValue.DayNumber, ushort.MaxValue);
-        _enumerator = new DateRangeEnumerator();
+        var maxDays = Math.Min(MaxValue.DayNumber - MinValue.DayNumber, ushort.MaxValue);
+        _beginDays = _endDays = maxDays;
     }
 
     public int Count => _endDays - _beginDays + 1;
 
-    public IEnumerator<DateOnly> GetEnumerator() => _enumerator;
+    public IEnumerator<DateOnly> GetEnumerator()
+    {
+        for (var d = BeginDate; d <= EndDate; d = d.AddDays(1))
+            yield return d;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public void SetRangeUnsafe(DateOnly begin, DateOnly end)
     {
         if (!ValidDateByPeriod(begin) || !ValidDateByPeriod(end)) return;
+        if (begin > end) return;
 
-        var beginDays = (begin - MinValue).TotalDays;
-        var endDays = (end - MinValue).TotalDays;
-
-        _beginDays = (ushort)beginDays;
-        _endDays = (ushort)endDays;
-
-        _enumerator.SetBegin(begin);
-        _enumerator.SetEnd(end);
+        _beginDays = (int)(begin - MinValue).TotalDays;
+        _endDays = (int)(end - MinValue).TotalDays;
 
         OnPropertyChanged(nameof(BeginDate));
         OnPropertyChanged(nameof(EndDate));
     }
-
-    public void SetRangeUnsafe(DateTime begin, DateTime end) =>
-        SetRangeUnsafe(DateOnly.FromDateTime(begin), DateOnly.FromDateTime(end));
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     private void OnPropertyChanged([CallerMemberName] string propertyName = "") =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
     private static bool ValidDateByPeriod(DateOnly value) =>
         value >= MinValue && value <= MaxValue;
-}
-
-internal sealed class DateRangeEnumerator() : IEnumerator<DateOnly>
-{
-    public DateOnly Current => current;
-    object IEnumerator.Current => Current;
-
-    private DateOnly current;
-    private DateOnly begin;
-    private DateOnly end;
-
-    public void SetBegin(DateOnly value)
-    {
-        begin = value.AddDays(-1);
-        Reset();
-    }
-
-    public void SetEnd(DateOnly value)
-    {
-        end = value;
-        Reset();
-    }
-
-    public void Reset() => current = begin;
-
-    public bool MoveNext()
-    {
-        if(current.CompareTo(end) >= 0) return false;
-        current = current.AddDays(1);
-        return true;
-    }
-
-    public void Dispose() { }
 }

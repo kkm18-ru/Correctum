@@ -53,7 +53,9 @@ namespace Correctum.UI.Controls
         private void SelectedDatesChanged(object sender, SelectionChangedEventArgs e) 
         {
             if (sender is not Calendar calendar) return;
-            DateRange.SetRangeUnsafe(calendar.SelectedDates.Min(), calendar.SelectedDates.Max());
+            DateRange.SetRangeUnsafe(
+                DateOnly.FromDateTime(calendar.SelectedDates.Min()),
+                DateOnly.FromDateTime(calendar.SelectedDates.Max()));
             RaisePropertyChanged(nameof(DisplayValue));
             IsDropDownOpen = false;
         }
