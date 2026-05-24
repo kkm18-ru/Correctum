@@ -4,6 +4,7 @@ using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
+using Correctum.ViewModels.Controls;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
@@ -24,27 +25,44 @@ public sealed class FirstOfdImport : OfdImport<FirstOfdClient>
     public ObservableCollection<FirstOfdKkt> SelectedDevices { get; } = [];
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var drives = new List<(FirstOfdKkt, FirstOfdFiscalDrive)>();
-        foreach (var kkt in SelectedDevices)
-            foreach (var fn in await client.GetFiscalDrivesAsync(kkt, cancellationToken))
-                drives.Add((kkt, fn));
-
-        progress.ReportMaximum((uint)drives.Count);
-        foreach(var (kkt, fn) in drives)
+        #pragma warning disable S3973
+        var dict = await GetDrivesAsync(progress, cancellationToken);
+        foreach (var date in progress.Stage(DateRange, "Дата: {0:dd'.'MM'.'yyyy}"))
+        foreach (var kkt in progress.Stage(SelectedDevices, "ККТ: {0}"))
+        foreach (var drive in progress.Stage(dict[kkt], "ФН: {0}"))
         {
-            if (fn.activationDate is null || fn.expireDate is null ||
-                DateOnly.FromDateTime(fn.activationDate.Value) > DateRange.EndDate ||
-                DateOnly.FromDateTime(fn.closeArchiveDate ?? fn.expireDate.Value) < DateRange.BeginDate) continue;
-            var fromDate = DateRange.BeginDate.ToDateTime(TimeOnly.MinValue);
-            var toDate = DateRange.EndDate.ToDateTime(TimeOnly.MaxValue);
-            var size = Configuration.Current.Http.PageSize;
-            var enumerable = client.GetTransactionsAsync(kkt, fromDate, toDate, fn, size, cancellationToken);
-            await foreach (var tr in enumerable.WithCancellation(cancellationToken))
+            if (drive.activationDate is null || drive.expireDate is null ||
+                DateOnly.FromDateTime(drive.activationDate.Value) > DateRange.EndDate ||
+                DateOnly.FromDateTime(drive.closeArchiveDate ?? drive.expireDate.Value) < DateRange.BeginDate) continue;
+
+            var transactions = await GetTransactionsAsync(date, kkt, drive, progress, cancellationToken);
+            foreach (var tr in progress.Stage(transactions, "Документ №{0}"))
                 yield return await client.GetReceiptAsync(tr, cancellationToken);
-            progress.ReportIncrement();
         }
+        #pragma warning restore S3973
+    }
+
+    private async Task<FirstOfdTransaction[]> GetTransactionsAsync
+        (DateOnly date, FirstOfdKkt kkt, FirstOfdFiscalDrive drive,
+        MultiProgress progress, CancellationToken cancellationToken)
+    {
+        using var _ = progress.Busy("Получение списка транзакций...");
+        return await client.GetTransactionsAsync
+            (kkt, date.ToDateTime(TimeOnly.MinValue), date.ToDateTime(TimeOnly.MaxValue),
+            drive, Configuration.Current.Http.PageSize, cancellationToken)
+            .OrderBy(tr => tr.fiscalDocumentNumber).ToArrayAsync(cancellationToken);
+    }
+
+    private async Task<Dictionary<FirstOfdKkt, FirstOfdFiscalDrive[]>> GetDrivesAsync
+        (MultiProgress progress, CancellationToken cancellationToken)
+    {
+        using var _ = progress.Busy("Получение списка накопителей...");
+        var result = new Dictionary<FirstOfdKkt, FirstOfdFiscalDrive[]>();
+        foreach (var kkt in SelectedDevices)
+            result[kkt] = await client.GetFiscalDrivesAsync(kkt, cancellationToken);
+        return result;
     }
 
     protected override async Task InternalAuthAsync()
