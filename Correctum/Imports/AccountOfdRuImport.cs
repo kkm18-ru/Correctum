@@ -29,90 +29,36 @@ public sealed class AccountOfdRuImport : OfdImport<AccountOfdRuClient>
     public override async IAsyncEnumerable<Receipt> ImportAsync
         (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        #pragma warning disable S3973
         var drives = await GetDrivesByKktAsync(progress, cancellationToken);
-        await foreach (var receipt in DateStageAsync(drives, progress, cancellationToken))
-            yield return receipt;
+        foreach (var date in progress.Stage(DateRange, "Дата: {0:dd'.'MM'.'yyyy}"))
+        foreach (var kkt in progress.Stage(SelectedDevices, "ККТ: {0}"))
+        foreach (var drive in progress.Stage(drives[kkt], "ФН: {0}"))
+        {
+            var docs = await GetSummaryDocumentsAsync(kkt.RegNumber, drive, date, progress, cancellationToken);
+            foreach (var doc in progress.Stage(docs, "Документ №{0}"))
+                yield return await client.GetReceiptAsync(kkt.Id, doc, cancellationToken);
+        }
+        #pragma warning restore S3973
     }
 
     private async Task<Dictionary<HtmlOfdRuKkt, string[]>> GetDrivesByKktAsync
         (MultiProgress progress, CancellationToken cancellationToken)
     {
         var result = new Dictionary<HtmlOfdRuKkt, string[]>();
-        using (progress.Busy("Получение списка ФН..."))
-        {
-            foreach (var kkt in SelectedDevices)
-                result.Add(kkt, [.. await client.GetDrivesAsync(UserIds.OfdAgreementId, kkt, cancellationToken), kkt.FnNumber]);
-        }
+        using var _ = progress.Busy("Получение списка ФН...");
+        foreach (var kkt in SelectedDevices)
+            result.Add(kkt, [.. await client.GetDrivesAsync(UserIds.OfdAgreementId, kkt, cancellationToken), kkt.FnNumber]);
         return result;
-    }
-
-    private async IAsyncEnumerable<Receipt> DateStageAsync
-        (Dictionary<HtmlOfdRuKkt, string[]> drives, MultiProgress progress,
-        [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        progress.CreateStage(DateRange.Count);
-        foreach (var date in DateRange)
-        {
-            progress.UpdateStageText($"Дата: {date:dd'.'MM'.'yyyy}");
-            await foreach (var receipt in KktStageAsync(date, drives, progress, cancellationToken))
-                yield return receipt;
-            progress.Increment();
-        }
-        progress.RemoveStage();
-    }
-
-    private async IAsyncEnumerable<Receipt> KktStageAsync
-        (DateOnly date, Dictionary<HtmlOfdRuKkt, string[]> drives, MultiProgress progress,
-        [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        progress.CreateStage(drives.Count);
-        foreach (var item in drives)
-        {
-            progress.UpdateStageText($"ККТ: {item.Key.RegNumber}");
-            await foreach (var receipt in DriveStageAsync(date, item.Key, item.Value, progress, cancellationToken))
-                yield return receipt;
-            progress.Increment();
-        }
-        progress.RemoveStage();
-    }
-
-    private async IAsyncEnumerable<Receipt> DriveStageAsync
-        (DateOnly date, HtmlOfdRuKkt kkt, string[] drives, MultiProgress progress, 
-        [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        progress.CreateStage(drives.Length);
-        foreach (var drive in drives)
-        {
-            progress.UpdateStageText($"ФН: {drive}");
-            var docs = await GetSummaryDocumentsAsync(kkt.RegNumber, drive, date, progress, cancellationToken);
-            await foreach (var receipt in ReceiptStageAsync(kkt.Id, docs, progress, cancellationToken))
-                yield return receipt;
-            progress.Increment();
-        }
-        progress.RemoveStage();
-    }
-
-    private async IAsyncEnumerable<Receipt> ReceiptStageAsync
-        (Guid kktId, HtmlOfdRuGetKktsDocumentsItem[] docs, MultiProgress progress, 
-        [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        progress.CreateStage(docs.Length);
-        foreach (var doc in docs)
-        {
-            progress.UpdateStageText($"Документ №{doc.DocNumber}");
-            yield return await client.GetReceiptAsync(kktId, doc, cancellationToken);
-            progress.Increment();
-        }
-        progress.RemoveStage();
     }
 
     private async Task<HtmlOfdRuGetKktsDocumentsItem[]> GetSummaryDocumentsAsync
         (string regNumber, string drive, DateOnly date, MultiProgress progress, CancellationToken cancellationToken)
     {
-        using (progress.Busy("Получение списка документов..."))
-            return await client.GetDocsInfoAsync(UserIds.AccountId, UserIds.OfdAgreementId, regNumber, drive,
-                date.ToDateTime(TimeOnly.MinValue), date.ToDateTime(TimeOnly.MaxValue), cancellationToken)
-                .OrderBy(d => d.DocNumber).ToArrayAsync(cancellationToken);
+        using var _ = progress.Busy("Получение списка документов...");
+        return await client.GetDocsInfoAsync(UserIds.AccountId, UserIds.OfdAgreementId, regNumber, drive,
+            date.ToDateTime(TimeOnly.MinValue), date.ToDateTime(TimeOnly.MaxValue), cancellationToken)
+            .OrderBy(d => d.DocNumber).ToArrayAsync(cancellationToken);
     }
 
     protected override async Task InternalAuthAsync()

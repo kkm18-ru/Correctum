@@ -39,6 +39,7 @@ public sealed class ImportWindowViewModel : BindableBase
 
     private async void Start()
     {
+        progress.RemoveAllStages();
         var buffer = new List<Receipt>();
         cts = new CancellationTokenSource();
         try

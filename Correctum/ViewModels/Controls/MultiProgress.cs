@@ -6,19 +6,28 @@ public sealed class MultiProgress
     public event Action<string>? LastStageTextChanged;
     public event Action<int>? StageCreated;
     public event Action? LastStageRemoved;
-    public event Action? LastStageDecremented;
     public event Action? LastStageIncremented;
     public event Action? AllStagesRemoved;
 
-    public IDisposable Busy(string text) => new MultiProgressBusyIndicator(this, text);
-
     internal void OnBusyIndicatorCreated(string text) => BusyIndicatorCreated?.Invoke(text);
-    public void RemoveStage() => LastStageRemoved?.Invoke();
-    public void RemoveAllStages() => AllStagesRemoved?.Invoke();
-    public void UpdateStageText(string text) => LastStageTextChanged?.Invoke(text);
-    public void CreateStage(int maximum) => StageCreated?.Invoke(maximum);
-    public void Decrement() => LastStageDecremented?.Invoke();
-    public void Increment() => LastStageIncremented?.Invoke();
+    internal void RemoveStage() => LastStageRemoved?.Invoke();
+    internal void RemoveAllStages() => AllStagesRemoved?.Invoke();
+    internal void UpdateStageText(string text) => LastStageTextChanged?.Invoke(text);
+    internal void CreateStage(int maximum) => StageCreated?.Invoke(maximum);
+    internal void Increment() => LastStageIncremented?.Invoke();
+
+    public IDisposable Busy(string text) => new MultiProgressBusyIndicator(this, text);
+    public IEnumerable<T> Stage<T>(IEnumerable<T> source, string template)
+    {
+        CreateStage(source.Count());
+        foreach(var item in source)
+        {
+            UpdateStageText(string.Format(template, item));
+            yield return item;
+            Increment();
+        }
+        RemoveStage();
+    }
 }
 
 public readonly struct MultiProgressBusyIndicator : IDisposable

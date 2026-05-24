@@ -14,7 +14,6 @@ public sealed class MultiProgressBar : StackPanel
         Progress.LastStageTextChanged += LastStageTextChanging;
         Progress.StageCreated += StageCreating;
         Progress.LastStageRemoved += LastStageRemoving;
-        Progress.LastStageDecremented += LastStageDecrementing;
         Progress.LastStageIncremented += LastStageIncrementing;
         Progress.AllStagesRemoved += Children.Clear;
     }
@@ -41,6 +40,5 @@ public sealed class MultiProgressBar : StackPanel
     }
 
     private void LastStageIncrementing() => ((ProgressBar)Children[^2]).Value++;
-    private void LastStageDecrementing() => ((ProgressBar)Children[^2]).Value--;
     private void LastStageTextChanging(string text) => ((TextBlock)Children[^3]).Text = text;
 }
