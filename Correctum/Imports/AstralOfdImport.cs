@@ -4,6 +4,7 @@ using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
+using Correctum.ViewModels.Controls;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -20,23 +21,28 @@ public sealed class AstralOfdImport : OfdImport<AstralOfdClient>
     public ObservableCollection<AstralOfdOrganization> SelectedOrganizations { get; } = [];
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        progress.ReportMaximum((uint)(SelectedOrganizations.Count * DateRange.Count));
-        foreach(var org in SelectedOrganizations)
+        #pragma warning disable S3973
+        foreach (var date in progress.Stage(DateRange, "Дата: {0:dd'.'MM'.'yyyy}"))
+        foreach (var org in progress.Stage(SelectedOrganizations, "Организация: {0}"))
         {
-            foreach (var dt in DateRange)
-            {
-                var tickets = client
-                    .EnumTicketInfoAsync(org, dt.ToDateTime(TimeOnly.MinValue), cancellationToken)
-                    .Where(ticket => ticket.DocumentType.StartsWith('3'))
-                    .WithCancellation(cancellationToken);
-
-                await foreach (var ticket in tickets)
-                    yield return await client.GetReceiptAsync(ticket, cancellationToken);
-                progress.ReportIncrement();
-            }
+            var tickets = await GetTicketsAsync(date, org, progress, cancellationToken);
+            foreach (var ticket in progress.Stage(tickets, "Документ №{0}"))
+                yield return await client.GetReceiptAsync(ticket, cancellationToken);
         }
+        #pragma warning restore S3973
+    }
+
+    private async Task<AstralOfdTicket[]> GetTicketsAsync
+        (DateOnly date, AstralOfdOrganization org, MultiProgress progress,
+        CancellationToken cancellationToken)
+    {
+        using var _ = progress.Busy("Получение списка документов...");
+        return await client
+            .EnumTicketInfoAsync(org, date.ToDateTime(TimeOnly.MinValue), cancellationToken)
+            .Where(ticket => ticket.DocumentType.StartsWith('3'))
+            .OrderBy(t => t.DocNumber).ToArrayAsync(cancellationToken);
     }
 
     protected override async Task InternalAuthAsync()

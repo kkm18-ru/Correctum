@@ -210,6 +210,7 @@ public readonly struct AstralOfdTicket
     [JsonPropertyName("fiscalSign")] public uint DocSign { get; init; }
 
     internal AstralOfdReceiptRequest ToRequest() => new(DocNumber, DriveSerial, DocSign);
+    public override string ToString() => DocNumber.ToString();
 }
 
 internal readonly struct AstralOfdTickets
