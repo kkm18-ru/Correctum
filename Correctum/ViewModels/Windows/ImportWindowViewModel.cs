@@ -18,7 +18,7 @@ public sealed class ImportWindowViewModel : BindableBase
 
     private CancellationTokenSource cts = null!;
     private readonly static NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-    private MultiProgress progress;
+    private readonly MultiProgress progress;
 
     internal ImportWindowViewModel(string importName, BaseImport import, MultiProgress progress)
     {
@@ -43,7 +43,6 @@ public sealed class ImportWindowViewModel : BindableBase
         cts = new CancellationTokenSource();
         try
         {
-            progress.RemoveAllStages();
             await foreach (var receipt in Import.ImportAsync(progress, cts.Token))
                 buffer.Add(receipt);
             cts.Dispose();
@@ -56,6 +55,7 @@ public sealed class ImportWindowViewModel : BindableBase
         }
         catch (OperationCanceledException e)
         {
+            progress.RemoveAllStages();
             Logger.Warn(e, "Импортирование чеков была отменена пользователем");
             MessageBox.Show("Выгрузка чеков была отменена пользователем", "", 0, MessageBoxImage.Hand);
         }
