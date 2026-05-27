@@ -4,6 +4,7 @@ using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
+using Correctum.ViewModels.Controls;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -19,21 +20,61 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
     public ObservableCollection<PlatformaOfdDevice> Devices { get; } = [];
     public ObservableCollection<PlatformaOfdDevice> SelectedDevices { get; } = [];
 
-    public override async IAsyncEnumerable<Receipt> ImportAsync
-        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override IAsyncEnumerable<Receipt> ImportAsync
+        (MultiProgress progress, CancellationToken cancellationToken) =>
+        DateStageAsync(progress, cancellationToken);
+
+    private async Task<PlatformaOfdReceiptReference[]> GetDocReferencesAsync
+        (DateOnly date, PlatformaOfdDevice kkt, MultiProgress progress,
+        CancellationToken cancellationToken) 
     {
-        progress.ReportMaximum((uint)(DateRange.Count * SelectedDevices.Count));
+        using var busy = progress.Busy("Получение списка документов...");
+        return await client.FetchReceiptsAsync(date, kkt, cancellationToken);
+    }
+    
+    private async IAsyncEnumerable<Receipt> DateStageAsync
+        (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        progress.CreateStage(DateRange.Count);
         foreach (var date in DateRange)
         {
-            foreach (var Device in SelectedDevices)
-            {
-                var references = await client.FetchReceiptsAsync(date, Device, cancellationToken);
-                foreach (var @ref in references)
-                    if (await client.FetchReceiptAsync(@ref, cancellationToken) is { } receipt)
-                        yield return receipt;
-                progress.ReportIncrement();
-            }
+            progress.UpdateStageText($"Дата: {date:dd'.'MM'.'yyyy}");
+            await foreach (var receipt in KktStageAsync(date, progress, cancellationToken))
+                yield return receipt;
+            progress.Increment();
         }
+        progress.RemoveStage();
+    }
+    
+    private async IAsyncEnumerable<Receipt> KktStageAsync
+        (DateOnly date, MultiProgress progress,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        progress.CreateStage(SelectedDevices.Count);
+        foreach (var kkt in SelectedDevices)
+        {
+            progress.UpdateStageText($"ККТ: {kkt}");
+            var references = await GetDocReferencesAsync(date, kkt, progress, cancellationToken);
+            await foreach (var receipt in ReceiptStageAsync(references, progress, cancellationToken))
+                yield return receipt;
+            progress.Increment();
+        }
+        progress.RemoveStage();
+    }
+    
+    private async IAsyncEnumerable<Receipt> ReceiptStageAsync
+        (PlatformaOfdReceiptReference[] references, MultiProgress progress, 
+        [EnumeratorCancellation] CancellationToken cancellationToken) 
+    {
+        progress.CreateStage(references.Length);
+        foreach (var @ref in references)
+        {
+            progress.UpdateStageText($"Документ №{@ref.DocId}");
+            if (await client.FetchReceiptAsync(@ref, cancellationToken) is { } receipt)
+                yield return receipt;
+            progress.Increment();
+        }
+        progress.RemoveStage();
     }
 
     protected override async Task InternalAuthAsync()
