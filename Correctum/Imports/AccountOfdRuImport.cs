@@ -4,6 +4,7 @@ using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
+using Correctum.ViewModels.Controls;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
@@ -26,27 +27,38 @@ public sealed class AccountOfdRuImport : OfdImport<AccountOfdRuClient>
     private HtmlOfdRuUserIds UserIds { get; set; }
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var drives = new Dictionary<HtmlOfdRuKkt, string[]>();
-        foreach (var kkt in SelectedDevices)
-            drives.Add(kkt, [.. await client.GetDrivesAsync(UserIds.OfdAgreementId, kkt, cancellationToken), kkt.FnNumber]);
-
-        progress.ReportMaximum((uint)(DateRange.Count * drives.SelectMany(i => i.Value).Count()));
-        foreach(var date in DateRange)
+        #pragma warning disable S3973
+        var drives = await GetDrivesByKktAsync(progress, cancellationToken);
+        foreach (var date in progress.Stage(DateRange, "Дата: {0:dd'.'MM'.'yyyy}"))
+        foreach (var kkt in progress.Stage(SelectedDevices, "ККТ: {0}"))
+        foreach (var drive in progress.Stage(drives[kkt], "ФН: {0}"))
         {
-            foreach (var item in drives)
-            {
-                foreach (var drive in item.Value)
-                {
-                    await foreach (var doc in client.GetDocsInfoAsync
-                        (UserIds.AccountId, UserIds.OfdAgreementId, item.Key.RegNumber, drive, 
-                            date.ToDateTime(TimeOnly.MinValue), date.ToDateTime(TimeOnly.MaxValue), cancellationToken))
-                        yield return await client.GetReceiptAsync(item.Key.Id, doc, cancellationToken);
-                    progress.ReportIncrement();
-                }
-            }
+            var docs = await GetSummaryDocumentsAsync(kkt.RegNumber, drive, date, progress, cancellationToken);
+            foreach (var doc in progress.Stage(docs, "Документ №{0}"))
+                yield return await client.GetReceiptAsync(kkt.Id, doc, cancellationToken);
         }
+        #pragma warning restore S3973
+    }
+
+    private async Task<Dictionary<HtmlOfdRuKkt, string[]>> GetDrivesByKktAsync
+        (MultiProgress progress, CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<HtmlOfdRuKkt, string[]>();
+        using var _ = progress.Busy("Получение списка ФН...");
+        foreach (var kkt in SelectedDevices)
+            result.Add(kkt, [.. await client.GetDrivesAsync(UserIds.OfdAgreementId, kkt, cancellationToken), kkt.FnNumber]);
+        return result;
+    }
+
+    private async Task<HtmlOfdRuGetKktsDocumentsItem[]> GetSummaryDocumentsAsync
+        (string regNumber, string drive, DateOnly date, MultiProgress progress, CancellationToken cancellationToken)
+    {
+        using var _ = progress.Busy("Получение списка документов...");
+        return await client.GetDocsInfoAsync(UserIds.AccountId, UserIds.OfdAgreementId, regNumber, drive,
+            date.ToDateTime(TimeOnly.MinValue), date.ToDateTime(TimeOnly.MaxValue), cancellationToken)
+            .OrderBy(d => d.DocNumber).ToArrayAsync(cancellationToken);
     }
 
     protected override async Task InternalAuthAsync()

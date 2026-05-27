@@ -188,6 +188,9 @@ public readonly struct HtmlOfdRuGetKktsDocumentsItem
     public string FnNumber { get; init; }
     public int Tag { get; init; }
     public uint DocNumber { get; init; }
+
+    public override string ToString() => 
+        DocNumber.ToString();
 }
 
 internal readonly struct HtmlOfdRuGetJsonDocData

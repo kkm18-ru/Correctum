@@ -3,6 +3,7 @@ using Correctum.Attributes;
 using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
+using Correctum.ViewModels.Controls;
 using Dapper;
 using Microsoft.Data.Sqlite;
 using System.Runtime.CompilerServices;
@@ -16,12 +17,11 @@ public sealed partial class SqliteImport : BaseImport
     public string Path { get; set => SetField(ref field, value); } = string.Empty;
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         using (var conn = new SqliteConnection($"Data Source={Path};Mode=ReadOnly"))
         {
             var count = await conn.ExecuteScalarAsync<uint>(COUNT_RECEIPTS);
-            progress.ReportMaximum(count);
             for (var i = 0; i < count; i += Configuration.Current.Import.Sqlite.StackSize)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -30,7 +30,6 @@ public sealed partial class SqliteImport : BaseImport
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     yield return await doc.ToModelAsync(conn);
-                    progress.ReportIncrement();
                 }
             }
         }

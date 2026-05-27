@@ -5,6 +5,7 @@ using Correctum.Core.Models;
 using Correctum.Core.ValueObjects;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
+using Correctum.ViewModels.Controls;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
@@ -27,56 +28,46 @@ public sealed class SabyImport : OfdImport<SabyClient>
     public ObservableCollection<string> SelectedDevices { get; set; } = [];
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var drives = new Dictionary<string, SabyDriveResponse[]>();
-        foreach (var device in SelectedDevices)
-            drives.Add(device, await client.FetchDrivesAsync(Inn, device, DateRange.BeginDate.ToDateTime(new()), DateRange.EndDate.ToDateTime(new()), cancellationToken));
+        var drives = await GetDrivesAsync(progress, cancellationToken);
 
-        progress.ReportMaximum((uint)drives.SelectMany(d => d.Value).Count());
-        foreach (var device in Devices)
+        foreach (var device in progress.Stage(Devices, "ККТ: {0}"))
         {
-            foreach (var drive in drives[device])
+            foreach (var drive in progress.Stage(drives[device], "ФН: {0}"))
             {
-                await foreach (var receipt in ParseByStorage(device, drive, cancellationToken))
-                    yield return receipt;
-                progress.ReportIncrement();
+                var baseRequest = new SabyReceiptsRequest(Inn, device, drive.Id);
+                var beginDate = DateTime.Max(drive.DateStart.Date, DateRange.BeginDateTime.Date);
+                var endDate = !drive.DateEnd.HasValue ? DateRange.EndDateTime.Date : 
+                        DateTime.Min(drive.DateEnd!.Value.Date, DateRange.EndDateTime.Date);
+                foreach(var date in progress.Stage(new DateRange(beginDate, endDate), "Дата: {0:dd'.'MM'.'yyyy}"))
+                {
+                    var request = baseRequest with
+                    {
+                        DateFrom = date.ToDateTime(TimeOnly.MinValue),
+                        DateTo = date.ToDateTime(TimeOnly.MaxValue)
+                    };
+                    var offset = 0u;
+                    while (true)
+                    {
+                        var receipts = await client.FetchReceiptsAsync(request, offset, cancellationToken);
+                        if (receipts is null || receipts.Length == 0) break;
+                        offset = receipts[^1].DocNumber.Value;
+                        foreach (var receipt in receipts) yield return receipt;
+                    }
+                }
             }
         }
     }
 
-    private async IAsyncEnumerable<Receipt> ParseByStorage
-        (string regId, SabyDriveResponse drive, [EnumeratorCancellation] CancellationToken cancellationToken)
+    private async Task<Dictionary<string, SabyDriveResponse[]>> GetDrivesAsync
+        (MultiProgress progress, CancellationToken cancellationToken)
     {
-        var baseRequest = new SabyReceiptsRequest(Inn, regId, drive.Id);
-        var (start, end) = GetAvailablePeriod(drive);
-        for (var day = start; day <= end; day = day.AddDays(1))
-        {
-            var request = baseRequest with { DateFrom = day, DateTo = day.AddSeconds(86_399) };
-            await foreach (var receipt in ParseByDay(request, cancellationToken))
-                yield return receipt;
-        }
-    }
-
-    private async IAsyncEnumerable<Receipt> ParseByDay
-        (SabyReceiptsRequest args, [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        var offset = 0u;
-        while (true)
-        {
-            var receipts = await client.FetchReceiptsAsync(args, offset, cancellationToken);
-            if (receipts is null || receipts.Length == 0) break;
-            offset = receipts[^1].DocNumber.Value;
-            foreach (var receipt in receipts) yield return receipt;
-        }
-    }
-
-    private (DateTime, DateTime) GetAvailablePeriod(SabyDriveResponse drive)
-    {
-        var end = drive.DateEnd ?? DateTime.Now;
-        end = end > DateRange.EndDate.ToDateTime(new()) ? DateRange.EndDate.ToDateTime(new()) : end;
-        var start = drive.DateStart > DateRange.BeginDate.ToDateTime(new()) ? drive.DateStart : DateRange.BeginDate.ToDateTime(new());
-        return (start.Date, end.Date);
+        using var _ = progress.Busy("Получение списка ФН...");
+        var result = new Dictionary<string, SabyDriveResponse[]>();
+        foreach (var device in SelectedDevices)
+            result.Add(device, await client.FetchDrivesAsync(Inn, device, DateRange.BeginDate.ToDateTime(new()), DateRange.EndDate.ToDateTime(new()), cancellationToken));
+        return result;
     }
 
     protected override async Task InternalAuthAsync()

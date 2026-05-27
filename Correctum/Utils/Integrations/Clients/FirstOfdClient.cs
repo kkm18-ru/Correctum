@@ -121,7 +121,10 @@ public sealed class FirstOfdClient(string host) : ApiClient<FirstOfdClient>(host
 #pragma warning disable IDE1006
 
 [method: JsonConstructor]
-public readonly record struct FirstOfdFiscalDrive(string number, DateTime? activationDate, DateTime? expireDate, DateTime? closeArchiveDate);
+public readonly record struct FirstOfdFiscalDrive(string number, DateTime? activationDate, DateTime? expireDate, DateTime? closeArchiveDate)
+{
+    public override string ToString() => number.ToString();
+}
 
 [method: JsonConstructor]
 internal readonly record struct FirstOfdRetailPlace(int id);
@@ -169,7 +172,10 @@ internal readonly record struct FirstOfdTransactionInformation(FirstOfdTransacti
 internal readonly record struct FirstOfdTransactionPagination(uint totalItems);
 
 [method: JsonConstructor]
-public readonly record struct FirstOfdTransaction(string kkmId, string fiscalDriveNumber, uint fiscalDocumentNumber);
+public readonly record struct FirstOfdTransaction(string kkmId, string fiscalDriveNumber, uint fiscalDocumentNumber)
+{
+    public override string ToString() => fiscalDocumentNumber.ToString();
+}
 
 [method: JsonConstructor]
 internal readonly record struct FirstOfdTicketInformation(FirstOfdTicket ticket);

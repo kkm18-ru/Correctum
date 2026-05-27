@@ -4,6 +4,7 @@ using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
+using Correctum.ViewModels.Controls;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
@@ -22,19 +23,14 @@ public sealed class OfdRuImport : OfdImport<OfdRuClient>
     public ObservableCollection<OfdRuDevice> SelectedDevices { get; } = [];
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        progress.ReportMaximum((uint)(DateRange.Count * SelectedDevices.Count));
-        foreach (var day in DateRange)
-        {
-            foreach (var device in SelectedDevices)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var arr = await client.FetchReceiptsAsync(device, day, cancellationToken);
-                foreach (var receipt in arr) yield return receipt;
-                progress.ReportIncrement();
-            }
-        }
+        #pragma warning disable S3973
+        foreach (var date in progress.Stage(DateRange, "Дата: {0:dd'.'MM'.'yyyy}"))
+        foreach (var device in progress.Stage(SelectedDevices, "ККТ: {0}"))
+        foreach (var receipt in await client.FetchReceiptsAsync(device, date, cancellationToken))
+            yield return receipt;
+        #pragma warning restore S3973
     }
 
     protected override async Task InternalAuthAsync()
