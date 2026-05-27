@@ -55,6 +55,10 @@ public class DateRange : IEnumerable<DateOnly>, INotifyPropertyChanged
         _beginDays = _endDays = maxDays;
     }
 
+    public DateRange(DateOnly begin, DateOnly end) : this() => SetRangeUnsafe(begin, end);
+    public DateRange(DateTime begin, DateTime end) : 
+        this(DateOnly.FromDateTime(begin), DateOnly.FromDateTime(end)) { }
+
     public int Count => _endDays - _beginDays + 1;
 
     public IEnumerator<DateOnly> GetEnumerator()
