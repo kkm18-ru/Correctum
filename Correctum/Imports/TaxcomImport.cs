@@ -4,8 +4,12 @@ using Correctum.Attributes.ModuleViewProperty;
 using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
+using Correctum.ViewModels.Controls;
+using OxyPlot.Series;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Correctum.Imports;
 
@@ -26,41 +30,28 @@ public sealed class TaxcomImport : OfdImport<TaxcomClient>
     public ObservableCollection<string> SelectedDevices { get; } = [];
 
     public override async IAsyncEnumerable<Receipt> ImportAsync
-        (BoundedProgress<uint> progress, [EnumeratorCancellation] CancellationToken cancellationToken)
+        (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var ranges = new List<(string drive, uint min, uint max)>(SelectedDevices.Count);
-
-        await FillRanges(ranges, cancellationToken);
-        progress.ReportMaximum((uint)ranges.Sum(r => r.max - r.min + 1));
-        foreach (var (drive, min, max) in ranges)
-        {
-            for (var fd = min; fd <= max; fd++)
-            {
-                if (await client.FetchReceiptAsync(drive, fd, cancellationToken) is { } receipt)
-                    yield return receipt;
-                progress.ReportIncrement();
-            }
-        }
+        #pragma warning disable S3973
+        var drives = await GetDriveByKktAsync(progress, cancellationToken);
+        foreach (var date in progress.Stage(DateRange, "Дата: {0}"))
+        foreach (var kkt in progress.Stage(SelectedDevices, "ККТ: {0}"))
+        foreach (var drive in progress.Stage(drives[kkt], "ФН: {0}"))
+        foreach (var session in progress.Stage(await client.FetchSessionIdsByPeriodAsync(drive, date, date, cancellationToken), "Смена №{0}"))
+        foreach(var doc in progress.Stage(await client.FetchDocumentNumbersBySessionAsync(drive, session, cancellationToken), "Документ №{0}"))
+            if (await client.FetchReceiptAsync(drive, doc, cancellationToken) is { } receipt)
+                yield return receipt;
+        #pragma warning restore S3973
     }
 
-    private async Task FillRanges(List<(string, uint, uint)> ranges, CancellationToken cancellationToken)
+    private async Task<Dictionary<string, string[]>> GetDriveByKktAsync
+        (MultiProgress progress, CancellationToken cancellationToken)
     {
-        foreach (var device in SelectedDevices)
-        {
-            await foreach (var drive in client.FetchDriveIdsAsync(device, cancellationToken))
-            {
-                var sessionIds = await client.FetchSessionIdsByPeriodAsync
-                    (drive, DateRange.BeginDate, DateRange.EndDate, cancellationToken);
-                if (sessionIds.Count == 0) continue;
-                sessionIds.Sort();
-                var docIds = await client.FetchDocumentNumbersBySessionAsync(drive, sessionIds[0], cancellationToken);
-                var minDocId = docIds[0];
-                if (sessionIds.Count > 1)
-                    docIds = await client.FetchDocumentNumbersBySessionAsync(drive, sessionIds[^1], cancellationToken);
-                var maxDocId = docIds[^1];
-                ranges.Add((drive, minDocId, maxDocId));
-            }
-        }
+        var result = new Dictionary<string, string[]>();
+        using var _ = progress.Busy("Получение списка ФН...");
+        foreach (var kkt in SelectedDevices)
+            result.Add(kkt, await client.FetchDriveIdsAsync(kkt, cancellationToken).ToArrayAsync(cancellationToken));
+        return result;
     }
 
     protected override async Task InternalAuthAsync()
