@@ -3,9 +3,9 @@
     /// <summary>
     /// Представляет идентификационный номер налогоплательщика (ИНН)
     /// </summary>
-    public readonly struct Inn : IEquatable<Inn>, IParsable<Inn>
+    public readonly struct Inn : IEquatable<Inn>, IParsable<Inn>, IComparable<Inn>
     {
-        private readonly ulong? _value;
+        private readonly ulong _value;
 
         private Inn(ulong value) => _value = value;
 
@@ -55,12 +55,40 @@
         /// <returns>Значение этого <see cref="Inn"/>.</returns>
         public override string ToString() => _value switch
         {
-            >= 100_000_000 and <= 9_999_999_999 => _value.Value.ToString("D10"),
-            >= 10_000_000_000 and <= 999_999_999_999 => _value.Value.ToString("D12"),
+            >= 100_000_000 and <= 9_999_999_999 => _value.ToString("D10"),
+            >= 10_000_000_000 and <= 999_999_999_999 => _value.ToString("D12"),
             _ => ""
         };
 
+        /// <inheritdoc/>
+        public override bool Equals(object? obj) => obj is Inn inn && Equals(inn);
+
+        /// <inheritdoc/>
         public bool Equals(Inn other) => _value.Equals(other._value);
+
+        /// <inheritdoc/>
+        public override int GetHashCode() => HashCode.Combine(_value);
+
+        /// <inheritdoc/>
+        public int CompareTo(Inn other) => _value.CompareTo(other._value);
+
+        /// <inheritdoc/>
+        public static bool operator ==(Inn left, Inn right) => left.Equals(right);
+
+        /// <inheritdoc/>
+        public static bool operator !=(Inn left, Inn right) => !left.Equals(right);
+
+        /// <inheritdoc/>
+        public static bool operator <(Inn left, Inn right) => left.CompareTo(right) < 0;
+
+        /// <inheritdoc/>
+        public static bool operator <=(Inn left, Inn right) => left.CompareTo(right) <= 0;
+
+        /// <inheritdoc/>
+        public static bool operator >(Inn left, Inn right) => left.CompareTo(right) > 0;
+
+        /// <inheritdoc/>
+        public static bool operator >=(Inn left, Inn right) => left.CompareTo(right) >= 0;
 
         private enum InnParsingStatus { Ok, OutOfRangeLength, IsNotDigitCode, InvalidHashSum }
         private static InnParsingStatus Parse(string s, out Inn result)
