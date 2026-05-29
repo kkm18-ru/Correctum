@@ -22,16 +22,16 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="5"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Кол-во чеков до передачи в ОФД:"/>
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Время ожидания отправки чеков:"/>
-                
+
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="0" Minimum="10" Maximum="5000" Increment="10"
                                   Value="{Binding Fptr.SizeStack}"/>
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="2" Minimum="10" Maximum="60"
@@ -45,7 +45,7 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="5"/>
@@ -59,14 +59,14 @@
                     <RowDefinition Height="5"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Количество документов в ответе:"/>
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Интервал между HTTP-запросами:"/>
                 <TextBlock Grid.Column="0" Grid.Row="4" Text="Количество попыток запроса:"/>
                 <TextBlock Grid.Column="0" Grid.Row="6" Text="Тип браузера:"/>
                 <TextBlock Grid.Column="0" Grid.Row="8" Text="Протокол передачи данных браузера:"/>
                 <TextBlock Grid.Column="0" Grid.Row="10" Text="Путь к браузеру:"/>
-                
+
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="0" Minimum="1"
                                   Value="{Binding Http.PageSize}"/>
                 <tk:IntegerUpDown Grid.Column="2" Grid.Row="2" Minimum="1"
@@ -77,7 +77,7 @@
                           Grid.Row="6" Grid.Column="2" SelectedValuePath="Value" DisplayMemberPath="Locale" />
                 <ComboBox SelectedValue="{Binding Http.WebBrowserProtocol}" ItemsSource="{x:Static utils:EnumLocales.BrowserProtocolType}"
                           Grid.Row="8" Grid.Column="2" SelectedValuePath="Value" DisplayMemberPath="Locale" />
-                    <DockPanel Grid.Row="10" Grid.Column="2">
+                <DockPanel Grid.Row="10" Grid.Column="2">
                     <Button DockPanel.Dock="Right" Width="22" Content="..." Click="BrowseChromiumPath"/>
                     <Separator DockPanel.Dock="Right" Width="5" />
                     <TextBox DockPanel.Dock="Right" Text="{Binding Http.WebBrowserPath}"/>
@@ -91,13 +91,13 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="ID интегратора Taxcom:"/>
-                
+
                 <TextBox Grid.Column="2" Grid.Row="0" 
                          Text="{Binding Import.Taxcom.IntegratorId, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
@@ -109,66 +109,21 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="5"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
-                <CheckBox Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Content="Передавать логи в центрилизированое хранилище Loki?"
-                          IsChecked="{Binding Logging.LokiEnabled}"/>
-                <CheckBox Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="3" Content="Loki-сервер использует Basic-авторизацию?"
-                          IsEnabled="{Binding Logging.LokiEnabled}"
-                          IsChecked="{Binding Logging.LokiAuthEnabled}"/>
-                
+
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Путь к журнал-файлу:"/>
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Минимальный уровень логирования:"/>
-                <TextBlock Grid.Column="0" Grid.Row="6" Text="Адрес Loki-сервера:"/>
-                <TextBlock Grid.Column="0" Grid.Row="8" Text="Идентификатор устройства в Loki:"/>
-                <TextBlock Grid.Column="0" Grid.Row="12" Text="Логин:"/>
-                <TextBlock Grid.Column="0" Grid.Row="14" Text="Пароль:"/>
-                
+
                 <TextBox Grid.Column="2" Grid.Row="0" 
                          Text="{Binding Logging.FilePath, UpdateSourceTrigger=PropertyChanged}"/>
                 <ComboBox Grid.Column="2" Grid.Row="2" SelectedValuePath="Ordinal" DisplayMemberPath="Name"
                          ItemsSource="{Binding Source={x:Static nlog:LogLevel.AllLoggingLevels}}"
                          SelectedValue="{Binding Logging.MinLevel}"/>
-                <TextBox Grid.Column="2" Grid.Row="6" 
-                         IsEnabled="{Binding Logging.LokiEnabled}"
-                         Text="{Binding Logging.LokiEndpoint, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Column="2" Grid.Row="8" 
-                         IsEnabled="{Binding Logging.LokiEnabled}"
-                         Text="{Binding Logging.LokiHostName, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Column="2" Grid.Row="12" 
-                         Text="{Binding Logging.LokiUsername, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBox.IsEnabled>
-                        <MultiBinding Converter="{StaticResource andBoolConverter}">
-                            <Binding Path="Logging.LokiEnabled"/>
-                            <Binding Path="Logging.LokiAuthEnabled"/>
-                        </MultiBinding>
-                    </TextBox.IsEnabled>
-                </TextBox>
-                <PasswordBox Grid.Column="2" Grid.Row="14" Loaded="OnLokiPasswordLoaded" PasswordChanged="OnLokiPasswordChanged">
-                    <PasswordBox.IsEnabled>
-                        <MultiBinding Converter="{StaticResource andBoolConverter}">
-                            <Binding Path="Logging.LokiEnabled"/>
-                            <Binding Path="Logging.LokiAuthEnabled"/>
-                        </MultiBinding>
-                    </PasswordBox.IsEnabled>
-                </PasswordBox>
             </Grid>
         </TabItem>
     </TabControl>
