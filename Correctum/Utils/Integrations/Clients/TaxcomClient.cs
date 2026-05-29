@@ -1,3 +1,7 @@
+using Correctum.Core.Enums;
+using Correctum.Core.Models;
+using Correctum.Core.ValueObjects;
+using Correctum.Exceptions;
 using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -5,10 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using Correctum.Core.Models;
-using Correctum.Core.Enums;
-using Correctum.Exceptions;
-using Correctum.Core.ValueObjects;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace Correctum.Utils.Integrations.Clients;
 
@@ -246,6 +247,7 @@ file readonly struct TaxcomDocumentResponse
     private static Position? ParsePosition(JsonNode? node)
     {
         if (node is null) return null;
+        var nds = node["1199"]?.GetValue<int>();
         return new()
         {
             Name = node["1030"]?.GetValue<string>(),
@@ -255,7 +257,7 @@ file readonly struct TaxcomDocumentResponse
             Cost = node["1043"]?.GetValue<ulong>(),
             Type = (PositionType?)node["1212"]?.GetValue<int>(),
             CalcMethod = (CalculationMethod?)node["1214"]?.GetValue<int>(),
-            TaxRate = (NDSRate?)node["1199"]?.GetValue<int>(),
+            TaxRate = nds is null ? null : NDSRate.FromFns(nds),
             Unit = (UnitOfMeasure?)node["2108"]?.GetValue<int>()
         };
     }

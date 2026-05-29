@@ -2,6 +2,7 @@
 using Correctum.Core.Models;
 using Correctum.Core.ValueObjects;
 using System.Globalization;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
@@ -131,7 +132,7 @@ internal readonly struct AstralOfdReceiptItemDto
     [JsonPropertyName("productType")] public int? Type { get; init; }
     [JsonPropertyName("nds")] public int? NdsRate { get; init; }
     [JsonPropertyName("paymentType")] public int? CalcMethod { get; init; }
-    [JsonIgnore] public int? Unit { get; init; }
+    [JsonPropertyName("itemsQuantityMeasure")] public int? Unit { get; init; }
     [JsonPropertyName("price")] public decimal? Price { get; init; }
     [JsonPropertyName("quantity")] public decimal? Quantity { get; init; }
     [JsonPropertyName("sum")] public decimal? Cost { get; init; }
@@ -143,7 +144,7 @@ internal readonly struct AstralOfdReceiptItemDto
         Cost = Cost,
         Price = Price,
         Quantity = Quantity,
-        TaxRate = (NDSRate?)NdsRate,
+        TaxRate = NdsRate is null ? null : NDSRate.FromFns(NdsRate),
         Type = (PositionType?)Type,
         Unit = (UnitOfMeasure?)Unit,
     };
