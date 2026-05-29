@@ -78,10 +78,22 @@ public partial class Configuration
     public class LoggingConfigurationSection
     {
         public LocalLoggingConfigurationSection Local { get; } = new();
+        public SeqLoggingConfigurationSection Seq { get; } = new();
 
         public class LocalLoggingConfigurationSection
         {
             public int MinLevel { get; set; } = 2; // 2 - уровень информации
+        }
+
+        public class SeqLoggingConfigurationSection
+        {
+            public int MinLevel { get; set; } = 2; // 2 - уровень информации
+            public string Endpoint { get; set; } = string.Empty;
+            public string Key
+            {
+                get => field.StartsWith("enc\0") ? SecretHelper.DecodeSecret(field[4..], Encoding.UTF8) : field;
+                set => field = $"enc\0{SecretHelper.EncodeSecret(value, Encoding.UTF8)}";
+            } = string.Empty;
         }
     }
 }

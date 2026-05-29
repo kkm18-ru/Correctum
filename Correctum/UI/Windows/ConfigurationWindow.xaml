@@ -111,6 +111,19 @@
                          ItemsSource="{Binding Source={x:Static nlog:LogLevel.AllLoggingLevels}}"
                          SelectedValue="{Binding Logging.Local.MinLevel}"/>
                 </UniformGrid>
+                <TextBlock FontWeight="Bold" Text="Удаленное логирование (Seq)" />
+                <UniformGrid Columns="2" Margin="0,5">
+                    <TextBlock Text="Минимальный уровень логирования:"/>
+                    <ComboBox SelectedValuePath="Ordinal" DisplayMemberPath="Name"
+                         ItemsSource="{Binding Source={x:Static nlog:LogLevel.AllLoggingLevels}}"
+                         SelectedValue="{Binding Logging.Seq.MinLevel}"/>
+                    <TextBlock Text="Адрес сервера:"/>
+                    <TextBox Text="{Binding Logging.Seq.Endpoint}"/>
+                    <TextBlock Text="Ключ доступа:"/>
+                    <PasswordBox PasswordChar="*" 
+                                 PasswordChanged="PasswordBox_PasswordChanged" 
+                                 Loaded="PasswordBox_Loaded"/>
+                </UniformGrid>
             </StackPanel>
         </TabItem>
     </TabControl>

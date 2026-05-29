@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using Correctum.UI.Windows.Types;
 using Correctum.Utils;
 using Microsoft.Win32;
@@ -32,4 +33,10 @@ public sealed partial class ConfigurationWindow : DialogWindow
         if (!dialog.ShowDialog() ?? true) return;
         Configuration.Current.Http.WebBrowserPath = dialog.FileName;
     }
+
+    private void PasswordBox_Loaded(object sender, RoutedEventArgs e) =>
+        ((PasswordBox)sender).Password = Configuration.Current.Logging.Seq.Key;
+
+    private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e) =>
+        Configuration.Current.Logging.Seq.Key = ((PasswordBox)sender).Password;
 }
