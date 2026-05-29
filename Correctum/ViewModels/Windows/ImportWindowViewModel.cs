@@ -54,7 +54,7 @@ public sealed class ImportWindowViewModel : BindableBase
             }
             Imported?.Invoke();
         }
-        catch (OperationCanceledException e)
+        catch (OperationCanceledException e) when (e.CancellationToken.IsCancellationRequested)
         {
             progress.RemoveAllStages();
             Logger.Warn(e, "Импортирование чеков была отменена пользователем");
