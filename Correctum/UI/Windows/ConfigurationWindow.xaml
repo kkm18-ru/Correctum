@@ -103,73 +103,28 @@
             </Grid>
         </TabItem>
         <TabItem Header="Логирование">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                
-                <CheckBox Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Content="Передавать логи в центрилизированое хранилище Loki?"
-                          IsChecked="{Binding Logging.LokiEnabled}"/>
-                <CheckBox Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="3" Content="Loki-сервер использует Basic-авторизацию?"
-                          IsEnabled="{Binding Logging.LokiEnabled}"
-                          IsChecked="{Binding Logging.LokiAuthEnabled}"/>
-                
-                <TextBlock Grid.Column="0" Grid.Row="0" Text="Путь к журнал-файлу:"/>
-                <TextBlock Grid.Column="0" Grid.Row="2" Text="Минимальный уровень логирования:"/>
-                <TextBlock Grid.Column="0" Grid.Row="6" Text="Адрес Loki-сервера:"/>
-                <TextBlock Grid.Column="0" Grid.Row="8" Text="Идентификатор устройства в Loki:"/>
-                <TextBlock Grid.Column="0" Grid.Row="12" Text="Логин:"/>
-                <TextBlock Grid.Column="0" Grid.Row="14" Text="Пароль:"/>
-                
-                <TextBox Grid.Column="2" Grid.Row="0" 
-                         Text="{Binding Logging.FilePath, UpdateSourceTrigger=PropertyChanged}"/>
-                <ComboBox Grid.Column="2" Grid.Row="2" SelectedValuePath="Ordinal" DisplayMemberPath="Name"
+            <StackPanel>
+                <TextBlock FontWeight="Bold" Text="Локальное логирование (запись в файл)" />
+                <UniformGrid Columns="2" Margin="0,5">
+                    <TextBlock Text="Минимальный уровень логирования:"/>
+                    <ComboBox SelectedValuePath="Ordinal" DisplayMemberPath="Name"
                          ItemsSource="{Binding Source={x:Static nlog:LogLevel.AllLoggingLevels}}"
-                         SelectedValue="{Binding Logging.MinLevel}"/>
-                <TextBox Grid.Column="2" Grid.Row="6" 
-                         IsEnabled="{Binding Logging.LokiEnabled}"
-                         Text="{Binding Logging.LokiEndpoint, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Column="2" Grid.Row="8" 
-                         IsEnabled="{Binding Logging.LokiEnabled}"
-                         Text="{Binding Logging.LokiHostName, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Column="2" Grid.Row="12" 
-                         Text="{Binding Logging.LokiUsername, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBox.IsEnabled>
-                        <MultiBinding Converter="{StaticResource andBoolConverter}">
-                            <Binding Path="Logging.LokiEnabled"/>
-                            <Binding Path="Logging.LokiAuthEnabled"/>
-                        </MultiBinding>
-                    </TextBox.IsEnabled>
-                </TextBox>
-                <PasswordBox Grid.Column="2" Grid.Row="14" Loaded="OnLokiPasswordLoaded" PasswordChanged="OnLokiPasswordChanged">
-                    <PasswordBox.IsEnabled>
-                        <MultiBinding Converter="{StaticResource andBoolConverter}">
-                            <Binding Path="Logging.LokiEnabled"/>
-                            <Binding Path="Logging.LokiAuthEnabled"/>
-                        </MultiBinding>
-                    </PasswordBox.IsEnabled>
-                </PasswordBox>
-            </Grid>
+                         SelectedValue="{Binding Logging.Local.MinLevel}"/>
+                </UniformGrid>
+                <TextBlock FontWeight="Bold" Text="Удаленное логирование (Seq)" />
+                <UniformGrid Columns="2" Margin="0,5">
+                    <TextBlock Text="Минимальный уровень логирования:"/>
+                    <ComboBox SelectedValuePath="Ordinal" DisplayMemberPath="Name"
+                         ItemsSource="{Binding Source={x:Static nlog:LogLevel.AllLoggingLevels}}"
+                         SelectedValue="{Binding Logging.Seq.MinLevel}"/>
+                    <TextBlock Text="Адрес сервера:"/>
+                    <TextBox Text="{Binding Logging.Seq.Endpoint}"/>
+                    <TextBlock Text="Ключ доступа:"/>
+                    <PasswordBox PasswordChar="*" 
+                                 PasswordChanged="PasswordBox_PasswordChanged" 
+                                 Loaded="PasswordBox_Loaded"/>
+                </UniformGrid>
+            </StackPanel>
         </TabItem>
     </TabControl>
 </wintypes:DialogWindow>

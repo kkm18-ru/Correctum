@@ -22,12 +22,6 @@ public sealed partial class ConfigurationWindow : DialogWindow
         base.OnClosing(e);
     }
 
-    private void OnLokiPasswordLoaded(object sender, RoutedEventArgs e) => 
-        ((PasswordBox)sender).Password = Configuration.Current.Logging.LokiPassword;
-
-    private void OnLokiPasswordChanged(object sender, RoutedEventArgs e) =>
-        Configuration.Current.Logging.LokiPassword = ((PasswordBox)sender).Password;
-
     private void BrowseChromiumPath(object sender, RoutedEventArgs e)
     {
         var dialog = new OpenFileDialog
@@ -39,4 +33,10 @@ public sealed partial class ConfigurationWindow : DialogWindow
         if (!dialog.ShowDialog() ?? true) return;
         Configuration.Current.Http.WebBrowserPath = dialog.FileName;
     }
+
+    private void PasswordBox_Loaded(object sender, RoutedEventArgs e) =>
+        ((PasswordBox)sender).Password = Configuration.Current.Logging.Seq.Key;
+
+    private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e) =>
+        Configuration.Current.Logging.Seq.Key = ((PasswordBox)sender).Password;
 }

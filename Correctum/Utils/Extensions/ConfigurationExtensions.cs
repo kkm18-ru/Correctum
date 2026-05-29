@@ -1,7 +1,6 @@
 ﻿using NLog;
-using NLog.Layouts;
-using NLog.Loki;
 using NLog.Targets;
+using NLog.Targets.Seq;
 using System.Diagnostics;
 
 namespace Correctum.Utils.Extensions;
@@ -15,52 +14,28 @@ public static class ConfigurationExtensions
             var stopwatch = new Stopwatch();
             if (notify) stopwatch.Start();
             var config = new NLog.Config.LoggingConfiguration();
-            var minLevel = LogLevel.FromOrdinal(conf.MinLevel);
 
             var logFile = new FileTarget("log_file")
             {
                 ArchiveEvery = FileArchivePeriod.Monday,
-                FileName = conf.FilePath,
-                Layout = Layout.FromString("${longdate} [${level:uppercase=true:format=TriLetter} ${logger:shortName=true}] ${message}${newline:when=exception!=null}${exception}")
+                FileName = "${basedir}/logs/${date:format=yyyyMMdd}.log",
+                Layout = "${longdate} [${level:uppercase=true:format=TriLetter} ${logger:shortName=true}] ${message}${newline:when=exception!=null}${exception}"
             };
-            config.AddRule(minLevel, LogLevel.Fatal, logFile);
+            config.AddRule(LogLevel.FromOrdinal(conf.Local.MinLevel), LogLevel.Fatal, logFile);
 
-            if (conf.LokiEnabled)
+            if(!string.IsNullOrWhiteSpace(conf.Seq.Endpoint) && !string.IsNullOrWhiteSpace(conf.Seq.Key))
             {
-                var logLoki = new LokiTarget
+                var logSeq = new SeqTarget
                 {
-                    Name = "log_loki",
-                    Endpoint = new SimpleLayout(conf.LokiEndpoint),
-                    Labels = {
-                    new LokiTargetLabel { Name = "app", Layout = "RetailCorrector" },
-                    new LokiTargetLabel { Name = "host", Layout = conf.LokiHostName },
-                },
-                    Layout = new JsonLayout
-                    {
-                        IncludeEventProperties = true,
-                        Attributes =
-                    {
-                        new JsonAttribute("level", "${level}"),
-                        new JsonAttribute("source", "${logger}"),
-                        new JsonAttribute("message", "${message}"),
-                        new JsonAttribute("exception", new JsonLayout
-                        {
-                            Attributes =
-                            {
-                                new JsonAttribute("type", "${exception:format=type}"),
-                                new JsonAttribute("message", "${exception:format=message}"),
-                                new JsonAttribute("stacktrace", "${exception:format=tostring}")
-                            }
-                        }) { Encode = false },
-                    }
-                    }
+                    Name = "log_seq",
+                    ApiKey = conf.Seq.Key,
+                    ServerUrl = conf.Seq.Endpoint
                 };
-                if (conf.LokiAuthEnabled)
-                {
-                    logLoki.Username = conf.LokiUsername;
-                    logLoki.Password = conf.LokiPassword;
-                }
-                config.AddRule(minLevel, LogLevel.Fatal, logLoki);
+                logSeq.Properties.Add(new SeqPropertyItem { Name = "Application", Value = "Correctum" });
+                logSeq.Properties.Add(new SeqPropertyItem { Name = "MachineName", Value = "${machinename}" });
+                logSeq.Properties.Add(new SeqPropertyItem { Name = "ProgressId", Value = "${processid}" });
+                logSeq.Properties.Add(new SeqPropertyItem { Name = "MethodName", Value = "${callsite}" });
+                config.AddRule(LogLevel.FromOrdinal(conf.Seq.MinLevel), LogLevel.Fatal, logSeq);
             }
 
             LogManager.Configuration = config;
