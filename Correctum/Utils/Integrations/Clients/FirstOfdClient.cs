@@ -248,7 +248,7 @@ internal static class FirstOfdHelper
             Name = item.name,
             Type = (PositionType?)item.calculationSubjectSign,
             CalcMethod = (CalculationMethod?)item.calculationTypeSign,
-            TaxRate = (NDSRate?)item.ndsRate,
+            TaxRate = item.ndsRate is null ? null : NDSRate.FromFns(item.ndsRate),
             Unit = (UnitOfMeasure?)item.quantityMeasure,
             Price = item.price,
             Quantity = item.quantity,
