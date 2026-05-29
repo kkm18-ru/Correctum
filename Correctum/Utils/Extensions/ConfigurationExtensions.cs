@@ -1,5 +1,4 @@
 ﻿using NLog;
-using NLog.Layouts;
 using NLog.Targets;
 using System.Diagnostics;
 
@@ -14,15 +13,14 @@ public static class ConfigurationExtensions
             var stopwatch = new Stopwatch();
             if (notify) stopwatch.Start();
             var config = new NLog.Config.LoggingConfiguration();
-            var minLevel = LogLevel.FromOrdinal(conf.MinLevel);
 
             var logFile = new FileTarget("log_file")
             {
                 ArchiveEvery = FileArchivePeriod.Monday,
-                FileName = conf.FilePath,
-                Layout = Layout.FromString("${longdate} [${level:uppercase=true:format=TriLetter} ${logger:shortName=true}] ${message}${newline:when=exception!=null}${exception}")
+                FileName = "${basedir}/logs/${date:format=yyyyMMdd}.log",
+                Layout = "${longdate} [${level:uppercase=true:format=TriLetter} ${logger:shortName=true}] ${message}${newline:when=exception!=null}${exception}"
             };
-            config.AddRule(minLevel, LogLevel.Fatal, logFile);
+            config.AddRule(LogLevel.FromOrdinal(conf.Local.MinLevel), LogLevel.Fatal, logFile);
 
             LogManager.Configuration = config;
             if (!notify) return;

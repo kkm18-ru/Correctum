@@ -77,7 +77,11 @@ public partial class Configuration
 
     public class LoggingConfigurationSection
     {
-        public string FilePath { get; set; } = "logs/current.log";
-        public int MinLevel { get; set; } = 2; // 2 - уровень информации
+        public LocalLoggingConfigurationSection Local { get; } = new();
+
+        public class LocalLoggingConfigurationSection
+        {
+            public int MinLevel { get; set; } = 2; // 2 - уровень информации
+        }
     }
 }
