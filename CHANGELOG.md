@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.2.0](https://github.com/kkm18-ru/Correctum/compare/v1.1.0...v1.2.0) (2026-06-02)
+
+
+### ✨ Нововведения
+
+* Добавлено логирование в Seq ([#110](https://github.com/kkm18-ru/Correctum/issues/110)) ([05cc17f](https://github.com/kkm18-ru/Correctum/commit/05cc17f8101ce09b1cd502a67afb268488469c53))
+* Реализован MultiProgressBar ([#104](https://github.com/kkm18-ru/Correctum/issues/104)) ([a73599a](https://github.com/kkm18-ru/Correctum/commit/a73599a5fca904f7598d31d72357a63da01d4a73))
+
+
+### 🐞 Исправления
+
+* Добавлен манифест Windows-приложения ([e7dc78d](https://github.com/kkm18-ru/Correctum/commit/e7dc78d07a34b57b7ab67e60741854047da9a7fd)), closes [#103](https://github.com/kkm18-ru/Correctum/issues/103)
+* Добавлены ограницчения размеров окна отчета ([18d0207](https://github.com/kkm18-ru/Correctum/commit/18d0207ed49fb3726f99dd8669b11d968f92b578))
+* Исправлена работа DateRange ([a1c4572](https://github.com/kkm18-ru/Correctum/commit/a1c4572af82b7f062d096c8997a24626b1e6abfb))
+* Исправлено отображение таймаута API-клиента ([5d7ab00](https://github.com/kkm18-ru/Correctum/commit/5d7ab00b6f8b58376e46b961d0a7f0eab51f0447))
+* Исправлено получение ЕИ в клиенте Астрал ОФД ([d12fa86](https://github.com/kkm18-ru/Correctum/commit/d12fa863e89b99c8987729874454bf0a84328f10))
+* Исправлено получение ставки НДС в клиенте Астрал ОФД ([27c6778](https://github.com/kkm18-ru/Correctum/commit/27c677802e4c1f628278f53651a98df96ffdf5fa))
+* Исправлено получение ставки НДС в клиенте Первый ОФД ([d94ca07](https://github.com/kkm18-ru/Correctum/commit/d94ca072d4403fa33fe67aabb6d7bdc60fad0b91))
+* Исправлено получение ставки НДС в клиенте Такском-Касса ([df7a109](https://github.com/kkm18-ru/Correctum/commit/df7a109baefcfeb16f73a7209b27ea1d08988ac0))
+
+
+### ⏪ Отмена изменений
+
+* Удалено логирование в Grafana Loki ([9cc4fc6](https://github.com/kkm18-ru/Correctum/commit/9cc4fc66a4b7ce070778ef522b66485232218f7f))
+
 ## [1.1.0](https://github.com/kkm18-ru/Correctum/compare/v1.0.0...v1.1.0) (2026-05-22)
 
 
