@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/Correctum.Core/Correctum.Core.csproj" Id="6455f33f-d098-4235-9c4a-311e283060ec" />
+  <Project Path="src/Correctum.Server.Application/Correctum.Server.Application.csproj" Id="9aa91451-35bc-4bad-84ca-344fc0f5a0fe" />
+  <Project Path="src/Correctum.Server.Infrastructure/Correctum.Server.Infrastructure.csproj" Id="8130dc63-01d0-4e53-a30f-0112743ca0a0" />
+  <Project Path="src/Correctum.Server.WebApp/Correctum.Server.WebApp.csproj" Id="38ea02fe-8932-4a80-8314-4f41afb76d25" />
+</Solution>

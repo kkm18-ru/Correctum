@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/Correctum.Agent/Correctum.Agent.csproj" Id="5ae9f956-bead-4f01-a71d-7de74516fefb" />
+  <Project Path="src/Correctum.Core/Correctum.Core.csproj" />
+  <Project Path="src/Correctum.Fptr/Correctum.Fptr.csproj" Id="cd566951-9660-4d46-bd43-a65b48e0df02" />
+</Solution>
