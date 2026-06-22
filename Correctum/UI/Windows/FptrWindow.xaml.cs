@@ -21,7 +21,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
     public int CorrectionType { get; set => SetField(ref field, value); }
     public string Act { get; set => SetField(ref field, value); }
     public bool IsInternet { get; set => SetField(ref field, value); }
-    public int CurrentIndex { get; private set => SetField(ref field, value); }
+    public int CurrentIndex { get; set => SetField(ref field, value); }
     public int SettingIndex { get; set => SetField(ref field, value); }
 
     public bool CanSettings => State == ConductingReceiptState.Idle;

@@ -3,7 +3,7 @@
     /// <summary>
     /// Представляет идентификационный номер налогоплательщика (ИНН)
     /// </summary>
-    public readonly struct Inn : IEquatable<Inn>, IParsable<Inn>, IComparable<Inn>
+    public readonly struct Inn : IEquatable<Inn>, IComparable<Inn>
     {
         private readonly ulong _value;
 
@@ -15,7 +15,7 @@
         /// <param name="s">Строка для синтаксического анализа.</param>
         /// <returns>Результат синтаксического анализа <paramref name="s"/>.</returns>
         /// <exception cref="FormatException"><paramref name="s"/> не находится в распознаваемом формате.</exception>
-        public static Inn Parse(string s) => Parse(s, null);
+        public static Inn? Parse(string s) => Parse(s, null);
         /// <summary>
         /// Анализирует строку в значение.
         /// </summary>
@@ -23,7 +23,7 @@
         /// <param name="provider">Объект, предоставляющий сведения о форматировании, зависящее от языка и региональных параметров, о <paramref name="s"/>.</param>
         /// <returns>Результат синтаксического анализа <paramref name="s"/>.</returns>
         /// <exception cref="FormatException"><paramref name="s"/> не находится в распознаваемом формате.</exception>
-        public static Inn Parse(string s, IFormatProvider? provider) => Parse(s ?? string.Empty, out var result) switch
+        public static Inn? Parse(string s, IFormatProvider? provider) => Parse(s ?? string.Empty, out var result) switch
         {
             InnParsingStatus.Ok => result,
             InnParsingStatus.OutOfRangeLength => throw new FormatException("Длина ввода отлична от 10 и 12 символов."),
@@ -38,7 +38,7 @@
         /// <param name="s">Строка для синтаксического анализа.</param>
         /// <param name="result">При возврате содержит результат успешного анализа <paramref name="s"/> или неопределенное значение при сбое.</param>
         /// <returns>true, если <paramref name="s"/> анализ выполнен успешно; в противном случае — значение false.</returns>
-        public static bool TryParse(string? s, out Inn result) => TryParse(s, null, out result);
+        public static bool TryParse(string? s, out Inn? result) => TryParse(s, null, out result);
 
         /// <summary>
         /// Пытается проанализировать строку в значение.
@@ -47,7 +47,7 @@
         /// <param name="provider">Объект, предоставляющий сведения о форматировании, зависящее от языка и региональных параметров, о <paramref name="s"/>.</param>
         /// <param name="result">При возврате содержит результат успешного анализа <paramref name="s"/> или неопределенное значение при сбое.</param>
         /// <returns>true, если <paramref name="s"/> анализ выполнен успешно; в противном случае — значение false.</returns>
-        public static bool TryParse(string? s, IFormatProvider? provider, out Inn result) => Parse(s ?? string.Empty, out result) == 0;
+        public static bool TryParse(string? s, IFormatProvider? provider, out Inn? result) => Parse(s ?? string.Empty, out result) == 0;
 
         /// <summary>
         /// Возвращает строковое представление значения этого экземпляра <see cref="Inn"/> структуры.
@@ -91,9 +91,10 @@
         public static bool operator >=(Inn left, Inn right) => left.CompareTo(right) >= 0;
 
         private enum InnParsingStatus { Ok, OutOfRangeLength, IsNotDigitCode, InvalidHashSum }
-        private static InnParsingStatus Parse(string s, out Inn result)
+        private static InnParsingStatus Parse(string s, out Inn? result)
         {
             result = default;
+            if(s.All(c => c == '0')) return InnParsingStatus.Ok;
             if (s.Length != 10 && s.Length != 12) return InnParsingStatus.OutOfRangeLength;
             if (!ulong.TryParse(s, out var code)) return InnParsingStatus.IsNotDigitCode;
             var temp = new byte[s.Length];

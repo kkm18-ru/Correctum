@@ -72,6 +72,8 @@
                     IsEnabled="{Binding CanRun, Mode=OneWay}"/>
             <Button Content="Тест" Margin="2.5,0,2.5,0" Width="38" Click="Test"
                     IsEnabled="{Binding CanSettings, Mode=OneWay}"/>
+            <tk:IntegerUpDown Value="{Binding CurrentIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Width="52"
+                              Maximum="{Binding Source={x:Static rc:StorageContext.ReceiptsCount}, Mode=OneTime}"/>
         </StackPanel>
         
     </Grid>

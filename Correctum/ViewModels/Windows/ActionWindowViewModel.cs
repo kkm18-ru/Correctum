@@ -37,6 +37,7 @@ public sealed class ActionWindowViewModel : BindableBase
                 await storage.Positions.LoadAsync();
                 await Action.DoAsync(storage.Receipts);
                 await storage.SaveChangesAsync();
+                await storage.Database.ExecuteSqlRawAsync("VACUUM");
             }
             IsBusy = false;
             Done?.Invoke();

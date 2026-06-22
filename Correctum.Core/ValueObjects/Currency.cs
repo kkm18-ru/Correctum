@@ -100,8 +100,28 @@ namespace Correctum.Core.ValueObjects
 
         /// <inheritdoc/>
         public static bool operator >(Currency left, Currency right) => left.CompareTo(right) > 0;
-        
+
         /// <inheritdoc/>
         public static bool operator >=(Currency left, Currency right) => left.CompareTo(right) >= 0;
+
+        /// <inheritdoc/>
+        public static Currency operator -(Currency? left, Currency? right) =>
+            left!.Value._data - right!.Value._data;
+
+        /// <inheritdoc/>
+        public static Currency operator +(Currency? left, Currency? right) =>
+            left!.Value._data + right!.Value._data;
+
+        /// <inheritdoc/>
+        public static Currency operator *(Currency? left, decimal? right) =>
+            left!.Value._data / 100M * right!.Value;
+
+        /// <inheritdoc/>
+        public static Currency operator *(Currency? left, double? right) =>
+            left!.Value._data / 100D * right!.Value;
+
+        /// <inheritdoc/>
+        public static decimal operator /(Currency? left, Currency? right) =>
+            (left!.Value._data / 100M) / (right!.Value._data / 100M);
     }
 }

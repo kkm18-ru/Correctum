@@ -22,13 +22,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="ClosedXML" Version="0.105.0" />
 		<PackageReference Include="Dapper" Version="2.1.72" />
 		<PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.8" />
 		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.5.0" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
-		<PackageReference Include="NanoXLSX.Writer" Version="3.1.0" />
+		<PackageReference Include="NanoXLSX" Version="3.1.0" />
 		<PackageReference Include="NLog" Version="6.1.2" />
 		<PackageReference Include="NLog.Targets.Seq" Version="4.0.2" />
 		<PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
