@@ -40,6 +40,7 @@ namespace Correctum.Utils.Integrations
             payment = GetDelegateOfLib<SimpleDelegate>("libfptr_payment");
             receiptTotal = GetDelegateOfLib<SimpleDelegate>("libfptr_receipt_total");
             openShift = GetDelegateOfLib<SimpleDelegate>("libfptr_open_shift");
+            checkDocumentClosed = GetDelegateOfLib<SimpleDelegate>("libfptr_check_document_closed");
 
             getParamBool = GetDelegateOfLib<GetBoolDelegate>("libfptr_get_param_bool");
             getParamInt = GetDelegateOfLib<GetIntDelegate>("libfptr_get_param_int");

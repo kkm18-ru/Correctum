@@ -20,6 +20,7 @@
         private static readonly SimpleDelegate payment;                         // libfptr_payment
         private static readonly SimpleDelegate receiptTotal;                    // libfptr_receipt_total
         private static readonly SimpleDelegate openShift;                       // libfptr_open_shift
+        private static readonly SimpleDelegate checkDocumentClosed;             // libfptr_check_document_closed
 
         private static readonly GetBoolDelegate getParamBool;                   // libfptr_get_param_bool
         private static readonly GetIntDelegate getParamInt;                     // libfptr_get_param_int

@@ -16,6 +16,17 @@ namespace Correctum.Utils.Integrations
             }
         }
 
+        public bool IsOpenedDocument
+        {
+            get
+            {
+                while (!CheckDocumentClosed())
+                    if (CheckDocumentClosed())
+                        break;
+                return GetBoolean(65644);
+            }
+        }
+
         public (string, DateTime) GetReceiptInfo(uint number)
         {
             SetInteger(65622, 13);
