@@ -122,6 +122,7 @@ namespace Correctum.Utils.Integrations
 
         public void CancelReceipt()
         {
+            if (!IsOpenedDocument) return;
             var (code, desc) = (ErrorCode, ErrorDescription);
             cancelReceipt(handle);
             if (code == 0) return;
