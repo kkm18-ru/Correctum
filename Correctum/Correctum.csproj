@@ -23,7 +23,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="ClosedXML" Version="0.105.0" />
-		<PackageReference Include="Dapper" Version="2.1.72" />
+		<PackageReference Include="Dapper" Version="2.1.79" />
 		<PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.8" />
