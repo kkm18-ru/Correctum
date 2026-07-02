@@ -7,6 +7,7 @@ using Correctum.UI.Windows.Types;
 using Correctum.Utils;
 using Correctum.Utils.Integrations;
 using Correctum.Validators;
+using Correctum.Views.Windows;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -205,7 +206,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                                 CurrentIndex++;
                             else _handle.CancelReceipt();
                             if (CurrentIndex > 0 && CurrentIndex % Configuration.Current.Fptr.SizeStack == 0)
-                                Thread.Sleep(60000 * Configuration.Current.Fptr.StackIntervalMinutes);
+                                new ExchangeOfdWindow(_handle).ShowDialog();
                         }
                     }
                     catch (ModelValidationException ex)
