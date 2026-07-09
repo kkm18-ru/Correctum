@@ -200,6 +200,14 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
                     Children.Add(btn);
                 }
         """;
+    const string Button = """
+                {{
+                    var btn = new global::System.Windows.Controls.Button();
+                    btn.Content = "{1}";
+                    btn.SetBinding(global::System.Windows.Controls.Button.CommandProperty, "{0}");
+                    Children.Add(btn);
+                }}
+        """;
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -287,6 +295,7 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
                     case "Correctum.Attributes.ModuleViewProperty.ComboBoxAttribute":
                     case "Correctum.Attributes.ModuleViewProperty.LocalizedComboBoxAttribute":
                     case "Correctum.Attributes.ModuleViewProperty.CheckBoxAttribute":
+                    case "Correctum.Attributes.ModuleViewProperty.ButtonAttribute":
                         var propName = (string)attribute.ConstructorArguments[1].Value!;
                         var displayName = (string)attribute.ConstructorArguments[0].Value!;
                         var attrClass = attribute.AttributeClass!.ToDisplayString();
@@ -368,6 +377,11 @@ public sealed class ModuleViewsGenerator : IIncrementalGenerator
             case "CheckBox":
                 builder.AppendLine();
                 builder.AppendLine(string.Format(CheckBox, pair.Key, pair.Value.DisplayName, authorizable.ToString().ToLowerInvariant(), pair.Value.ForAuth.ToString().ToLowerInvariant()));
+                builder.AppendLine(Separator);
+                break;
+            case "Button":
+                builder.AppendLine();
+                builder.AppendLine(string.Format(Button, pair.Key, pair.Value.DisplayName));
                 builder.AppendLine(Separator);
                 break;
             default: break;
