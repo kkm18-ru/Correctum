@@ -44,3 +44,9 @@ public sealed class LocalizedComboBoxAttribute(
     string selectedPropertyName, 
     string localizedItemsPropertyName
 ) : Attribute;
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public sealed class ButtonAttribute(
+    string displayName,
+    string commandPropertyName
+) : Attribute;
