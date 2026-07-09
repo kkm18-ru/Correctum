@@ -97,7 +97,7 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
             await page.WaitForResponseAsync("https://lk.platformaofd.ru/web/multilogin/get-list/ajax?term=", new(300000));
             var cookies = await page.GetCookiesAsync();
             var sessionId = cookies.First(c => c.Name == "JSESSIONID").Value;
-            var accessToken = cookies.First(c => c.Name == "access_token").Value;
+            var accessToken = cookies.First(c => c.Name == "ofd_access_token").Value;
             var refreshToken = cookies.First(c => c.Name == "refresh_token").Value;
             client.Auth(sessionId, accessToken, refreshToken);
             return true;
