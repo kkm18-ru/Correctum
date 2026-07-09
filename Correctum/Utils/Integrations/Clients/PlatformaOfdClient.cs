@@ -28,7 +28,7 @@ public sealed partial class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>
     private void Auth(string accessToken, string refreshToken)
     {
         Client.DefaultRequestHeaders.Remove("Cookie");
-        Client.DefaultRequestHeaders.Add("Cookie", $"JSESSIONID={JSessionId}; access_token={accessToken}; refresh_token={refreshToken}");
+        Client.DefaultRequestHeaders.Add("Cookie", $"JSESSIONID={JSessionId}; ofd_access_token={accessToken}; refresh_token={refreshToken}");
     }
 
     private void Auth(HttpResponseHeaders headers)
