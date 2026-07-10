@@ -206,7 +206,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                                 CurrentIndex++;
                             else _handle.CancelReceipt();
                             if (CurrentIndex > 0 && CurrentIndex % Configuration.Current.Fptr.SizeStack == 0)
-                                new ExchangeOfdWindow(_handle).ShowDialog();
+                                ExchangeOfdWindow.ShowDialog(_handle);
                         }
                     }
                     catch (ModelValidationException ex)
