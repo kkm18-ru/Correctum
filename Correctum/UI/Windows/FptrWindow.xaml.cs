@@ -287,6 +287,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                     CurrentIndex++;
                 else _handle.CancelReceipt();
             }
+            ExchangeOfdWindow.ShowDialog(_handle);
             State = ConductingReceiptState.Idle;
             var result = MessageBox.Show(text, "", MessageBoxButton.YesNo);
             if(result == MessageBoxResult.No) return;
