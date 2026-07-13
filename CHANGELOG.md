@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.3.0](https://github.com/kkm18-ru/Correctum/compare/v1.2.0...v1.3.0) (2026-07-13)
+
+
+### ✨ Нововведения
+
+* **Действия:** Реализовано аннулирование по таблице ([#132](https://github.com/kkm18-ru/Correctum/issues/132)) ([ea69fd3](https://github.com/kkm18-ru/Correctum/commit/ea69fd36d7a58b6cb09d0720fb0ed80e36b5229c))
+
+
+### 🐞 Исправления
+
+* Исправлена авторизация в Платформа ОФД ([#131](https://github.com/kkm18-ru/Correctum/issues/131)) ([3bf2182](https://github.com/kkm18-ru/Correctum/commit/3bf2182dfa046a98071c30ed7090d069675915b6))
+
+
+### ⬆️ Обновления зависимостей
+
+* **coverlet.collector:** 10.0.1 ([380cc45](https://github.com/kkm18-ru/Correctum/commit/380cc45c91d4a0ee24fe044a22b122b923c8212e))
+* **Dapper:** 2.1.79 ([32926c5](https://github.com/kkm18-ru/Correctum/commit/32926c564598cd9c0e9dc9d9b04fd376fc850a59))
+* **Extended.Wpf.Toolkit:** 5.1.2 ([a8a6550](https://github.com/kkm18-ru/Correctum/commit/a8a655048b55cbc2da54ab559758bf07a7ea6f2d))
+* **Microsoft.CodeAnalysis.*:** 5.3.0 ([15a9d20](https://github.com/kkm18-ru/Correctum/commit/15a9d20d10343b5f1afbde71dad28bdf280728e7))
+* **Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit:** 1.1.2 ([9608f9c](https://github.com/kkm18-ru/Correctum/commit/9608f9ca7f8a92d94f97cb56f1b04d5152f9b15e))
+* **Microsoft.Data.Sqlite.Core:** 10.0.9 ([426817f](https://github.com/kkm18-ru/Correctum/commit/426817fb265eddd7a94bec15fb9a984b367d15de))
+* **Microsoft.EntityFrameworkCore.Sqlite:** 10.0.9 ([a2ffe40](https://github.com/kkm18-ru/Correctum/commit/a2ffe40c8c0c32ba4787c6ef1d1414f812c05be7))
+* **Microsoft.Extensions.Http.Resilience:** 10.7.0 ([e37a246](https://github.com/kkm18-ru/Correctum/commit/e37a2469f1877a18e6aee8d62bf4d92a09c86c7f))
+* **Microsoft.NET.Test.Sdk:** 18.7.0 ([5e9ece7](https://github.com/kkm18-ru/Correctum/commit/5e9ece7dad11f963e74f77fcde0e548f1467fae7))
+* **NLog:** 6.1.3 ([148dc85](https://github.com/kkm18-ru/Correctum/commit/148dc853a7eb19d9711e5552ed3329f0218855cb))
+* **NUnit.Analyzers:** 4.14.0 ([de50233](https://github.com/kkm18-ru/Correctum/commit/de5023399b4e075594e0d4fa5e8cb3a400d59449))
+* **NUnit:** 4.6.1 ([8470536](https://github.com/kkm18-ru/Correctum/commit/8470536ff7c8041c63c2ec0ba764849d80c42e70))
+* **Polly:** 8.7.0 ([2334efd](https://github.com/kkm18-ru/Correctum/commit/2334efd6d944b4f52bf6e1c290008d8967b51d85))
+* **PuppeteerSharp:** 25.2.1 ([449b667](https://github.com/kkm18-ru/Correctum/commit/449b667c8394865d6013bf1c448e6ab9a2c888b5))
+* **System.ServiceProcess.ServiceController:** 10.0.9 ([0e47f96](https://github.com/kkm18-ru/Correctum/commit/0e47f96cd8d5738edb4dbf3fd0f1f865c46bb29b))
+* **Tomlyn:** 2.9.0 ([62668a7](https://github.com/kkm18-ru/Correctum/commit/62668a7e05f544f621eae84b218e348bb68b1bc1))
+* **WireMock.Net.Minimal:** 2.11.0 ([a2078d8](https://github.com/kkm18-ru/Correctum/commit/a2078d8b5df9d6eb853826a6bc885af9e9f0d690))
+* **xunit.runner.visualstudio:** 3.1.5 ([b2bc4a4](https://github.com/kkm18-ru/Correctum/commit/b2bc4a473890aec4447a19f5c5254d62f7518b64))
+* **xunit:** 2.9.3 ([63a17d6](https://github.com/kkm18-ru/Correctum/commit/63a17d6c24e34d44f786ca1b35799428b2f1e7ac))
+
 ## [1.2.0](https://github.com/kkm18-ru/Correctum/compare/v1.1.0...v1.2.0) (2026-06-02)
 
 
