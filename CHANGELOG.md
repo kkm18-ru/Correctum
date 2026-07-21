@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/kkm18-ru/Correctum/compare/v1.3.0...v1.4.0) (2026-07-21)
+
+
+### ✨ Нововведения
+
+* Добавлено действие "Аннулировать" ([#138](https://github.com/kkm18-ru/Correctum/issues/138)) ([e0556af](https://github.com/kkm18-ru/Correctum/commit/e0556aff188211d8221704c6fbda5bd4ad24a369))
+* Добавлено действие "Удаление связи с оригинальным чеком" ([#137](https://github.com/kkm18-ru/Correctum/issues/137)) ([a9e6b63](https://github.com/kkm18-ru/Correctum/commit/a9e6b63969f4f2ec222a1080eacc74dbaa2f92d2))
+
 ## [1.3.0](https://github.com/kkm18-ru/Correctum/compare/v1.2.0...v1.3.0) (2026-07-13)
 
 
