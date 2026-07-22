@@ -46,6 +46,10 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
+      - uses: shrink/actions-document-publish@v1
+        id: pdf-changelog
+        with:
+          sources: 'CHANGELOG.md'
       - uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
@@ -64,5 +68,7 @@ jobs:
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         with:
           token: ${{ steps.bot-token.outputs.token }}
-          files: Correctum-${{ needs.release-please.outputs.version }}.exe
           tag_name: ${{ needs.release-please.outputs.tag }}
+          files: |
+            ${{ steps.pdf-changelog.outputs.pdf }}
+            Correctum-${{ needs.release-please.outputs.version }}.exe
