@@ -4,19 +4,26 @@
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
           xmlns:local="clr-namespace:Correctum.Views.Controls"
-          xmlns:m="clr-namespace:Correctum.Models"
+          xmlns:m="clr-namespace:Correctum.Core.Models;assembly=Correctum.Core"
           IsEnabled="False"
           mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800"
           Style="{StaticResource ReadOnlyDataGrid}"
-          d:DataContext="{d:DesignInstance Type={x:Type m:PositionView}, IsDesignTimeCreatable=True}">
+          d:DataContext="{d:DesignInstance Type={x:Type m:Position}, IsDesignTimeCreatable=True}">
     <DataGrid.Columns>
-        <local:DataGridReceiptInfoColumn Header="Наименование" Binding="{Binding Name}" HorizontalTextAlignment="Left" />
-        <local:DataGridReceiptInfoColumn Header="Предмет расчета" Binding="{Binding SubjectType}" />
-        <local:DataGridReceiptInfoColumn Header="Способ расчета" Binding="{Binding CalcMethod}" />
-        <local:DataGridReceiptInfoColumn Header="Ставка НДС" Binding="{Binding NDS}" />
-        <local:DataGridReceiptInfoColumn Header="Мера измерения" Binding="{Binding UnitOfMeasure}" />
-        <local:DataGridReceiptInfoColumn Header="Цена" Binding="{Binding Price}" />
-        <local:DataGridReceiptInfoColumn Header="Количество" Binding="{Binding Quantity}" />
-        <local:DataGridReceiptInfoColumn Header="Стоимость" Binding="{Binding Cost}" />
+        <local:DataGridReceiptInfoColumn Header="Наименование" HorizontalTextAlignment="Left" Binding="{Binding Name}" />
+        <local:DataGridReceiptInfoColumn Header="Предмет расчета" 
+                                         Binding="{Binding Type, Converter={StaticResource enumLocale}}" />
+        <local:DataGridReceiptInfoColumn Header="Способ расчета" 
+                                         Binding="{Binding CalcMethod, Converter={StaticResource enumLocale}}" />
+        <local:DataGridReceiptInfoColumn Header="Ставка НДС" 
+                                         Binding="{Binding TaxRate, Converter={StaticResource enumLocale}}" />
+        <local:DataGridReceiptInfoColumn Header="Мера измерения" 
+                                         Binding="{Binding Unit, Converter={StaticResource enumLocale}}" />
+        <local:DataGridReceiptInfoColumn Header="Цена" 
+                                         Binding="{Binding Price, StringFormat={}{0} руб.}" />
+        <local:DataGridReceiptInfoColumn Header="Количество" 
+                                         Binding="{Binding Quantity}" />
+        <local:DataGridReceiptInfoColumn Header="Стоимость" 
+                                         Binding="{Binding Cost, StringFormat={}{0} руб.}" />
     </DataGrid.Columns>
 </DataGrid>

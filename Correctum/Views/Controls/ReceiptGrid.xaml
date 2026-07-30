@@ -4,35 +4,44 @@
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
           xmlns:local="clr-namespace:Correctum.Views.Controls"
-          xmlns:m="clr-namespace:Correctum.Models"
+          xmlns:m="clr-namespace:Correctum.Core.Models;assembly=Correctum.Core"
           SelectionMode="Single"
           mc:Ignorable="d" Style="{StaticResource ReadOnlyDataGrid}"
-          d:DataContext="{d:DesignInstance Type={x:Type m:ReceiptView}, IsDesignTimeCreatable=True}"
+          d:DataContext="{d:DesignInstance Type={x:Type m:Receipt}, IsDesignTimeCreatable=True}"
           d:DesignHeight="450" d:DesignWidth="800">
     <DataGrid.Columns>
         <DataGridCheckBoxColumn Header="" Binding="{Binding Marked, Mode=OneWay}" />
-        <DataGridCheckBoxColumn Header="RO" Binding="{Binding ReadOnly, Mode=OneWay}" />
+        <DataGridCheckBoxColumn Header="RO" Binding="{Binding IsReadOnly, Mode=OneWay}" />
         <local:DataGridReceiptInfoColumn Header="Регистрационный номер ККТ" Binding="{Binding RegId}" />
         <local:DataGridReceiptInfoColumn Header="Заводской номер ФН" Binding="{Binding StorageId}" />
         <local:DataGridReceiptInfoColumn Header="Номер ФД" Binding="{Binding DocNumber}" />
         <local:DataGridReceiptInfoColumn Header="Номер смены" Binding="{Binding SessionId}" />
         <local:DataGridReceiptInfoColumn Header="Номер чека за смену" Binding="{Binding DocInSession}" />
         <local:DataGridReceiptInfoColumn Header="Фискальный признак" Binding="{Binding DocSign}" />
-        <local:DataGridReceiptInfoColumn Header="Дата проведения расчета" Binding="{Binding Created}" />
-        <local:DataGridReceiptInfoColumn Header="Операция чека" Binding="{Binding Type}" />
-        <local:DataGridReceiptInfoColumn Header="Система налогооблажения" Binding="{Binding TaxationSystem}" />
+        <local:DataGridReceiptInfoColumn Header="Дата проведения расчета" 
+                                         Binding="{Binding Created, StringFormat=yyyy-MM-dd HH:mm}" />
+        <local:DataGridReceiptInfoColumn Header="Операция чека" 
+                                         Binding="{Binding Type, Converter={StaticResource enumLocale}}" />
+        <local:DataGridReceiptInfoColumn Header="Система налогооблажения" 
+                                         Binding="{Binding TaxationSystem, Converter={StaticResource enumLocale}}" />
         <local:DataGridReceiptInfoColumn Header="Контакт покупателя" Binding="{Binding BuyerContact}" />
         <local:DataGridReceiptInfoColumn Header="Кассир" Binding="{Binding OperatorName}" />
         <local:DataGridReceiptInfoColumn Header="ИНН кассира" Binding="{Binding OperatorInn}" />
         <local:DataGridReceiptInfoColumn Header="Электронный адрес отправителя" Binding="{Binding SenderAddress}" />
         <local:DataGridReceiptInfoColumn Header="Место расчета" Binding="{Binding RetailPlace}" />
         <local:DataGridReceiptInfoColumn Header="Адрес расчета" Binding="{Binding RetailAddress}" />
-        <local:DataGridReceiptInfoColumn Header="Наличная оплата" Binding="{Binding CashSum}" />
-        <local:DataGridReceiptInfoColumn Header="Безналичная оплата" Binding="{Binding NonCashSum}" />
-        <local:DataGridReceiptInfoColumn Header="Сумма аванса" Binding="{Binding AdvanceSum}" />
-        <local:DataGridReceiptInfoColumn Header="Сумма оплаты кредита" Binding="{Binding CreditSum}" />
-        <local:DataGridReceiptInfoColumn Header="Встречное предоставление" Binding="{Binding ProvisionSum}" />
-        <local:DataGridReceiptInfoColumn Header="Итоговая сумма" Binding="{Binding TotalSum}" />
+        <local:DataGridReceiptInfoColumn Header="Наличная оплата" 
+                                         Binding="{Binding CashSum, StringFormat={}{0} руб.}" />
+        <local:DataGridReceiptInfoColumn Header="Безналичная оплата" 
+                                         Binding="{Binding NonCashSum, StringFormat={}{0} руб.}" />
+        <local:DataGridReceiptInfoColumn Header="Сумма аванса" 
+                                         Binding="{Binding AdvanceSum, StringFormat={}{0} руб.}" />
+        <local:DataGridReceiptInfoColumn Header="Сумма оплаты кредита" 
+                                         Binding="{Binding CreditSum, StringFormat={}{0} руб.}" />
+        <local:DataGridReceiptInfoColumn Header="Встречное предоставление" 
+                                         Binding="{Binding ProvisionSum, StringFormat={}{0} руб.}" />
+        <local:DataGridReceiptInfoColumn Header="Итоговая сумма" 
+                                         Binding="{Binding TotalSum, StringFormat={}{0} руб.}" />
     </DataGrid.Columns>
     <DataGrid.RowDetailsTemplate>
         <DataTemplate>
