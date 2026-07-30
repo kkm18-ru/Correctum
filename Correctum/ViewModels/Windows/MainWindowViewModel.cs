@@ -1,5 +1,5 @@
 ﻿using Correctum.Abstractions;
-using Correctum.Models;
+using Correctum.Core.Models;
 using Correctum.Utils;
 using Correctum.Views.Windows;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +14,7 @@ public sealed class MainWindowViewModel : BindableBase
 {
     private const int MaxSizePage = 200;
 
-    public ObservableCollection<ReceiptView> ReceiptPage { get; } = [];
+    public ObservableCollection<Receipt> ReceiptPage { get; } = [];
     public ICommand RefreshCommand { get; }
     public ICommand GoToFirstPageCommand { get; }
     public ICommand GoToPreviousPageCommand { get; }
@@ -55,7 +55,7 @@ public sealed class MainWindowViewModel : BindableBase
         ctx.Positions.Load();
         ReceiptPage.Clear();
         foreach (var receipt in ctx.Receipts.Skip(MaxSizePage * (PageNumber - 1)).Take(MaxSizePage))
-            ReceiptPage.Add(new ReceiptView(receipt));
+            ReceiptPage.Add(receipt);
     }
 
     private static int GetLastPageNumber()

@@ -8,4 +8,5 @@
     <c:TextColorConverter x:Key="textColorConverter"/>
     <c:NullableIndicatorConverter x:Key="nullIndicator"/>
     <c:CollapsedWhenNullConverter x:Key="collapsedWhenNullConverter"/>
+    <c:EnumLocaleConverter x:Key="enumLocale"/>
 </ResourceDictionary>
