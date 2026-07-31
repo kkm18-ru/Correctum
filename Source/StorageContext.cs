@@ -8,7 +8,7 @@ using System.IO;
 using System.Text;
 
 namespace Correctum
-{    
+{
     internal class StorageContext : DbContext
     {
         public DbSet<Receipt> Receipts => Set<Receipt>();
@@ -30,8 +30,8 @@ namespace Correctum
 
         public StorageContext()
         {
-            if(Database.EnsureCreated())
-                Database.ExecuteSqlRaw("PRAGMA journal_mode=DELETE;");
+            Database.Migrate();
+            Database.ExecuteSqlRaw("PRAGMA journal_mode=DELETE;");
         }
 
         public static void CreateBackup()
