@@ -8,8 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Correctum.iss = Correctum.iss
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Correctum.Core", "Correctum.Core\Correctum.Core.csproj", "{44F0079A-8047-4B0A-A098-E123401C2B35}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Correctum.Core.Tests", "tests\Correctum.Core.Tests\Correctum.Core.Tests.csproj", "{6D8FF1F9-32BF-4493-BE63-7982DB969380}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E02BF953-3E83-4FC7-AA62-E8BE76C4BADE}"
@@ -32,10 +30,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{44F0079A-8047-4B0A-A098-E123401C2B35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44F0079A-8047-4B0A-A098-E123401C2B35}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44F0079A-8047-4B0A-A098-E123401C2B35}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44F0079A-8047-4B0A-A098-E123401C2B35}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6D8FF1F9-32BF-4493-BE63-7982DB969380}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6D8FF1F9-32BF-4493-BE63-7982DB969380}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D8FF1F9-32BF-4493-BE63-7982DB969380}.Release|Any CPU.ActiveCfg = Release|Any CPU
