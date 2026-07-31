@@ -1,5 +1,6 @@
 ﻿using Correctum.Core.Enums;
 using Correctum.Core.ValueObjects;
+using Correctum.Models;
 
 namespace Correctum.Core.Models
 {
@@ -12,7 +13,6 @@ namespace Correctum.Core.Models
         /// Внутренний идентификатор
         /// </summary>
         public int Id { get; set; }
-        public bool Marked { get; set; }
         /// <summary>
         /// Регистрационный номер ККТ
         /// </summary>
@@ -88,9 +88,12 @@ namespace Correctum.Core.Models
         public Inn? OperatorInn { get; set; }
         public bool IsReadOnly { get; set; }
 
-        public Receipt Clone() => new()
+        public IList<ReceiptChangeItem> Changes { get; } = [];
+        public IList<ReceiptMetadataChangeItem> Metadata { get; } = [];
+
+        public Receipt Clone(bool cloneItems = true) => new()
         {
-            Items = [..Items.Select(i => i.Clone())],
+            Items = cloneItems ? [.. Items.Select(i => i.Clone())] : [],
             TotalSum = TotalSum,
             CashSum = CashSum,
             NonCashSum = NonCashSum,

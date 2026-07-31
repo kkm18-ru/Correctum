@@ -1,5 +1,7 @@
 ﻿using Correctum.Core.Enums;
 using Correctum.Core.ValueObjects;
+using Correctum.Models;
+using System.Text.Json.Serialization;
 
 namespace Correctum.Core.Models
 {
@@ -8,7 +10,7 @@ namespace Correctum.Core.Models
     /// </summary> 
     public sealed class Position
     {
-        public int Id { get; set; }
+        [JsonIgnore] public int Id { get; set; }
         /// <summary>
         /// Наименование предмета расчета
         /// </summary>
@@ -42,8 +44,10 @@ namespace Correctum.Core.Models
         /// </summary>
         public Currency? Cost { get; set; }
 
-        public Receipt Receipt { get; set; }
-        public int ReceiptId { get; set; }
+        [JsonIgnore] public Receipt Receipt { get; set; }
+        [JsonIgnore] public int ReceiptId { get; set; }
+
+        [JsonIgnore] public IList<PositionChangeItem> Changes { get; } = [];
 
         public Position Clone() => new()
         {
@@ -55,6 +59,6 @@ namespace Correctum.Core.Models
             Unit = Unit,
             Price = Price,
             Cost = Cost
-        };
+        };            
     }
 }

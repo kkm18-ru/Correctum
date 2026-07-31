@@ -1,5 +1,6 @@
 ﻿using Correctum.Core.Models;
 using Correctum.Core.ValueObjects;
+using Correctum.Models;
 using Correctum.ViewModels.Windows;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,10 @@ namespace Correctum
     {
         public DbSet<Receipt> Receipts => Set<Receipt>();
         public DbSet<Position> Positions => Set<Position>();
+        public DbSet<Change> ChangeHistory => Set<Change>();
+        public DbSet<ReceiptChangeItem> ReceiptChanges => Set<ReceiptChangeItem>();
+        public DbSet<PositionChangeItem> PositionChanges => Set<PositionChangeItem>();
+        public DbSet<ReceiptMetadataChangeItem> MetadataChanges => Set<ReceiptMetadataChangeItem>();
         public static string ConnectionString { get; set; }
 
         public const string DisplayNameFileExtension = "Хранилище Correctum";
@@ -30,7 +35,11 @@ namespace Correctum
 
         public StorageContext()
         {
+#if DEBUG
+            Database.EnsureCreated();
+#else
             Database.Migrate();
+#endif
             Database.ExecuteSqlRaw("PRAGMA journal_mode=DELETE;");
         }
 

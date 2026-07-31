@@ -90,9 +90,6 @@ namespace Correctum.Migrations
                     b.Property<bool>("IsReadOnly")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Marked")
-                        .HasColumnType("INTEGER");
-
                     b.Property<ulong?>("NonCashSum")
                         .HasColumnType("INTEGER");
 
@@ -137,6 +134,102 @@ namespace Correctum.Migrations
                     b.ToTable("Receipts");
                 });
 
+            modelBuilder.Entity("Correctum.Models.Change", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChangeHistory");
+                });
+
+            modelBuilder.Entity("Correctum.Models.PositionChangeItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChangeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PositionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChangeId");
+
+                    b.HasIndex("PositionId");
+
+                    b.ToTable("PositionChanges");
+                });
+
+            modelBuilder.Entity("Correctum.Models.ReceiptChangeItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChangeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ReceiptId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChangeId");
+
+                    b.HasIndex("ReceiptId");
+
+                    b.ToTable("ReceiptChanges");
+                });
+
+            modelBuilder.Entity("Correctum.Models.ReceiptMetadataChangeItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChangeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Property")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ReceiptId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChangeId");
+
+                    b.HasIndex("ReceiptId");
+
+                    b.ToTable("MetadataChanges");
+                });
+
             modelBuilder.Entity("Correctum.Core.Models.Position", b =>
                 {
                     b.HasOne("Correctum.Core.Models.Receipt", "Receipt")
@@ -148,9 +241,84 @@ namespace Correctum.Migrations
                     b.Navigation("Receipt");
                 });
 
+            modelBuilder.Entity("Correctum.Models.PositionChangeItem", b =>
+                {
+                    b.HasOne("Correctum.Models.Change", "Change")
+                        .WithMany("PositionItems")
+                        .HasForeignKey("ChangeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Correctum.Core.Models.Position", "Position")
+                        .WithMany("Changes")
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Change");
+
+                    b.Navigation("Position");
+                });
+
+            modelBuilder.Entity("Correctum.Models.ReceiptChangeItem", b =>
+                {
+                    b.HasOne("Correctum.Models.Change", "Change")
+                        .WithMany("ReceiptItems")
+                        .HasForeignKey("ChangeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Correctum.Core.Models.Receipt", "Receipt")
+                        .WithMany("Changes")
+                        .HasForeignKey("ReceiptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Change");
+
+                    b.Navigation("Receipt");
+                });
+
+            modelBuilder.Entity("Correctum.Models.ReceiptMetadataChangeItem", b =>
+                {
+                    b.HasOne("Correctum.Models.Change", "Change")
+                        .WithMany("ReceiptMetadataItems")
+                        .HasForeignKey("ChangeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Correctum.Core.Models.Receipt", "Receipt")
+                        .WithMany("Metadata")
+                        .HasForeignKey("ReceiptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Change");
+
+                    b.Navigation("Receipt");
+                });
+
+            modelBuilder.Entity("Correctum.Core.Models.Position", b =>
+                {
+                    b.Navigation("Changes");
+                });
+
             modelBuilder.Entity("Correctum.Core.Models.Receipt", b =>
                 {
+                    b.Navigation("Changes");
+
                     b.Navigation("Items");
+
+                    b.Navigation("Metadata");
+                });
+
+            modelBuilder.Entity("Correctum.Models.Change", b =>
+                {
+                    b.Navigation("PositionItems");
+
+                    b.Navigation("ReceiptItems");
+
+                    b.Navigation("ReceiptMetadataItems");
                 });
 #pragma warning restore 612, 618
         }
