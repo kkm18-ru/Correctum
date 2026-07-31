@@ -1,15 +1,8 @@
 <Solution>
-  <Folder Name="/Roslyn/">
-    <Project Path="Correctum.Analyzers/Correctum.Analyzers.csproj" />
-    <Project Path="Correctum.SourceGenerators/Correctum.SourceGenerators.csproj" />
-  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Correctum.iss" />
   </Folder>
-  <Folder Name="/Tests/">
-    <Project Path="tests/Correctum.Core.Tests/Correctum.Core.Tests.csproj" />
-    <Project Path="tests/Correctum.SourceGenerators.Tests/Correctum.SourceGenerators.Tests.csproj" />
-    <Project Path="tests/Correctum.Tests/Correctum.Tests.csproj" />
-  </Folder>
-  <Project Path="Correctum/Correctum.csproj" />
+  <Project Path="Source/Correctum.csproj" />
+  <Project Path="Analyzers/Correctum.Analyzers.csproj" />
+  <Project Path="Generators/Correctum.SourceGenerators.csproj" />
 </Solution>
