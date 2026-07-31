@@ -6,6 +6,7 @@
         private bool QueryFN() => fnQueryData(handle) == 0;
         private bool Query() => queryData(handle) == 0;
         private bool Report() => report(handle) == 0;
+        private bool CheckDocumentClosed() => checkDocumentClosed(handle) == 0;
 
         private bool GetBoolean(int paramId) => getParamBool(handle, paramId);
         private uint GetInteger(int paramId) => getParamInt(handle, paramId);
