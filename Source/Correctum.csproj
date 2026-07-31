@@ -22,9 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dapper" Version="2.1.79" />
 		<PackageReference Include="Extended.Wpf.Toolkit" Version="5.1.2" />
-		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.9" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.9" />
 		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.7.0" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
@@ -41,8 +39,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Correctum.Analyzers\Correctum.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Correctum.SourceGenerators\Correctum.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Analyzers\Correctum.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Generators\Correctum.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
