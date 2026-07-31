@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:c="clr-namespace:Correctum.Converters"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <c:InnConverter x:Key="innConverter"/>
+    <c:IntegerToBooleanConverter x:Key="int2boolConverter"/>
+    <c:InvertBooleanConverter x:Key="invertBoolConverter"/>
+    <c:MultiBooleanConverter x:Key="andBoolConverter"/>
+    <c:TextColorConverter x:Key="textColorConverter"/>
+    <c:NullableIndicatorConverter x:Key="nullIndicator"/>
+    <c:CollapsedWhenNullConverter x:Key="collapsedWhenNullConverter"/>
+    <c:EnumLocaleConverter x:Key="enumLocale"/>
+</ResourceDictionary>
