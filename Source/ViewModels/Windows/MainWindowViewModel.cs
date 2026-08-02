@@ -51,11 +51,19 @@ public sealed class MainWindowViewModel : BindableBase
 
     public void UpdatePanel()
     {
-        using var ctx = new StorageContext();
-        ctx.Positions.Load();
         ReceiptPage.Clear();
-        foreach (var receipt in ctx.Receipts.Skip(MaxSizePage * (PageNumber - 1)).Take(MaxSizePage))
-            ReceiptPage.Add(receipt);
+        using var ctx = new StorageContext();
+        var receipts = ctx.Receipts
+            .AsNoTracking()
+            .Include(r => r.Metadata)
+            .Include(r => r.Changes)
+            .Include(r => r.Items)
+                .ThenInclude(i => i.Changes)
+                .OrderBy(r => r.Id)
+            .Skip(MaxSizePage * (PageNumber - 1))
+            .Take(MaxSizePage);
+        foreach(var receipt in receipts)
+            ReceiptPage.Add(ChangesExecutor.ApplyChanges(receipt));
     }
 
     private static int GetLastPageNumber()
