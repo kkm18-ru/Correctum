@@ -14,7 +14,7 @@ namespace Correctum
     {
         public DbSet<Receipt> Receipts => Set<Receipt>();
         public DbSet<Position> Positions => Set<Position>();
-        public DbSet<Change> ChangeHistory => Set<Change>();
+        public DbSet<Changes> ChangeHistory => Set<Changes>();
         public DbSet<ReceiptChangeItem> ReceiptChanges => Set<ReceiptChangeItem>();
         public DbSet<PositionChangeItem> PositionChanges => Set<PositionChangeItem>();
         public DbSet<ReceiptMetadataChangeItem> MetadataChanges => Set<ReceiptMetadataChangeItem>();

@@ -1,6 +1,6 @@
 ﻿namespace Correctum.Models;
 
-public sealed class Change
+public sealed class Changes
 {
     public int Id { get; set; }
     public string Name { get; set; }
