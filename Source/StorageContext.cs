@@ -56,6 +56,7 @@ namespace Correctum
 
         public static void SetContextPath(string filepath)
         {
+            SqliteConnection.ClearAllPools();
             var connBuilder = new SqliteConnectionStringBuilder { DataSource = filepath };
             ConnectionString = connBuilder.ToString();
             ((MainWindowViewModel)App.Current.MainWindow.DataContext).UpdatePanel();
