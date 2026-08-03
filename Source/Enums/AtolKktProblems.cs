@@ -7,10 +7,15 @@ namespace Correctum.Enums;
 public enum AtolKktProblems : uint
 {
     None = 0,
-    
+
+    #region Маски
+    ErrorsMask = 0xffff0000,
+    WarningsMask = 0x0000ffff,
+    #endregion
+
     #region Предупреждения
 
-    AdditionalPrintExpired  = 0x00000001,
+    AdditionalPrintExpired = 0x00000001,
     AdditionalPrintNoFound  = 0x00000002,
     ConfigurationOutdated   = 0x00000004,
     
@@ -33,4 +38,12 @@ public enum AtolKktProblems : uint
     CheckFnArchived     = 0x04000000,
     
     #endregion
+}
+
+public static class AtolKktProblemsExtensions
+{
+    extension(AtolKktProblems problems)
+    {
+        public bool HasErrors => (problems & AtolKktProblems.ErrorsMask) != 0;
+    }    
 }

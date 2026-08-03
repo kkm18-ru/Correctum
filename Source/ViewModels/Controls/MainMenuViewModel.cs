@@ -34,7 +34,8 @@ public sealed partial class MainMenuViewModel : BindableBase
     public ICommand LoadContextCommand { get; } = new ActionCommand(SetPathContext);
     public ICommand SaveAsContextCommand { get; } = new ActionCommand(ChangePathContext);
     public ICommand OpenExportMasterCommand { get; } = new RelayCommand<Type>(OpenExportMaster);
-    public ICommand ShowFptrCommand { get; } = new ActionCommand(() => new FptrWindow().ShowDialog());
+    public ICommand ShowFptrCommand { get; } = new ActionCommand(() => new UI.Windows.FptrWindow().ShowDialog());
+    public ICommand ShowNewFptrCommand { get; } = new ActionCommand(() => new Views.Windows.FptrWindow().ShowDialog());
     public ICommand ShowPasteCommand { get; } = new ActionCommand(() => new PasteWindow().ShowDialog());
     public ICommand ShowSettingsCommand { get; } = new ActionCommand(() => new ConfigurationWindow().ShowDialog());
     public ICommand QuitCommand { get; } = new ActionCommand(() => Application.Current.Shutdown());

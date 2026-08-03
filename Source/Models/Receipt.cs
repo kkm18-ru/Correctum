@@ -116,5 +116,32 @@ namespace Correctum.Core.Models
             TaxationSystem = TaxationSystem,
             Type = Type
         };
+
+        public Receipt CancellationClone() => new()
+        {
+            Items = [.. Items.Select(i => i.Clone())],
+            TotalSum = TotalSum,
+            CashSum = CashSum,
+            NonCashSum = NonCashSum,
+            AdvanceSum = AdvanceSum,
+            CreditSum = CreditSum,
+            ProvisionSum = ProvisionSum,
+            BuyerContact = (string?)BuyerContact?.Clone(),
+            Created = Created,
+            DocInSession = DocInSession,
+            DocNumber = DocNumber,
+            DocSign = DocSign,
+            OperatorName = (string?)OperatorName?.Clone(),
+            RetailPlace = (string?)RetailPlace?.Clone(),
+            RetailAddress = (string?)RetailAddress?.Clone(),
+            SenderAddress = (string?)SenderAddress?.Clone(),
+            StorageId = (string?)StorageId?.Clone(),
+            RegId = (string?)RegId?.Clone(),
+            OperatorInn = OperatorInn,
+            SessionId = SessionId,
+            TaxationSystem = TaxationSystem,
+            Type = Type?.ToCancellation()
+
+        };
     }
 }

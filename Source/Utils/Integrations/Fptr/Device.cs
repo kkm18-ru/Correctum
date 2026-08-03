@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Correctum.Exceptions;
+using System.Text;
 using System.Windows;
 using System.Windows.Interop;
 using FnInfo = (string Model, string SerialNumber);
@@ -44,6 +45,21 @@ namespace Correctum.Utils.Integrations
                 return true;
             }
             return false;
+        }
+
+
+        public void Connect(bool throwIfFailed)
+        {
+            if (open(handle) != 0)
+            {
+                if (!throwIfFailed) return;
+                throw new FptrException(this);
+            }
+            DocFormat = GetFormatVersion();
+            ConfigurationVersion = GetConfigurationVersion();
+            Model = GetKktModel();
+            SerialNumber = GetKktSerialNumber();
+            (FnModel, FnSerialNumber) = GetFnInfo();
         }
 
         public string GetSetting(string key)

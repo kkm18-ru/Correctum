@@ -37,6 +37,8 @@
         <Separator/>
         <MenuItem Header="Провести чеки" Command="{Binding ShowFptrCommand}"
                   Icon="{icons:MaterialIconExt Kind=ReceiptTextSendOutline, IconSize=16}" />
+        <MenuItem Header="Провести чеки (Новый)" Command="{Binding ShowNewFptrCommand}"
+                  Icon="{icons:MaterialIconExt Kind=ReceiptTextSendOutline, IconSize=16}" />
         <Separator/>
         <MenuItem Header="Настройки" Command="{Binding ShowSettingsCommand}"
                   Icon="{icons:MaterialIconExt Kind=CogOutline, IconSize=16}" />

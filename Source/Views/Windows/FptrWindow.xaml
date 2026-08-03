@@ -1,0 +1,64 @@
+﻿<t:DialogWindow x:Class="Correctum.Views.Windows.FptrWindow"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:vm="clr-namespace:Correctum.ViewModels.Windows"
+                xmlns:t="clr-namespace:Correctum.UI.Windows.Types"
+                xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                xmlns:tk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                xmlns:c="clr-namespace:Correctum.UI.Controls"
+                Title="Формирование чека на ККТ ATOL" 
+                SizeToContent="WidthAndHeight">
+    <t:DialogWindow.Resources>
+        <Style TargetType="Path">
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Fill" Value="Black"/>
+        </Style>
+    </t:DialogWindow.Resources>
+    <t:DialogWindow.DataContext>
+        <vm:FptrWindowViewModel/>
+    </t:DialogWindow.DataContext>
+    <StackPanel Orientation="Vertical" Margin="7">
+        <UniformGrid Margin="0,0,0,6" >
+            <TextBlock Text="Тип коррекции:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+            <ComboBox SelectedIndex="{Binding CorrectionType}">
+                <ComboBox.Items>
+                    <ComboBoxItem Content="Самостоятельно"/>
+                    <ComboBoxItem Content="По предписанию"/>
+                </ComboBox.Items>
+            </ComboBox>
+            <TextBlock Text="Номер акта/предписания:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+            <TextBox Text="{Binding ActNumber}"/>
+        </UniformGrid>
+        <CheckBox Margin="0,0,0,6" 
+                  Content="Для расчетов в сети ''Интернет''"/>
+        <c:TextProgressBar Margin="0,0,0,6" 
+                           Value="{Binding CurrentReceiptIndex, Mode=OneWay}"
+                           Maximum="{Binding TotalReceiptsCount, Mode=OneWay}"/>
+        <WrapPanel>
+            <Button Command="{Binding ShowSettingsCommand}" Margin="0,0,6,0"
+                    ToolTip="Открыть настройки драйвера ККТ ATOL">
+                <Path Data="{Binding SettingsGeometry}"/>
+            </Button>
+            <Button Command="{Binding SwitchConnectionCommand}" Margin="0,0,6,0"
+                    ToolTip="Подключить/отключить ККТ">
+                <Path Data="{Binding ConnectionGeometry}"/>
+            </Button>
+            <Button Command="{Binding RunTestReceiptCommand}" Margin="0,0,6,0"
+                    ToolTip="Сформировать тестовые чек коррекции">
+                <Path Data="{Binding TestGeometry}"/>
+            </Button>
+            <Button Command="{Binding SwitchRunningCommand}" Margin="0,0,6,0"
+                    ToolTip="Запустить/приостановить формирование чеков">
+                <Path Data="{Binding RunningTaskGeometry}"/>
+            </Button>
+            <tk:UIntegerUpDown Width="129" Minimum="1" Maximum="{Binding TotalReceiptsCount, Mode=OneWay}"
+                               x:Name="ReceiptIndexUpDown" Margin="0,0,6,0" VerticalContentAlignment="Center"/>
+            <Button Command="{Binding GoToReceiptIndexCommand}" 
+                    CommandParameter="{Binding Value, ElementName=ReceiptIndexUpDown}"
+                    ToolTip="Перейти к указанному чеку">
+                <Path Data="{Binding GoToGeometry}"/>
+            </Button>
+        </WrapPanel>
+    </StackPanel>
+</t:DialogWindow>

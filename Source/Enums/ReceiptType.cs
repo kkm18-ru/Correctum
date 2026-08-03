@@ -22,4 +22,19 @@
         /// </summary>
         RefundOutcome = 4,
     }
+
+    public static class ReceiptTypeExtensions
+    {
+        extension(ReceiptType type)
+        {
+            public ReceiptType ToCancellation() => type switch
+            {
+                ReceiptType.Income => ReceiptType.RefundIncome,
+                ReceiptType.RefundIncome => ReceiptType.Income,
+                ReceiptType.Outcome => ReceiptType.RefundOutcome,
+                ReceiptType.RefundOutcome => ReceiptType.Outcome,
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
+        }
+    }
 }

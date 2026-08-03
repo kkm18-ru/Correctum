@@ -69,9 +69,36 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>EnumLocales.resx</DependentUpon>
 		</Compile>
+		<Compile Update="Resources\Locales\NotificationLocales.Designer.cs">
+		  <DependentUpon>NotificationLocales.resx</DependentUpon>
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		</Compile>
+		<Compile Update="Resources\Locales\ErrorMessageLocales.Designer.cs">
+		  <DependentUpon>ErrorMessageLocales.resx</DependentUpon>
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		</Compile>
+		<Compile Update="Resources\SVGPaths.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>SvgPaths.resx</DependentUpon>
+		</Compile>
 		<EmbeddedResource Update="Resources\Locales\EnumLocales.resx">
 			<Generator>ResXFileCodeGenerator</Generator>
 			<LastGenOutput>EnumLocales.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Locales\NotificationLocales.resx">
+		  <LastGenOutput>NotificationLocales.Designer.cs</LastGenOutput>
+		  <Generator>ResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Locales\ErrorMessageLocales.resx">
+		  <LastGenOutput>ErrorMessageLocales.Designer.cs</LastGenOutput>
+		  <Generator>ResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\SvgPaths.resx">
+		  <Generator>ResXFileCodeGenerator</Generator>
+		  <LastGenOutput>SVGPaths.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
 
