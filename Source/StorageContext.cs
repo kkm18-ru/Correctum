@@ -35,12 +35,11 @@ namespace Correctum
 
         public StorageContext()
         {
-#if DEBUG
+#if DESIGN
             Database.EnsureCreated();
 #else
             Database.Migrate();
 #endif
-            Database.ExecuteSqlRaw("PRAGMA journal_mode=DELETE;");
         }
 
         public static void CreateBackup()
