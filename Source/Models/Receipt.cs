@@ -1,5 +1,6 @@
 ﻿using Correctum.Core.Enums;
 using Correctum.Core.ValueObjects;
+using Correctum.ValueObjects;
 
 namespace Correctum.Core.Models
 {

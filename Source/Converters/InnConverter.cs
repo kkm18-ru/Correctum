@@ -1,4 +1,4 @@
-﻿using Correctum.Core.ValueObjects;
+﻿using Correctum.ValueObjects;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
