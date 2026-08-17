@@ -5,4 +5,5 @@
   <Project Path="Source/Correctum.csproj" />
   <Project Path="Analyzers/Correctum.Analyzers.csproj" />
   <Project Path="Generators/Correctum.SourceGenerators.csproj" />
+  <Project Path="Tests/Correctum.Tests.csproj" />
 </Solution>
