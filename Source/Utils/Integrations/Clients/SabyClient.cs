@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 using Correctum.Exceptions.Saby;
 using Correctum.Core.Models;
 using Correctum.Core.Enums;
-using Correctum.Core.ValueObjects;
+using Correctum.ValueObjects;
 
 namespace Correctum.Utils.Integrations.Clients;
 
