@@ -1,5 +1,7 @@
 ﻿using Correctum.ValueObjects;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Correctum.Tests;
 
@@ -24,4 +26,7 @@ public class InnFixture
         var _inn = Inn.Parse(inn, CultureInfo.InvariantCulture);
         Assert.That(inn, Is.EqualTo(_inn.ToString()));
     }
+
+    [Test] public void Sizeof_ReturnSix() => 
+        Assert.That(Unsafe.SizeOf<Inn>(), Is.EqualTo(6));
 }
