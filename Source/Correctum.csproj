@@ -25,7 +25,7 @@
 		<PackageReference Include="Extended.Wpf.Toolkit" Version="5.1.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.9" />
 		<PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.7.0" />
-		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.158" />
 		<PackageReference Include="NanoXLSX.Writer" Version="3.2.1" />
 		<PackageReference Include="NLog" Version="6.2.0" />
 		<PackageReference Include="NLog.Targets.Seq" Version="4.0.2" />
