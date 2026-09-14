@@ -16,11 +16,7 @@ public sealed class ActionRegistrationGenerator : IIncrementalGenerator
 
     private static bool FilterSyntaxNode(SyntaxNode node, CancellationToken cancellationToken)
     {
-        if (node is not ClassDeclarationSyntax cds) return false;
-        if (cds.AttributeLists is not { Count: > 0 } attrLists) return false;
-        if (!attrLists.Any(list => list.Attributes.Any(a => a.ToString().Contains("ActionInfo"))))
-            return false;
-        return true;
+        return node is ClassDeclarationSyntax cds && cds.BaseList is { };
     }
 
     private static (ClassDeclarationSyntax, bool @using) Transform
@@ -28,18 +24,10 @@ public sealed class ActionRegistrationGenerator : IIncrementalGenerator
     {
         var cds = (ClassDeclarationSyntax)context.Node;
 
-        foreach (var attributeList in cds.AttributeLists)
+        foreach (var baseType in cds.BaseList?.Types ?? [])
         {
-            foreach (var attribute in attributeList.Attributes)
-            {
-                if (context.SemanticModel.GetSymbolInfo(attribute).Symbol is not IMethodSymbol attributeSymbol)
-                    continue;
-
-                if (attributeSymbol.ContainingType.ToDisplayString() != "Correctum.Attributes.ActionInfoAttribute")
-                    continue;
-
+            if(baseType.Type.ToString().Contains("IReceiptAction"))
                 return (cds, true);
-            }
         }
 
         return (cds, false);
@@ -62,15 +50,10 @@ public sealed class ActionRegistrationGenerator : IIncrementalGenerator
             if (model.GetDeclaredSymbol(cds) is not INamedTypeSymbol symbol)
                 continue;
             var typePath = $"{symbol.ContainingNamespace.ToDisplayString()}.{cds.Identifier.Text}";
-            ImmutableArray<TypedConstant> attrArgs = symbol.GetAttributes()
-                .FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == "Correctum.Attributes.ActionInfoAttribute")?
-                .ConstructorArguments ?? ImmutableArray<TypedConstant>.Empty;
-            var displayName = string.Empty;
-            if (attrArgs.Length >= 1) displayName = (string?)attrArgs[0].Value ?? string.Empty;
 
-            if (!symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString() == "Correctum.Abstractions.IAction"))
+            if (!symbol.AllInterfaces.Any(i => i.ConstructedFrom.ToDisplayString().Contains("Correctum.Abstractions.IReceiptAction")))
                 continue;
-            builder.AppendLine(@$"            new ActionDescriptor(""{displayName}"", () => new {typePath}()),");
+            builder.AppendLine(@$"            new ActionDescriptor({typePath}.Name, typeof({typePath})),");
         }
         builder.AppendLine("""    
                     ];
