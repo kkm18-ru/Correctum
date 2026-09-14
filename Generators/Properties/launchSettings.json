@@ -1,9 +1,9 @@
 {
-  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "DebugRoslynSourceGenerator": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../Correctum/Correctum.csproj"
+      "targetProject": "..\\Source\\Correctum.csproj"
     }
-  }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
 }
