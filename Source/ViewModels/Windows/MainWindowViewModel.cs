@@ -52,9 +52,11 @@ public sealed class MainWindowViewModel : BindableBase
     public void UpdatePanel()
     {
         using var ctx = new StorageContext();
-        ctx.Positions.Load();
         ReceiptPage.Clear();
-        foreach (var receipt in ctx.Receipts.Skip(MaxSizePage * (PageNumber - 1)).Take(MaxSizePage))
+        foreach (var receipt in ctx.Receipts
+            .Include(r => r.Items)
+            .Skip(MaxSizePage * (PageNumber - 1))
+            .Take(MaxSizePage))
             ReceiptPage.Add(receipt);
     }
 

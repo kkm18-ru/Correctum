@@ -31,6 +31,14 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
         using var busy = progress.Busy("Получение списка документов...");
         return await client.FetchReceiptsAsync(date, kkt, cancellationToken);
     }
+
+    private async Task<PlatformaOfdReceiptReference[]> GetCorrDocReferencesAsync
+        (DateOnly date, PlatformaOfdDevice kkt, MultiProgress progress,
+        CancellationToken cancellationToken) 
+    {
+        using var busy = progress.Busy("Получение списка документов...");
+        return await client.FetchCorrectionReceiptsAsync(date, kkt, cancellationToken);
+    }
     
     private async IAsyncEnumerable<Receipt> DateStageAsync
         (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -54,7 +62,11 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
         foreach (var kkt in SelectedDevices)
         {
             progress.UpdateStageText($"ККТ: {kkt}");
-            var references = await GetDocReferencesAsync(date, kkt, progress, cancellationToken);
+            HashSet<PlatformaOfdReceiptReference> references = [];
+            foreach (var refer in await GetDocReferencesAsync(date, kkt, progress, cancellationToken))
+                references.Add(refer);
+            foreach (var refer in await GetCorrDocReferencesAsync(date, kkt, progress, cancellationToken))
+                references.Add(refer);
             await foreach (var receipt in ReceiptStageAsync(references, progress, cancellationToken))
                 yield return receipt;
             progress.Increment();
@@ -63,10 +75,10 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
     }
     
     private async IAsyncEnumerable<Receipt> ReceiptStageAsync
-        (PlatformaOfdReceiptReference[] references, MultiProgress progress, 
+        (IEnumerable<PlatformaOfdReceiptReference> references, MultiProgress progress, 
         [EnumeratorCancellation] CancellationToken cancellationToken) 
     {
-        progress.CreateStage(references.Length);
+        progress.CreateStage(references.Count());
         foreach (var @ref in references)
         {
             progress.UpdateStageText($"Документ №{@ref.DocId}");

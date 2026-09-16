@@ -191,10 +191,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                     {
                         Receipt[] receipts;
                         using (var ctx = new StorageContext())
-                        {
-                            ctx.Positions.Load();
-                            receipts = [.. ctx.Receipts];
-                        }
+                            receipts = [.. ctx.Receipts.Include(r => r.Items)];
                         foreach (var receipt in receipts)
                             ReceiptValidator.Validate(receipt, (int)_handle.DocFormat);
                         while (CurrentIndex < receipts.Length)
@@ -260,10 +257,10 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
         int count;
         Receipt[] slice = [];
         using (var ctx = new StorageContext()) {
-            ctx.Positions.Load();
+            var receipts = ctx.Receipts.Include(r => r.Items);
             try
             {
-                foreach (var receipt in ctx.Receipts)
+                foreach (var receipt in receipts)
                     ReceiptValidator.Validate(receipt, (int)_handle.DocFormat);
             }
             catch(ModelValidationException ex)
@@ -271,8 +268,8 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                 logger.Warn(ex, $"{{ModelType}}{{ModelId}}: {ex.Message}", ex.Type, ex.ModelId);
                 MessageBox.Show(ex.Message, "Проверка ФД", 0, MessageBoxImage.Warning);
             }
-            count = Math.Min(defaultCount, ctx.Receipts.Count());
-            slice = ctx.Receipts.ToArray()[..count];
+            count = Math.Min(defaultCount, receipts.Count());
+            slice = receipts.ToArray()[..count];
         }
 
         State = ConductingReceiptState.TestConducting;

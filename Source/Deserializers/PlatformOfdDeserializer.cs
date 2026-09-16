@@ -52,7 +52,7 @@ public class PlatformOfdDeserializer : IDeserializer
     }
     private static void ChangeReceipt(ushort tag, ReadOnlySpan<char> value, Receipt builder)
     {
-        if (_propStack.Count > 0 && _propStack.Peek() == 1059) return;
+        if (_propStack.Count > 0) return;
         switch (tag)
         {
             // Простые реквизиты чека
