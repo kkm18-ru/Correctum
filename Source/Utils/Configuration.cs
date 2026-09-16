@@ -1,7 +1,6 @@
 ﻿using Correctum.Abstractions;
 using PuppeteerSharp;
 using System.IO;
-using System.Text;
 using Tomlyn;
 
 namespace Correctum.Utils;
@@ -89,11 +88,7 @@ public partial class Configuration
         {
             public int MinLevel { get; set; } = 2; // 2 - уровень информации
             public string Endpoint { get; set; } = string.Empty;
-            public string Key
-            {
-                get => field.StartsWith("enc\0") ? SecretHelper.DecodeSecret(field[4..], Encoding.UTF8) : field;
-                set => field = $"enc\0{SecretHelper.EncodeSecret(value, Encoding.UTF8)}";
-            } = string.Empty;
+            public string Key { get; set; } = string.Empty;
         }
     }
 }
