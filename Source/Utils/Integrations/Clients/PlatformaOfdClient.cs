@@ -96,6 +96,32 @@ public sealed partial class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>
         return arr;
     }
 
+    /// <summary>Получение списка ссылок на чеки коррекции.</summary>
+    /// <param name="device">Контрольно-кассовая машина.</param>
+    /// <param name="date">Дата для формирования отчета.</param>
+    /// <param name="cancel">Токен, позволяющий отменить получение ссылок на чеки.</param>
+    /// <returns>Список ссылок на чеки.</returns>
+    public async Task<PlatformaOfdReceiptReference[]> FetchCorrectionReceiptsAsync(DateOnly date, PlatformaOfdDevice device, CancellationToken cancel = default)
+    {
+        ThrowIfDisposed();
+        var textDeviceId = device is { Id: > 0 } id ? id.Id.ToString() :
+            "%D0%92%D1%81%D0%B5%20%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B0%D0%BB%D1%8B";
+        var textDate = date.ToString("dd.MM.yyyy");
+        var url = new StringBuilder("/web/auth/cheques/search/correction");
+        url.Append($"?deviceId={textDeviceId}&start={textDate}%2000%3A00&end={textDate}%2023%3A59");
+        url.Append("&shiftNumber=&requestNumber=&sumFrom=&sumTo=&cashiers=%5B%5D&tag=&tagSearchField=&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_fnsFdSentStatus=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_paymentTypes=on&_operTypes=on&_operTypes=on&fragments=cheques-search-content%2Ccheques-search-common-content-block%2Ccom-messages&ajaxSource=cheques_filter_form_id");
+
+        using var req = new HttpRequestMessage(HttpMethod.Get, url.ToString());
+        using var resp = await Client.SendAsync(req, cancel);
+        Auth(resp.Headers);
+        var html = await resp.Content.ReadAsStringAsync(cancel);
+        var matches = CorrectionDocumentIdRegex().Matches(html);
+        var arr = new PlatformaOfdReceiptReference[matches.Count];
+        for (var i = 0; i < arr.Length; i++)
+            arr[i] = new(matches[i]);
+        return arr;
+    }
+
     /// <summary>Получение чека.</summary>
     /// <param name="reference">Ссылка на чек.</param>
     /// <param name="parseId">Идентификтор сессии парсера.</param>
@@ -116,6 +142,8 @@ public sealed partial class PlatformaOfdClient() : ApiClient<PlatformaOfdClient>
     private static partial Regex DeviceIdRegex();
     [GeneratedRegex(@"<td>(?<numb>\d{16})</td>", 0, 250)]
     private static partial Regex RegIdRegex();
+    [GeneratedRegex(@"id=(?<id>\d+)&date=(?<ts>\d+)&fp=(?<sign>\d+)", 0, 250)]
+    private static partial Regex CorrectionDocumentIdRegex();
     [GeneratedRegex(@"(?<id>\d+)\/(?<ts>\d+)\/(?<sign>\d+)", 0, 250)]
     private static partial Regex DocumentIdRegex();
 }
