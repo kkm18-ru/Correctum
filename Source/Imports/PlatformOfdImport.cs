@@ -62,9 +62,11 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
         foreach (var kkt in SelectedDevices)
         {
             progress.UpdateStageText($"ККТ: {kkt}");
-            PlatformaOfdReceiptReference[] references = [
-                ..await GetDocReferencesAsync(date, kkt, progress, cancellationToken),
-                ..await GetCorrDocReferencesAsync(date, kkt, progress, cancellationToken)];
+            HashSet<PlatformaOfdReceiptReference> references = [];
+            foreach (var refer in await GetDocReferencesAsync(date, kkt, progress, cancellationToken))
+                references.Add(refer);
+            foreach (var refer in await GetCorrDocReferencesAsync(date, kkt, progress, cancellationToken))
+                references.Add(refer);
             await foreach (var receipt in ReceiptStageAsync(references, progress, cancellationToken))
                 yield return receipt;
             progress.Increment();
@@ -73,10 +75,10 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
     }
     
     private async IAsyncEnumerable<Receipt> ReceiptStageAsync
-        (PlatformaOfdReceiptReference[] references, MultiProgress progress, 
+        (IEnumerable<PlatformaOfdReceiptReference> references, MultiProgress progress, 
         [EnumeratorCancellation] CancellationToken cancellationToken) 
     {
-        progress.CreateStage(references.Length);
+        progress.CreateStage(references.Count());
         foreach (var @ref in references)
         {
             progress.UpdateStageText($"Документ №{@ref.DocId}");
