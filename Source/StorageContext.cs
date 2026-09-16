@@ -31,8 +31,7 @@ namespace Correctum
 
         public StorageContext()
         {
-            if(Database.EnsureCreated())
-                Database.ExecuteSqlRaw("PRAGMA journal_mode=DELETE;");
+            Database.EnsureCreated();
         }
 
         public static void CreateBackup()
@@ -49,6 +48,7 @@ namespace Correctum
 
         public static void SetContextPath(string filepath)
         {
+            SqliteConnection.ClearAllPools();
             var connBuilder = new SqliteConnectionStringBuilder { DataSource = filepath };
             ConnectionString = connBuilder.ToString();
             ((MainWindowViewModel)App.Current.MainWindow.DataContext).UpdatePanel();
