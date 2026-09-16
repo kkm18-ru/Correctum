@@ -154,6 +154,9 @@ public readonly struct PlatformaOfdReceiptReference(Match match)
     public uint FiscalSign { get; } = uint.Parse(match.Groups["sign"].Value);
     public ulong DocId { get; } = ulong.Parse(match.Groups["id"].Value);
 
+    public override int GetHashCode() => 
+        HashCode.Combine(Timestamp, FiscalSign, DocId);
+
     public readonly override string ToString() =>
         $"/web/auth/cheques/requisites?id={DocId}&date={Timestamp}&fp={FiscalSign}";
 }
