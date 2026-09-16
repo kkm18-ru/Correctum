@@ -31,6 +31,14 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
         using var busy = progress.Busy("Получение списка документов...");
         return await client.FetchReceiptsAsync(date, kkt, cancellationToken);
     }
+
+    private async Task<PlatformaOfdReceiptReference[]> GetCorrDocReferencesAsync
+        (DateOnly date, PlatformaOfdDevice kkt, MultiProgress progress,
+        CancellationToken cancellationToken) 
+    {
+        using var busy = progress.Busy("Получение списка документов...");
+        return await client.FetchCorrectionReceiptsAsync(date, kkt, cancellationToken);
+    }
     
     private async IAsyncEnumerable<Receipt> DateStageAsync
         (MultiProgress progress, [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -54,7 +62,9 @@ public sealed class PlatformOfdImport : OfdImport<PlatformaOfdClient>
         foreach (var kkt in SelectedDevices)
         {
             progress.UpdateStageText($"ККТ: {kkt}");
-            var references = await GetDocReferencesAsync(date, kkt, progress, cancellationToken);
+            PlatformaOfdReceiptReference[] references = [
+                ..await GetDocReferencesAsync(date, kkt, progress, cancellationToken),
+                ..await GetCorrDocReferencesAsync(date, kkt, progress, cancellationToken)];
             await foreach (var receipt in ReceiptStageAsync(references, progress, cancellationToken))
                 yield return receipt;
             progress.Increment();
