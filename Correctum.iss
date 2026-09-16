@@ -10,6 +10,7 @@ OutputBaseFilename=Correctum-{#AppVersion}
 SolidCompression=yes
 WizardStyle=modern
 OutputDir={#OutDir}
+PrivilegesRequired=lowest
 
 [Languages]
 Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
