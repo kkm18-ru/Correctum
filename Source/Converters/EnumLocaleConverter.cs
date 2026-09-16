@@ -8,6 +8,7 @@ public sealed class EnumLocaleConverter : IValueConverter
 {
     public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
+        if (value is null) return null;
         var defaultLocale = parameter as string;
         var type = value.GetType();
         if (!type.IsEnum) return defaultLocale;
