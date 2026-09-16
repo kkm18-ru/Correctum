@@ -16,8 +16,7 @@ public class PositionNamesReport : IReport
         table.Columns.AddRange([new("Наименование"), new("Тип"), new("Количество чеков")]);
 
         using var ctx = new StorageContext();
-        ctx.Positions.Load();
-        var receipts = ctx.Receipts.ToArray();
+        var receipts = ctx.Receipts.Include(r => r.Items).ToArray();
         var casted = receipts.SelectMany(r => r.Items.Select(i => new { i.Name, i.Type, r }));
         var grouped = casted.GroupBy(x => (x.Name, x.Type));
         var ordered = grouped.OrderBy(g => g.Key.Name);
