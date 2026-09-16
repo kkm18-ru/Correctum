@@ -163,6 +163,8 @@ public struct SabyDriveResponse
     
     [JsonPropertyName("effectiveTo")]
     public DateTime? DateEnd { get; set;  }
+
+    public readonly override string ToString() => Id;
 }
 
 file struct AuthResponse
