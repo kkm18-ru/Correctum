@@ -17,7 +17,7 @@ namespace Correctum.Imports;
 [TextBox("ИНН организации", nameof(Inn), "innConverter")]
 [DateRange("Период импортирования", nameof(DateRange))]
 [CheckComboBox("ККТ", nameof(SelectedDevices), nameof(Devices))]
-[AuthorizationProperties(nameof(Login), nameof(Password))]
+[AuthorizationProperties(nameof(Login), nameof(Password), nameof(Inn))]
 public sealed class SabyImport : OfdImport<SabyClient>
 {
     public string Login { get; set => SetField(ref field, value); } = string.Empty;
