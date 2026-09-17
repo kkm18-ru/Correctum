@@ -85,7 +85,7 @@ jobs:
             nuget-${{ runner.os }}-
       - name: Сборка Correctum
         run: |
-          dotnet publish Correctum/Correctum.csproj --self-contained --runtime win-x86 `
+          dotnet publish Source/Correctum.csproj --self-contained --runtime win-x86 `
             --output bin --configuration Release -p:Version=${{ needs.release-please.outputs.version }} --nologo
       - name: Сборка установщика Correctum
         run: |
