@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.4.2](https://github.com/kkm18-ru/Correctum/compare/v1.4.1...v1.4.2) (2026-09-17)
+
+
+### 🐞 Исправления
+
+* Добавлен Toml-конвертер LogLevel ([8f71aed](https://github.com/kkm18-ru/Correctum/commit/8f71aed19ddd1f9bee6a56cef81c8f28789039e1))
+* Добавлен импорт ЧК из Платформа ОФД ([b93b199](https://github.com/kkm18-ru/Correctum/commit/b93b1995a80431e726d55f7ebe36c00e3746af30))
+* Добавлена обработка отсутствия значения в конвертере enum в локаль ([aa05924](https://github.com/kkm18-ru/Correctum/commit/aa05924781ceeb1e700b87d067f469dfdc46abca)), closes [#150](https://github.com/kkm18-ru/Correctum/issues/150)
+* Добавлена очистка пула SQLite-подключений замене пути файла ([b8b81fa](https://github.com/kkm18-ru/Correctum/commit/b8b81fa2664cc1ace5e8ae2af14187e2a077f54f))
+* Добавлено отображение ФН в импорте из SabyOFD ([e9f3343](https://github.com/kkm18-ru/Correctum/commit/e9f33436fbf23e9b80c344841902fb30ebd3c11d)), closes [#149](https://github.com/kkm18-ru/Correctum/issues/149)
+* Загрузка таблиц позиций заменена на Include ([3017897](https://github.com/kkm18-ru/Correctum/commit/30178974ab75013dd001a649a99e64a0e6ad1f80))
+* Параметр ИНН переведен в параметр для авторизации ([9de2f50](https://github.com/kkm18-ru/Correctum/commit/9de2f50676b9cc1271cc02d46f5c154005023e76))
+* Понижен уровень доступа к приложению ([f509772](https://github.com/kkm18-ru/Correctum/commit/f5097724079eb741ea6536d01d7b6ce044196e5d)), closes [#151](https://github.com/kkm18-ru/Correctum/issues/151)
+* Удалена дублирование чеков в импорте Платформа ОФД ([772ab3c](https://github.com/kkm18-ru/Correctum/commit/772ab3ce43b0654f5e43575d5cc6aef35e70e378))
+* Удалено излишнее условие десериализации чека из реквизитов Платформа ОФД ([5d1ed75](https://github.com/kkm18-ru/Correctum/commit/5d1ed7548332719b43951ad6a918a5912cc1c495))
+* Шифрование секретов в конфигурации перенесена в Toml-конвертер ([72aaa27](https://github.com/kkm18-ru/Correctum/commit/72aaa272728433a8d6022755971449174c5e287a))
+
+
+### ⏪ Отмена изменений
+
+* Удалена излишнее шифрование ключа Seq ([6c135e7](https://github.com/kkm18-ru/Correctum/commit/6c135e75957c81534e1234b8eb10a91bd5e05c97))
+
 ## [1.4.1](https://github.com/kkm18-ru/Correctum/compare/v1.4.0...v1.4.1) (2026-09-15)
 
 
