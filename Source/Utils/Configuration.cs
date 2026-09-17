@@ -52,6 +52,7 @@ public partial class Configuration
 
         public class TaxcomImportConfigurationSection
         {
+            [TomlConverter(typeof(SecretTomlConverter))]
             public string IntegratorId { get; set; } = "";
         }
     }
@@ -87,6 +88,7 @@ public partial class Configuration
         {
             public NLog.LogLevel MinLevel { get; set; } = NLog.LogLevel.Info;
             public string Endpoint { get; set; } = string.Empty;
+            [TomlConverter(typeof(SecretTomlConverter))]
             public string Key { get; set; } = string.Empty;
         }
     }
