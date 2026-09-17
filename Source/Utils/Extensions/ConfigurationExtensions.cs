@@ -21,7 +21,7 @@ public static class ConfigurationExtensions
                 FileName = "${basedir}/logs/${date:format=yyyyMMdd}.log",
                 Layout = "${longdate} [${level:uppercase=true:format=TriLetter} ${logger:shortName=true}] ${message}${newline:when=exception!=null}${exception}"
             };
-            config.AddRule(LogLevel.FromOrdinal(conf.Local.MinLevel), LogLevel.Fatal, logFile);
+            config.AddRule(conf.Local.MinLevel, LogLevel.Off, logFile);
 
             if(!string.IsNullOrWhiteSpace(conf.Seq.Endpoint) && !string.IsNullOrWhiteSpace(conf.Seq.Key))
             {
@@ -35,7 +35,7 @@ public static class ConfigurationExtensions
                 logSeq.Properties.Add(new SeqPropertyItem { Name = "MachineName", Value = "${machinename}" });
                 logSeq.Properties.Add(new SeqPropertyItem { Name = "ProgressId", Value = "${processid}" });
                 logSeq.Properties.Add(new SeqPropertyItem { Name = "MethodName", Value = "${callsite}" });
-                config.AddRule(LogLevel.FromOrdinal(conf.Seq.MinLevel), LogLevel.Fatal, logSeq);
+                config.AddRule(conf.Seq.MinLevel, LogLevel.Off, logSeq);
             }
 
             LogManager.Configuration = config;
