@@ -44,18 +44,20 @@ jobs:
         name: Загрузка репозитория
         with:
           fetch-depth: 0
-      - uses: shrink/actions-document-publish@v1
+      - uses: narthanaj/markdown-to-pdf-action@v2.0.0
         id: pdf-changelog
         name: Конвертация в PDF-формат
         with:
-          sources: 'CHANGELOG.md'
+          markdown_file: 'CHANGELOG.md'
+          output_dir: '.'
+          output_filename: "Журнал изменений"
       - name: Добавление журнала изменений в релиз
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         with:
           token: ${{ steps.bot-token.outputs.token }}
           tag_name: ${{ needs.release-please.outputs.tag }}
           files: |
-            ${{ steps.pdf-changelog.outputs.pdf }}
+            "Журнал изменений.pdf"
 
 
   update-release:
