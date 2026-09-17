@@ -1,7 +1,9 @@
 ﻿using Correctum.Abstractions;
+using Correctum.Converters.Toml;
 using PuppeteerSharp;
 using System.IO;
 using Tomlyn;
+using Tomlyn.Serialization;
 
 namespace Correctum.Utils;
 
@@ -19,25 +21,22 @@ public partial class Configuration
 
     public static void Load()
     {
-        if (!File.Exists(FileName))
+        try
         {
-            Logger.Warn("Файл конфигурации отсутствует!");
-            Current = new Configuration();
-            return;
+            using var fs = File.OpenRead(FileName);
+            Current = TomlSerializer.Deserialize(fs, ConfigurationContext.Default.Configuration)!;
+            Logger.Info("Файл конфигурации загружен!");
         }
-        if (!TomlSerializer.TryDeserialize<Configuration>(File.ReadAllText(FileName), out var conf))
+        catch (Exception ex)
         {
-            Logger.Error("Не удалось выполнить загрузку конфигурации.");
+            Logger.Error(ex, "Не удалось загрузить конфигурацию.");
             Current = new Configuration();
-            return;
         }
-        Logger.Info("Файл конфигурации загружен!");
-        Current = conf;
     }
 
     public void Save()
     {
-        File.WriteAllText(FileName, TomlSerializer.Serialize(this));
+        File.WriteAllText(FileName, TomlSerializer.Serialize(this, ConfigurationContext.Default.Configuration));
         Logger.Info("Конфигурация сохранена!");
     }
 
@@ -81,14 +80,18 @@ public partial class Configuration
 
         public class LocalLoggingConfigurationSection
         {
-            public int MinLevel { get; set; } = 2; // 2 - уровень информации
+            public NLog.LogLevel MinLevel { get; set; } = NLog.LogLevel.Info;
         }
 
         public class SeqLoggingConfigurationSection
         {
-            public int MinLevel { get; set; } = 2; // 2 - уровень информации
+            public NLog.LogLevel MinLevel { get; set; } = NLog.LogLevel.Info;
             public string Endpoint { get; set; } = string.Empty;
             public string Key { get; set; } = string.Empty;
         }
     }
 }
+
+[TomlSerializable(typeof(Configuration))]
+[TomlSourceGenerationOptions(Converters = [typeof(LogLevelTomlConverter)])]
+public sealed partial class ConfigurationContext : TomlSerializerContext;
