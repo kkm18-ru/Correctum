@@ -1,35 +1,63 @@
-using System.Collections.ObjectModel;
 using Correctum.Core.Enums;
+using System.Collections;
 
 namespace Correctum.Utils;
 
-public record EnumLocale<TEnum>(TEnum Value, string Locale) where TEnum : Enum;
+public record EnumLocale<TEnum>(TEnum? Value, string Locale) where TEnum : struct, Enum;
+
+public class EnumLocales<TEnum> : IReadOnlyCollection<EnumLocale<TEnum>> where TEnum : struct, Enum
+{
+    public string this[TEnum @enum] => data.FirstOrDefault(d => d.Value.Equals(@enum))?.Locale ?? string.Empty;
+    public string this[TEnum? nullable] => nullable is { } @enum ? this[@enum] : string.Empty;
+
+    public int Count => data.Count;
+
+    private readonly IList<EnumLocale<TEnum>> data = [];
+
+    public IEnumerator<EnumLocale<TEnum>> GetEnumerator() => data.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public IReadOnlyCollection<EnumLocale<TEnum>> Nullable => [new(null, "(отсутствует)"), .. data];
+
+    internal void Add(EnumLocale<TEnum> locale) => data.Add(locale);
+}
 
 public static class EnumLocales
 {
-    public static readonly ReadOnlyCollection<EnumLocale<PuppeteerSharp.SupportedBrowser>> SupportedBrowsers =
+    public static readonly EnumLocales<CalculationMethod> PositionPayments =
+    [
+        new(CalculationMethod.FullPrepaid, "Полная предоплата"),
+        new(CalculationMethod.PartPrepaid, "Частичная предоплата"),
+        new(CalculationMethod.Advance, "Аванс"),
+        new(CalculationMethod.FullPayment, "Полная оплата"),
+        new(CalculationMethod.PartPayment, "Частичная оплата"),
+        new(CalculationMethod.ToCredit, "Передача в кредит"),
+        new(CalculationMethod.Postpaid, "Оплата кредита"),
+    ];
+
+    public static readonly EnumLocales<PuppeteerSharp.SupportedBrowser> SupportedBrowsers =
     [
         new(PuppeteerSharp.SupportedBrowser.Chrome, "Chrome"),
         new(PuppeteerSharp.SupportedBrowser.Firefox, "Firefox"),
         new(PuppeteerSharp.SupportedBrowser.Chromium, "Chromium"),
     ];
-    public static readonly ReadOnlyCollection<EnumLocale<PuppeteerSharp.ProtocolType>> BrowserProtocolType =
+    public static readonly EnumLocales<PuppeteerSharp.ProtocolType> BrowserProtocolType =
     [
         new(PuppeteerSharp.ProtocolType.Cdp, "Chrome DevTools"),
         new(PuppeteerSharp.ProtocolType.WebdriverBiDi, "WebDriver BiDi"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<TaxationSystems>> TaxationSystems =
+    public static readonly EnumLocales<TaxationSystems> TaxationSystems =
     [
-        new(Correctum.Core.Enums.TaxationSystems.General, "ОСН"),
-        new(Correctum.Core.Enums.TaxationSystems.SimplifiedIncome, "УСН доход"),
-        new(Correctum.Core.Enums.TaxationSystems.SimplifiedIncomeMinusExpense, "УСН доход-расход"),
-        new(Correctum.Core.Enums.TaxationSystems.ImputedIncome, "ЕНВД"),
-        new(Correctum.Core.Enums.TaxationSystems.Agricultural, "ЕСХН"),
-        new(Correctum.Core.Enums.TaxationSystems.Patent, "Патент"),
+        new(Core.Enums.TaxationSystems.General, "ОСН"),
+        new(Core.Enums.TaxationSystems.SimplifiedIncome, "УСН доход"),
+        new(Core.Enums.TaxationSystems.SimplifiedIncomeMinusExpense, "УСН доход-расход"),
+        new(Core.Enums.TaxationSystems.ImputedIncome, "ЕНВД"),
+        new(Core.Enums.TaxationSystems.Agricultural, "ЕСХН"),
+        new(Core.Enums.TaxationSystems.Patent, "Патент"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<ReceiptType>> ReceiptTypes =
+    public static readonly EnumLocales<ReceiptType> ReceiptTypes =
     [
         new(ReceiptType.Income, "Приход"),
         new(ReceiptType.Outcome, "Расход"),
@@ -37,7 +65,7 @@ public static class EnumLocales
         new(ReceiptType.RefundOutcome, "Возврат расхода"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<UnitOfMeasure>> PositionUnits =
+    public static readonly EnumLocales<UnitOfMeasure> PositionUnits =
     [
         new(UnitOfMeasure.Piece, "шт."),
         new(UnitOfMeasure.Gram, "гр."),
@@ -64,8 +92,8 @@ public static class EnumLocales
         new(UnitOfMeasure.Terabyte, "ТБ"),
         new(UnitOfMeasure.Other, "др."),
     ];
-    
-    public static readonly ReadOnlyCollection<EnumLocale<NDSRate>> TaxRates =
+
+    public static readonly EnumLocales<NDSRate> TaxRates =
     [
         new(NDSRate.NDS18, "НДС 18%"),
         new(NDSRate.NDS10, "НДС 10%"),
@@ -83,7 +111,7 @@ public static class EnumLocales
         new(NDSRate.NDS122, "НДС 22/122"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<PositionType>> PositionTypes =
+    public static readonly EnumLocales<PositionType> PositionTypes =
     [
         new(PositionType.Product, "Т"),
         new(PositionType.Excise, "АТ"),
@@ -118,19 +146,8 @@ public static class EnumLocales
         new(PositionType.Mark, "ТМ"),
     ];
 
-    public static readonly ReadOnlyCollection<EnumLocale<CalculationMethod>> PositionPayments =
-    [
-        new(CalculationMethod.FullPrepaid, "Полная предоплата"),
-        new(CalculationMethod.PartPrepaid, "Частичная предоплата"),
-        new(CalculationMethod.Advance, "Аванс"),
-        new(CalculationMethod.FullPayment, "Полная оплата"),
-        new(CalculationMethod.PartPayment, "Частичная оплата"),
-        new(CalculationMethod.ToCredit, "Передача в кредит"),
-        new(CalculationMethod.Postpaid, "Оплата кредита"),
-    ];
-
-    public static string? GetLocale<TEnum>(this ReadOnlyCollection<EnumLocale<TEnum>> collection, TEnum? value,
-        string? defaultLocale = "???") where TEnum : struct, Enum => value is null
-        ? defaultLocale
-        : collection.FirstOrDefault(i => i.Value.Equals(value))?.Locale ?? defaultLocale;
+    //public static string? GetLocale<TEnum>(this ReadOnlyCollection<EnumLocale<TEnum>> collection, TEnum? value,
+    //    string? defaultLocale = "???") where TEnum : struct, Enum => value is null
+    //    ? defaultLocale
+    //    : collection.FirstOrDefault(i => i.Value.Equals(value))?.Locale ?? defaultLocale;
 }

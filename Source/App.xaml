@@ -6,9 +6,12 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/ResourceDictionaries/Converters.xaml"/>
-                <ResourceDictionary Source="/ResourceDictionaries/Fonts.xaml"/>
-                <ResourceDictionary Source="/ResourceDictionaries/Style.xaml"/>
+                <ResourceDictionary Source="/ResourceDictionaries/Converters.xaml" />
+                <ResourceDictionary Source="/ResourceDictionaries/Fonts.xaml" />
+                <ResourceDictionary Source="/ResourceDictionaries/Style.xaml" />
+
+                <ResourceDictionary Source="/ResourceDictionaries/ActionViews.xaml" />
+
                 <rd:ModuleViews/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

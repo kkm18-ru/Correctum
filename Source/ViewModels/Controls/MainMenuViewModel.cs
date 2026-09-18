@@ -1,4 +1,5 @@
 using Correctum.Abstractions;
+using Correctum.Services;
 using Correctum.UI.Windows;
 using Correctum.Utils;
 using Correctum.ViewModels.Exports;
@@ -83,7 +84,7 @@ public sealed partial class MainMenuViewModel : BindableBase
         new ReportWindow(descriptor.DisplayName, descriptor.Function).ShowDialog();
 
     private static void OpenAction(ActionDescriptor descriptor) =>
-        new ActionWindow(descriptor.DisplayName, descriptor.Function.Invoke()).ShowDialog();
+        ReceiptActionResolver.Resolve(descriptor.ActionType);
 
     private static void OpenExportMaster(Type type)
     {
@@ -110,5 +111,5 @@ public sealed partial class MainMenuViewModel : BindableBase
 
     public readonly record struct ReportDescriptor(string DisplayName, Func<(DataTable, OxyPlot.PlotModel?)> Function);
     public readonly record struct ImportDescriptor(string DisplayName, Func<BaseImport> Function);
-    public readonly record struct ActionDescriptor(string DisplayName, Func<IAction> Function);
+    public readonly record struct ActionDescriptor(string DisplayName, Type ActionType);
 }

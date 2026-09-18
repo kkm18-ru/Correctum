@@ -20,7 +20,7 @@ public class PositionNamesReport : IReport
         var casted = receipts.SelectMany(r => r.Items.Select(i => new { i.Name, i.Type, r }));
         var grouped = casted.GroupBy(x => (x.Name, x.Type));
         var ordered = grouped.OrderBy(g => g.Key.Name);
-        var rows = ordered.Select(g => new object?[] { g.Key.Name, EnumLocales.PositionTypes.GetLocale(g.Key.Type), g.Select(x => x.r).Distinct().Count() });
+        var rows = ordered.Select(g => new object?[] { g.Key.Name, EnumLocales.PositionTypes[g.Key.Type], g.Select(x => x.r).Distinct().Count() });
         rows.ForEach(row => table.Rows.Add(row));
         
         return (table, null);
