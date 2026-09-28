@@ -24,25 +24,25 @@ public sealed class TaxRateComboAction : IAction
 
     public ImmutableArray<NDSRate?> TaxRates { get; } = [null, ..Enum.GetValues<NDSRate>()];
 
+    private bool IsOutPeriod(Receipt r) => (!r.Created.HasValue && MissingDateAsOutsidePeriod) ||
+        (r.Created.HasValue && (r.Created > DateRange.EndDateTime || r.Created < DateRange.BeginDateTime));
+    private bool HasNotError(Receipt r) => r.Items.All(i => !OldValues.Contains(i.TaxRate));
+    private bool IsToCorrection(Receipt r) => !IsOutPeriod(r) && !HasNotError(r);
+
     public async Task DoAsync(DbSet<Receipt> receipts)
     {
         // Шаг 1. Удаление чеков вне периода
-        await receipts
-            .Where(r =>
-                (!r.Created.HasValue && MissingDateAsOutsidePeriod) ||
-                (r.Created.HasValue && 
-                    (r.Created > DateRange.EndDateTime ||
-                    r.Created < DateRange.BeginDateTime)))
-            .ExecuteDeleteAsync();
+        foreach (var receipt in receipts.Where(IsOutPeriod))
+            receipts.Remove(receipt);
         // Шаг 2. Удаление чеков без позиций с одной из ошибочных ставок НДС
-        await receipts.Where(r => r.Items.All(i => !OldValues.Contains(i.TaxRate))).ExecuteDeleteAsync();
+        foreach (var receipt in receipts.Where(HasNotError))
+            receipts.Remove(receipt);
         // Шаг 3. Генерация аннулирующих ЧК
-        await new CancelReceiptCloner().DoAsync(receipts);
+        foreach(var r in receipts.Where(IsToCorrection))
+            receipts.Add(r.CloneAsReversed());
         // Шаг 4. Исправление
-        await receipts
-            .Where(r => !r.IsReadOnly)
-            .SelectMany(r => r.Items)
-            .Where(i => OldValues.Contains(i.TaxRate))
-            .ExecuteUpdateAsync(b => b.SetProperty(i => i.TaxRate, NewValue));
+        foreach(var receipt in receipts.Where(r => !r.IsReadOnly))
+            foreach(var item in receipt.Items.Where(i => OldValues.Contains(i.TaxRate)))
+                item.TaxRate = NewValue;
     }
 }

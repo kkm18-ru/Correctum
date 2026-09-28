@@ -114,5 +114,21 @@ namespace Correctum.Core.Models
             TaxationSystem = TaxationSystem,
             Type = Type
         };
+
+        public Receipt CloneAsReversed()
+        {
+            var clone = Clone();
+            clone.IsReadOnly = true;
+            clone.Type = clone.Type switch
+            {
+                ReceiptType.Income => ReceiptType.RefundIncome,
+                ReceiptType.RefundIncome => ReceiptType.Income,
+                ReceiptType.Outcome => ReceiptType.RefundOutcome,
+                ReceiptType.RefundOutcome => ReceiptType.Outcome,
+                _ => throw new InvalidOperationException
+                    ($"Неожиданное значение типа операции чека [{clone.Type}]")
+            };
+            return clone;
+        }
     }
 }
