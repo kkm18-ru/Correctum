@@ -28,7 +28,7 @@ namespace Correctum.Utils.Integrations
         {
             var corrData = Array.Empty<byte>();
             if (!LoginOperator(doc.OperatorName!, doc.OperatorInn?.ToString() ?? "")) return false;
-            if (DocFormat >= 110) GenerateCorrectionData(doc.Created!.Value, args.Act, out corrData);
+            if (DocFormat >= 110) GenerateCorrectionData(doc.Created, args.Act, out corrData);
             var opcode = doc.Type!.Value.ToCorrection(DocFormat);
             if (opcode is null) return false;
             SetInteger(65545, opcode.Value);
@@ -92,11 +92,11 @@ namespace Correctum.Utils.Integrations
             return receiptTotal(handle) == 0;
         }
 
-        public bool Payment(uint type, Currency? sum)
+        public bool Payment(uint type, Currency sum)
         {
-            if (sum is null || (ulong)sum.Value == 0) return true;
+            if (sum == Currency.Zero) return true;
             SetInteger(65564, type);
-            SetDouble(65565, (double)sum.Value);
+            SetDouble(65565, (double)sum);
             return payment(handle) == 0;
         }
 

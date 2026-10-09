@@ -13,19 +13,16 @@ namespace Correctum.Actions.Combo;
 [ActionInfo("Смена ставки НДС")]
 [CheckComboBox("Старые значения", nameof(OldValues), nameof(TaxRates))]
 [DateRange("Период изменения", nameof(DateRange))]
-[CheckBox("Учитывать отсутствие даты, как вне периода изменения", nameof(MissingDateAsOutsidePeriod))]
 [LocalizedComboBox("Новое значение", nameof(NewValue), nameof(EnumLocales.TaxRates))]
 public sealed class TaxRateComboAction : IAction
 {
     public ObservableCollection<NDSRate?> OldValues { get; } = [];
     public NDSRate NewValue { get; set; }
     public DateRange DateRange { get; } = new();
-    public bool MissingDateAsOutsidePeriod { get; set; } = true;
 
     public ImmutableArray<NDSRate?> TaxRates { get; } = [null, ..Enum.GetValues<NDSRate>()];
 
-    private bool IsOutPeriod(Receipt r) => (!r.Created.HasValue && MissingDateAsOutsidePeriod) ||
-        (r.Created.HasValue && (r.Created > DateRange.EndDateTime || r.Created < DateRange.BeginDateTime));
+    private bool IsOutPeriod(Receipt r) => r.Created > DateRange.EndDateTime || r.Created < DateRange.BeginDateTime;
     private bool HasNotError(Receipt r) => r.Items.All(i => !OldValues.Contains(i.TaxRate));
     private bool IsToCorrection(Receipt r) => !IsOutPeriod(r) && !HasNotError(r);
 

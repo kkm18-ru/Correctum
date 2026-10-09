@@ -81,12 +81,12 @@ public partial class OfdRuJsonDeserializer : IDeserializer
         public static Receipt ToReceipt(ReceiptDto dto) => new()
         {
             Items = dto.Items is null ? [] : [..dto.Items.Select(ToPosition)],
-            CashSum = dto.Cash,
-            NonCashSum = dto.NonCash,
-            AdvanceSum = dto.Advance,
-            CreditSum = dto.Credit,
-            ProvisionSum = dto.Provision,
-            TotalSum = dto.Total,
+            CashSum = dto.Cash ?? Currency.Zero,
+            NonCashSum = dto.NonCash ?? Currency.Zero,
+            AdvanceSum = dto.Advance ?? Currency.Zero,
+            CreditSum = dto.Credit ?? Currency.Zero,
+            ProvisionSum = dto.Provision ?? Currency.Zero,
+            TotalSum = dto.Total ?? Currency.Zero,
             DocSign = dto.Sign is null ? null : FiscalSign.Parse(dto.Sign),
             RegId = dto.KktReg,
             StorageId = dto.Drive,
@@ -94,7 +94,9 @@ public partial class OfdRuJsonDeserializer : IDeserializer
             SessionId = dto.Session,
             DocInSession = dto.DocSession,
             Type = (ReceiptType?)dto.Type,
-            Created = dto.DateTime is null ? null : DateTime.ParseExact(dto.DateTime, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
+            Created = dto.DateTime is null 
+                ? throw new ArgumentNullException(null, "dto.DateTime") 
+                : DateTime.ParseExact(dto.DateTime, "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
             TaxationSystem = (TaxationSystems?)dto.Taxation,
             SenderAddress = dto.SenderAddress,
             OperatorInn = dto.OperatorInn is null ? null : Inn.Parse(dto.OperatorInn),

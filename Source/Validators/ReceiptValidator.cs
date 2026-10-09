@@ -18,22 +18,8 @@ public static class ReceiptValidator
     {
         if (receipt.Type is null)
             throw new ModelValidationException(ModelValidationException.ModelType.Receipt, receipt.Id, "Отсутствует тип чека");
-        if (receipt.CashSum is null)
-            throw new ModelValidationException(ModelValidationException.ModelType.Receipt, receipt.Id, "Отсутствует сумма наличной оплаты");
-        if (receipt.NonCashSum is null)
-            throw new ModelValidationException(ModelValidationException.ModelType.Receipt, receipt.Id, "Отсутствует сумма безналичной оплаты");
-        if (receipt.AdvanceSum is null)
-            throw new ModelValidationException(ModelValidationException.ModelType.Receipt, receipt.Id, "Отсутствует сумма предоплаты");
-        if (receipt.CreditSum is null)
-            throw new ModelValidationException(ModelValidationException.ModelType.Receipt, receipt.Id, "Отсутствует сумма оплаты кредита");
-        if (receipt.ProvisionSum is null)
-            throw new ModelValidationException(ModelValidationException.ModelType.Receipt, receipt.Id, "Отсутствует встречное предоставление");
-        if (receipt.TotalSum is null)
-            throw new ModelValidationException(ModelValidationException.ModelType.Receipt, receipt.Id, "Отсутствует итоговая сумма");
         if (receipt.OperatorName is null)
             throw new ModelValidationException(ModelValidationException.ModelType.Receipt, receipt.Id, "Отсутствует имя кассира");
-        if (receipt.Created is null)
-            throw new ModelValidationException(ModelValidationException.ModelType.Receipt, receipt.Id, "Отсутствует дата");
 
         if (Enum.GetName(receipt.Type.Value) is null)
             throw new ModelValidationException(ModelValidationException.ModelType.Receipt, receipt.Id, "Некорректный тип чека");

@@ -39,11 +39,10 @@ public sealed class CountReceiptByHoursReport : IReport
 
         using var ctx = new StorageContext();
         var receipts = ctx.Receipts.ToArray();
-        var filtered = receipts.Where(r => r.Created is not null);
-        var aggregated = filtered.CountBy(r => r.Created!.Value.Round(TimeSpan.TicksPerHour));
+        var aggregated = receipts.CountBy(r => r.Created.Round(TimeSpan.TicksPerHour));
         var dict = aggregated.ToDictionary(a => a.Key, a => a.Value);
-        var minDate = filtered.Min(r => r.Created!.Value).Round(TimeSpan.TicksPerHour);
-        var maxDate = filtered.Max(r => r.Created!.Value).Round(TimeSpan.TicksPerHour);
+        var minDate = receipts.Min(r => r.Created).Round(TimeSpan.TicksPerHour);
+        var maxDate = receipts.Max(r => r.Created).Round(TimeSpan.TicksPerHour);
 
         for(var date = minDate; date <= maxDate; date = date.AddHours(1))
         {

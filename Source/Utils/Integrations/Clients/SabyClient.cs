@@ -247,18 +247,19 @@ file struct ReceiptResponse
         DocInSession = DocInSession,
         SessionId = SessionId,
         Items = Items?.Select(ToPosition).ToList() ?? [],
-        CashSum = Cash,
-        NonCashSum = Ecash,
-        AdvanceSum = Prepaid,
-        CreditSum = Credit,
-        ProvisionSum = Provision,
+        CashSum = Cash ?? Currency.Zero,
+        NonCashSum = Ecash ?? Currency.Zero,
+        AdvanceSum = Prepaid ?? Currency.Zero,
+        CreditSum = Credit ?? Currency.Zero,
+        ProvisionSum = Provision ?? Currency.Zero,
         Type = Operation,
         BuyerContact = Buyer,
         DocSign = Sign,
-        TotalSum = Total,
+        TotalSum = Total ?? Currency.Zero,
         TaxationSystem = Taxation,
         DocNumber = Number,
         Created = DateTime.FromUnixTimeSeconds(DateTimeUnix)
+            ?? throw new ArgumentNullException(null, "DateTimeUnix")
     };
     
     private static Position ToPosition(ItemResponse item) => new()

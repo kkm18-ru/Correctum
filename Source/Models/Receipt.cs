@@ -36,7 +36,7 @@ namespace Correctum.Models
         /// <summary>
         /// Дата и время проведения чека
         /// </summary>
-        public DateTime? Created { get; set; }
+        public DateTime Created { get; set; }
         /// <summary>
         /// Фискальный признак документа
         /// </summary>
@@ -52,27 +52,27 @@ namespace Correctum.Models
         /// <summary>
         /// Сумма оплаты наличным способом
         /// </summary>
-        public Currency? CashSum { get; set; }
+        public Currency CashSum { get; set; }
         /// <summary>
         /// Сумма оплаты безналичным способом
         /// </summary>
-        public Currency? NonCashSum { get; set; }
+        public Currency NonCashSum { get; set; }
         /// <summary>
         /// Сумма аванса
         /// </summary>
-        public Currency? AdvanceSum { get; set; }
+        public Currency AdvanceSum { get; set; }
         /// <summary>
         /// Сумма оплаты кредита
         /// </summary>
-        public Currency? CreditSum { get; set; }
+        public Currency CreditSum { get; set; }
         /// <summary>
         /// Встречное предоставление
         /// </summary>
-        public Currency? ProvisionSum { get; set; }
+        public Currency ProvisionSum { get; set; }
         /// <summary>
         /// Итоговая сумма расчета
         /// </summary>
-        public Currency? TotalSum { get; set; }
+        public Currency TotalSum { get; set; }
         /// <summary>
         /// Телефон/электронный адрес покупателя
         /// </summary>

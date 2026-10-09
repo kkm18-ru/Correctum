@@ -13,7 +13,6 @@ namespace Correctum.Actions.Combo;
 [TextBox("Найти кассира", nameof(OldName))]
 [TextBox("Найти ИНН кассира", nameof(OldInn), "innConverter")]
 [DateRange("Период изменения", nameof(DateRange))]
-[CheckBox("Учитывать отсутствие даты, как вне периода изменения", nameof(MissingDateAsOutsidePeriod))]
 [TextBox("Кассира заменить на", nameof(NewName))]
 [TextBox("ИНН кассира заменить на", nameof(NewInn), "innConverter")]
 public sealed class OperatorComboAction : IAction
@@ -26,17 +25,12 @@ public sealed class OperatorComboAction : IAction
     public Inn? NewInn { get; set; }
 
     public DateRange DateRange { get; } = new();
-    public bool MissingDateAsOutsidePeriod { get; set; } = true;
 
     public async Task DoAsync(DbSet<Receipt> receipts)
     {
         // Шаг 1. Удаление чеков вне периода
         await receipts
-            .Where(r =>
-                (!r.Created.HasValue && MissingDateAsOutsidePeriod) ||
-                (r.Created.HasValue &&
-                    (r.Created > DateRange.EndDateTime ||
-                    r.Created < DateRange.BeginDateTime)))
+            .Where(r => r.Created > DateRange.EndDateTime || r.Created < DateRange.BeginDateTime)
             .ExecuteDeleteAsync();
         // Шаг 2. Удаление чеков без ошибочного кассира
         await receipts

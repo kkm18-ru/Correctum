@@ -115,7 +115,7 @@ file struct Document
         DocNumber = DocNumber,
         SessionId = DocShiftNumber,
         DocInSession = uint.TryParse(ReceiptNumber, out var dis) ? dis : null,
-        Created = DocDateTime,
+        Created = DocDateTime ?? throw new ArgumentNullException(null, "DocDateTime"),
         DocSign = FiscalSign.Parse(DecimalFiscalSign),
         Type = OperationType?.ToLowerInvariant() switch
         {
@@ -127,12 +127,12 @@ file struct Document
             _ => throw new NotSupportedException($"Тип операции '{OperationType}' не поддерживается.")
         },
         Items = [.. Items.Select(i => i.ToPosition())],
-        CashSum = CashSumm,
-        NonCashSum = ECashSumm,
-        AdvanceSum = PrepaidSumm,
-        CreditSum = CreditSumm,
-        ProvisionSum = ProvisionSumm,
-        TotalSum = TotalSumm,
+        CashSum = CashSumm ?? Currency.Zero,
+        NonCashSum = ECashSumm ?? Currency.Zero,
+        AdvanceSum = PrepaidSumm ?? Currency.Zero,
+        CreditSum = CreditSumm ?? Currency.Zero,
+        ProvisionSum = ProvisionSumm ?? Currency.Zero,
+        TotalSum = TotalSumm ?? Currency.Zero,
         TaxationSystem = TaxationType
     };
 }

@@ -233,14 +233,14 @@ file readonly struct TaxcomDocumentResponse
             Items = Details["1059"]?.AsArray().Select(ParsePosition).Where(p => p is not null).Cast<Position>().ToList() ?? [],
             Type = (ReceiptType?)Details["1054"]?.GetValue<int>(),
             DocSign = FiscalSign.TryParse(Details["1077"]?.GetValue<string>(), out var sign) ? sign : null,
-            CashSum = Details["1031"]?.GetValue<ulong>(),
-            NonCashSum = Details["1081"]?.GetValue<ulong>(),
-            AdvanceSum = Details["1215"]?.GetValue<ulong>(),
-            CreditSum = Details["1216"]?.GetValue<ulong>(),
-            ProvisionSum = Details["1217"]?.GetValue<ulong>(),
-            TotalSum = Details["1020"]?.GetValue<ulong>(),
+            CashSum = Details["1031"]?.GetValue<ulong>() ?? Currency.Zero,
+            NonCashSum = Details["1081"]?.GetValue<ulong>() ?? Currency.Zero,
+            AdvanceSum = Details["1215"]?.GetValue<ulong>() ?? Currency.Zero,
+            CreditSum = Details["1216"]?.GetValue<ulong>() ?? Currency.Zero,
+            ProvisionSum = Details["1217"]?.GetValue<ulong>() ?? Currency.Zero,
+            TotalSum = Details["1020"]?.GetValue<ulong>() ?? Currency.Zero,
             TaxationSystem = (TaxationSystems?)Details["1055"]?.GetValue<int>(),
-            Created = dt
+            Created = dt ?? throw new ArgumentNullException(null, "1012")
         };
     }
 

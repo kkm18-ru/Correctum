@@ -19,11 +19,9 @@
                                          Binding="{Binding TaxRate, Converter={StaticResource enumLocale}}" />
         <local:DataGridReceiptInfoColumn Header="Мера измерения" 
                                          Binding="{Binding Unit, Converter={StaticResource enumLocale}}" />
-        <local:DataGridReceiptInfoColumn Header="Цена" 
-                                         Binding="{Binding Price, StringFormat={}{0} руб.}" />
+        <DataGridTextColumn Header="Цена" Binding="{Binding Price}" />
         <local:DataGridReceiptInfoColumn Header="Количество" 
                                          Binding="{Binding Quantity}" />
-        <local:DataGridReceiptInfoColumn Header="Стоимость" 
-                                         Binding="{Binding Cost, StringFormat={}{0} руб.}" />
+        <DataGridTextColumn Header="Стоимость" Binding="{Binding Cost}" />
     </DataGrid.Columns>
 </DataGrid>

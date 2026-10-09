@@ -17,14 +17,14 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         using var writer = new StreamWriter(stream);
         foreach (var receipt in receipts)
         {
-            await CorrectionDataAsync(writer, receipt.Created.Value);
+            await CorrectionDataAsync(writer, receipt.Created);
             await SetReceiptTypeAsync(writer, receipt.Type.Value);            
             await writer.WriteLineAsync($"Fptr.setParam(1055, {(int)receipt.TaxationSystem});");
             await ElectronicallyDocumentAsync(writer);
             await SetCorrectionDataAsync(writer, receipt.DocSign);
             await writer.WriteLineAsync("Fptr.openReceipt();");
             await PositionsAsync(writer, receipt.Items);
-            await TotalSumAsync(writer, receipt.TotalSum.Value);
+            await TotalSumAsync(writer, receipt.TotalSum);
             await PaymentAsync(writer, receipt);
             await writer.WriteLineAsync("Fptr.closeReceipt();");
             await writer.WriteLineAsync();
@@ -115,9 +115,9 @@ public sealed class Fptr120ExportViewModel : FileExportViewModel
         await PaymentAsync(writer, "LIBFPTR_PT_OTHER", info.ProvisionSum);
     }
 
-    private static async Task PaymentAsync(StreamWriter writer, string type, Currency? sum)
+    private static async Task PaymentAsync(StreamWriter writer, string type, Currency sum)
     {
-        if (sum is null || (ulong)sum.Value == 0) return;
+        if (sum == Currency.Zero) return;
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_TYPE, Fptr.{type});");
         await writer.WriteLineAsync($"Fptr.setParam(Fptr.LIBFPTR_PARAM_PAYMENT_SUM, {sum});");
         await writer.WriteLineAsync("Fptr.payment();");

@@ -72,7 +72,8 @@ namespace Correctum.ValueObjects
         /// Возвращает строковое представление значения этого экземпляра <see cref="Currency"/> структуры.
         /// </summary>
         /// <returns>Значение этого <see cref="Currency"/>.</returns>
-        public override string ToString() => ((decimal)this).ToString("F2", CultureInfo.InvariantCulture);
+        //public override string ToString() => ((decimal)this).ToString("F2", CultureInfo.InvariantCulture);
+        public override string ToString() => $"{(decimal)this:F2} руб.";
         
         /// <inheritdoc/>
         public int CompareTo(Currency other) => _data.CompareTo(other._data);

@@ -218,18 +218,19 @@ internal static class FirstOfdHelper
 (            ticket.options?.TryGetProperty("operationType", out var operationElement) ?? false) &&
             operationElement.GetString() is { } strOperation ?
             (ReceiptType)int.Parse(strOperation) : null,
-        Created = ticket.transactionDate is null ? null :
-            DateTime.ParseExact(ticket.transactionDate, 
+        Created = ticket.transactionDate is null 
+            ? throw new ArgumentNullException(null, "ticket.transactionDate")
+            : DateTime.ParseExact(ticket.transactionDate, 
                 "yyyy'-'MM'-'dd'T'HH':'mm':'ss", CultureInfo.InvariantCulture),
         StorageId = ticket.fiscalDriveNumber?.Trim(),
         RegId = ticket.kktRegId?.Trim(),
         DocInSession = (uint?)ticket.requestNumber,
-        TotalSum = ticket.totalSum,
-        CashSum = ticket.cashTotalSum,
-        NonCashSum = ticket.ecashTotalSum,
-        AdvanceSum = ticket.prepaymentSum,
-        CreditSum = ticket.postpaymentSum,
-        ProvisionSum = ticket.counterSubmissionSum,
+        TotalSum = ticket.totalSum ?? Currency.Zero,
+        CashSum = ticket.cashTotalSum ?? Currency.Zero,
+        NonCashSum = ticket.ecashTotalSum ?? Currency.Zero,
+        AdvanceSum = ticket.prepaymentSum ?? Currency.Zero,
+        CreditSum = ticket.postpaymentSum ?? Currency.Zero,
+        ProvisionSum = ticket.counterSubmissionSum ?? Currency.Zero,
         DocNumber = (uint?)ticket.fiscalDocumentNumber,
         SessionId = (uint?)ticket.shiftNumber,
         Items = ticket.items?.Select(ToPosition).ToList() ?? [],

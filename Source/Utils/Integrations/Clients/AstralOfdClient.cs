@@ -177,22 +177,23 @@ internal readonly struct AstralOfdReceiptDto
 
     public Receipt ToModel() => new()
     {
-        AdvanceSum = AdvancePaymentSum,
+        AdvanceSum = AdvancePaymentSum ?? Currency.Zero,
         BuyerContact = BuyerContact,
-        CashSum = CashPaymentSum,
-        Created = Created is null ? null : 
-            DateTime.ParseExact(Created, "dd'.'MM'.'yyyy' 'HH':'mm", CultureInfo.InvariantCulture),
-        CreditSum = CreditPaymentSum,
+        CashSum = CashPaymentSum ?? Currency.Zero,
+        Created = Created is null 
+            ? throw new ArgumentNullException(null, "Created")
+            : DateTime.ParseExact(Created, "dd'.'MM'.'yyyy' 'HH':'mm", CultureInfo.InvariantCulture),
+        CreditSum = CreditPaymentSum ?? Currency.Zero,
         DocInSession = DocInSession,
         DocNumber = DocNumber,
         DocSign = DocSign is null ? null : FiscalSign.Parse(DocSign),
-        NonCashSum = NonCashPaymentSum,
-        ProvisionSum = ProvisionPaymentSum,
+        NonCashSum = NonCashPaymentSum ?? Currency.Zero,
+        ProvisionSum = ProvisionPaymentSum ?? Currency.Zero,
         RegId = RegId,
         SessionId = SessionId,
         StorageId = StorageId,
         TaxationSystem = (TaxationSystems?)TaxationSystem,
-        TotalSum = TotalSum,
+        TotalSum = TotalSum ?? Currency.Zero,
         Type = (ReceiptType?)Type,
         Items = Items?.Select(i => i.ToModel()).ToList() ?? [],
         RetailPlace = RetailPlace,
