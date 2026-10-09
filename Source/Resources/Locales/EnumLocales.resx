@@ -132,265 +132,262 @@
   <data name="PuppeteerSharp.ProtocolType.WebdriverBiDi" xml:space="preserve">
     <value>WebDriver BiDi</value>
   </data>
-  <data name="Correctum.Core.Enums.TaxationSystems.General" xml:space="preserve">
+  <data name="Correctum.Enums.TaxationSystems.General" xml:space="preserve">
     <value>ОСН</value>
   </data>
-  <data name="Correctum.Core.Enums.TaxationSystems.SimplifiedIncome" xml:space="preserve">
+  <data name="Correctum.Enums.TaxationSystems.SimplifiedIncome" xml:space="preserve">
     <value>УСН доход</value>
   </data>
-  <data name="Correctum.Core.Enums.TaxationSystems.SimplifiedIncomeMinusExpense" xml:space="preserve">
+  <data name="Correctum.Enums.TaxationSystems.SimplifiedIncomeMinusExpense" xml:space="preserve">
     <value>УСН доход-расход</value>
   </data>
-  <data name="Correctum.Core.Enums.TaxationSystems.ImputedIncome" xml:space="preserve">
+  <data name="Correctum.Enums.TaxationSystems.ImputedIncome" xml:space="preserve">
     <value>ЕНВД</value>
   </data>
-  <data name="Correctum.Core.Enums.TaxationSystems.Agricultural" xml:space="preserve">
+  <data name="Correctum.Enums.TaxationSystems.Agricultural" xml:space="preserve">
     <value>ЕСХН</value>
   </data>
-  <data name="Correctum.Core.Enums.TaxationSystems.Patent" xml:space="preserve">
+  <data name="Correctum.Enums.TaxationSystems.Patent" xml:space="preserve">
     <value>Патент</value>
   </data>
-  <data name="Correctum.Core.Enums.ReceiptType.Income" xml:space="preserve">
+  <data name="Correctum.Enums.ReceiptType.Income" xml:space="preserve">
     <value>Приход</value>
   </data>
-  <data name="Correctum.Core.Enums.ReceiptType.Outcome" xml:space="preserve">
+  <data name="Correctum.Enums.ReceiptType.Outcome" xml:space="preserve">
     <value>Расход</value>
   </data>
-  <data name="Correctum.Core.Enums.ReceiptType.RefundIncome" xml:space="preserve">
+  <data name="Correctum.Enums.ReceiptType.RefundIncome" xml:space="preserve">
     <value>Возврат прихода</value>
   </data>
-  <data name="Correctum.Core.Enums.ReceiptType.RefundOutcome" xml:space="preserve">
+  <data name="Correctum.Enums.ReceiptType.RefundOutcome" xml:space="preserve">
     <value>Возврат расхода</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Piece" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Piece" xml:space="preserve">
     <value>шт.</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Gram" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Gram" xml:space="preserve">
     <value>гр.</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Kilogram" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Kilogram" xml:space="preserve">
     <value>кг</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Ton" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Ton" xml:space="preserve">
     <value>т</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Centimeter" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Centimeter" xml:space="preserve">
     <value>см</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Decimeter" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Decimeter" xml:space="preserve">
     <value>дм</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Meter" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Meter" xml:space="preserve">
     <value>м</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.SquareCentimeter" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.SquareCentimeter" xml:space="preserve">
     <value>кв. см</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.SquareDecimeter" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.SquareDecimeter" xml:space="preserve">
     <value>кв. дм</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.SquareMeter" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.SquareMeter" xml:space="preserve">
     <value>кв. м</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Milliliter" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Milliliter" xml:space="preserve">
     <value>мл</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Liter" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Liter" xml:space="preserve">
     <value>л</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.CubicMeter" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.CubicMeter" xml:space="preserve">
     <value>куб. м</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.KilowattHour" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.KilowattHour" xml:space="preserve">
     <value>кВт·ч</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Gigacalories" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Gigacalories" xml:space="preserve">
     <value>ГКал</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Days" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Days" xml:space="preserve">
     <value>дн.</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Hours" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Hours" xml:space="preserve">
     <value>ч</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Minutes" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Minutes" xml:space="preserve">
     <value>мин.</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Seconds" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Seconds" xml:space="preserve">
     <value>сек.</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Kilobyte" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Kilobyte" xml:space="preserve">
     <value>КБ</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Megabyte" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Megabyte" xml:space="preserve">
     <value>МБ</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Gigabyte" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Gigabyte" xml:space="preserve">
     <value>ГБ</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Terabyte" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Terabyte" xml:space="preserve">
     <value>ТБ</value>
   </data>
-  <data name="Correctum.Core.Enums.UnitOfMeasure.Other" xml:space="preserve">
+  <data name="Correctum.Enums.UnitOfMeasure.Other" xml:space="preserve">
     <value>др.</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS18" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS18" xml:space="preserve">
     <value>НДС 18%</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS10" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS10" xml:space="preserve">
     <value>НДС 10%</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS118" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS118" xml:space="preserve">
     <value>НДС 18/118</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS110" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS110" xml:space="preserve">
     <value>НДС 10/110</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS0" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS0" xml:space="preserve">
     <value>НДС 0%</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NoNDS" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NoNDS" xml:space="preserve">
     <value>Не облагается</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS20" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS20" xml:space="preserve">
     <value>НДС 20%</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS120" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS120" xml:space="preserve">
     <value>НДС 20/120</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS5" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS5" xml:space="preserve">
     <value>НДС 5%</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS7" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS7" xml:space="preserve">
     <value>НДС 7%</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS105" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS105" xml:space="preserve">
     <value>НДС 5/105</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS107" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS107" xml:space="preserve">
     <value>НДС 7/107</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS22" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS22" xml:space="preserve">
     <value>НДС 22%</value>
   </data>
-  <data name="Correctum.Core.Enums.NDSRate.NDS122" xml:space="preserve">
+  <data name="Correctum.Enums.NDSRate.NDS122" xml:space="preserve">
     <value>НДС 22/122</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Product" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Product" xml:space="preserve">
     <value>Т</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Excise" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Excise" xml:space="preserve">
     <value>АТ</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Work" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Work" xml:space="preserve">
     <value>Р</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Service" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Service" xml:space="preserve">
     <value>У</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Gambling" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Gambling" xml:space="preserve">
     <value>СА</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.GamblingWin" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.GamblingWin" xml:space="preserve">
     <value>ВА</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Lottery" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Lottery" xml:space="preserve">
     <value>СЛ</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.LotteryWin" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.LotteryWin" xml:space="preserve">
     <value>ВЛ</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.IntellectualProperty" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.IntellectualProperty" xml:space="preserve">
     <value>РИД</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Payment" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Payment" xml:space="preserve">
     <value>П</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Agent" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Agent" xml:space="preserve">
     <value>АВ</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Forfeit" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Forfeit" xml:space="preserve">
     <value>В</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Other" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Other" xml:space="preserve">
     <value>ИПР</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.PropertyLaw" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.PropertyLaw" xml:space="preserve">
     <value>ИМУЩЕСТВЕННОЕ ПРАВО</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.NonOperatingIncome" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.NonOperatingIncome" xml:space="preserve">
     <value>ВНЕРЕАЛИЗАЦИОННЫЙ ДОХОД</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.OtherPayment" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.OtherPayment" xml:space="preserve">
     <value>ИНЫЕ ПЛАТЕЖИ И ВЗНОСЫ</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.TradeFee" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.TradeFee" xml:space="preserve">
     <value>ТОРГОВЫЙ СБОР</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.ResortFee" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.ResortFee" xml:space="preserve">
     <value>КУРОРТНЫЙ СБОР</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Deposit" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Deposit" xml:space="preserve">
     <value>ЗАЛОГ</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Outcome" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Outcome" xml:space="preserve">
     <value>РАСХОД</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.PensionInsuranceIE" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.PensionInsuranceIE" xml:space="preserve">
     <value>ВЗНОСЫ НА ОПС ИП</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.PensionInsurance" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.PensionInsurance" xml:space="preserve">
     <value>ВЗНОСЫ НА ОПС</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.MedicalInsuranceIE" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.MedicalInsuranceIE" xml:space="preserve">
     <value>ВЗНОСЫ НА ОМС ИП</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.MedicalInsurance" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.MedicalInsurance" xml:space="preserve">
     <value>ВЗНОСЫ НА ОМС</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.SocialInsurance" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.SocialInsurance" xml:space="preserve">
     <value>ВЗНОСЫ НА ОСС</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Casino" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Casino" xml:space="preserve">
     <value>ПК</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.FromBankAgent" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.FromBankAgent" xml:space="preserve">
     <value>ВЫДАЧА ДС</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.ExciseNonMark" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.ExciseNonMark" xml:space="preserve">
     <value>АТНМ</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.ExciseMark" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.ExciseMark" xml:space="preserve">
     <value>АТМ</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.NonMark" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.NonMark" xml:space="preserve">
     <value>ТНМ</value>
   </data>
-  <data name="Correctum.Core.Enums.PositionType.Mark" xml:space="preserve">
+  <data name="Correctum.Enums.PositionType.Mark" xml:space="preserve">
     <value>ТМ</value>
   </data>
-  <data name="Correctum.Core.Enums.CalculationMethod.FullPrepaid" xml:space="preserve">
+  <data name="Correctum.Enums.CalculationMethod.FullPrepaid" xml:space="preserve">
     <value>Полная предоплата</value>
   </data>
-  <data name="Correctum.Core.Enums.CalculationMethod.PartPrepaid" xml:space="preserve">
+  <data name="Correctum.Enums.CalculationMethod.PartPrepaid" xml:space="preserve">
     <value>Частичная предоплата</value>
   </data>
-  <data name="Correctum.Core.Enums.CalculationMethod.Advance" xml:space="preserve">
+  <data name="Correctum.Enums.CalculationMethod.Advance" xml:space="preserve">
     <value>Аванс</value>
   </data>
-  <data name="Correctum.Core.Enums.CalculationMethod.FullPayment" xml:space="preserve">
+  <data name="Correctum.Enums.CalculationMethod.FullPayment" xml:space="preserve">
     <value>Полная оплата</value>
   </data>
-  <data name="Correctum.Core.Enums.CalculationMethod.PartPayment" xml:space="preserve">
+  <data name="Correctum.Enums.CalculationMethod.PartPayment" xml:space="preserve">
     <value>Частичная оплата</value>
   </data>
-  <data name="Correctum.Core.Enums.CalculationMethod.ToCredit" xml:space="preserve">
+  <data name="Correctum.Enums.CalculationMethod.ToCredit" xml:space="preserve">
     <value>Передача в кредит</value>
   </data>
-  <data name="Correctum.Core.Enums.CalculationMethod.Postpaid" xml:space="preserve">
+  <data name="Correctum.Enums.CalculationMethod.Postpaid" xml:space="preserve">
     <value>Оплата кредита</value>
-  </data>
-  <data name="tess" xml:space="preserve">
-    <value>;;;k</value>
   </data>
 </root>

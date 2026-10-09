@@ -1,5 +1,5 @@
-﻿using Correctum.Core.Models;
-using Correctum.Core.ValueObjects;
+﻿using Correctum.Models;
+using Correctum.ValueObjects;
 using System.Windows;
 
 namespace Correctum.Utils.Integrations

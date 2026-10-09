@@ -63,774 +63,774 @@ namespace Correctum.Resources.Locales {
         /// <summary>
         ///   Ищет локализованную строку, похожую на Аванс.
         /// </summary>
-        internal static string Correctum_Core_Enums_CalculationMethod_Advance {
+        internal static string Correctum_Enums_CalculationMethod_Advance {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.CalculationMethod.Advance", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.CalculationMethod.Advance", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Полная оплата.
         /// </summary>
-        internal static string Correctum_Core_Enums_CalculationMethod_FullPayment {
+        internal static string Correctum_Enums_CalculationMethod_FullPayment {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.CalculationMethod.FullPayment", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.CalculationMethod.FullPayment", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Полная предоплата.
         /// </summary>
-        internal static string Correctum_Core_Enums_CalculationMethod_FullPrepaid {
+        internal static string Correctum_Enums_CalculationMethod_FullPrepaid {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.CalculationMethod.FullPrepaid", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.CalculationMethod.FullPrepaid", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Частичная оплата.
         /// </summary>
-        internal static string Correctum_Core_Enums_CalculationMethod_PartPayment {
+        internal static string Correctum_Enums_CalculationMethod_PartPayment {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.CalculationMethod.PartPayment", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.CalculationMethod.PartPayment", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Частичная предоплата.
         /// </summary>
-        internal static string Correctum_Core_Enums_CalculationMethod_PartPrepaid {
+        internal static string Correctum_Enums_CalculationMethod_PartPrepaid {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.CalculationMethod.PartPrepaid", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.CalculationMethod.PartPrepaid", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Оплата кредита.
         /// </summary>
-        internal static string Correctum_Core_Enums_CalculationMethod_Postpaid {
+        internal static string Correctum_Enums_CalculationMethod_Postpaid {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.CalculationMethod.Postpaid", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.CalculationMethod.Postpaid", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Передача в кредит.
         /// </summary>
-        internal static string Correctum_Core_Enums_CalculationMethod_ToCredit {
+        internal static string Correctum_Enums_CalculationMethod_ToCredit {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.CalculationMethod.ToCredit", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.CalculationMethod.ToCredit", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 0%.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS0 {
+        internal static string Correctum_Enums_NDSRate_NDS0 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS0", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 10%.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS10 {
+        internal static string Correctum_Enums_NDSRate_NDS10 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS10", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS10", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 5/105.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS105 {
+        internal static string Correctum_Enums_NDSRate_NDS105 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS105", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS105", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 7/107.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS107 {
+        internal static string Correctum_Enums_NDSRate_NDS107 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS107", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS107", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 10/110.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS110 {
+        internal static string Correctum_Enums_NDSRate_NDS110 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS110", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS110", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 18/118.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS118 {
+        internal static string Correctum_Enums_NDSRate_NDS118 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS118", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS118", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 20/120.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS120 {
+        internal static string Correctum_Enums_NDSRate_NDS120 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS120", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS120", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 22/122.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS122 {
+        internal static string Correctum_Enums_NDSRate_NDS122 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS122", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS122", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 18%.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS18 {
+        internal static string Correctum_Enums_NDSRate_NDS18 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS18", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS18", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 20%.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS20 {
+        internal static string Correctum_Enums_NDSRate_NDS20 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS20", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS20", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 22%.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS22 {
+        internal static string Correctum_Enums_NDSRate_NDS22 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS22", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS22", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 5%.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS5 {
+        internal static string Correctum_Enums_NDSRate_NDS5 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS5", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS5", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на НДС 7%.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NDS7 {
+        internal static string Correctum_Enums_NDSRate_NDS7 {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NDS7", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NDS7", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Не облагается.
         /// </summary>
-        internal static string Correctum_Core_Enums_NDSRate_NoNDS {
+        internal static string Correctum_Enums_NDSRate_NoNDS {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.NDSRate.NoNDS", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.NDSRate.NoNDS", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на АВ.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Agent {
+        internal static string Correctum_Enums_PositionType_Agent {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Agent", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Agent", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ПК.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Casino {
+        internal static string Correctum_Enums_PositionType_Casino {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Casino", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Casino", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ЗАЛОГ.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Deposit {
+        internal static string Correctum_Enums_PositionType_Deposit {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Deposit", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Deposit", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на АТ.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Excise {
+        internal static string Correctum_Enums_PositionType_Excise {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Excise", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Excise", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на АТМ.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_ExciseMark {
+        internal static string Correctum_Enums_PositionType_ExciseMark {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.ExciseMark", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.ExciseMark", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на АТНМ.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_ExciseNonMark {
+        internal static string Correctum_Enums_PositionType_ExciseNonMark {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.ExciseNonMark", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.ExciseNonMark", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на В.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Forfeit {
+        internal static string Correctum_Enums_PositionType_Forfeit {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Forfeit", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Forfeit", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ВЫДАЧА ДС.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_FromBankAgent {
+        internal static string Correctum_Enums_PositionType_FromBankAgent {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.FromBankAgent", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.FromBankAgent", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на СА.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Gambling {
+        internal static string Correctum_Enums_PositionType_Gambling {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Gambling", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Gambling", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ВА.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_GamblingWin {
+        internal static string Correctum_Enums_PositionType_GamblingWin {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.GamblingWin", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.GamblingWin", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на РИД.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_IntellectualProperty {
+        internal static string Correctum_Enums_PositionType_IntellectualProperty {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.IntellectualProperty", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.IntellectualProperty", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на СЛ.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Lottery {
+        internal static string Correctum_Enums_PositionType_Lottery {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Lottery", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Lottery", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ВЛ.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_LotteryWin {
+        internal static string Correctum_Enums_PositionType_LotteryWin {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.LotteryWin", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.LotteryWin", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ТМ.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Mark {
+        internal static string Correctum_Enums_PositionType_Mark {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Mark", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Mark", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ВЗНОСЫ НА ОМС.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_MedicalInsurance {
+        internal static string Correctum_Enums_PositionType_MedicalInsurance {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.MedicalInsurance", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.MedicalInsurance", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ВЗНОСЫ НА ОМС ИП.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_MedicalInsuranceIE {
+        internal static string Correctum_Enums_PositionType_MedicalInsuranceIE {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.MedicalInsuranceIE", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.MedicalInsuranceIE", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ТНМ.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_NonMark {
+        internal static string Correctum_Enums_PositionType_NonMark {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.NonMark", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.NonMark", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ВНЕРЕАЛИЗАЦИОННЫЙ ДОХОД.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_NonOperatingIncome {
+        internal static string Correctum_Enums_PositionType_NonOperatingIncome {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.NonOperatingIncome", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.NonOperatingIncome", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ИПР.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Other {
+        internal static string Correctum_Enums_PositionType_Other {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Other", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Other", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ИНЫЕ ПЛАТЕЖИ И ВЗНОСЫ.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_OtherPayment {
+        internal static string Correctum_Enums_PositionType_OtherPayment {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.OtherPayment", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.OtherPayment", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на РАСХОД.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Outcome {
+        internal static string Correctum_Enums_PositionType_Outcome {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Outcome", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Outcome", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на П.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Payment {
+        internal static string Correctum_Enums_PositionType_Payment {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Payment", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Payment", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ВЗНОСЫ НА ОПС.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_PensionInsurance {
+        internal static string Correctum_Enums_PositionType_PensionInsurance {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.PensionInsurance", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.PensionInsurance", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ВЗНОСЫ НА ОПС ИП.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_PensionInsuranceIE {
+        internal static string Correctum_Enums_PositionType_PensionInsuranceIE {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.PensionInsuranceIE", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.PensionInsuranceIE", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Т.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Product {
+        internal static string Correctum_Enums_PositionType_Product {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Product", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Product", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ИМУЩЕСТВЕННОЕ ПРАВО.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_PropertyLaw {
+        internal static string Correctum_Enums_PositionType_PropertyLaw {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.PropertyLaw", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.PropertyLaw", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на КУРОРТНЫЙ СБОР.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_ResortFee {
+        internal static string Correctum_Enums_PositionType_ResortFee {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.ResortFee", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.ResortFee", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на У.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Service {
+        internal static string Correctum_Enums_PositionType_Service {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Service", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Service", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ВЗНОСЫ НА ОСС.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_SocialInsurance {
+        internal static string Correctum_Enums_PositionType_SocialInsurance {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.SocialInsurance", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.SocialInsurance", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ТОРГОВЫЙ СБОР.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_TradeFee {
+        internal static string Correctum_Enums_PositionType_TradeFee {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.TradeFee", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.TradeFee", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Р.
         /// </summary>
-        internal static string Correctum_Core_Enums_PositionType_Work {
+        internal static string Correctum_Enums_PositionType_Work {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.PositionType.Work", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.PositionType.Work", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Приход.
         /// </summary>
-        internal static string Correctum_Core_Enums_ReceiptType_Income {
+        internal static string Correctum_Enums_ReceiptType_Income {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.ReceiptType.Income", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.ReceiptType.Income", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Расход.
         /// </summary>
-        internal static string Correctum_Core_Enums_ReceiptType_Outcome {
+        internal static string Correctum_Enums_ReceiptType_Outcome {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.ReceiptType.Outcome", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.ReceiptType.Outcome", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Возврат прихода.
         /// </summary>
-        internal static string Correctum_Core_Enums_ReceiptType_RefundIncome {
+        internal static string Correctum_Enums_ReceiptType_RefundIncome {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.ReceiptType.RefundIncome", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.ReceiptType.RefundIncome", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Возврат расхода.
         /// </summary>
-        internal static string Correctum_Core_Enums_ReceiptType_RefundOutcome {
+        internal static string Correctum_Enums_ReceiptType_RefundOutcome {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.ReceiptType.RefundOutcome", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.ReceiptType.RefundOutcome", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ЕСХН.
         /// </summary>
-        internal static string Correctum_Core_Enums_TaxationSystems_Agricultural {
+        internal static string Correctum_Enums_TaxationSystems_Agricultural {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.TaxationSystems.Agricultural", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.TaxationSystems.Agricultural", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ОСН.
         /// </summary>
-        internal static string Correctum_Core_Enums_TaxationSystems_General {
+        internal static string Correctum_Enums_TaxationSystems_General {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.TaxationSystems.General", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.TaxationSystems.General", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ЕНВД.
         /// </summary>
-        internal static string Correctum_Core_Enums_TaxationSystems_ImputedIncome {
+        internal static string Correctum_Enums_TaxationSystems_ImputedIncome {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.TaxationSystems.ImputedIncome", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.TaxationSystems.ImputedIncome", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на Патент.
         /// </summary>
-        internal static string Correctum_Core_Enums_TaxationSystems_Patent {
+        internal static string Correctum_Enums_TaxationSystems_Patent {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.TaxationSystems.Patent", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.TaxationSystems.Patent", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на УСН доход.
         /// </summary>
-        internal static string Correctum_Core_Enums_TaxationSystems_SimplifiedIncome {
+        internal static string Correctum_Enums_TaxationSystems_SimplifiedIncome {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.TaxationSystems.SimplifiedIncome", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.TaxationSystems.SimplifiedIncome", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на УСН доход-расход.
         /// </summary>
-        internal static string Correctum_Core_Enums_TaxationSystems_SimplifiedIncomeMinusExpense {
+        internal static string Correctum_Enums_TaxationSystems_SimplifiedIncomeMinusExpense {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.TaxationSystems.SimplifiedIncomeMinusExpense", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.TaxationSystems.SimplifiedIncomeMinusExpense", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на см.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Centimeter {
+        internal static string Correctum_Enums_UnitOfMeasure_Centimeter {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Centimeter", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Centimeter", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на куб. м.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_CubicMeter {
+        internal static string Correctum_Enums_UnitOfMeasure_CubicMeter {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.CubicMeter", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.CubicMeter", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на дн..
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Days {
+        internal static string Correctum_Enums_UnitOfMeasure_Days {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Days", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Days", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на дм.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Decimeter {
+        internal static string Correctum_Enums_UnitOfMeasure_Decimeter {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Decimeter", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Decimeter", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ГБ.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Gigabyte {
+        internal static string Correctum_Enums_UnitOfMeasure_Gigabyte {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Gigabyte", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Gigabyte", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ГКал.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Gigacalories {
+        internal static string Correctum_Enums_UnitOfMeasure_Gigacalories {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Gigacalories", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Gigacalories", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на гр..
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Gram {
+        internal static string Correctum_Enums_UnitOfMeasure_Gram {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Gram", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Gram", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ч.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Hours {
+        internal static string Correctum_Enums_UnitOfMeasure_Hours {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Hours", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Hours", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на КБ.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Kilobyte {
+        internal static string Correctum_Enums_UnitOfMeasure_Kilobyte {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Kilobyte", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Kilobyte", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на кг.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Kilogram {
+        internal static string Correctum_Enums_UnitOfMeasure_Kilogram {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Kilogram", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Kilogram", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на кВт·ч.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_KilowattHour {
+        internal static string Correctum_Enums_UnitOfMeasure_KilowattHour {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.KilowattHour", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.KilowattHour", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на л.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Liter {
+        internal static string Correctum_Enums_UnitOfMeasure_Liter {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Liter", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Liter", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на МБ.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Megabyte {
+        internal static string Correctum_Enums_UnitOfMeasure_Megabyte {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Megabyte", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Megabyte", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на м.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Meter {
+        internal static string Correctum_Enums_UnitOfMeasure_Meter {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Meter", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Meter", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на мл.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Milliliter {
+        internal static string Correctum_Enums_UnitOfMeasure_Milliliter {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Milliliter", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Milliliter", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на мин..
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Minutes {
+        internal static string Correctum_Enums_UnitOfMeasure_Minutes {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Minutes", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Minutes", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на др..
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Other {
+        internal static string Correctum_Enums_UnitOfMeasure_Other {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Other", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Other", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на шт..
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Piece {
+        internal static string Correctum_Enums_UnitOfMeasure_Piece {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Piece", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Piece", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на сек..
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Seconds {
+        internal static string Correctum_Enums_UnitOfMeasure_Seconds {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Seconds", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Seconds", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на кв. см.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_SquareCentimeter {
+        internal static string Correctum_Enums_UnitOfMeasure_SquareCentimeter {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.SquareCentimeter", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.SquareCentimeter", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на кв. дм.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_SquareDecimeter {
+        internal static string Correctum_Enums_UnitOfMeasure_SquareDecimeter {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.SquareDecimeter", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.SquareDecimeter", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на кв. м.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_SquareMeter {
+        internal static string Correctum_Enums_UnitOfMeasure_SquareMeter {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.SquareMeter", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.SquareMeter", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на ТБ.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Terabyte {
+        internal static string Correctum_Enums_UnitOfMeasure_Terabyte {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Terabyte", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Terabyte", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на т.
         /// </summary>
-        internal static string Correctum_Core_Enums_UnitOfMeasure_Ton {
+        internal static string Correctum_Enums_UnitOfMeasure_Ton {
             get {
-                return ResourceManager.GetString("Correctum.Core.Enums.UnitOfMeasure.Ton", resourceCulture);
+                return ResourceManager.GetString("Correctum.Enums.UnitOfMeasure.Ton", resourceCulture);
             }
         }
         
@@ -876,15 +876,6 @@ namespace Correctum.Resources.Locales {
         internal static string PuppeteerSharp_SupportedBrowser_Firefox {
             get {
                 return ResourceManager.GetString("PuppeteerSharp.SupportedBrowser.Firefox", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на ;;;k.
-        /// </summary>
-        internal static string tess {
-            get {
-                return ResourceManager.GetString("tess", resourceCulture);
             }
         }
     }

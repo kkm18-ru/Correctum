@@ -1,4 +1,4 @@
-﻿using Correctum.Core.Models;
+﻿using Correctum.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Immutable;
 using System.Linq.Expressions;

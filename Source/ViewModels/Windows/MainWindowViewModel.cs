@@ -1,5 +1,5 @@
 ﻿using Correctum.Abstractions;
-using Correctum.Core.Models;
+using Correctum.Models;
 using Correctum.Utils;
 using Correctum.Views.Windows;
 using Microsoft.EntityFrameworkCore;

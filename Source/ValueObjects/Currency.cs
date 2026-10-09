@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Correctum.Core.ValueObjects
+namespace Correctum.ValueObjects
 {
     /// <summary>
     /// Представляет денежное значение.

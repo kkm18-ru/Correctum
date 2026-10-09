@@ -1,6 +1,6 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
-using Correctum.Core.Models;
+using Correctum.Models;
 using System.Linq.Expressions;
 
 namespace Correctum.Actions;

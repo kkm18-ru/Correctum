@@ -1,7 +1,7 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
 using Correctum.Attributes.ModuleViewProperty;
-using Correctum.Core.Models;
+using Correctum.Models;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
 using Correctum.ViewModels.Controls;

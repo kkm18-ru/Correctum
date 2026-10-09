@@ -1,5 +1,4 @@
-﻿using Correctum.Core.Models;
-using Correctum.Core.ValueObjects;
+﻿using Correctum.Models;
 using Correctum.ValueObjects;
 using Correctum.ViewModels.Windows;
 using Microsoft.Data.Sqlite;

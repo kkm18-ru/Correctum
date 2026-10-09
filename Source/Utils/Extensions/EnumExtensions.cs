@@ -1,4 +1,4 @@
-﻿using Correctum.Core.Enums;
+﻿using Correctum.Enums;
 
 namespace Correctum.Utils.Extensions;
 

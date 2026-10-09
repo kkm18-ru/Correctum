@@ -1,12 +1,11 @@
-using Correctum.Core.Enums;
-using Correctum.Core.Models;
-using Correctum.Core.ValueObjects;
 using Correctum.Enums;
 using Correctum.Exceptions;
+using Correctum.Models;
 using Correctum.UI.Windows.Types;
 using Correctum.Utils;
 using Correctum.Utils.Integrations;
 using Correctum.Validators;
+using Correctum.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;

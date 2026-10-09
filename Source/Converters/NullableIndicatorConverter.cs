@@ -1,4 +1,4 @@
-﻿using Correctum.Converters.Converters;
+﻿using Correctum.Converters.Abstractions;
 using System.Globalization;
 using System.Windows.Media;
 

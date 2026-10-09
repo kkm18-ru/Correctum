@@ -1,10 +1,10 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
 using Correctum.Attributes.ModuleViewProperty;
-using Correctum.Core.Models;
 using Correctum.ValueObjects;
 using Correctum.Utils;
 using Microsoft.EntityFrameworkCore;
+using Correctum.Models;
 
 namespace Correctum.Actions.Combo;
 

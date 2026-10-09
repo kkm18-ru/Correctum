@@ -1,8 +1,7 @@
-﻿using Correctum.Core.Enums;
-using Correctum.Core.ValueObjects;
+﻿using Correctum.Enums;
 using Correctum.ValueObjects;
 
-namespace Correctum.Core.Models
+namespace Correctum.Models
 {
     /// <summary>
     /// Представляет кассовый чек

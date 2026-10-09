@@ -1,4 +1,4 @@
-﻿using Correctum.Core.Models;
+﻿using Correctum.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Correctum.Abstractions;

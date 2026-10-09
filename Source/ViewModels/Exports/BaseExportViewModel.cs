@@ -1,10 +1,10 @@
 ﻿using Microsoft.Win32;
-using Correctum.Core.Models;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors.Core;
 using Correctum.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Correctum.Models;
 
 namespace Correctum.ViewModels.Exports;
 

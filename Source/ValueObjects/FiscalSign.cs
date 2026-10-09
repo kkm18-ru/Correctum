@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace Correctum.Core.ValueObjects
+namespace Correctum.ValueObjects
 {
     /// <summary>
     /// Представляет фискальный признак документа

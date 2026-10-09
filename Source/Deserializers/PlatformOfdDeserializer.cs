@@ -1,8 +1,7 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
-using Correctum.Core.Enums;
-using Correctum.Core.Models;
-using Correctum.Core.ValueObjects;
+using Correctum.Enums;
+using Correctum.Models;
 using Correctum.ValueObjects;
 using System.Globalization;
 

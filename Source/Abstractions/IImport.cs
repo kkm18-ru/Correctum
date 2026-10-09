@@ -1,4 +1,4 @@
-﻿using Correctum.Core.Models;
+﻿using Correctum.Models;
 using Correctum.ViewModels.Controls;
 
 namespace Correctum.Abstractions;

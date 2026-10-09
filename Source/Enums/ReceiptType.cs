@@ -1,4 +1,4 @@
-﻿namespace Correctum.Core.Enums
+﻿namespace Correctum.Enums
 {
     /// <summary>
     /// Определяет признак расчета

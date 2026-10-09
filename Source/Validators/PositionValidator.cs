@@ -1,5 +1,5 @@
-﻿using Correctum.Core.Models;
-using Correctum.Exceptions;
+﻿using Correctum.Exceptions;
+using Correctum.Models;
 
 namespace Correctum.Validators;
 

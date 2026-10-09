@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace Correctum.Converters.Converters;
+namespace Correctum.Converters.Abstractions;
 
 public abstract class BaseViewMultiValueConverter<TSelf> : IMultiValueConverter
     where TSelf : BaseViewMultiValueConverter<TSelf>

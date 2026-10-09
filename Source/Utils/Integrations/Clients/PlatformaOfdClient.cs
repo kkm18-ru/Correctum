@@ -1,5 +1,5 @@
-﻿using Correctum.Core.Models;
-using Correctum.Deserializers;
+﻿using Correctum.Deserializers;
+using Correctum.Models;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;

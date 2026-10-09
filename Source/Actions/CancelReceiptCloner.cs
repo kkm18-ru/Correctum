@@ -1,7 +1,7 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
-using Correctum.Core.Enums;
-using Correctum.Core.Models;
+using Correctum.Enums;
+using Correctum.Models;
 using System.Linq.Expressions;
 
 namespace Correctum.Actions;

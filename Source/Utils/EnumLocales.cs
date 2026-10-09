@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using Correctum.Core.Enums;
+using Correctum.Enums;
 
 namespace Correctum.Utils;
 
@@ -21,12 +21,12 @@ public static class EnumLocales
 
     public static readonly ReadOnlyCollection<EnumLocale<TaxationSystems>> TaxationSystems =
     [
-        new(Correctum.Core.Enums.TaxationSystems.General, "ОСН"),
-        new(Correctum.Core.Enums.TaxationSystems.SimplifiedIncome, "УСН доход"),
-        new(Correctum.Core.Enums.TaxationSystems.SimplifiedIncomeMinusExpense, "УСН доход-расход"),
-        new(Correctum.Core.Enums.TaxationSystems.ImputedIncome, "ЕНВД"),
-        new(Correctum.Core.Enums.TaxationSystems.Agricultural, "ЕСХН"),
-        new(Correctum.Core.Enums.TaxationSystems.Patent, "Патент"),
+        new(Enums.TaxationSystems.General, "ОСН"),
+        new(Enums.TaxationSystems.SimplifiedIncome, "УСН доход"),
+        new(Enums.TaxationSystems.SimplifiedIncomeMinusExpense, "УСН доход-расход"),
+        new(Enums.TaxationSystems.ImputedIncome, "ЕНВД"),
+        new(Enums.TaxationSystems.Agricultural, "ЕСХН"),
+        new(Enums.TaxationSystems.Patent, "Патент"),
     ];
 
     public static readonly ReadOnlyCollection<EnumLocale<ReceiptType>> ReceiptTypes =

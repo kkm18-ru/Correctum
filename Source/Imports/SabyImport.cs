@@ -1,13 +1,13 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
 using Correctum.Attributes.ModuleViewProperty;
-using Correctum.Core.Models;
 using Correctum.ValueObjects;
 using Correctum.Utils;
 using Correctum.Utils.Integrations.Clients;
 using Correctum.ViewModels.Controls;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using Correctum.Models;
 
 namespace Correctum.Imports;
 

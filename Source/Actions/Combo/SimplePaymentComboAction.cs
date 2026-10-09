@@ -1,9 +1,9 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
 using Correctum.Attributes.ModuleViewProperty;
-using Correctum.Core.Models;
-using Correctum.Core.ValueObjects;
+using Correctum.Models;
 using Correctum.Utils;
+using Correctum.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Immutable;
 using System.Linq.Expressions;

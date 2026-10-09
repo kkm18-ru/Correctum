@@ -6,9 +6,9 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Correctum.Exceptions.Saby;
-using Correctum.Core.Models;
-using Correctum.Core.Enums;
 using Correctum.ValueObjects;
+using Correctum.Enums;
+using Correctum.Models;
 
 namespace Correctum.Utils.Integrations.Clients;
 

@@ -1,8 +1,8 @@
 ﻿using Correctum.Abstractions;
 using Correctum.Attributes;
 using Correctum.Attributes.ModuleViewProperty;
-using Correctum.Core.Enums;
-using Correctum.Core.Models;
+using Correctum.Enums;
+using Correctum.Models;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 

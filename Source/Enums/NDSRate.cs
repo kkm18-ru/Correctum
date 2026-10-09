@@ -1,5 +1,5 @@
 ﻿#pragma warning disable S2342
-namespace Correctum.Core.Enums
+namespace Correctum.Enums
 {
     /// <summary>
     /// Указывает ставку НДС

@@ -1,10 +1,10 @@
-﻿using Correctum.Core.Models;
-using Correctum.Core.Enums;
-using Correctum.Core.ValueObjects;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Correctum.Enums;
+using Correctum.Models;
+using Correctum.ValueObjects;
 
 namespace Correctum.Utils.Integrations.Clients;
 

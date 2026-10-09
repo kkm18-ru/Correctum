@@ -1,12 +1,11 @@
-﻿using Correctum.Core.Enums;
-using Correctum.Core.Models;
-using Correctum.Core.ValueObjects;
-using Correctum.ValueObjects;
+﻿using Correctum.ValueObjects;
 using Correctum.Attributes;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Correctum.Abstractions;
+using Correctum.Enums;
+using Correctum.Models;
 
 namespace Correctum.Deserializers;
 
