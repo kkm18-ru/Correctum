@@ -23,11 +23,9 @@ public sealed partial class MainMenuViewModel : BindableBase
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe");
 
     public static MenuItem[] Exporters => SearchExporters();
-    public static partial ImmutableArray<ReportDescriptor> Reports { get; }
     public static partial ImmutableArray<ImportDescriptor> Imports { get; }
     public static partial ImmutableArray<ActionDescriptor> Actions { get; }
 
-    public ICommand OpenReportCommand { get; } = new RelayCommand<ReportDescriptor>(OpenReport);
     public ICommand OpenImportCommand { get; } = new RelayCommand<ImportDescriptor>(OpenImport);
     public ICommand OpenActionCommand { get; } = new RelayCommand<ActionDescriptor>(OpenAction);
     public ICommand CreateContextCommand { get; } = new ActionCommand(CreateDbContext);
@@ -79,9 +77,6 @@ public sealed partial class MainMenuViewModel : BindableBase
     private static void OpenImport(ImportDescriptor descriptor) =>
         new ImportWindow(descriptor.DisplayName, descriptor.Function.Invoke()).ShowDialog();
 
-    private static void OpenReport(ReportDescriptor descriptor) =>
-        new ReportWindow(descriptor.DisplayName, descriptor.Function).ShowDialog();
-
     private static void OpenAction(ActionDescriptor descriptor) =>
         new ActionWindow(descriptor.DisplayName, descriptor.Function.Invoke()).ShowDialog();
 
@@ -108,7 +103,6 @@ public sealed partial class MainMenuViewModel : BindableBase
                 return item;
             })];
 
-    public readonly record struct ReportDescriptor(string DisplayName, Func<(DataTable, OxyPlot.PlotModel?)> Function);
     public readonly record struct ImportDescriptor(string DisplayName, Func<BaseImport> Function);
     public readonly record struct ActionDescriptor(string DisplayName, Func<IAction> Function);
 }

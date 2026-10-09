@@ -54,17 +54,6 @@
             </Style>
         </MenuItem.ItemContainerStyle>
     </MenuItem>
-    <MenuItem Header="Отчеты" ItemsSource="{Binding Reports, Mode=OneTime}">
-        <MenuItem.ItemContainerStyle>
-            <Style TargetType="MenuItem">
-                <Setter Property="Header" Value="{Binding DisplayName}" />
-                <Setter Property="Command" Value="{Binding DataContext.OpenReportCommand, RelativeSource={RelativeSource AncestorType=Menu}}" />
-                <Setter Property="CommandParameter" Value="{Binding}"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            </Style>
-        </MenuItem.ItemContainerStyle>
-    </MenuItem>
     <MenuItem Header="Помощь">
         <MenuItem Header="Список изменений" Command="{Binding OpenLinkCommand}"
                   Icon="{icons:MaterialIconExt Kind=TimelineTextOutline, IconSize=16}"  
