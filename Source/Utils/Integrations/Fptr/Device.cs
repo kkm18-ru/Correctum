@@ -111,5 +111,12 @@ namespace Correctum.Utils.Integrations
                 (_, _) => Math.Min(fn, dev),
             };
         }
+
+        public uint GetUnsentCount()
+        {
+            SetInteger(65622, 1);
+            QueryFN();
+            return GetInteger(65625);
+        }
     }
 }
