@@ -49,6 +49,7 @@ public sealed partial class MainMenuViewModel : BindableBase
         if (dialog.ShowDialog() ?? false)
         {
             var connBuilder = new SqliteConnectionStringBuilder(StorageContext.ConnectionString);
+            SqliteConnection.ClearAllPools();
             File.Copy(connBuilder.DataSource, dialog.FileName);
             StorageContext.SetContextPath(dialog.FileName);
         }
