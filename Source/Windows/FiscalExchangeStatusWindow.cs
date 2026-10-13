@@ -7,14 +7,49 @@ using System.Windows;
 
 namespace Correctum.Windows;
 
+/// <summary>
+/// Отображает состояние передачи фискальных документов оператору фискальных данных (ОФД).
+/// Показывает количество оставшихся документов, прогресс передачи, её скорость
+/// и приблизительное время до завершения.
+/// Периодически обновляет данные, полученные от фискального регистратора,
+/// до завершения передачи или закрытия окна.
+/// </summary>
 internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChanged
 {
+    /// <summary>
+    /// Возвращает количество документов, переданных с момента открытия окна.
+    /// Вычисляется как разница между начальным и текущим размером буфера.
+    /// </summary>
     public double SendedDocument => InitialiteBufferSize - UsedBufferSize;
+
+    /// <summary>
+    /// Возвращает время, прошедшее с момента открытия окна.
+    /// </summary>
     public TimeSpan Elapsed => DateTime.UtcNow - InitialiteDateTime;
+
+    /// <summary>
+    /// Возвращает процент документов, переданных с момента открытия окна,
+    /// относительно начального количества документов в буфере.
+    /// </summary>
     public double Percent => SendedDocument / InitialiteBufferSize * 100;
+
+    /// <summary>
+    /// Возвращает среднюю скорость передачи документов в ОФД
+    /// в документах в секунду с момента открытия окна.
+    /// </summary>
     public double Speed => SendedDocument / Elapsed.TotalSeconds;
+
+    /// <summary>
+    /// Возвращает приблизительное количество секунд, необходимое
+    /// для передачи оставшихся документов при текущей средней скорости.
+    /// </summary>
     public double RemainingSeconds => UsedBufferSize / Speed;
 
+    /// <summary>
+    /// Возвращает текущее количество документов, ожидающих передачи в ОФД.
+    /// При изменении значения уведомляет подписчиков об изменении свойства
+    /// и всех вычисляемых показателей прогресса.
+    /// </summary>
     public uint UsedBufferSize
     {
         get; private set
@@ -30,7 +65,17 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
         }
     }
 
+    /// <summary>
+    /// Возвращает начальное количество документов в буфере на момент
+    /// создания окна. Используется в качестве исходного значения
+    /// для расчёта прогресса передачи.
+    /// </summary>
     public uint InitialiteBufferSize { get; }
+
+    /// <summary>
+    /// Возвращает дату и время создания окна в формате UTC.
+    /// Используется для расчёта продолжительности передачи.
+    /// </summary>
     public DateTime InitialiteDateTime { get; }
 
     private readonly CancellationTokenSource _cts = new();
@@ -39,8 +84,17 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
 
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
+    /// <inheritdoc/>
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    /// <summary>
+    /// Инициализирует окно состояния фискального обмена и получает
+    /// начальное количество документов, ожидающих передачи в ОФД.
+    /// </summary>
+    /// <param name="driver">
+    /// Экземпляр драйвера фискального регистратора, используемый
+    /// для получения количества неотправленных документов.
+    /// </param>
     public FiscalExchangeStatusWindow(FptrHandle driver)
     {
         _driver = driver;
