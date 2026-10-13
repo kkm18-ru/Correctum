@@ -88,7 +88,7 @@ namespace Correctum.Resources.Locales {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на При получении количества неотправленных ФД произошла ошибка..
+        ///   Ищет локализованную строку, похожую на Не удалось получить количество неотправленных документов..
         /// </summary>
         internal static string FiscalExchangeStatusWindow_ErrorUpdate {
             get {

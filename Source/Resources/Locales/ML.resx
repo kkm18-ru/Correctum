@@ -130,6 +130,6 @@
     <value>При остановке задачи получения прогресса передачи ФД произошла ошибка.</value>
   </data>
   <data name="FiscalExchangeStatusWindow_ErrorUpdate" xml:space="preserve">
-    <value>При получении количества неотправленных ФД произошла ошибка.</value>
+    <value>Не удалось получить количество неотправленных документов.</value>
   </data>
 </root>

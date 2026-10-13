@@ -201,7 +201,7 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                                 CurrentIndex++;
                             else _handle.CancelReceipt();
                             if (_handle.GetUnsentCount() % Configuration.Current.Fptr.SizeStack == 0)
-                                new FiscalExchangeStatusWindow(_handle).ShowDialog();
+                                FiscalExchangeStatusWindow.ShowDialogIfExistsUnsentDocuments(_handle);
                         }
                     }
                     catch (ModelValidationException ex)
@@ -284,8 +284,8 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                     CurrentIndex++;
                 else _handle.CancelReceipt();
             }
-            State = ConductingReceiptState.Idle; 
-            new FiscalExchangeStatusWindow(_handle).ShowDialog();
+            State = ConductingReceiptState.Idle;
+            FiscalExchangeStatusWindow.ShowDialogIfExistsUnsentDocuments(_handle);
             var result = MessageBox.Show(text, "", MessageBoxButton.YesNo);
             if(result == MessageBoxResult.No) return;
             var docNumb = _handle.LastReceiptNumber - (uint)count + 1u;
@@ -314,8 +314,8 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                 CurrentIndex--;
             }
 
-            State = ConductingReceiptState.Idle; 
-            new FiscalExchangeStatusWindow(_handle).ShowDialog();
+            State = ConductingReceiptState.Idle;
+            FiscalExchangeStatusWindow.ShowDialogIfExistsUnsentDocuments(_handle);
             MessageBox.Show("Тестовые чеки отменены!");
         }
         var thread = new Thread(Function) { IsBackground = true };

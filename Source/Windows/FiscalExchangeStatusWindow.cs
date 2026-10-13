@@ -20,7 +20,9 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     /// Возвращает количество документов, переданных с момента открытия окна.
     /// Вычисляется как разница между начальным и текущим размером буфера.
     /// </summary>
-    public uint SentDocumentCount => InitialUnsentDocumentCount - CurrentUnsentDocumentCount;
+    public uint SentDocumentCount =>
+        CurrentUnsentDocumentCount > InitialUnsentDocumentCount ? 0 :
+        InitialUnsentDocumentCount - CurrentUnsentDocumentCount;
 
     /// <summary>
     /// Возвращает время, прошедшее с момента открытия окна.
@@ -70,31 +72,31 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     /// <inheritdoc/>
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    /// <summary>
-    /// Инициализирует окно состояния фискального обмена и получает
-    /// начальное количество документов, ожидающих передачи в ОФД.
-    /// </summary>
-    /// <param name="driver">
-    /// Экземпляр драйвера фискального регистратора, используемый
-    /// для получения количества неотправленных документов.
-    /// </param>
-    public FiscalExchangeStatusWindow(FptrHandle driver)
+    private FiscalExchangeStatusWindow(FptrHandle driver, DateTime dt, uint count)
     {
         _driver = driver;
+        CurrentUnsentDocumentCount = InitialUnsentDocumentCount = count;
+        _initialDateTime = dt;
+        _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate,
+            _initialDateTime.UnixTimestampSeconds, InitialUnsentDocumentCount);
+        UpdateUI();
+    }
+#pragma warning disable CS8618
+    private FiscalExchangeStatusWindow() { }
+#pragma warning restore CS8618
+
+    public static void ShowDialogIfExistsUnsentDocuments(FptrHandle driver)
+    {
         try
         {
-            InitialUnsentDocumentCount = driver.GetUnsentCount();
-            if (InitialUnsentDocumentCount == 0) Close();
-            _initialDateTime = DateTime.UtcNow;
-            CurrentUnsentDocumentCount = InitialUnsentDocumentCount;
-            _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate,
-                _initialDateTime.UnixTimestampSeconds, InitialUnsentDocumentCount);
-            UpdateUI();
+            var dt = DateTime.UtcNow;
+            var count = driver.GetUnsentCount();
+            new FiscalExchangeStatusWindow(driver, dt, count)
+                .ShowDialog();
         }
         catch (Exception ex)
         {
             _logger.Error(ex, ML.FiscalExchangeStatusWindow_ErrorUpdate);
-            Close();
         }
     }
 
