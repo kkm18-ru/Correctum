@@ -20,12 +20,7 @@
                         <DataTemplate DataType="{x:Type w:FiscalExchangeStatusWindow}">
                             <StackPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type w:FiscalExchangeStatusWindow}}}" Margin="26, 18">
                                 <TextBlock Text="{Binding InitialiteBufferSize, StringFormat={} Отправка {0} ФД из буфера неотправленных чеков в ОФД}"/>
-                                <DockPanel>
-                                    <Button Background="White" BorderThickness="0" Content="&gt;&gt;" Command="{Binding SkipCommand}" 
-                                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" DockPanel.Dock="Right" 
-                                            ToolTip="Пропустить ожидание отправки ФД в ОФД"/>
-                                    <TextBlock Text="{Binding Percent, StringFormat={} {0:F0}% завершено}" FontSize="18" />
-                                </DockPanel>
+                                <TextBlock Text="{Binding Percent, StringFormat={} {0:F0}% завершено}" FontSize="18" />
                                 <ProgressBar Value="{Binding SendedDocument, Mode=OneWay}"  Margin="0,10"
                                              Maximum="{Binding InitialiteBufferSize, Mode=OneTime}" Height="80"/>
                                 <TextBlock Text="{Binding Speed, StringFormat={} Скорость передачи: {0:F0} ФД/с}" />

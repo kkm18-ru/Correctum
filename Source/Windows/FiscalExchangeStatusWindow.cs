@@ -1,11 +1,9 @@
 ﻿using Correctum.Resources.Locales;
-using Correctum.Utils;
 using Correctum.Utils.Integrations;
 using NLog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Correctum.Windows;
 
@@ -34,7 +32,6 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
 
     public uint InitialiteBufferSize { get; }
     public DateTime InitialiteDateTime { get; }
-    public ICommand SkipCommand { get; }
 
     private readonly CancellationTokenSource _cts = new();
     private Task? _task;
@@ -51,9 +48,7 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
         InitialiteDateTime = DateTime.UtcNow;
         _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate, 
             InitialiteDateTime.UnixTimestampSeconds, InitialiteBufferSize);
-        SkipCommand = new RelayCommand(Close);
     }
-
 
     protected override void OnActivated(EventArgs e)
     {
