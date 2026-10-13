@@ -1,5 +1,6 @@
 ﻿using Correctum.Utils;
 using Correctum.Utils.Integrations;
+using NLog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -7,9 +8,7 @@ using System.Windows.Input;
 
 namespace Correctum.Windows;
 
-internal sealed class FiscalExchangeStatusWindow
-    : Window, 
-      INotifyPropertyChanged
+internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChanged
 {
     public double SendedDocument => InitialiteBufferSize - UsedBufferSize;
     public TimeSpan Elapsed => DateTime.UtcNow - InitialiteDateTime;
@@ -40,6 +39,10 @@ internal sealed class FiscalExchangeStatusWindow
     private Task? _task;
     private readonly FptrHandle _driver;
 
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private const string UpdateMessageTemplate = 
+        "На текущий момент (Unix Timestamp: {timestamp}) количество документов, ожидающих отправки, составляет {count} шт.";
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public FiscalExchangeStatusWindow(FptrHandle driver)
@@ -47,6 +50,7 @@ internal sealed class FiscalExchangeStatusWindow
         _driver = driver;
         UsedBufferSize = InitialiteBufferSize = driver.GetUnsentCount();
         InitialiteDateTime = DateTime.UtcNow;
+        _logger.Debug(UpdateMessageTemplate, InitialiteDateTime.UnixTimestampSeconds, InitialiteBufferSize);
         SkipCommand = new RelayCommand(Close);
     }
 
@@ -59,15 +63,26 @@ internal sealed class FiscalExchangeStatusWindow
 
     protected override async void OnClosing(CancelEventArgs e)
     {
-        await _cts.CancelAsync();
+        _logger.Info("Закрытие окна прогресса передачи ФД...");
         try
         {
+            base.OnClosing(e);
+            await _cts.CancelAsync();
             if (_task is { })
                 await _task;
         }
-        catch (OperationCanceledException) { }
-        _cts.Dispose();
-        base.OnClosing(e);
+        catch (OperationCanceledException ex)
+        {
+            _logger.Debug(ex, "Задача получения прогресса передачи ФД остановлена.");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "При остановке задачи получения прогресса передачи ФД произошла ошибка.");
+        }
+        finally
+        {
+            _cts.Dispose();
+        }
     }
 
     private async Task UpdateAsync()
@@ -75,6 +90,7 @@ internal sealed class FiscalExchangeStatusWindow
         while (!_cts.IsCancellationRequested)
         {
             UsedBufferSize = _driver.GetUnsentCount();
+            _logger.Debug(UpdateMessageTemplate, DateTime.UtcNow.UnixTimestampSeconds, UsedBufferSize);
             if (UsedBufferSize == 0) Close(); 
             await Task.Delay(TimeSpan.FromSeconds(1));
         }
