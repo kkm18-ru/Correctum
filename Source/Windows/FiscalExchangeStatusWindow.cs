@@ -50,20 +50,7 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     /// При изменении значения уведомляет подписчиков об изменении свойства
     /// и всех вычисляемых показателей прогресса.
     /// </summary>
-    public uint CurrentUnsentDocumentCount
-    {
-        get; private set
-        {
-            if (SetField(ref field, value))
-            {
-                OnPropertyChanged(nameof(SentDocumentCount));
-                OnPropertyChanged(nameof(Elapsed));
-                OnPropertyChanged(nameof(Percent));
-                OnPropertyChanged(nameof(Speed));
-                OnPropertyChanged(nameof(RemainingSeconds));
-            }
-        }
-    }
+    public uint CurrentUnsentDocumentCount { get; private set => SetField(ref field, value); }
 
     /// <summary>
     /// Возвращает начальное количество документов в буфере на момент
@@ -72,14 +59,10 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     /// </summary>
     public uint InitialUnsentDocumentCount { get; }
 
-    /// <summary>
-    /// Возвращает дату и время создания окна в формате UTC.
-    /// Используется для расчёта продолжительности передачи.
-    /// </summary>
-    public DateTime InitialiteDateTime { get; }
 
-    private readonly CancellationTokenSource _cts = new();
     private Task? _task;
+    private readonly CancellationTokenSource _cts = new();
+    private readonly DateTime _initialDateTime;
     private readonly FptrHandle _driver;
 
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -98,17 +81,26 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     public FiscalExchangeStatusWindow(FptrHandle driver)
     {
         _driver = driver;
-        InitialUnsentDocumentCount = driver.GetUnsentCount();
-        if (InitialUnsentDocumentCount == 0) Close();
-        InitialiteDateTime = DateTime.UtcNow;
-        CurrentUnsentDocumentCount = InitialUnsentDocumentCount;
-        _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate,
-            InitialiteDateTime.UnixTimestampSeconds, InitialUnsentDocumentCount);
+        try
+        {
+            InitialUnsentDocumentCount = driver.GetUnsentCount();
+            if (InitialUnsentDocumentCount == 0) Close();
+            _initialDateTime = DateTime.UtcNow;
+            CurrentUnsentDocumentCount = InitialUnsentDocumentCount;
+            _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate,
+                _initialDateTime.UnixTimestampSeconds, InitialUnsentDocumentCount);
+            UpdateUI();
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, ML.FiscalExchangeStatusWindow_ErrorUpdate);
+            Close();
+        }
     }
 
     protected override void OnActivated(EventArgs e)
     {
-        _task = UpdateAsync(_cts.Token);
+        _task ??= UpdateAsync(_cts.Token);
         base.OnActivated(e);
     }
 
@@ -140,10 +132,21 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     {
         while (!ct.IsCancellationRequested)
         {
-            CurrentUnsentDocumentCount = _driver.GetUnsentCount();
-            _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate,
-                DateTime.UtcNow.UnixTimestampSeconds, CurrentUnsentDocumentCount);
-            if (CurrentUnsentDocumentCount == 0) Close();
+            try
+            {
+                CurrentUnsentDocumentCount = _driver.GetUnsentCount();
+                _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate,
+                    DateTime.UtcNow.UnixTimestampSeconds, CurrentUnsentDocumentCount);
+                if (CurrentUnsentDocumentCount == 0) Close();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, ML.FiscalExchangeStatusWindow_ErrorUpdate);
+            }
+            finally
+            {
+                UpdateUI();
+            }
             await Task.Delay(TimeSpan.FromSeconds(1), ct);
         }
     }
@@ -159,5 +162,14 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
         field = value;
         OnPropertyChanged(propertyName);
         return true;
+    }
+
+    private void UpdateUI()
+    {
+        OnPropertyChanged(nameof(SentDocumentCount));
+        OnPropertyChanged(nameof(Elapsed));
+        OnPropertyChanged(nameof(Percent));
+        OnPropertyChanged(nameof(Speed));
+        OnPropertyChanged(nameof(RemainingSeconds));
     }
 }

@@ -88,6 +88,15 @@ namespace Correctum.Resources.Locales {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на При получении количества неотправленных ФД произошла ошибка..
+        /// </summary>
+        internal static string FiscalExchangeStatusWindow_ErrorUpdate {
+            get {
+                return ResourceManager.GetString("FiscalExchangeStatusWindow_ErrorUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на На текущий момент (Unix Timestamp: {timestamp}) количество документов, ожидающих отправки, составляет {count} шт..
         /// </summary>
         internal static string FiscalExchangeStatusWindow_UpdateTemplate {

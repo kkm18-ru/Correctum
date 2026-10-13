@@ -129,4 +129,7 @@
   <data name="FiscalExchangeStatusWindow_ErrorCancelTask" xml:space="preserve">
     <value>При остановке задачи получения прогресса передачи ФД произошла ошибка.</value>
   </data>
+  <data name="FiscalExchangeStatusWindow_ErrorUpdate" xml:space="preserve">
+    <value>При получении количества неотправленных ФД произошла ошибка.</value>
+  </data>
 </root>
