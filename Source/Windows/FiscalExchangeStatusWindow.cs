@@ -1,4 +1,5 @@
 ﻿using Correctum.Resources.Locales;
+using Correctum.Utils;
 using Correctum.Utils.Integrations;
 using NLog;
 using System.ComponentModel;
@@ -85,14 +86,14 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     private FiscalExchangeStatusWindow() { }
 #pragma warning restore CS8618
 
-    public static void ShowDialogIfExistsUnsentDocuments(FptrHandle driver)
+    public static void ShowDialogIfExistsUnsentDocuments(FptrHandle driver, bool forceIfExists)
     {
         try
         {
             var dt = DateTime.UtcNow;
             var count = driver.GetUnsentCount();
-            new FiscalExchangeStatusWindow(driver, dt, count)
-                .ShowDialog();
+            if (count > Configuration.Current.Fptr.SizeStack || (forceIfExists && count > 0))
+                new FiscalExchangeStatusWindow(driver, dt, count).ShowDialog();
         }
         catch (Exception ex)
         {
