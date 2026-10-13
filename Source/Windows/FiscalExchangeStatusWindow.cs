@@ -1,4 +1,5 @@
-﻿using Correctum.Utils;
+﻿using Correctum.Resources.Locales;
+using Correctum.Utils;
 using Correctum.Utils.Integrations;
 using NLog;
 using System.ComponentModel;
@@ -40,8 +41,6 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     private readonly FptrHandle _driver;
 
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-    private const string UpdateMessageTemplate = 
-        "На текущий момент (Unix Timestamp: {timestamp}) количество документов, ожидающих отправки, составляет {count} шт.";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -50,7 +49,8 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
         _driver = driver;
         UsedBufferSize = InitialiteBufferSize = driver.GetUnsentCount();
         InitialiteDateTime = DateTime.UtcNow;
-        _logger.Debug(UpdateMessageTemplate, InitialiteDateTime.UnixTimestampSeconds, InitialiteBufferSize);
+        _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate, 
+            InitialiteDateTime.UnixTimestampSeconds, InitialiteBufferSize);
         SkipCommand = new RelayCommand(Close);
     }
 
@@ -63,7 +63,7 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
 
     protected override async void OnClosing(CancelEventArgs e)
     {
-        _logger.Info("Закрытие окна прогресса передачи ФД...");
+        _logger.Info(ML.FiscalExchangeStatusWindow_Closing);
         try
         {
             base.OnClosing(e);
@@ -73,11 +73,11 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
         }
         catch (OperationCanceledException ex)
         {
-            _logger.Debug(ex, "Задача получения прогресса передачи ФД остановлена.");
+            _logger.Debug(ex, ML.FiscalExchangeStatusWindow_CanceledTask);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "При остановке задачи получения прогресса передачи ФД произошла ошибка.");
+            _logger.Error(ex, ML.FiscalExchangeStatusWindow_ErrorCancelTask);
         }
         finally
         {
@@ -90,7 +90,8 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
         while (!_cts.IsCancellationRequested)
         {
             UsedBufferSize = _driver.GetUnsentCount();
-            _logger.Debug(UpdateMessageTemplate, DateTime.UtcNow.UnixTimestampSeconds, UsedBufferSize);
+            _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate, 
+                DateTime.UtcNow.UnixTimestampSeconds, UsedBufferSize);
             if (UsedBufferSize == 0) Close(); 
             await Task.Delay(TimeSpan.FromSeconds(1));
         }
