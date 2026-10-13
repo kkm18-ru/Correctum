@@ -57,9 +57,18 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>EnumLocales.resx</DependentUpon>
 		</Compile>
+		<Compile Update="Resources\Locales\ML.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>ML.resx</DependentUpon>
+		</Compile>
 		<EmbeddedResource Update="Resources\Locales\EnumLocales.resx">
 			<Generator>ResXFileCodeGenerator</Generator>
 			<LastGenOutput>EnumLocales.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Locales\ML.resx">
+		  <Generator>ResXFileCodeGenerator</Generator>
+		  <LastGenOutput>ML.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
 

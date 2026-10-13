@@ -71,7 +71,6 @@ public partial class Configuration
     public class FptrConfigurationSection
     {
         public int SizeStack { get; set; } = 1000;
-        public int StackIntervalMinutes { get; set; } = 10;
     }
 
     public class LoggingConfigurationSection

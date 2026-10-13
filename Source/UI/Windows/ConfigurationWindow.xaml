@@ -80,9 +80,6 @@
                 <StackPanel>
                     <TextBlock Text="Кол-во чеков до передачи в ОФД:"/>
                     <tk:IntegerUpDown Minimum="10" Maximum="5000" Increment="10" Value="{Binding Fptr.SizeStack}"/>
-
-                    <TextBlock Text="Время ожидания отправки чеков:"/>
-                    <tk:IntegerUpDown Minimum="10" Maximum="60" Value="{Binding Fptr.StackIntervalMinutes}"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>

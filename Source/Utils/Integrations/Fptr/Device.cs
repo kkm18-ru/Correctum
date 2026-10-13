@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Correctum.Exceptions;
+using System.Text;
 using System.Windows;
 using System.Windows.Interop;
 using FnInfo = (string Model, string SerialNumber);
@@ -110,6 +111,21 @@ namespace Correctum.Utils.Integrations
                 (_, 0) => fn,
                 (_, _) => Math.Min(fn, dev),
             };
+        }
+
+        /// <summary>
+        /// Получает количество документов, ожидающих передачи оператору фискальных данных (ОФД).
+        /// Для этого устанавливает тип данных ФН «Статус информационного обмена с ОФД»,
+        /// запрашивает данные фискального накопителя и считывает количество неотправленных документов.
+        /// </summary>
+        /// <returns>
+        /// Количество документов, ожидающих передачи в ОФД.
+        /// </returns>
+        public uint GetUnsentCount()
+        {
+            // todo "Исключить одновременное использование фискального дескриптора несколькими операциями и обеспечить корректное управление жизненным циклом устройства." 
+            SetInteger(65622, 1);
+            return QueryFN() ? GetInteger(65625) : throw new FptrException(this);
         }
     }
 }
