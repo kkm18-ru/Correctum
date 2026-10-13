@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Correctum.Exceptions;
+using System.Text;
 using System.Windows;
 using System.Windows.Interop;
 using FnInfo = (string Model, string SerialNumber);
@@ -124,8 +125,7 @@ namespace Correctum.Utils.Integrations
         {
             // todo "Исключить одновременное использование фискального дескриптора несколькими операциями и обеспечить корректное управление жизненным циклом устройства." 
             SetInteger(65622, 1);
-            QueryFN();
-            return GetInteger(65625);
+            return QueryFN() ? GetInteger(65625) : throw new FptrException(this);
         }
     }
 }
