@@ -57,7 +57,7 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
 
     protected override void OnActivated(EventArgs e)
     {
-        _task = UpdateAsync();
+        _task = UpdateAsync(_cts.Token);
         base.OnActivated(e);
     }
 
@@ -85,15 +85,15 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
         }
     }
 
-    private async Task UpdateAsync()
+    private async Task UpdateAsync(CancellationToken ct)
     {
-        while (!_cts.IsCancellationRequested)
+        while (!ct.IsCancellationRequested)
         {
             UsedBufferSize = _driver.GetUnsentCount();
             _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate, 
                 DateTime.UtcNow.UnixTimestampSeconds, UsedBufferSize);
             if (UsedBufferSize == 0) Close(); 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await Task.Delay(TimeSpan.FromSeconds(1), ct);
         }
     }
 
