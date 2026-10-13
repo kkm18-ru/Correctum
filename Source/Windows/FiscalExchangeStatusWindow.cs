@@ -20,43 +20,43 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     /// Возвращает количество документов, переданных с момента открытия окна.
     /// Вычисляется как разница между начальным и текущим размером буфера.
     /// </summary>
-    public double SendedDocument => InitialiteBufferSize - UsedBufferSize;
+    public uint SentDocumentCount => InitialUnsentDocumentCount - CurrentUnsentDocumentCount;
 
     /// <summary>
     /// Возвращает время, прошедшее с момента открытия окна.
     /// </summary>
-    public TimeSpan Elapsed => DateTime.UtcNow - InitialiteDateTime;
+    public TimeSpan Elapsed => DateTime.UtcNow - _initialDateTime;
 
     /// <summary>
     /// Возвращает процент документов, переданных с момента открытия окна,
     /// относительно начального количества документов в буфере.
     /// </summary>
-    public double Percent => SendedDocument / InitialiteBufferSize * 100;
+    public double Percent => SentDocumentCount / InitialUnsentDocumentCount * 100;
 
     /// <summary>
     /// Возвращает среднюю скорость передачи документов в ОФД
     /// в документах в секунду с момента открытия окна.
     /// </summary>
-    public double Speed => SendedDocument / Elapsed.TotalSeconds;
+    public double Speed => Elapsed.TotalSeconds == 0 ? 0 : SentDocumentCount / Elapsed.TotalSeconds;
 
     /// <summary>
     /// Возвращает приблизительное количество секунд, необходимое
     /// для передачи оставшихся документов при текущей средней скорости.
     /// </summary>
-    public double RemainingSeconds => UsedBufferSize / Speed;
+    public double RemainingSeconds => Speed == 0 ? 0 : CurrentUnsentDocumentCount / Speed;
 
     /// <summary>
     /// Возвращает текущее количество документов, ожидающих передачи в ОФД.
     /// При изменении значения уведомляет подписчиков об изменении свойства
     /// и всех вычисляемых показателей прогресса.
     /// </summary>
-    public uint UsedBufferSize
+    public uint CurrentUnsentDocumentCount
     {
         get; private set
         {
             if (SetField(ref field, value))
             {
-                OnPropertyChanged(nameof(SendedDocument));
+                OnPropertyChanged(nameof(SentDocumentCount));
                 OnPropertyChanged(nameof(Elapsed));
                 OnPropertyChanged(nameof(Percent));
                 OnPropertyChanged(nameof(Speed));
@@ -70,7 +70,7 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     /// создания окна. Используется в качестве исходного значения
     /// для расчёта прогресса передачи.
     /// </summary>
-    public uint InitialiteBufferSize { get; }
+    public uint InitialUnsentDocumentCount { get; }
 
     /// <summary>
     /// Возвращает дату и время создания окна в формате UTC.
@@ -98,10 +98,12 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     public FiscalExchangeStatusWindow(FptrHandle driver)
     {
         _driver = driver;
-        UsedBufferSize = InitialiteBufferSize = driver.GetUnsentCount();
+        InitialUnsentDocumentCount = driver.GetUnsentCount();
+        if (InitialUnsentDocumentCount == 0) Close();
         InitialiteDateTime = DateTime.UtcNow;
-        _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate, 
-            InitialiteDateTime.UnixTimestampSeconds, InitialiteBufferSize);
+        CurrentUnsentDocumentCount = InitialUnsentDocumentCount;
+        _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate,
+            InitialiteDateTime.UnixTimestampSeconds, InitialUnsentDocumentCount);
     }
 
     protected override void OnActivated(EventArgs e)
@@ -138,10 +140,10 @@ internal sealed class FiscalExchangeStatusWindow : Window, INotifyPropertyChange
     {
         while (!ct.IsCancellationRequested)
         {
-            UsedBufferSize = _driver.GetUnsentCount();
-            _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate, 
-                DateTime.UtcNow.UnixTimestampSeconds, UsedBufferSize);
-            if (UsedBufferSize == 0) Close(); 
+            CurrentUnsentDocumentCount = _driver.GetUnsentCount();
+            _logger.Debug(ML.FiscalExchangeStatusWindow_UpdateTemplate,
+                DateTime.UtcNow.UnixTimestampSeconds, CurrentUnsentDocumentCount);
+            if (CurrentUnsentDocumentCount == 0) Close();
             await Task.Delay(TimeSpan.FromSeconds(1), ct);
         }
     }

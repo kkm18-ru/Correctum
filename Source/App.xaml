@@ -19,13 +19,13 @@
                     <Setter.Value>
                         <DataTemplate DataType="{x:Type w:FiscalExchangeStatusWindow}">
                             <StackPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type w:FiscalExchangeStatusWindow}}}" Margin="26, 18">
-                                <TextBlock Text="{Binding InitialiteBufferSize, StringFormat={} Отправка {0} ФД из буфера неотправленных чеков в ОФД}"/>
+                                <TextBlock Text="{Binding InitialUnsentDocumentCount, StringFormat={} Отправка {0} ФД из буфера неотправленных чеков в ОФД}"/>
                                 <TextBlock Text="{Binding Percent, StringFormat={} {0:F0}% завершено}" FontSize="18" />
-                                <ProgressBar Value="{Binding SendedDocument, Mode=OneWay}"  Margin="0,10"
-                                             Maximum="{Binding InitialiteBufferSize, Mode=OneTime}" Height="80"/>
+                                <ProgressBar Value="{Binding SentDocumentCount, Mode=OneWay}"  Margin="0,10"
+                                             Maximum="{Binding InitialUnsentDocumentCount, Mode=OneTime}" Height="80"/>
                                 <TextBlock Text="{Binding Speed, StringFormat={} Скорость передачи: {0:F0} ФД/с}" />
                                 <TextBlock Text="{Binding RemainingSeconds, StringFormat={} Время ожидания: {0:F0} сек. }" />
-                                <TextBlock Text="{Binding UsedBufferSize, StringFormat={} Осталось документов: {0}}" />
+                                <TextBlock Text="{Binding CurrentUnsentDocumentCount, StringFormat={} Осталось документов: {0}}" />
                             </StackPanel>
                         </DataTemplate>
                     </Setter.Value>
