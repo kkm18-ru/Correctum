@@ -59,7 +59,7 @@ internal sealed class FiscalExchangeStatusWindow
 
     protected override async void OnClosing(CancelEventArgs e)
     {
-        _cts.Cancel();
+        await _cts.CancelAsync();
         try
         {
             if (_task is { })

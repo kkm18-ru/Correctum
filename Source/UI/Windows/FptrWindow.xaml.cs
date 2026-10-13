@@ -6,9 +6,9 @@ using Correctum.Utils;
 using Correctum.Utils.Integrations;
 using Correctum.Validators;
 using Correctum.ValueObjects;
+using Correctum.Windows;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -200,8 +200,8 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                             if (ConductingReceipt(receipts[CurrentIndex], _cancelSource.Token))
                                 CurrentIndex++;
                             else _handle.CancelReceipt();
-                            if (CurrentIndex > 0 && CurrentIndex % Configuration.Current.Fptr.SizeStack == 0)
-                                Thread.Sleep(60000 * Configuration.Current.Fptr.StackIntervalMinutes);
+                            if (_handle.GetUnsentCount() % Configuration.Current.Fptr.SizeStack == 0)
+                                new FiscalExchangeStatusWindow(_handle).ShowDialog();
                         }
                     }
                     catch (ModelValidationException ex)
@@ -215,8 +215,10 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                     }
                     Finish();
                 }
-                
-                new Thread(Function) { IsBackground = true }.Start();
+
+                var thread = new Thread(Function) { IsBackground = true };
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
                 break;
             case ConductingReceiptState.Running:
                 _cancelSource.Cancel();
@@ -282,7 +284,8 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                     CurrentIndex++;
                 else _handle.CancelReceipt();
             }
-            State = ConductingReceiptState.Idle;
+            State = ConductingReceiptState.Idle; 
+            new FiscalExchangeStatusWindow(_handle).ShowDialog();
             var result = MessageBox.Show(text, "", MessageBoxButton.YesNo);
             if(result == MessageBoxResult.No) return;
             var docNumb = _handle.LastReceiptNumber - (uint)count + 1u;
@@ -311,9 +314,12 @@ public partial class FptrWindow : DialogWindow, INotifyPropertyChanged
                 CurrentIndex--;
             }
 
-            State = ConductingReceiptState.Idle;
+            State = ConductingReceiptState.Idle; 
+            new FiscalExchangeStatusWindow(_handle).ShowDialog();
             MessageBox.Show("Тестовые чеки отменены!");
         }
-        new Thread(Function) { IsBackground = true }.Start();
+        var thread = new Thread(Function) { IsBackground = true };
+        thread.SetApartmentState(ApartmentState.STA);
+        thread.Start();
     }
 }
