@@ -4,6 +4,7 @@ using Correctum.Utils;
 using Correctum.ViewModels.Exports;
 using Correctum.ViewModels.Windows;
 using Correctum.Views.Windows;
+using Correctum.Windows;
 using Microsoft.Data.Sqlite;
 using Microsoft.Win32;
 using Microsoft.Xaml.Behaviors.Core;
@@ -34,6 +35,7 @@ public sealed partial class MainMenuViewModel : BindableBase
     public ICommand OpenExportMasterCommand { get; } = new RelayCommand<Type>(OpenExportMaster);
     public ICommand ShowFptrCommand { get; } = new ActionCommand(() => new FptrWindow().ShowDialog());
     public ICommand ShowPasteCommand { get; } = new ActionCommand(() => new PasteWindow().ShowDialog());
+    public ICommand ShowQueryCommand { get; } = new ActionCommand(() => new QueryWindow().ShowDialog());
     public ICommand ShowSettingsCommand { get; } = new ActionCommand(() => new ConfigurationWindow().ShowDialog());
     public ICommand QuitCommand { get; } = new ActionCommand(() => Application.Current.Shutdown());
     public ICommand OpenLinkCommand { get; } = new RelayCommand<string>(OpenLink);

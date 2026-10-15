@@ -62,4 +62,5 @@
                   Icon="{icons:MaterialIconExt Kind=MessageAlertOutline, IconSize=16}"                   
                   CommandParameter="https://forms.yandex.ru/u/6a0fe98d95add5af2bdbc9ae" />
     </MenuItem>
+    <MenuItem Command="{Binding ShowQueryCommand}" Header="Сырой запрос"/>
 </Menu>
