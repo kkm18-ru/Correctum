@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.5.0](https://github.com/kkm18-ru/Correctum/compare/v1.4.2...v1.5.0) (2026-10-20)
+
+
+### ✨ Нововведения
+
+* Добавлено окно выполнения сырого SQL-запроса ([4c81497](https://github.com/kkm18-ru/Correctum/commit/4c8149725334e1c9c3895e3614c127743f0af47f))
+* Добавлено окно прогресса передачи ФД в ОФД ([#156](https://github.com/kkm18-ru/Correctum/issues/156)) ([1e9f915](https://github.com/kkm18-ru/Correctum/commit/1e9f915695a6445cb36905f28112afa79d6e4b06))
+
+
+### 🐞 Исправления
+
+* **#157:** "Сохранить как ..." очищает пулы и копирует БД с данными ([05b6c4f](https://github.com/kkm18-ru/Correctum/commit/05b6c4fd8bf6bdefb76e1c12b8617b250d10f84e))
+* **Действия:** Восстановлена работа действия "Смена ставки НДС" ([8e8d12c](https://github.com/kkm18-ru/Correctum/commit/8e8d12c21c2218190ceed8c0aa04d671f161532f))
+
+
+### ⚡ Улучшение производительности
+
+* Упрощен интерфейс окна настройки ([d91ec5b](https://github.com/kkm18-ru/Correctum/commit/d91ec5b3dda8bbd26fd7390510bed2444b8f6e21))
+
+
+### ⏪ Отмена изменений
+
+* **GH-121:** Удалена система отчетов ([c8fddbf](https://github.com/kkm18-ru/Correctum/commit/c8fddbf236029a8a8dcc53bbeb68317ece5bcd87))
+* Удален импорт из OFD.ru через API ([1cc6b2a](https://github.com/kkm18-ru/Correctum/commit/1cc6b2afb698ec076ce72d8948f2620c1bfef206))
+
 ## [1.4.2](https://github.com/kkm18-ru/Correctum/compare/v1.4.1...v1.4.2) (2026-09-17)
 
 
